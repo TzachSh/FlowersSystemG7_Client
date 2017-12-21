@@ -2,6 +2,8 @@ package Branches;
 
 import java.util.ArrayList;
 
+
+//Comment
 public class Branch {
 	private int id;
 	private String name;
