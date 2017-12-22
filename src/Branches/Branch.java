@@ -2,7 +2,10 @@ package Branches;
 
 import java.util.ArrayList;
 
-// Branch Comment
+/**
+ * 
+ *	This Class Contain Branch Details 
+ */
 public class Branch {
 	private int id;
 	private String name;
