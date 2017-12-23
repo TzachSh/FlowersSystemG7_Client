@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import Commons.*;
 import Customers.Customer;
 
-public class Order {
+public class Order implements IRefundAble {
 	private int id;
 	private Date creationDate;
 	private Date requestedDate;

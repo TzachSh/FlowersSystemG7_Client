@@ -9,9 +9,9 @@ public class Refund {
 	private int id;
 	private Date creationDate;
 	private double amount;
-	private Order order;
-	private Complain complain;
+	private IRefundAble refundAble;
 	private Status status;
+	
 	public int getId() {
 		return id;
 	}
@@ -30,17 +30,11 @@ public class Refund {
 	public void setAmount(double amount) {
 		this.amount = amount;
 	}
-	public Order getOrder() {
-		return order;
+	public IRefundAble getRefundAble() {
+		return refundAble;
 	}
-	public void setOrder(Order order) {
-		this.order = order;
-	}
-	public Complain getComplain() {
-		return complain;
-	}
-	public void setComplain(Complain complain) {
-		this.complain = complain;
+	public void setRefundAble(IRefundAble refundAble) {
+		this.refundAble = refundAble;
 	}
 	public Status getStatus() {
 		return status;
@@ -48,13 +42,13 @@ public class Refund {
 	public void setStatus(Status status) {
 		this.status = status;
 	}
-	public Refund(int id, Date creationDate, double amount, Order order, Complain complain, Status status) {
-		super();
+	public Refund(int id, Date creationDate, double amount, IRefundAble refundAble, Status status) {
+
 		this.id = id;
 		this.creationDate = creationDate;
 		this.amount = amount;
-		this.order = order;
-		this.complain = complain;
+		this.refundAble = refundAble;
 		this.status = status;
 	}
+	
 }
