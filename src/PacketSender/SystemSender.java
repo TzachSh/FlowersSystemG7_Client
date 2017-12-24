@@ -18,15 +18,15 @@ public class SystemSender extends Thread
 	 */
 	final int DEFUALT_PORT = 5555;
 	private SystemClient client;
-	private Packet<?> packet;
-	private IResultHandler<?> handler;
+	private Packet packet;
+	private IResultHandler handler;
 	
 	/**
 	 * Constructor that initialize the handler object that implement the solution when data arrived
 	 * @param packet instance of packet that we want send to the server
 	 * @param handler instance of requested data class
 	 */
-	public SystemSender(Packet<?> packet, IResultHandler<?> handler)
+	public SystemSender(Packet packet, IResultHandler handler)
 	{
 		this.client = initClient(handler);
 		this.packet = packet;
@@ -38,16 +38,16 @@ public class SystemSender extends Thread
 	 * @param msgKey the message key that we want send to the server
 	 * @param handler instance of requested data class
 	 */
-	public SystemSender(String msgKey, IResultHandler<?> handler)
+	public SystemSender(String msgKey, IResultHandler handler)
 	{
-		this(new Packet<>(msgKey), handler);
+		this(new Packet(msgKey), handler);
 	}
 	
 	/**
 	 * Constructor that initialize the handler object that implement the solution when data arrived
 	 * @param packet instance of packet that we want send to the server
 	 */
-	public SystemSender(Packet<?> packet)
+	public SystemSender(Packet packet)
 	{
 		this(packet, null);
 	}
@@ -66,7 +66,7 @@ public class SystemSender extends Thread
 	 * 
 	 * @param handler the handler implements
 	 */
-	public void registerHandler(IResultHandler<?> handler)
+	public void registerHandler(IResultHandler handler)
 	{
 		this.handler = handler;
 		this.client.registerHandler(handler);
@@ -76,7 +76,7 @@ public class SystemSender extends Thread
 	 * Initialize client connection from configuration file or uses of default parameters
 	 * @return Instance of Client
 	 */
-	private SystemClient initClient(IResultHandler<?> handler) {
+	private SystemClient initClient(IResultHandler handler) {
 		String host;
 		int port;
 		try 

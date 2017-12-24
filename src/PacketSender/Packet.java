@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * And also for receive the expected result
  *
  */
-public class Packet<T> implements Serializable
+public class Packet implements Serializable
 {
 	/**
 	 * private attributes
@@ -16,10 +16,9 @@ public class Packet<T> implements Serializable
 	private static final long serialVersionUID = 1L;
 	private String msgKey;
 	private ArrayList<Object> paramList = new ArrayList<Object>();
-	private ArrayList<T> resultList = new ArrayList<T>();
 	
 	private boolean resultSuccess = false;
-	private Exception resultException = null;
+	
 	/**
 	 * Constructor
 	 * 
@@ -37,7 +36,7 @@ public class Packet<T> implements Serializable
 	 */
 	public boolean hasResultFromServer()
 	{
-		return resultList.size() > 0;
+		return paramList.size() > 0;
 	}
 	
 	/**
@@ -71,13 +70,13 @@ public class Packet<T> implements Serializable
 	}
 	
 	/**
-	 * Setter for resultList attribute for server uses
+	 * Setter for paramList attribute for server uses
 	 * 
-	 * @param resultList the result collection that generated from the server
+	 * @param paramList the result and parameters collection that generated from the server or the client
 	 */
-	public void setResultList(ArrayList<T> resultList)
+	public void setParameterList(ArrayList<Object> paramList)
 	{
-		this.resultList = resultList;
+		this.paramList = paramList;
 		setResultSuccess();
 	}
 	
@@ -103,9 +102,9 @@ public class Packet<T> implements Serializable
 	 * Set an exception that server throw for the request
 	 * @param e Exception instance
 	 */
-	public void setException(Exception e)
+	public void setExceptionMessage(Exception e)
 	{
-		this.resultException = e;
+		this.msgKey = e.getMessage();
 		resultSuccess = false;
 	}
 	
@@ -113,18 +112,8 @@ public class Packet<T> implements Serializable
 	 * Get an exception if received from the server
 	 * @return Exception instance
 	 */
-	public Exception getException()
+	public String getExceptionMessage()
 	{
-		return resultException;
-	}
-	
-	/**
-	 * Getter for resultList attribute for client uses
-	 * 
-	 * @return collection of result that sent from server
-	 */
-	public ArrayList<T> getResultList()
-	{
-		return new ArrayList<T>(resultList);
+		return msgKey;
 	}
 }

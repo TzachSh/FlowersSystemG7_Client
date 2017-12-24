@@ -5,14 +5,14 @@ package PacketSender;
  * and also when waiting for result
  *
  */
-public interface IResultHandler<T>
+public interface IResultHandler
 {
 	/**
 	 * Method that called when data arrived from the server
 	 * 
 	 * @param p the result Packet from the server
 	 */
-	void onReceivingResult(Packet<T> p);
+	void onReceivingResult(Packet p);
 	
 	
 	/**

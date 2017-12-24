@@ -15,7 +15,7 @@ public class SystemClient extends AbstractClient
 	/**
 	 *  private attributes
 	 */
-	private IResultHandler<?> handler; 
+	private IResultHandler handler; 
 	
 	
 	
@@ -25,7 +25,7 @@ public class SystemClient extends AbstractClient
 	 * @param host the host name of the server
 	 * @param port the port number of the server
 	 */
-	public SystemClient(IResultHandler<?> handler, String host, int port) {
+	public SystemClient(IResultHandler handler, String host, int port) {
 		super(host, port);
 		
 		registerHandler(handler);
@@ -44,7 +44,7 @@ public class SystemClient extends AbstractClient
 	 * 
 	 * @param handler the handler implements
 	 */
-	public void registerHandler(IResultHandler<?> handler)
+	public void registerHandler(IResultHandler handler)
 	{
 		this.handler = handler;
 	}
