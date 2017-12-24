@@ -1,5 +1,5 @@
 package PacketSender;
-
+//fqewq
 /**
  * Interface that clients can use for implements their work when the result was arrived from the server
  * and also when waiting for result
