@@ -50,6 +50,23 @@ public class Packet implements Serializable
 	}
 	
 	/**
+	 * Convert the result list to specific type for client uses
+	 * @param <T> The excepted type to convert
+	 * 
+	 * @return the result list on type excepted
+	 */
+	public <T> ArrayList<T> convertedResultList()
+	{
+		ArrayList<T> genericList = new ArrayList<>();
+		ArrayList<Object> objList = getParameterList();
+		for (Object obj : objList)
+			genericList.add((T)obj);
+		
+		return genericList;
+	}
+	
+	
+	/**
 	 * Getter for msgKey attribute for server uses
 	 * 
 	 * @return message key that sent to server
