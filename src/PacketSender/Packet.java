@@ -55,6 +55,7 @@ public class Packet implements Serializable
 	 * 
 	 * @return the result list on type excepted
 	 */
+	@SuppressWarnings("unchecked")
 	public <T> ArrayList<T> convertedResultList()
 	{
 		ArrayList<T> genericList = new ArrayList<>();
