@@ -17,7 +17,7 @@ public class Packet implements Serializable
 	private String msgKey;
 	private ArrayList<Object> paramList = new ArrayList<Object>();
 	
-	private boolean resultSuccess = false;
+	private boolean resultSuccess = true;
 	
 	/**
 	 * Constructor
@@ -95,7 +95,6 @@ public class Packet implements Serializable
 	public void setParameterList(ArrayList<Object> paramList)
 	{
 		this.paramList = paramList;
-		setResultSuccess();
 	}
 	
 	/**
@@ -105,15 +104,6 @@ public class Packet implements Serializable
 	public boolean getResultState()
 	{
 		return resultSuccess;
-	}
-	
-	/**
-	 * Set the result state as success
-	 * 
-	 */
-	public void setResultSuccess()
-	{
-		resultSuccess = true;
 	}
 	
 	/**
