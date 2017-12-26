@@ -36,12 +36,12 @@ public class Flower {
 		this.flowerInProduct = flowerInProduct;
 	}
 	
-	public Flower(int id, double price, Color color, ArrayList<FlowerInProduct> flowerInProduct) {
+	public Flower(int id, double price, Color color) {
 
 		this.id = id;
 		this.price = price;
 		this.color = color;
-		this.flowerInProduct = flowerInProduct;
+		this.flowerInProduct = new ArrayList<>();
 	}
 	
 
