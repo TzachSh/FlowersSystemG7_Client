@@ -38,7 +38,7 @@ public class SystemSender extends Thread
 	 * @param msgKey the message key that we want send to the server
 	 * @param handler instance of requested data class
 	 */
-	public SystemSender(String msgKey, IResultHandler handler)
+	public SystemSender(Command msgKey, IResultHandler handler)
 	{
 		this(new Packet(msgKey), handler);
 	}
@@ -56,7 +56,7 @@ public class SystemSender extends Thread
 	 * Constructor that initialize the handler object that implement the solution when data arrived
 	 * @param msgKey the message key that we want send to the server
 	 */
-	public SystemSender(String msgKey)
+	public SystemSender(Command msgKey)
 	{
 		this(msgKey, null);
 	}
