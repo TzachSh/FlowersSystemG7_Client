@@ -2,20 +2,18 @@ package Products;
 
 import java.util.ArrayList;
 
-import javafx.scene.paint.Color;
-
 public class Flower {
 	
-	private int id;
+	private String name;
 	private double price;
-	private Color color;
+	private int color;
 	private ArrayList<FlowerInProduct> flowerInProduct;
 	
-	public int getId() {
-		return id;
+	public String getName() {
+		return name;
 	}
-	public void setId(int id) {
-		this.id = id;
+	public void setName(String name) {
+		this.name = name;
 	}
 	public double getPrice() {
 		return price;
@@ -23,10 +21,10 @@ public class Flower {
 	public void setPrice(double price) {
 		this.price = price;
 	}
-	public Color getColor() {
+	public int getColor() {
 		return color;
 	}
-	public void setColor(Color color) {
+	public void setColor(int color) {
 		this.color = color;
 	}
 	public ArrayList<FlowerInProduct> getFlowerInProduct() {
@@ -36,9 +34,9 @@ public class Flower {
 		this.flowerInProduct = flowerInProduct;
 	}
 	
-	public Flower(int id, double price, Color color) {
+	public Flower(String name, double price, int color) {
 
-		this.id = id;
+		this.name = name;
 		this.price = price;
 		this.color = color;
 		this.flowerInProduct = new ArrayList<>();

@@ -50,5 +50,4 @@ public class Product {
 		this.productInOrderList = productInOrderList;
 	}
 	
-	
 }
