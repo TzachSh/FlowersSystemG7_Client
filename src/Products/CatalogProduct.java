@@ -1,11 +1,16 @@
 package Products;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import Commons.ProductInOrder;
 
-public class CatalogProduct extends Product {
+public class CatalogProduct extends Product implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String name;
 	private int saleDiscountPercent;
 	private String imgUrl;
@@ -34,6 +39,10 @@ public class CatalogProduct extends Product {
 		this.name = name;
 		this.saleDiscountPercent = saleDiscountPercent;
 		this.imgUrl = imgUrl;
+	}
+	public CatalogProduct(Product pro, String name, int saleDiscountPercent, String imgUrl)
+	{
+		this(pro.getId(), pro.getProductType(), pro.getPrice(), pro.getFlowerInProductList(), pro.getProductInOrderList(), name, saleDiscountPercent, imgUrl);
 	}
 
 }
