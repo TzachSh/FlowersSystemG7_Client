@@ -74,8 +74,13 @@ public class CatalogProductController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		
+		Packet packet = new Packet();
+		packet.addCommand(Command.getCatalogProducts);
+		packet.addCommand(Command.getFlowers);
+		
 		// create the thread for send to server the message
-		SystemSender send = new SystemSender(Command.getCatalogProducts);
+		SystemSender send = new SystemSender(packet);
 
 		// register the handler that occurs when the data arrived from the server
 		send.registerHandler(new IResultHandler() {
@@ -84,23 +89,32 @@ public class CatalogProductController implements Initializable {
 			}
 
 			@Override
-			public void onReceivingResult(Packet p) {
+			public void onReceivingResult(Packet p)
+			{
 				if (p.getResultState())
 				{
-				ArrayList<Object> pList = p.getParameterList();
-				for (Object obj : pList)
+					ArrayList<CatalogProduct> pList = p.<CatalogProduct>convertedResultListForCommand(Command.getCatalogProducts);
+					ArrayList<FlowerInProduct> fList = p.<FlowerInProduct>convertedResultListForCommand(Command.getFlowers);
+				
+					for (CatalogProduct pro : pList)
 					{
-					CatalogProduct cp = (CatalogProduct)obj;
-					System.out.println("<Product> ID: " + cp.getId() + " Name: " + cp.getName() + " Price: " + cp.getPrice() + " Discount: " + cp.getSaleDiscountPercent());
-					for (FlowerInProduct fp : cp.getFlowerInProductList())
-						System.out.println("<FlowersInProduct> Name " + fp.getFlower().getName() + " Color: " + fp.getFlower().getColor() + " Price: " + fp.getFlower().getPrice() + " Qty: " + fp.getQuantity());
+						System.out.println("<Product> ID: " + pro.getId() + " Name: " + pro.getName() + " Price: " + pro.getPrice() + " Discount: " + pro.getSaleDiscountPercent());
+						ArrayList<FlowerInProduct> flowersInProduct = new ArrayList<>();
+						for (FlowerInProduct fp : fList)
+						{
+							if (fp.getProductId() == pro.getId())
+								flowersInProduct.add(fp);
+						}
+					
+						pro.setFlowerInProductList(flowersInProduct);
 					}
+					
+					System.out.println();
 				}
 				else
 					System.out.println("Fail: " + p.getExceptionMessage());
 			}
 		});
-
 		send.start();
 	}
 

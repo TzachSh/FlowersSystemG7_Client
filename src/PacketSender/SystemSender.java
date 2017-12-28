@@ -35,30 +35,11 @@ public class SystemSender extends Thread
 	
 	/**
 	 * Constructor that initialize the handler object that implement the solution when data arrived
-	 * @param msgKey the message key that we want send to the server
-	 * @param handler instance of requested data class
-	 */
-	public SystemSender(Command msgKey, IResultHandler handler)
-	{
-		this(new Packet(msgKey), handler);
-	}
-	
-	/**
-	 * Constructor that initialize the handler object that implement the solution when data arrived
 	 * @param packet instance of packet that we want send to the server
 	 */
 	public SystemSender(Packet packet)
 	{
 		this(packet, null);
-	}
-	
-	/**
-	 * Constructor that initialize the handler object that implement the solution when data arrived
-	 * @param msgKey the message key that we want send to the server
-	 */
-	public SystemSender(Command msgKey)
-	{
-		this(msgKey, null);
 	}
 	
 	/**

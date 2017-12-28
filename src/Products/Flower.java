@@ -5,12 +5,17 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Flower implements Serializable {
-	
+	private int id;
 	private String name;
 	private double price;
 	private Color color;
 	private ArrayList<FlowerInProduct> flowerInProduct;
-	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	public String getName() {
 		return name;
 	}
@@ -35,13 +40,15 @@ public class Flower implements Serializable {
 	public void setFlowerInProduct(ArrayList<FlowerInProduct> flowerInProduct) {
 		this.flowerInProduct = flowerInProduct;
 	}
-	
-	public Flower(String name, double price, Color color) {
-
+	public Flower(int id, String name, double price, Color color, ArrayList<FlowerInProduct> flowerInProduct) {
+		super();
+		this.id = id;
 		this.name = name;
 		this.price = price;
 		this.color = color;
-		this.flowerInProduct = new ArrayList<>();
+		this.flowerInProduct = flowerInProduct;
 	}
-
+	
+	
+	
 }
