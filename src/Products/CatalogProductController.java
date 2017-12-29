@@ -71,6 +71,7 @@ public class CatalogProductController implements Initializable {
 
 	}
 	
+	
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -86,6 +87,7 @@ public class CatalogProductController implements Initializable {
 		send.registerHandler(new IResultHandler() {
 			@Override
 			public void onWaitingForResult() {
+				
 			}
 
 			@Override
