@@ -14,6 +14,7 @@ public class Customer extends User implements Serializable {
 	private ArrayList<Complain> complainList;
 	private int membershipId;
 	private int accountNum;
+	
 	public int getId() {
 		return id;
 	}
