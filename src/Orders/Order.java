@@ -15,7 +15,7 @@ public class Order implements Serializable {
 	private Status status;
 	private int orderPaymentId;
 	private ArrayList<ProductInOrder> productInOrderList;
-	private Refund Refund;
+	private int refundId;
 	private Delivery deliery;
 	
 	public int getoId() {
@@ -60,11 +60,11 @@ public class Order implements Serializable {
 	public void setProductInOrderList(ArrayList<ProductInOrder> productInOrderList) {
 		this.productInOrderList = productInOrderList;
 	}
-	public Refund getRefund() {
-		return Refund;
+	public int getRefund() {
+		return refundId;
 	}
-	public void setRefund(Refund refund) {
-		Refund = refund;
+	public void setRefund(int refundId) {
+		this.refundId = refundId;
 	}
 	public Delivery getDeliery() {
 		return deliery;
@@ -83,7 +83,6 @@ public class Order implements Serializable {
 		this.status = status;
 		this.orderPaymentId = orderPaymentId;
 		this.productInOrderList = productInOrderList;
-		Refund = refund;
 		this.deliery = deliery;
 	}
 

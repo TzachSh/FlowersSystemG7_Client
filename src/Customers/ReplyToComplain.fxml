@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="513.0" prefWidth="655.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Customers.ReplyController">
+   <children>
+      <TitledPane animated="false" collapsible="false" layoutY="14.0" prefHeight="555.0" prefWidth="655.0" text="Complain Replyment" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="508.0" prefWidth="653.0">
+               <children>
+                  <TextArea fx:id="txtDesc" editable="false" layoutX="224.0" layoutY="105.0" prefHeight="106.0" prefWidth="382.0" />
+                  <TextField fx:id="txtTitle" editable="false" layoutX="224.0" layoutY="34.0" />
+                  <Label layoutX="34.0" layoutY="105.0" text="Description" />
+                  <Label layoutX="34.0" layoutY="34.0" text="Title" />
+                  <Label layoutX="37.0" layoutY="230.0" text="Replyment:" />
+                  <TextArea fx:id="txtReply" layoutX="224.0" layoutY="230.0" prefHeight="106.0" prefWidth="382.0" />
+                  <Label layoutX="37.0" layoutY="360.0" text="Refund" />
+                  <TextField fx:id="txtRefund" layoutX="224.0" layoutY="354.0" prefHeight="39.0" prefWidth="130.0" />
+                  <Label layoutX="369.0" layoutY="352.0" text="₪">
+                     <font>
+                        <Font size="29.0" />
+                     </font>
+                  </Label>
+                  <Button fx:id="btnSend" layoutX="361.0" layoutY="413.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="174.0" text="Send" />
+                  <Button fx:id="btnCancel" layoutX="181.0" layoutY="413.0" mnemonicParsing="false" onAction="#handleCancelPressed" prefHeight="39.0" prefWidth="173.0" text="Cancel" />
+               </children>
+            </AnchorPane>
+        </content>
+      </TitledPane>
+   </children>
+</AnchorPane>
