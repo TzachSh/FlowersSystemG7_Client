@@ -34,6 +34,19 @@ public class AccountController implements Initializable{
 	private Button btnCheckCustomersID;
 	@FXML
 	private AnchorPane apAddAccount;
+	@FXML
+	private TextField txtCreditCard1;
+	@FXML
+	private TextField txtCreditCard2;
+	@FXML
+	private TextField txtCreditCard3;
+	@FXML
+	private TextField txtCreditCard4;
+	@FXML
+	private TextField txtCreditCard5;
+	@FXML
+	private Button btnFinish;
+	
 	private Employee currentUser;
 	
 	
@@ -50,10 +63,23 @@ public class AccountController implements Initializable{
 		
 	}
 
-	
+	public void addAccountNow()
+	{
+		if(txtCreditCard1.getText().isEmpty()||txtCreditCard2.getText().isEmpty()||txtCreditCard3.getText().isEmpty()||txtCreditCard4.getText().isEmpty()||txtCreditCard5.getText().isEmpty())
+		{
+			showError("Please Insert Valid Credit Card");
+			return;
+		}
+		
+	}
 	
 	public void checkUserExist()
 	{
+		if(txtID.getText().isEmpty()) {
+			showError("Please Insert Customer's ID");
+			return;
+		}
+			
 		Packet packet = new Packet();
 		
 		packet.addCommand(Command.getCustomersKeyByuId);

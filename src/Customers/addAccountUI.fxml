@@ -5,15 +5,31 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="497.0" prefWidth="727.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Customers.AccountController">
+<AnchorPane prefHeight="277.0" prefWidth="319.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Customers.AccountController">
    <opaqueInsets>
       <Insets />
    </opaqueInsets>
    <children>
-      <TextField id="txtID" fx:id="txtID" layoutX="350.0" layoutY="67.0" promptText="Enter Customer's ID" />
-      <Button id="btnCheckCustomersID" fx:id="btnCheckCustomersID" layoutX="528.0" layoutY="67.0" mnemonicParsing="false" onAction="#checkUserExist" text="Check Customer's ID" />
-      <Label layoutX="245.0" layoutY="71.0" text="Customer's ID" />
-      <AnchorPane id="apAddAccount" layoutX="1.0" layoutY="111.0" prefHeight="389.0" prefWidth="465.0" />
+      <TextField id="txtID" fx:id="txtID" layoutX="197.0" layoutY="62.0" promptText="Enter Customer's ID" />
+      <Label layoutX="92.0" layoutY="66.0" text="Customer's ID" />
+      <AnchorPane id="apAddAccount" fx:id="apAddAccount" layoutX="57.0" layoutY="129.0" prefHeight="167.0" prefWidth="446.0">
+         <children>
+            <TextField id="txtCreditCard1" fx:id="txtCreditCard1" layoutX="145.0" layoutY="47.0" prefHeight="25.0" prefWidth="45.0" />
+            <TextField id="txtCreditCard2" fx:id="txtCreditCard2" layoutX="197.0" layoutY="47.0" prefHeight="25.0" prefWidth="45.0" />
+            <TextField id="txtCreditCard3" fx:id="txtCreditCard3" layoutX="248.0" layoutY="47.0" prefHeight="25.0" prefWidth="45.0" />
+            <TextField id="txtCreditCard4" fx:id="txtCreditCard4" layoutX="300.0" layoutY="47.0" prefHeight="25.0" prefWidth="45.0" />
+            <TextField id="txtCreditCard5" fx:id="txtCreditCard5" layoutX="352.0" layoutY="47.0" prefHeight="25.0" prefWidth="45.0" />
+            <Label layoutX="28.0" layoutY="51.0" text="CreditCard Number" />
+            <Button id="btnFinish" fx:id="btnFinish" layoutX="145.0" layoutY="89.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="149.0" text="Finish" />
+         </children>
+      </AnchorPane>
+      <Button id="btnCheckCustomersID" fx:id="btnCheckCustomersID" layoutX="197.0" layoutY="104.0" mnemonicParsing="false" onAction="#checkUserExist" prefHeight="25.0" prefWidth="149.0" text="Check Customer's ID" />
+      <Label layoutX="132.0" layoutY="14.0" text="Add Account To User">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
