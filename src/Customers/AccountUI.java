@@ -8,7 +8,7 @@ public class AccountUI extends Application{
 	@Override
 	public void start(Stage arg0) throws Exception {
 		// TODO Auto-generated method stub
-		AccountController accountController = new AccountController();
+		AccountController accountController = new AccountController(User user);
 		accountController.start(arg0);
 
 	}
