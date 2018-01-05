@@ -48,18 +48,18 @@ public class AccountController implements Initializable{
 	private Button btnFinish;
 	
 	private Employee currentUser;
+	private Customer currentCustomer;
 	
-	
-	public AccountController(User user)
+	/*public AccountController(User user)
 	{
 		this.currentUser=(Employee)user;
 	}
-	
+	*/
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub
-	
+		apAddAccount.setVisible(false);
 		
 	}
 
@@ -70,7 +70,39 @@ public class AccountController implements Initializable{
 			showError("Please Insert Valid Credit Card");
 			return;
 		}
+		String fullCreditCar=txtCreditCard1.getText().toString()+txtCreditCard2.getText().toString()+txtCreditCard3.getText().toString()+txtCreditCard4.getText().toString()+txtCreditCard5.getText().toString();
+		Packet packet = new Packet();
 		
+		packet.addCommand(Command.addAccounts);
+		ArrayList<Object> acclist=new ArrayList<>();
+		
+		acclist.add(new Account(currentCustomer.getId(), currentUser.getBranchId(), 0, AccountStatus.Active, fullCreditCar));
+		packet.setParametersForCommand(Command.addAccounts, acclist);
+		SystemSender send = new SystemSender(packet);
+		send.registerHandler(new IResultHandler() {
+			
+			@Override
+			public void onWaitingForResult() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onReceivingResult(Packet p) {
+				// TODO Auto-generated method stub
+				if (p.getResultState())
+				{
+					
+					JOptionPane.showMessageDialog(null, 
+							"The Account Has Been Added", 
+			                "Success", 
+			                JOptionPane.CLOSED_OPTION);
+				}
+				else
+					System.out.println("Fail: " + p.getExceptionMessage());
+			}
+		});
+		send.start();
 	}
 	
 	public void checkUserExist()
@@ -79,12 +111,13 @@ public class AccountController implements Initializable{
 			showError("Please Insert Customer's ID");
 			return;
 		}
-			
+		txtID.setDisable(true);
+		btnCheckCustomersID.setDisable(true);
 		Packet packet = new Packet();
 		
 		packet.addCommand(Command.getCustomersKeyByuId);
 		ArrayList<Object> userl=new ArrayList<>();
-		userl.add(new User(Integer.parseInt(txtID.getText())));
+		userl.add(new Customer(Integer.parseInt(txtID.getText()),0));
 		packet.setParametersForCommand(Command.getCustomersKeyByuId, userl);
 		SystemSender send = new SystemSender(packet);
 		send.registerHandler(new IResultHandler() {
@@ -106,10 +139,13 @@ public class AccountController implements Initializable{
 				if(cList.isEmpty())
 				{
 					showError("Customer Not Exist In The DataBase Please Add Customer First");
+					btnCheckCustomersID.setDisable(false);
+					txtID.setDisable(false);
+					txtID.setText("");
 					return;
 				}
 				apAddAccount.setVisible(true);
-				Customer currentCustomer=cList.get(0);
+				currentCustomer=cList.get(0);
 
 			}
 			else

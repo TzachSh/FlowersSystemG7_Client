@@ -283,7 +283,7 @@ public class CustomerController implements Initializable {
 				if (p.getResultState())
 				{
 					JOptionPane.showMessageDialog(null, 
-							"The Client :"+user+"  :Has Been Added", 
+							"The Client : "+user+"  : Has Been Added", 
 			                "Success", 
 			                JOptionPane.CLOSED_OPTION);
 

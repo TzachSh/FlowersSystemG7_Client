@@ -14,7 +14,7 @@
    <children>
       <TextField id="txtID" fx:id="txtID" layoutX="197.0" layoutY="62.0" promptText="Enter Customer's ID" />
       <Label layoutX="92.0" layoutY="66.0" text="Customer's ID" />
-      <AnchorPane id="apAddAccount" fx:id="apAddAccount" layoutX="57.0" layoutY="129.0" prefHeight="167.0" prefWidth="446.0">
+      <AnchorPane id="apAddAccount" fx:id="apAddAccount" layoutX="57.0" layoutY="129.0" prefHeight="167.0" prefWidth="446.0" visible="false">
          <children>
             <TextField id="txtCreditCard1" fx:id="txtCreditCard1" layoutX="145.0" layoutY="47.0" prefHeight="25.0" prefWidth="45.0" />
             <TextField id="txtCreditCard2" fx:id="txtCreditCard2" layoutX="197.0" layoutY="47.0" prefHeight="25.0" prefWidth="45.0" />
@@ -22,7 +22,7 @@
             <TextField id="txtCreditCard4" fx:id="txtCreditCard4" layoutX="300.0" layoutY="47.0" prefHeight="25.0" prefWidth="45.0" />
             <TextField id="txtCreditCard5" fx:id="txtCreditCard5" layoutX="352.0" layoutY="47.0" prefHeight="25.0" prefWidth="45.0" />
             <Label layoutX="28.0" layoutY="51.0" text="CreditCard Number" />
-            <Button id="btnFinish" fx:id="btnFinish" layoutX="145.0" layoutY="89.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="149.0" text="Finish" />
+            <Button id="btnFinish" fx:id="btnFinish" layoutX="145.0" layoutY="89.0" mnemonicParsing="false" onAction="#addAccountNow" prefHeight="25.0" prefWidth="149.0" text="Finish" />
          </children>
       </AnchorPane>
       <Button id="btnCheckCustomersID" fx:id="btnCheckCustomersID" layoutX="197.0" layoutY="104.0" mnemonicParsing="false" onAction="#checkUserExist" prefHeight="25.0" prefWidth="149.0" text="Check Customer's ID" />
