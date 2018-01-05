@@ -1,6 +1,5 @@
 package Customers;
 
-import Products.CatalogProductController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 

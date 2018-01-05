@@ -262,9 +262,7 @@ public class CustomerController implements Initializable {
 					membershipid=mem.getNum();
 			cuslist.add(new Customer(Integer.parseInt(cusid),membershipid ));
 			packet.setParametersForCommand(Command.addCustomers,cuslist);
-			//geting the entered customer
-			packet.addCommand(Command.getCustomersKeyByuId);
-			packet.setParametersForCommand(Command.getCustomersKeyByuId, cuslist);
+
 			
 			
 			SystemSender send = new SystemSender(packet);
@@ -376,7 +374,7 @@ public class CustomerController implements Initializable {
 			@Override
 			public void onWaitingForResult() {
 				// TODO Auto-generated method stub
-				
+
 			}
 			
 			@Override
