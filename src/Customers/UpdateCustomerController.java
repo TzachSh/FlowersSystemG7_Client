@@ -19,6 +19,10 @@ class UpdateCustomerController implements Initializable{
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	public UpdateCustomerController()
+	{
+		
+	}
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub
@@ -27,7 +31,7 @@ class UpdateCustomerController implements Initializable{
 	public void start(Stage primaryStage)  throws Exception{
 		
 			String title = "Update Customer Information";
-			String srcFXML = "/Customers/updateCustomerUI.fxml";
+			String srcFXML = "/Customers/upCusInf.fxml";
 			String srcCSS = "/Customers/application.css";
 			
 
