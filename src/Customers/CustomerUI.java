@@ -8,7 +8,7 @@ public class CustomerUI extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		CustomerController customerController = new CustomerController();
+	CustomerController customerController = new CustomerController();
 		customerController.start(primaryStage);
 	}
 
