@@ -10,8 +10,8 @@ public class UpdateCustomerUI extends Application {
 	@Override
 	public void start(Stage arg0) throws Exception {
 		// TODO Auto-generated method stub
+		//UpCustController updateCustomerController = new UpCustController(user);
 		UpdateCustomerController updateCustomerController = new UpdateCustomerController(user);
-		//UpdateCustomerController updateCustomerController = new UpdateCustomerController();
 		updateCustomerController.start(arg0);
 
 	}

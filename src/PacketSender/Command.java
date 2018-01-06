@@ -19,5 +19,12 @@ public enum Command implements Serializable
 	getMemberShipKey,
 	addCustomers,
 	getCustomersKeyByuId,
-	addAccounts
+	addAccounts,
+	getAccounts,
+	getAccountStatus,
+	getAccountbycID,
+	getUserByuId,
+	updateAccounts,
+	updateCustomer,
+	updateUser
 }
