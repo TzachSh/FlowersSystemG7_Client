@@ -24,6 +24,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -34,16 +35,15 @@ import javafx.util.Callback;
 
 public class ComplainsController implements Initializable {
 
-	@FXML
-	private TextField txtCustId;
-	@FXML
-	private TextField txtCustName;
-	@FXML
-	private Button btnSearch;
-	@FXML
-	private Button btnAdd;
-	@FXML
-	private ListView<Complain> cListView;
+	@FXML private TextField txtCustId;
+	@FXML private TextField txtCustName;
+	@FXML private Button btnSearch;
+	@FXML private Button btnAdd;
+	@FXML private ListView<Complain> cListView;
+	@FXML private Button btnAddSave;
+	@FXML private TextArea txtAddDesc;
+	@FXML private TextField txtAddTitle;
+	@FXML private TextField txtAddCustNum;
 	
 	private ObservableList<Complain> data;
 	

@@ -57,7 +57,7 @@
                                     <TextField fx:id="txtAddCustNum" layoutX="224.0" layoutY="25.0" />
                                     <TextField fx:id="txtAddTitle" layoutX="224.0" layoutY="84.0" />
                                     <TextArea fx:id="txtAddDesc" layoutX="224.0" layoutY="144.0" prefHeight="200.0" prefWidth="382.0" />
-                                    <Button fx:id="txtAddSave" layoutX="224.0" layoutY="381.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="134.0" text="Save" />
+                                    <Button fx:id="btnAddSave" layoutX="224.0" layoutY="381.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="134.0" text="Save" />
                                  </children>
                               </AnchorPane>
                           </content>

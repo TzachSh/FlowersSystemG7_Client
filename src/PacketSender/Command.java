@@ -9,6 +9,14 @@ import java.io.Serializable;
  */
 public enum Command implements Serializable
 {
+	addUsers,
+	getUsers,
+	getUsersByUserName,
+	getMemberShip,
+	getMemberShipKey,
+	addCustomers,
+	getCustomersKeyByuId,
+	addAccounts,
 	getCatalogProducts,
 	updateCatalogProduct,
 	getFlowers,
