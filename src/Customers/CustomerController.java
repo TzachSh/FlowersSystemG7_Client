@@ -19,6 +19,8 @@ import Products.CatalogProduct;
 import Products.FlowerInProduct;
 import javafx.application.Platform;
 import javafx.beans.Observable;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -358,6 +360,54 @@ public class CustomerController implements Initializable {
 	}
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		//validate customer user field input
+		txtUser.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				// TODO Auto-generated method stub
+				if(newValue.length()>50)
+					txtUser.setText(oldValue);
+				/*if(!newValue.equals("") &&newValue.matches("^[a-zA-Z0-9._-]{0,50}$"))
+					txtUser.setText(newValue);
+				else
+					txtUser.setText(oldValue);*/
+
+			}
+		});
+		//validate id
+		txtID.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				// TODO Auto-generated method stub
+			
+				if(newValue.length()>9)
+					txtID.setText(oldValue);
+				if(!newValue.equals("") && (newValue.charAt(newValue.length()-1)<'0'||newValue.charAt(newValue.length()-1)>'9'))
+					txtID.setText(oldValue);
+			
+			}
+		});
+	
+		//validate the password
+		txtPassword.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				// TODO Auto-generated method stub
+				if(newValue.length()>50)
+					txtPassword.setText(oldValue);
+			}
+		});
+		txtConfirmPassword.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				// TODO Auto-generated method stub
+				if(newValue.length()>50)
+					txtConfirmPassword.setText(oldValue);
+			}
+		});
 		
 		Packet packet = new Packet();
 		initComboBox();

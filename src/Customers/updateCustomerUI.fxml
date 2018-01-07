@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="445.0" prefWidth="366.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Customers.UpdateCustomerController">
+<AnchorPane prefHeight="486.0" prefWidth="431.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Customers.UpdateCustomerController">
    <children>
       <Label layoutX="13.0" layoutY="24.0" text="Update Customer Information">
          <font>
@@ -21,7 +21,7 @@
          <children>
             <Label layoutX="40.0" layoutY="6.0" prefWidth="26.0" text="User" />
             <Label fx:id="lbBalance" layoutX="41.0" layoutY="35.0" prefHeight="17.0" prefWidth="52.0" text="Balance" />
-            <TextField id="txtUser" fx:id="txtUser" layoutX="99.0" layoutY="2.0" />
+            <TextField id="txtUser" fx:id="txtUser" layoutX="99.0" layoutY="2.0" prefHeight="25.0" prefWidth="485.0" />
             <TextField id="txtBalance" fx:id="txtBalance" disable="true" layoutX="99.0" layoutY="31.0" />
             <Button id="btnSave" fx:id="btnSave" layoutX="185.0" layoutY="332.0" mnemonicParsing="false" onAction="#saveNewCustomerInformation" text="Save" />
             <Label fx:id="lbCreditCard" layoutX="31.0" layoutY="129.0" text="Credit Card" />
@@ -35,9 +35,9 @@
                   <Label layoutX="24.0" layoutY="23.0" text="Old Password " />
                   <Label layoutX="24.0" layoutY="55.0" text="New Password" />
                   <Label layoutX="24.0" layoutY="89.0" text="Confirm New Password" />
-                  <TextField id="txtPassword" fx:id="txtPassword" layoutX="156.0" layoutY="19.0" />
-                  <TextField id="txtNewPassword" fx:id="txtNewPassword" layoutX="156.0" layoutY="51.0" />
-                  <TextField id="txtConfirmPassword" fx:id="txtConfirmPassword" layoutX="156.0" layoutY="85.0" />
+                  <TextField id="txtPassword" fx:id="txtPassword" layoutX="156.0" layoutY="19.0" prefHeight="25.0" prefWidth="455.0" />
+                  <TextField id="txtNewPassword" fx:id="txtNewPassword" layoutX="156.0" layoutY="51.0" prefHeight="25.0" prefWidth="455.0" />
+                  <TextField id="txtConfirmPassword" fx:id="txtConfirmPassword" layoutX="156.0" layoutY="85.0" prefHeight="25.0" prefWidth="455.0" />
                </children>
             </AnchorPane>
             <Label fx:id="lbStatus" layoutX="39.0" layoutY="66.0" text="Status" />

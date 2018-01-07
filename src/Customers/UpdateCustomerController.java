@@ -92,24 +92,21 @@ public class UpdateCustomerController implements Initializable {
 		 this.user=user;
 		}
 	 
-	 
+	 /**
+	  * This function inistialize the settings
+	  */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub
 		apnextinfo.setVisible(false);
 		appassword.setVisible(false);
 		
+		//validate customer text field input 
 		txtCustomerID.textProperty().addListener(new ChangeListener<String>() {
-
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				// TODO Auto-generated method stub
-				/*if(txtCustomerID.getText().length()>9) 
-				{
-					String oldstring=txtCustomerID.getText().substring(0, 9);
-					txtCustomerID.setText(oldstring);					
-				}*/
-				boolean res=true;
+			
 				if(newValue.length()>9)
 					txtCustomerID.setText(oldValue);
 				if(!newValue.equals("") && (newValue.charAt(newValue.length()-1)<'0'||newValue.charAt(newValue.length()-1)>'9'))
@@ -117,47 +114,159 @@ public class UpdateCustomerController implements Initializable {
 			
 			}
 		});
-				
+		//validate customer user field input
+		txtUser.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				// TODO Auto-generated method stub
+				if(newValue.length()>50)
+					txtUser.setText(oldValue);
+				/*if(!newValue.equals("") &&newValue.matches("^[a-zA-Z0-9._-]{0,50}$"))
+					txtUser.setText(newValue);
+				else
+					txtUser.setText(oldValue);*/
+
+			}
+		});
+		//validate text for credit card
+		txtCreditCard1.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				// TODO Auto-generated method stub
+				if(newValue.length()>4)
+					txtCreditCard1.setText(oldValue);
+				if(!newValue.equals("") &&(newValue.charAt(newValue.length()-1)<'0'||newValue.charAt(newValue.length()-1)>'9'))
+					txtCreditCard1.setText(oldValue);
+			}
+			
+		});
+		txtCreditCard2.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				// TODO Auto-generated method stub
+				if(newValue.length()>4)
+					txtCreditCard2.setText(oldValue);
+				if(!newValue.equals("") &&(newValue.charAt(newValue.length()-1)<'0'||newValue.charAt(newValue.length()-1)>'9'))
+					txtCreditCard2.setText(oldValue);
+			}
+			
+		});
+		txtCreditCard3.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				// TODO Auto-generated method stub
+				if(newValue.length()>4)
+					txtCreditCard3.setText(oldValue);
+				if(!newValue.equals("") &&(newValue.charAt(newValue.length()-1)<'0'||newValue.charAt(newValue.length()-1)>'9'))
+					txtCreditCard3.setText(oldValue);
+			}
+			
+		});
+		txtCreditCard4.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				// TODO Auto-generated method stub
+				if(newValue.length()>4)
+					txtCreditCard4.setText(oldValue);
+				if(!newValue.equals("") &&(newValue.charAt(newValue.length()-1)<'0'||newValue.charAt(newValue.length()-1)>'9'))
+					txtCreditCard4.setText(oldValue);
+			}
+			
+		});
+		txtCreditCard5.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				// TODO Auto-generated method stub
+				if(newValue.length()>4)
+					txtCreditCard5.setText(oldValue);
+				if(!newValue.equals("") &&(newValue.charAt(newValue.length()-1)<'0'||newValue.charAt(newValue.length()-1)>'9'))
+					txtCreditCard5.setText(oldValue);
+			}
+			
+		});		
+		//password validation
+		txtPassword.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				// TODO Auto-generated method stub
+				if(newValue.length()>50)
+					txtPassword.setText(oldValue);
+			}
+		});
+		txtConfirmPassword.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				// TODO Auto-generated method stub
+				if(newValue.length()>50)
+					txtConfirmPassword.setText(oldValue);
+			}
+		});
+		txtNewPassword.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				// TODO Auto-generated method stub
+				if(newValue.length()>50)
+					txtNewPassword.setText(oldValue);
+			}
+		});
 	}
+	/**
+	 * 
+	 * This function hides the section of the password .
+	 */
 	public void hidePasswordSection()
 	{
 		appassword.setVisible(false);
 		btnCancelUpdatingPassword.setVisible(false);
 		btnchangePassword.setVisible(true);
 	}
-	//
+	/**
+	 * This function initialize the combo boxes.
+	 */
 	private void initComboBox()
 	{
 		int i=0;
+		//adding the membership types
 		ObservableList<String> observelistMembership,observelistStatus;
-		
 		ArrayList<String> membership = new ArrayList<>();
 		for(Membership mem: memshipList)
 		{
 			membership.add(mem.getMembershipType().toString());
 		}
+		//adding the membership arraylist to the combobox
 		observelistMembership = FXCollections.observableArrayList(membership);
-	
-			cbMemberShip.setItems(observelistMembership);
-			for(Membership mem: memshipList)
+		cbMemberShip.setItems(observelistMembership);
+		//checking which membership the customer got to show him in combo box (the shown value).
+		for(Membership mem: memshipList) 
+		{
+			//if the ids are the same , we select it 
+			if(mem.getNum()==cList.get(0).getMembershipId())
 			{
-				
-				if(mem.getNum()==cList.get(0).getMembershipId())
-				{
-					cbMemberShip.getSelectionModel().select(i);
-					break;
-				}
-				i++;
+				cbMemberShip.getSelectionModel().select(i);
+				break;
 			}
+			i++;
+		}
+		//if there is no account for the customer we should not set visible the account fields , else we show them.
 		if(accList.isEmpty()==false)
 		{
+			//adding account status to the combo box
 			ArrayList<String> AccStatus = new ArrayList<>();
 			AccStatus.add(AccountStatus.Active.toString());
 			AccStatus.add(AccountStatus.Blocked.toString());
 			AccStatus.add(AccountStatus.Closed.toString());
-			
 			observelistStatus = FXCollections.observableArrayList(AccStatus);
 			cbStatus.setItems(observelistStatus);
+			//checking which status the customer got to show him in combo box (the shown value).
 			if(accList.get(0).getAccountStatus().toString().equals("Active"))
 				cbStatus.getSelectionModel().select(0);
 			else if(accList.get(0).getAccountStatus().toString().equals("Blocked"))
@@ -165,7 +274,7 @@ public class UpdateCustomerController implements Initializable {
 			else if(accList.get(0).getAccountStatus().toString().equals("Closed"))
 				cbStatus.getSelectionModel().select(2);
 		}
-		else//there is no account for this user
+		else//there is no account for this user , we hide account fields
 		{
 			lbCreditCard.setVisible(false);
 			lbStatus.setVisible(false);
@@ -179,24 +288,27 @@ public class UpdateCustomerController implements Initializable {
 			txtBalance.setVisible(false);
 		}	
 	}
+	/**
+	 * This function search for the customer by his id
+	 */
 	public void searchForCustomerByID()
 	{
 		if(txtCustomerID.getText().isEmpty()) {
 			showError("Please Insert Customer's ID");
 			return;
 		}
-	
+		//opening packet
 		Packet packet = new Packet();
-		
+		//adding command to the packet
 		packet.addCommand(Command.getCustomersKeyByuId);
 		
-		
+		//adding array list to the packet's command so the Query can get information for statement .	
 		ArrayList<Object> userl=new ArrayList<>();
 		userl.add(new Customer(Integer.parseInt(txtCustomerID.getText()),0));
 		packet.setParametersForCommand(Command.getCustomersKeyByuId, userl);
 		
 		
-		
+		//sending the packet
 		SystemSender send = new SystemSender(packet);
 		send.registerHandler(new IResultHandler() {
 			
@@ -209,10 +321,10 @@ public class UpdateCustomerController implements Initializable {
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub
-
+				//getting the result from the Query
 				cList=p.<Customer>convertedResultListForCommand(Command.getCustomersKeyByuId);
 				
-				
+				//if there is no customer with this id , we show error
 				if(cList.isEmpty())
 				{
 					showError("Customer Dose Not Exist");
@@ -220,23 +332,22 @@ public class UpdateCustomerController implements Initializable {
 					return;
 				}
 				
-				//getting the infirmation
+				//opening packet
 				Packet packet = new Packet();
-
-				packet.addCommand(Command.getAccountbycID);
+				//adding commands to the packet
+				packet.addCommand(Command.getAccountBycId);
 				packet.addCommand(Command.getUserByuId);
 				packet.addCommand(Command.getMemberShip);
-				
+				//adding array list to the packet's command so the Query can get information for statement .	
 				ArrayList<Object> accl=new ArrayList<>();
 				accl.add(new Account(0, cList.get(0).getId(), 0, 0, AccountStatus.Active, ""));
-				packet.setParametersForCommand(Command.getAccountbycID, accl);
-				
+				packet.setParametersForCommand(Command.getAccountBycId, accl);
+				//adding array list to the packet's command so the Query can get information for statement .	
 				ArrayList<Object> cusl=new ArrayList<>();
 				cusl.add(new Customer(Integer.parseInt(txtCustomerID.getText()), 0));
 				packet.setParametersForCommand(Command.getUserByuId, cusl);
-
-		
-		
+				
+				//sending the packet
 				SystemSender send = new SystemSender(packet);
 				send.registerHandler(new IResultHandler() {
 					
@@ -248,19 +359,21 @@ public class UpdateCustomerController implements Initializable {
 					
 					@Override
 					public void onReceivingResult(Packet p) {
-						accList=p.<Account>convertedResultListForCommand(Command.getAccountbycID);
+						//getting the result from the Query
+						accList=p.<Account>convertedResultListForCommand(Command.getAccountBycId);
 						uList=p.<User>convertedResultListForCommand(Command.getUserByuId);
 						memshipList=p.<Membership>convertedResultListForCommand(Command.getMemberShip);
 						
-						// TODO Auto-generated method stub
+						//handle fields after the result
 						txtCustomerID.setDisable(true);
 						btnSearch.setDisable(true);
 						apnextinfo.setVisible(true);
 						initComboBox();
 						txtUser.setText(uList.get(0).getUser());
+						//check if there is account for this customer;
 						if(accList.isEmpty()==false)
 						{
-							//check if there is account;
+							//adding information to the fields
 							txtBalance.setText(""+accList.get(0).getBalance());
 							if((accList.get(0).getCreditCard().isEmpty()==false && accList.get(0).getCreditCard().length()==20))
 							{
@@ -279,47 +392,59 @@ public class UpdateCustomerController implements Initializable {
 		});
 		send.start();
 	}
+	/**
+	 * This function saves the new information from the fields to the customer .
+	 */
 	public void saveNewCustomerInformation()
 	{
-		if(txtUser.getText().isEmpty())
+		//validate user
+		if(txtUser.getText().isEmpty())//check if the user field is empty
 		{
 			showError("Please Enter New User");
 			return;
 		}
-		/*if(txtCreditCard1.getText().isEmpty()||txtCreditCard2.getText().isEmpty()||txtCreditCard3.getText().isEmpty()||txtCreditCard4.getText().isEmpty()||txtCreditCard5.getText().isEmpty())
+		//validate credit card fields that they are not empty
+		if(txtCreditCard1.getText().isEmpty()||txtCreditCard2.getText().isEmpty()||txtCreditCard3.getText().isEmpty()||txtCreditCard4.getText().isEmpty()||txtCreditCard5.getText().isEmpty())
 		{
 			showError("Please Enter Valid Credit Card Number");
 			return;
-		}*/
+		}
+		//validate the number of digits in each section is 4 in the credit card 
+		if(txtCreditCard1.getText().length()!=4||txtCreditCard2.getText().length()!=4||txtCreditCard3.getText().length()!=4||txtCreditCard4.getText().length()!=4||txtCreditCard5.getText().length()!=4)
+		{
+			showError("Please Insert 4 Digits For Credit Card Section");
+			return;
+		}
+		//if we wanted to change the password , so we need to validate it
 		if(appassword.isVisible())
 		{
-			if(txtPassword.getText().isEmpty()) 
+			if(txtPassword.getText().isEmpty()) //checking if the password field is empty
 			{		
 				showError("Please Enter The Old Password ");
 				return;
 			}
-			if(uList.get(0).getPassword().equals(txtPassword.getText())==false)
+			if(uList.get(0).getPassword().equals(txtPassword.getText())==false)//checking that the user password and the input password are the same 
 			{
 				showError("Please Enter The Correct Old Password");
 				return;
 			}
-			if(txtNewPassword.getText().isEmpty()) 
+			if(txtNewPassword.getText().isEmpty()) //checking that the new password field is not empty
 			{		
 				showError("Please Enter The New Password ");
 				return;
 			}
-			if(txtConfirmPassword.getText().isEmpty()) 
+			if(txtConfirmPassword.getText().isEmpty()) //checking that the new confirm password field is not empty
 			{		
 				showError("Please Enter The New Confirm Password ");
 				return;
 			}
-			if(txtNewPassword.getText().equals(txtConfirmPassword.getText())==false)
+			if(txtNewPassword.getText().equals(txtConfirmPassword.getText())==false)//checking that the new password and the confirm password are the same
 			{
 				showError("New Password And Confirm Password Are Not Matched");
 				return;
 			}
 		}
-		
+		//if therer is error fetching the user .
 		if(uList.isEmpty())
 		{
 			showError("Error Loading Customer , Please Try Again");
@@ -334,17 +459,16 @@ public class UpdateCustomerController implements Initializable {
 		*	2 it means that he only changed status
 		*	3 it means that he changed both status and credit card
 		*/
-		//updating the information
+		//opening packet
 		Packet packet = new Packet();
 
-	
+		//updating the information
 		newuser=txtUser.getText();
 		newstatus=cbStatus.getSelectionModel().getSelectedItem();
 		newmembership=cbMemberShip.getSelectionModel().getSelectedItem();
 		newcreditcard=txtCreditCard1.getText()+txtCreditCard2.getText()+txtCreditCard3.getText()+txtCreditCard4.getText()+txtCreditCard5.getText();
 		newpassword=txtNewPassword.getText();
-
-				
+		
 		ArrayList<Object> accl=new ArrayList<>();
 		ArrayList<Object> userl=new ArrayList<>();
 		ArrayList<Object> cusl=new ArrayList<>();
@@ -362,20 +486,20 @@ public class UpdateCustomerController implements Initializable {
 		for(Membership mem:memshipList)//getting the orginal membership name (we got only membership id)
 		{
 			if(mem.getNum()==cList.get(0).getMembershipId())
-				orginalmemship=mem.getMembershipType().toString();
+				orginalmemship=mem.getMembershipType().toString();//getting original member ship
 			if(mem.getMembershipType().toString().equals(newmembership))
-				choosedmemid=mem.getNum();
+				choosedmemid=mem.getNum();//getting the choosed membership id
 		}
-		if(orginalmemship.isEmpty()==false&&choosedmemid!=-1)
+		if(orginalmemship.isEmpty()==false&&choosedmemid!=-1)//validate the membership id and field
 			if(newmembership.equals(orginalmemship)==false)//he changed the membership
 			{
+				//adding the command and the array list for the query to use the informaiton
 				packet.addCommand(Command.updateCustomerByuId);
 				cusl.add(new Customer(uList.get(0).getuId(),choosedmemid));
 				packet.setParametersForCommand(Command.updateCustomerByuId, cusl);
 			}
 		
-		
-		//updating Account
+		//updating Account if there is account for the user , ther user filled the information
 		if(accList.isEmpty()==false) 
 		{
 			//finding what changed
@@ -389,6 +513,7 @@ public class UpdateCustomerController implements Initializable {
 					accountinfochanged=2;//only status
 			if(accountinfochanged>0)
 			{
+				//adding the command for updating user's account information
 				packet.addCommand(Command.updateAccountsBycId);
 				
 				AccountStatus accstatusvar;
@@ -398,7 +523,7 @@ public class UpdateCustomerController implements Initializable {
 					accstatusvar=AccountStatus.Blocked;
 				else
 					accstatusvar=AccountStatus.Closed;
-				
+				//checking what changed so we can add only what changed
 				switch(accountinfochanged)
 				{
 				case 1://only creditcard changed
@@ -414,7 +539,7 @@ public class UpdateCustomerController implements Initializable {
 				packet.setParametersForCommand(Command.updateAccountsBycId, accl);
 			}
 		}
-
+		//sending the packet
 		SystemSender send = new SystemSender(packet);
 		send.registerHandler(new IResultHandler() {
 			
@@ -440,17 +565,11 @@ public class UpdateCustomerController implements Initializable {
 			}
 		});
 		send.start();
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+	
 	}
+	/**
+	 * This function show the password section for changing it .
+	 */
 	public void changePasswordNow()
 	{
 		appassword.setVisible(true);
@@ -458,7 +577,10 @@ public class UpdateCustomerController implements Initializable {
 		btnCancelUpdatingPassword.setVisible(true);
 	
 	}
-	
+	/**
+	 * This function show the error pop out with error message
+	 * @param str the error message
+	 */
 	public void showError(String str)
 	{
 		JOptionPane.showMessageDialog(null, 
@@ -466,14 +588,17 @@ public class UpdateCustomerController implements Initializable {
                 "Error", 
                 JOptionPane.ERROR_MESSAGE);
 	}
+	/**
+	 * This 
+	 * @param primaryStage 
+	 * @throws Exception
+	 */
 	public void start(Stage primaryStage)  throws Exception{
 		// TODO Auto-generated method stub
 		String title = "Add Account UI";
 		String srcFXML = "/Customers/updateCustomerUI.fxml";
 		String srcCSS = "/Customers/application.css";
-		
-
-	
+		//tyrying to init the window
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(getClass().getResource(srcFXML));
