@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
+<?import javafx.scene.paint.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
@@ -19,5 +21,13 @@
       <ComboBox fx:id="cmbColor" layoutX="136.0" layoutY="97.0" prefHeight="25.0" prefWidth="119.0" promptText="Choose color" />
       <Label fx:id="lblColor" layoutX="257.0" layoutY="97.0" prefHeight="25.0" prefWidth="35.0" />
       <ListView layoutX="25.0" layoutY="209.0" prefHeight="109.0" prefWidth="363.0" />
+      <Label fx:id="lblErrName" layoutX="292.0" layoutY="67.0" prefHeight="17.0" prefWidth="35.0" textFill="RED">
+         <font>
+            <Font size="18.0" />
+         </font></Label>
+      <Label fx:id="lblErrPrice" layoutX="275.0" layoutY="135.0" prefHeight="17.0" prefWidth="35.0" textFill="RED">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font></Label>
    </children>
 </AnchorPane>

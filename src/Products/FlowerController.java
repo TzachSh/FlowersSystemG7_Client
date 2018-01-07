@@ -34,20 +34,25 @@ import javafx.stage.WindowEvent;
 public class FlowerController extends Application implements Initializable {
 
 	@FXML
-	Label lblColor;
+	Label lblColor;//display color
 	@FXML
 	TextField txtName;
 	@FXML
 	TextField txtprice;
 	@FXML
-	ComboBox<String> cmbColor;
-	private ArrayList<String> col = new ArrayList<>();
-	private ArrayList<ColorProduct> cList ;
+	Label lblErrPrice;
+	@FXML
+	Label lblErrName;
+	@FXML
+	ComboBox<String> cmbColor;//display possible color names
+	private ArrayList<ColorProduct> cList ;//all possible colors for flower
+	/**
+	 * init data for form
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		// set listener to combobox when other item has been choosed
 		cmbColor.valueProperty().addListener(new ChangeListener<String>() {
-
-			@SuppressWarnings("rawtypes")
 			@Override
 			public void changed(ObservableValue arg0, String arg1, String arg2) {
 				// TODO Auto-generated method stub
@@ -56,8 +61,8 @@ public class FlowerController extends Application implements Initializable {
 		});
 		
 		
-		Packet packet = new Packet();
-		packet.addCommand(Command.getColors);
+		Packet packet = new Packet();//create packet to send
+		packet.addCommand(Command.getColors);//add command
 	
 		
 		// create the thread for send to server the message
@@ -66,13 +71,13 @@ public class FlowerController extends Application implements Initializable {
 		// register the handler that occurs when the data arrived from the server
 		send.registerHandler(new IResultHandler() {
 			@Override
-			public void onWaitingForResult() {
-				System.out.println("Waiting");
+			public void onWaitingForResult() {//waiting when send
 			}
 
 			@Override
-			public void onReceivingResult(Packet p)
+			public void onReceivingResult(Packet p)//set combobox values
 			{
+				ArrayList<String> col = new ArrayList<>();
 				if (p.getResultState())
 				{
 					cList = p.<ColorProduct>convertedResultListForCommand(Command.getColors);
@@ -83,41 +88,47 @@ public class FlowerController extends Application implements Initializable {
 					}
 					cmbColor.getItems().addAll(col);
 				}
-				else
-					System.out.println("Fail: " + p.getExceptionMessage());
+				else//if it was error in connection
+					JOptionPane.showMessageDialog(null,"Connection error","Error",JOptionPane.ERROR_MESSAGE);
 			}
 		});
 		send.start();
 	}
-		
+	/**
+	 * 	when user click on create checking validationand sending it to the server
+	 */
 	public void onCreateClicked(ActionEvent event)
 	{
 		
 		try {
-			isValid();
-			Packet packet = new Packet();
-			packet.addCommand(Command.addFlower);
-			ArrayList<Object> flower = new ArrayList<Object>();
-			ColorProduct codeColor = cList.stream().filter(c->c.getColorName().equals(cmbColor.getValue())).findFirst().orElse(null);
-			flower.add(new Flower(txtName.getText(),Double.parseDouble(txtprice.getText()),codeColor.getColId()));
-			packet.setParametersForCommand(Command.addFlower,flower);
-			SystemSender sender = new SystemSender(packet);
+			isValid();//check validation
+			Packet packet = new Packet();//create packet to send
+			packet.addCommand(Command.addFlower);//add command
+			ArrayList<Object> flower = new ArrayList<Object>();//create array list for send to server
+			
+			ColorProduct codeColor = cList.stream().filter(c->c.getColorName().equals(cmbColor.getValue())).findFirst().orElse(null);//get color id for colorList
+			
+			String name=txtName.getText().replaceAll("'", "\\'");//remove special character
+			
+			flower.add(new Flower(name,Double.parseDouble(txtprice.getText()),codeColor.getColId()));//add new flower
+			packet.setParametersForCommand(Command.addFlower,flower);//set flower list to command
+			SystemSender sender = new SystemSender(packet);//create sender
 			sender.registerHandler(new IResultHandler() {
 				
 				@Override
-				public void onWaitingForResult() {
+				public void onWaitingForResult() {//waiting
 					// TODO Auto-generated method stub
 					
 				}
 				
 				@Override
-				public void onReceivingResult(Packet p) {
+				public void onReceivingResult(Packet p) {//notify user about an answer from the server
 					if(p.getResultState())
 					{
 						JOptionPane.showMessageDialog(null,"The flower has been saved","Success",JOptionPane.INFORMATION_MESSAGE);
 						txtName.setText("");
 						txtprice.setText("");
-						cmbColor.setValue("Choose color");;
+						cmbColor.setValue("Choose color");
 					}
 					else
 						JOptionPane.showMessageDialog(null,"The flower hasn't been saved","Error",JOptionPane.ERROR_MESSAGE);
@@ -130,19 +141,31 @@ public class FlowerController extends Application implements Initializable {
 		{
 			JOptionPane.showMessageDialog(null,e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
 		}
-		
 	}
 
+	/***
+	 *  check if all fields in the form is valid
+	 * @throws Exception with error
+	 */
 	private void isValid() throws Exception {
-		if(txtName.getText().length() <0)
+		if(txtName.getText().length() == 0)
+		{
+			lblErrName.setText("*");
 			throw new Exception("Please fill flower name before");
-		if(Double.valueOf(txtprice.getText())<0)
+		}
+		if(cmbColor.getValue()==null)
+		{
+			throw new Exception("Please choose color");
+		}
+		if(txtprice.getText().length()==0 || Double.valueOf(txtprice.getText())<0)
+			lblErrPrice.setText("*");
 			throw new Exception("Please fill price correctly");
 	}
-
+	/**
+	 * load fxml Flower GUI
+	 */
 	@Override
 	public void start(Stage arg0) throws Exception {
-		// TODO Auto-generated method stub
 		String title = "Products";
 		String srcFXML = "/Products/FlowerUI.fxml";
 		String srcCSS = "/Products/application.css";
@@ -170,5 +193,4 @@ public class FlowerController extends Application implements Initializable {
 			}
 		});
 	}
-
 }
