@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Orders.OrderUI">
+   <children>
+      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
+         <children>
+            <TabPane layoutY="40.0" prefHeight="357.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="products">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <TableView prefHeight="228.0" prefWidth="552.0">
+                                <columns>
+                                  <TableColumn fx:id="tblProductInList" prefWidth="176.0" text="product name" />
+                                    <TableColumn prefWidth="137.0" text="price" />
+                                  <TableColumn prefWidth="114.0" text="quantity" />
+                                    <TableColumn prefWidth="114.0" text="flowers" />
+                                </columns>
+                              </TableView>
+                              <Button fx:id="btnAddProduct" layoutX="430.0" layoutY="243.0" mnemonicParsing="false" text="add Product" />
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </Tab>
+                <Tab text="delivery">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  </content>
+                </Tab>
+                  <Tab text="payment">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                     </content>
+                  </Tab>
+              </tabs>
+            </TabPane>
+            <Label layoutX="231.0" layoutY="7.0" text="Create new order" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

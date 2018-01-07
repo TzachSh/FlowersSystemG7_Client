@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="335.0" prefWidth="424.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Products.FlowerController">
+   <children>
+      <Button layoutX="300.0" layoutY="176.0" mnemonicParsing="false" onAction="#onCreateClicked" text="Create" />
+      <Label layoutX="147.0" layoutY="14.0" text="Create new Flower" />
+      <Button layoutX="71.0" layoutY="178.0" mnemonicParsing="false" text="Back" />
+      <Label layoutX="90.0" layoutY="72.0" text="Name:" />
+      <Label layoutX="89.0" layoutY="101.0" text="Color:" />
+      <Label layoutX="91.0" layoutY="136.0" text="Price:" />
+      <TextField fx:id="txtName" layoutX="136.0" layoutY="68.0" prefHeight="25.0" prefWidth="156.0" promptText="enter flower name here" />
+      <TextField fx:id="txtprice" layoutX="136.0" layoutY="132.0" prefHeight="25.0" prefWidth="111.0" promptText="enter the price" />
+      <Label layoutX="263.0" layoutY="136.0" text="\$" />
+      <ComboBox fx:id="cmbColor" layoutX="136.0" layoutY="97.0" prefHeight="25.0" prefWidth="119.0" promptText="Choose color" />
+      <Label fx:id="lblColor" layoutX="257.0" layoutY="97.0" prefHeight="25.0" prefWidth="35.0" />
+      <ListView layoutX="25.0" layoutY="209.0" prefHeight="109.0" prefWidth="363.0" />
+      <Label fx:id="lblErrName" layoutX="292.0" layoutY="67.0" prefHeight="17.0" prefWidth="35.0" textFill="RED">
+         <font>
+            <Font size="18.0" />
+         </font></Label>
+      <Label fx:id="lblErrPrice" layoutX="275.0" layoutY="135.0" prefHeight="17.0" prefWidth="35.0" textFill="RED">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font></Label>
+   </children>
+</AnchorPane>
