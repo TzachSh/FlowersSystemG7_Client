@@ -6,12 +6,16 @@ import java.util.ResourceBundle;
 
 import javax.swing.JOptionPane;
 
+import com.sun.scenario.effect.impl.state.LinearConvolveRenderState.PassType;
+
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
 import Users.User;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -22,6 +26,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -34,6 +39,12 @@ public class UpdateCustomerController implements Initializable {
 	private ArrayList<User> uList;
 	private ArrayList<Membership> memshipList ;
 	private ArrayList<Customer> cList ;
+	@FXML
+	private Label lbStatus;
+	@FXML
+	private Label lbBalance;
+	@FXML
+	private Label lbCreditCard;
 	@FXML
 	private TextField txtCustomerID;
 	@FXML
@@ -58,6 +69,8 @@ public class UpdateCustomerController implements Initializable {
 	private TextField txtCreditCard5;
 	@FXML
 	private Button btnSave;
+	@FXML
+	private Button btnCancelUpdatingPassword;
 	@FXML
 	private Button btnSearch;
 	@FXML
@@ -85,12 +98,37 @@ public class UpdateCustomerController implements Initializable {
 		// TODO Auto-generated method stub
 		apnextinfo.setVisible(false);
 		appassword.setVisible(false);
+		
+		txtCustomerID.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				// TODO Auto-generated method stub
+				/*if(txtCustomerID.getText().length()>9) 
+				{
+					String oldstring=txtCustomerID.getText().substring(0, 9);
+					txtCustomerID.setText(oldstring);					
+				}*/
+				boolean res=true;
+				if(newValue.length()>9)
+					txtCustomerID.setText(oldValue);
+				if(!newValue.equals("") && (newValue.charAt(newValue.length()-1)<'0'||newValue.charAt(newValue.length()-1)>'9'))
+					txtCustomerID.setText(oldValue);
+			
+			}
+		});
 				
+	}
+	public void hidePasswordSection()
+	{
+		appassword.setVisible(false);
+		btnCancelUpdatingPassword.setVisible(false);
+		btnchangePassword.setVisible(true);
 	}
 	//
 	private void initComboBox()
 	{
-		int i=1;
+		int i=0;
 		ObservableList<String> observelistMembership,observelistStatus;
 		
 		ArrayList<String> membership = new ArrayList<>();
@@ -99,31 +137,47 @@ public class UpdateCustomerController implements Initializable {
 			membership.add(mem.getMembershipType().toString());
 		}
 		observelistMembership = FXCollections.observableArrayList(membership);
-		cbMemberShip.setItems(observelistMembership);
-		for(Membership mem: memshipList)
+	
+			cbMemberShip.setItems(observelistMembership);
+			for(Membership mem: memshipList)
+			{
+				
+				if(mem.getNum()==cList.get(0).getMembershipId())
+				{
+					cbMemberShip.getSelectionModel().select(i);
+					break;
+				}
+				i++;
+			}
+		if(accList.isEmpty()==false)
 		{
+			ArrayList<String> AccStatus = new ArrayList<>();
+			AccStatus.add(AccountStatus.Active.toString());
+			AccStatus.add(AccountStatus.Blocked.toString());
+			AccStatus.add(AccountStatus.Closed.toString());
 			
-			if(mem.getNum()==cList.get(0).getMembershipId())
-				cbMemberShip.getSelectionModel().select(i);
-			i++;
+			observelistStatus = FXCollections.observableArrayList(AccStatus);
+			cbStatus.setItems(observelistStatus);
+			if(accList.get(0).getAccountStatus().toString().equals("Active"))
+				cbStatus.getSelectionModel().select(0);
+			else if(accList.get(0).getAccountStatus().toString().equals("Blocked"))
+				cbStatus.getSelectionModel().select(1);
+			else if(accList.get(0).getAccountStatus().toString().equals("Closed"))
+				cbStatus.getSelectionModel().select(2);
 		}
-		
-		
-		ArrayList<String> AccStatus = new ArrayList<>();
-		AccStatus.add(AccountStatus.Active.toString());
-		AccStatus.add(AccountStatus.Blocked.toString());
-		AccStatus.add(AccountStatus.Closed.toString());
-		
-		observelistStatus = FXCollections.observableArrayList(AccStatus);
-		cbStatus.setItems(observelistStatus);
-		if(accList.get(0).getAccountStatus().toString().equals("Active"))
-			cbStatus.getSelectionModel().select(0);
-		else if(accList.get(0).getAccountStatus().toString().equals("Blocked"))
-			cbStatus.getSelectionModel().select(1);
-		else if(accList.get(0).getAccountStatus().toString().equals("Closed"))
-			cbStatus.getSelectionModel().select(2);
-
-		
+		else//there is no account for this user
+		{
+			lbCreditCard.setVisible(false);
+			lbStatus.setVisible(false);
+			lbBalance.setVisible(false);
+			cbStatus.setVisible(false);
+			txtCreditCard1.setVisible(false);
+			txtCreditCard2.setVisible(false);
+			txtCreditCard3.setVisible(false);
+			txtCreditCard4.setVisible(false);
+			txtCreditCard5.setVisible(false);
+			txtBalance.setVisible(false);
+		}	
 	}
 	public void searchForCustomerByID()
 	{
@@ -182,9 +236,7 @@ public class UpdateCustomerController implements Initializable {
 				packet.setParametersForCommand(Command.getUserByuId, cusl);
 
 		
-				
-				
-				
+		
 				SystemSender send = new SystemSender(packet);
 				send.registerHandler(new IResultHandler() {
 					
@@ -206,16 +258,19 @@ public class UpdateCustomerController implements Initializable {
 						apnextinfo.setVisible(true);
 						initComboBox();
 						txtUser.setText(uList.get(0).getUser());
-						//check if there is account;
-						txtBalance.setText(""+accList.get(0).getBalance());
-						if((accList.get(0).getCreditCard().isEmpty()==false && accList.get(0).getCreditCard().length()==20))
+						if(accList.isEmpty()==false)
 						{
-						txtCreditCard1.setText(accList.get(0).getCreditCard().substring(0, 4));
-						txtCreditCard2.setText(accList.get(0).getCreditCard().substring(4, 8));
-						txtCreditCard3.setText(accList.get(0).getCreditCard().substring(8, 12));
-						txtCreditCard4.setText(accList.get(0).getCreditCard().substring(12, 16));
-						txtCreditCard5.setText(accList.get(0).getCreditCard().substring(16, 20));
-					}
+							//check if there is account;
+							txtBalance.setText(""+accList.get(0).getBalance());
+							if((accList.get(0).getCreditCard().isEmpty()==false && accList.get(0).getCreditCard().length()==20))
+							{
+							txtCreditCard1.setText(accList.get(0).getCreditCard().substring(0, 4));
+							txtCreditCard2.setText(accList.get(0).getCreditCard().substring(4, 8));
+							txtCreditCard3.setText(accList.get(0).getCreditCard().substring(8, 12));
+							txtCreditCard4.setText(accList.get(0).getCreditCard().substring(12, 16));
+							txtCreditCard5.setText(accList.get(0).getCreditCard().substring(16, 20));
+							}
+						}
 				}
 				});				
 				send.start();
@@ -231,26 +286,176 @@ public class UpdateCustomerController implements Initializable {
 			showError("Please Enter New User");
 			return;
 		}
-		if(txtCreditCard1.getText().isEmpty()||txtCreditCard2.getText().isEmpty()||txtCreditCard3.getText().isEmpty()||txtCreditCard4.getText().isEmpty()||txtCreditCard5.getText().isEmpty())
+		/*if(txtCreditCard1.getText().isEmpty()||txtCreditCard2.getText().isEmpty()||txtCreditCard3.getText().isEmpty()||txtCreditCard4.getText().isEmpty()||txtCreditCard5.getText().isEmpty())
 		{
 			showError("Please Enter Valid Credit Card Number");
 			return;
-		}
-		if(uList.get(0).getPassword().equals(txtPassword.getText())==false)
+		}*/
+		if(appassword.isVisible())
 		{
-			showError("Please Enter The Correct Old Password");
+			if(txtPassword.getText().isEmpty()) 
+			{		
+				showError("Please Enter The Old Password ");
+				return;
+			}
+			if(uList.get(0).getPassword().equals(txtPassword.getText())==false)
+			{
+				showError("Please Enter The Correct Old Password");
+				return;
+			}
+			if(txtNewPassword.getText().isEmpty()) 
+			{		
+				showError("Please Enter The New Password ");
+				return;
+			}
+			if(txtConfirmPassword.getText().isEmpty()) 
+			{		
+				showError("Please Enter The New Confirm Password ");
+				return;
+			}
+			if(txtNewPassword.getText().equals(txtConfirmPassword.getText())==false)
+			{
+				showError("New Password And Confirm Password Are Not Matched");
+				return;
+			}
+		}
+		
+		if(uList.isEmpty())
+		{
+			showError("Error Loading Customer , Please Try Again");
 			return;
 		}
-		if(txtNewPassword.getText().equals(txtConfirmPassword.getText())==false)
+		
+		String newuser,newstatus,newmembership,newcreditcard,newpassword,orginalmemship="";
+		int choosedmemid=-1,accountinfochanged=0;//accountinfochanged help us to know what the user changed to his information
+		/*if its
+		* 	0 nothing changed 
+		*   1 it means that he only changed credit card
+		*	2 it means that he only changed status
+		*	3 it means that he changed both status and credit card
+		*/
+		//updating the information
+		Packet packet = new Packet();
+
+	
+		newuser=txtUser.getText();
+		newstatus=cbStatus.getSelectionModel().getSelectedItem();
+		newmembership=cbMemberShip.getSelectionModel().getSelectedItem();
+		newcreditcard=txtCreditCard1.getText()+txtCreditCard2.getText()+txtCreditCard3.getText()+txtCreditCard4.getText()+txtCreditCard5.getText();
+		newpassword=txtNewPassword.getText();
+
+				
+		ArrayList<Object> accl=new ArrayList<>();
+		ArrayList<Object> userl=new ArrayList<>();
+		ArrayList<Object> cusl=new ArrayList<>();
+		//updating user first
+		packet.addCommand(Command.updateUserByuId);
+		if(newpassword.isEmpty())//the user changed his password
+			userl.add(new User(uList.get(0).getuId(),newuser, uList.get(0).getPassword(), uList.get(0).isLogged(), uList.get(0).getPermission()));
+		else
+			userl.add(new User(uList.get(0).getuId(),newuser, newpassword, uList.get(0).isLogged(), uList.get(0).getPermission()));
+		//the user didnt change his password
+		packet.setParametersForCommand(Command.updateUserByuId, userl);
+		
+		
+		//updating Customer
+		for(Membership mem:memshipList)//getting the orginal membership name (we got only membership id)
 		{
-			showError("New Password And Confirm Password Are Not Matched");
-			return;
+			if(mem.getNum()==cList.get(0).getMembershipId())
+				orginalmemship=mem.getMembershipType().toString();
+			if(mem.getMembershipType().toString().equals(newmembership))
+				choosedmemid=mem.getNum();
 		}
+		if(orginalmemship.isEmpty()==false&&choosedmemid!=-1)
+			if(newmembership.equals(orginalmemship)==false)//he changed the membership
+			{
+				packet.addCommand(Command.updateCustomerByuId);
+				cusl.add(new Customer(uList.get(0).getuId(),choosedmemid));
+				packet.setParametersForCommand(Command.updateCustomerByuId, cusl);
+			}
+		
+		
+		//updating Account
+		if(accList.isEmpty()==false) 
+		{
+			//finding what changed
+			if(newcreditcard.isEmpty()==false)
+				if(newcreditcard.equals(accList.get(0).getCreditCard())==false)
+					accountinfochanged=1;//creditcard changed
+			if(newstatus.equals(accList.get(0).getAccountStatus().toString())==false)
+				if(accountinfochanged==1)
+					accountinfochanged=3;//both are  changed
+				else
+					accountinfochanged=2;//only status
+			if(accountinfochanged>0)
+			{
+				packet.addCommand(Command.updateAccountsBycId);
+				
+				AccountStatus accstatusvar;
+				if(newstatus.equals(AccountStatus.Active.toString()))
+					accstatusvar=AccountStatus.Active;
+				else if(newstatus.equals(AccountStatus.Blocked.toString()))
+					accstatusvar=AccountStatus.Blocked;
+				else
+					accstatusvar=AccountStatus.Closed;
+				
+				switch(accountinfochanged)
+				{
+				case 1://only creditcard changed
+					accl.add(new Account(accList.get(0).getCustomerId(), accList.get(0).getBranchId(), accList.get(0).getBalance(), accList.get(0).getAccountStatus(), newcreditcard));
+					break;
+				case 2://only status changed
+					accl.add(new Account(accList.get(0).getCustomerId(), accList.get(0).getBranchId(), accList.get(0).getBalance(),accstatusvar, accList.get(0).getCreditCard()));
+					break;
+				case 3://only status changed
+					accl.add(new Account(accList.get(0).getCustomerId(), accList.get(0).getBranchId(), accList.get(0).getBalance(),accstatusvar, newcreditcard));
+					break;
+				}
+				packet.setParametersForCommand(Command.updateAccountsBycId, accl);
+			}
+		}
+
+		SystemSender send = new SystemSender(packet);
+		send.registerHandler(new IResultHandler() {
+			
+			@Override
+			public void onWaitingForResult() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onReceivingResult(Packet p) {
+				// TODO Auto-generated method stub
+				if (p.getResultState())
+				{
+					JOptionPane.showMessageDialog(null, 
+							"Update Success", 
+			                "Success", 
+			                JOptionPane.CLOSED_OPTION);
+
+				}
+				else
+					System.out.println("Fail: " + p.getExceptionMessage());
+			}
+		});
+		send.start();
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 	}
 	public void changePasswordNow()
 	{
 		appassword.setVisible(true);
+		btnchangePassword.setVisible(false);
+		btnCancelUpdatingPassword.setVisible(true);
 	
 	}
 	
