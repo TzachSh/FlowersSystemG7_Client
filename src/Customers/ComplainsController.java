@@ -9,8 +9,12 @@ import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
+import Users.User;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +23,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -28,6 +33,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -36,22 +43,18 @@ import javafx.util.Callback;
 public class ComplainsController implements Initializable {
 
 	@FXML private TextField txtCustId;
-	@FXML private TextField txtCustName;
 	@FXML private Button btnSearch;
 	@FXML private Button btnAdd;
 	@FXML private ListView<Complain> cListView;
 	@FXML private Button btnAddSave;
 	@FXML private TextArea txtAddDesc;
 	@FXML private TextField txtAddTitle;
-	@FXML private TextField txtAddCustNum;
+	@FXML private TextField txtAddCustId;
 	
 	private ObservableList<Complain> data;
-	
-	private Stage primaryStage;
+	private ArrayList<Complain> allComplainsList;
 	
 	public void start(Stage primaryStage) {
-				
-		this.primaryStage = primaryStage;
 		
 		String title = "Complains Management";
 		String srcFXML = "/Customers/ComplainsManagement.fxml";
@@ -74,6 +77,7 @@ public class ComplainsController implements Initializable {
 		}
 	}
 	
+	@FXML
 	private void displayComplains()
 	{
 		Packet packet = new Packet();
@@ -93,92 +97,164 @@ public class ComplainsController implements Initializable {
 				// TODO Auto-generated method stub
 				if(p.getResultState())
 				{
-					ArrayList<Complain> cList = p.<Complain>convertedResultListForCommand(Command.getComplains);
-					data = FXCollections.observableArrayList(cList);
-					cListView.setCellFactory(new Callback<ListView<Complain>, ListCell<Complain>>() {
-						
-						@Override
-						public ListCell<Complain> call(ListView<Complain> param) {
-							// TODO Auto-generated method stub
-							return new ListCell<Complain>() {
-								
-							private void setCellHandler(Complain complain)
-							{
-								String textDate = "Date";
-								String textTitle = "Title";
-								
-								
-								VBox dateElement = new VBox(new Label(textDate), new Text(String.format("%s", complain.getCreationDate().toString())));
-							 	VBox titleElement = new VBox(new Label(textTitle) , new Text(String.format("%s", complain.getTitle()))); 
-							 	VBox replyElement = new VBox(createButtonHandler(complain));
-							 	HBox hBox = new HBox(replyElement,dateElement,titleElement);
-	                            hBox.setSpacing(10);
-	                            dateElement.setPadding(new Insets(10,10,10,20));
-	                            titleElement.setPadding(new Insets(10,10,10,20));
-	                            replyElement.setPadding(new Insets(20,10,10,10));
-	                            hBox.setPadding(new Insets(10));
-	                            setGraphic(hBox);
-							}
-							
-							private Button createButtonHandler(Complain complain)
-							{
-								
-									String textReply = "Reply";
-									Button btnReply;
-
-									btnReply = new Button(textReply);
-									btnReply.setOnMouseClicked((event) -> {
-										String title = "Replyment";
-										String srcFXML = "/Customers/ReplyToComplain.fxml";
-
-										((Node) event.getSource()).getScene().getWindow().hide();
-										Stage primaryStage = new Stage();
-										FXMLLoader loader = new FXMLLoader();
-										Pane root;
-										try {
-											root = loader.load(getClass().getResource(srcFXML).openStream());
-											ReplyController replyController = loader.<ReplyController>getController();
-											replyController.setComponents(complain);
-
-											Scene scene = new Scene(root);
-											primaryStage.setTitle(title);
-											primaryStage.setScene(scene);
-											primaryStage.show();
-
-										} catch (IOException e) {
-											// TODO Auto-generated catch block
-											e.printStackTrace();
-										}
-
-									});
-
-									return btnReply;
-								}
-
-								@Override
-							protected void updateItem(Complain item, boolean empty) {
-								// TODO Auto-generated method stub
-								super.updateItem(item, empty);
-								 if (item != null) {	
-									 	setCellHandler(item);
-			                        }
-							}};
-						}
-					});
+					allComplainsList = p.<Complain>convertedResultListForCommand(Command.getComplains);
+					data = FXCollections.observableArrayList(allComplainsList);
 					cListView.setItems(data);
-				}
-				else
+				}	
+			}
+		});
+		sender.start();
+	}
+	@FXML
+	public void handleAddNewComplain(Event event)
+	{
+		int customerId = Integer.parseInt(txtAddCustId.getText());
+		String title = txtAddTitle.getText();
+		String details = txtAddDesc.getText();
+		int customerServiceId = User.getuId();
+		java.sql.Date sqlDate = new java.sql.Date(new java.util.Date().getTime());
+		Complain complain = new Complain(sqlDate, title, details, customerId, 1); // Update to customerServiceId 
+		
+		Packet packet = new Packet();
+		packet.addCommand(Command.addComplain);
+		ArrayList<Object> paramList = new ArrayList<>();
+		paramList.add(complain);
+		packet.setParametersForCommand(Command.addComplain, paramList);
+		SystemSender sender = new SystemSender(packet);
+		sender.registerHandler(new IResultHandler() {
+			
+			@Override
+			public void onWaitingForResult() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onReceivingResult(Packet p) {
+				// TODO Auto-generated method stub
+				if (p.getResultState())
 				{
-					
+					data.add(complain);
 				}
 			}
 		});
 		sender.start();
 	}
+	
+	@FXML
+	private void handleSearchPressed(Event event) {
 
+		if (txtCustId.getText().isEmpty()) {
+			System.out.println("Enter customer ID!");
+			return;
+		}
+
+		int customerId = Integer.parseInt(txtCustId.getText());
+		data = FXCollections.observableArrayList(allComplainsList);
+		data.removeIf((Complain complain)->
+		{
+			return complain.getCustomerId()!= customerId;	
+		});
+		cListView.setItems(data);
+	}
+	
+	@FXML
+	private void setSearchOntTextChange()
+	{
+		txtCustId.textProperty().addListener((observable, oldValue, newValue) -> {
+		   if(newValue.isEmpty())
+		   {
+			   data = FXCollections.observableArrayList(allComplainsList);
+			   cListView.setItems(data);
+		   }
+		});
+	}
+
+	private void setListCellFactory()
+	{
+		cListView.setCellFactory(new Callback<ListView<Complain>, ListCell<Complain>>() {
+			
+			@Override
+			public ListCell<Complain> call(ListView<Complain> param) {
+				// TODO Auto-generated method stub
+				return new ListCell<Complain>() {
+					
+				private void setCellHandler(Complain complain)
+				{
+					String textDate = "Date: ";
+					String textTitle = "Subject: ";
+					String textContent = "Content: ";
+					
+					HBox dateElement = new HBox(new Label(textDate), new Text(String.format("%s", complain.getCreationDate().toString())));
+					HBox titleElement = new HBox (new Label(textTitle) , new Text(String.format("%s", complain.getTitle())));
+					HBox infoElement = new HBox (new Label(textContent) , new Text(String.format("%s", complain.getDetails())));
+					VBox detialsElements = new VBox(dateElement,titleElement,infoElement);
+				 	VBox replyElement = new VBox(createButtonHandler(complain));
+				 	HBox hBox = new HBox(replyElement,detialsElements);
+				 	dateElement.setPadding(new Insets(5,10,5,20));
+				 	titleElement.setPadding(new Insets(5,10,5,20));
+				 	infoElement.setPadding(new Insets(5,10,5,20));
+				 	replyElement.setPadding(new Insets(5,10,5,0));
+                    hBox.setStyle("-fx-border-style:solid inside;"+
+                    			  "-fx-border-width:1;"+
+                    			  "-fx-border-insets:5;"+
+                    			  "-fx-border-radius:5;");
+                    hBox.setPadding(new Insets(10));
+                    setGraphic(hBox);
+				}
+				
+				private Button createButtonHandler(Complain complain)
+				{
+					
+						String textReply = "Reply";
+						Button btnReply;
+
+						btnReply = new Button(textReply);
+						btnReply.setOnMouseClicked((event) -> {
+							String title = "Replyment";
+							String srcFXML = "/Customers/ReplyToComplain.fxml";
+
+							((Node) event.getSource()).getScene().getWindow().hide();
+							Stage primaryStage = new Stage();
+							FXMLLoader loader = new FXMLLoader();
+							Pane root;
+							try {
+								root = loader.load(getClass().getResource(srcFXML).openStream());
+								ReplyController replyController = loader.<ReplyController>getController();
+								replyController.setComponents(complain);
+
+								Scene scene = new Scene(root);
+								primaryStage.setTitle(title);
+								primaryStage.setScene(scene);
+								primaryStage.show();
+
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+
+						});
+
+						return btnReply;
+					}
+
+					@Override
+				protected void updateItem(Complain item, boolean empty) {
+					// TODO Auto-generated method stub
+					super.updateItem(item, empty);
+					 if (item != null) {	
+						 	setCellHandler(item);
+                        }
+				}};
+			}
+		});
+	}
+	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// TODO Auto-generated method stub
+		setListCellFactory();
+		setSearchOntTextChange();
 		displayComplains();
 	}
 	
