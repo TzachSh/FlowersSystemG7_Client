@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="504.0" prefWidth="520.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label layoutX="147.0" layoutY="14.0" text="Complains Management" underline="true">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </Label>
+      <TabPane layoutY="60.0" prefHeight="438.0" prefWidth="520.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Complains View">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="422.0" prefWidth="521.0">
+                     <children>
+                        <TitledPane collapsible="false" layoutX="6.0" layoutY="10.0" prefHeight="243.0" prefWidth="507.0" text="Active Complains">
+                           <content>
+                              <ListView fx:id="cListView" prefHeight="211.0" prefWidth="505.0" />
+                           </content>
+                        </TitledPane>
+                        <TitledPane animated="true" layoutX="6.0" layoutY="257.0" prefHeight="136.0" prefWidth="509.0" text="Search">
+                          <content>
+                            <AnchorPane prefHeight="130.0" prefWidth="507.0">
+                                 <children>
+                                    <Label layoutX="14.0" layoutY="49.0" prefHeight="27.0" prefWidth="110.0" text="Customer Id" />
+                                    <TextField fx:id="txtCustId" layoutX="124.0" layoutY="44.0" prefHeight="39.0" prefWidth="155.0" />
+                                    <Button fx:id="btnSearch" layoutX="293.0" layoutY="44.0" mnemonicParsing="false" onAction="#handleSearchPressed" prefHeight="39.0" prefWidth="134.0" text="Search" />
+                                    <Label layoutX="14.0" layoutY="16.0" text="Fill the field below:" />
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                        </TitledPane>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="New Complain">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="443.0" prefWidth="521.0">
+                     <children>
+                        <Label layoutX="14.0" layoutY="11.0" text="Fill the following fields for creating a new complain" />
+                        <TitledPane animated="false" collapsible="false" layoutX="36.0" layoutY="38.0" prefHeight="334.0" prefWidth="431.0" text="Complain Details">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="294.0" prefWidth="446.0">
+                                 <children>
+                                    <Label layoutX="14.0" layoutY="56.0" text="Title" />
+                                    <Label layoutX="14.0" layoutY="101.0" text="Description" />
+                                    <Label layoutX="14.0" layoutY="18.0" text="Customer ID" />
+                                    <TextField fx:id="txtAddCustId" layoutX="131.0" layoutY="12.0" prefHeight="6.0" prefWidth="184.0" />
+                                    <TextField fx:id="txtAddTitle" layoutX="131.0" layoutY="56.0" prefHeight="0.0" prefWidth="185.0" />
+                                    <TextArea fx:id="txtAddDesc" layoutX="131.0" layoutY="101.0" prefHeight="138.0" prefWidth="271.0" />
+                                    <Button fx:id="btnAddSave" layoutX="185.0" layoutY="247.0" mnemonicParsing="false" onAction="#handleAddNewComplain" prefHeight="39.0" prefWidth="134.0" text="Save" />
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                        </TitledPane>
+                     </children></AnchorPane>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>

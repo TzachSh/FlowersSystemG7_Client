@@ -31,5 +31,11 @@ public enum Command implements Serializable
 	updateCustomer,
 	updateUser,
 	getColors,
-	addFlower
+	addFlower,
+	getBranches,
+	addReply,
+	updateComplain,
+	addComplainRefund,
+	getComplains,
+	addComplain
 	}

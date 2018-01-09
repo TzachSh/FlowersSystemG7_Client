@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="579.0" prefWidth="555.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Customers.ReplyController">
+   <children>
+      <TitledPane animated="false" collapsible="false" layoutX="14.0" layoutY="14.0" prefHeight="189.0" prefWidth="503.0" text="Customer Complain Details" AnchorPane.bottomAnchor="376.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="170.0" prefWidth="501.0">
+               <children>
+                  <TextArea fx:id="txtDesc" editable="false" layoutX="130.0" layoutY="47.0" prefHeight="95.0" prefWidth="360.0" />
+                  <TextField fx:id="txtTitle" editable="false" layoutX="130.0" layoutY="5.0" prefHeight="39.0" prefWidth="361.0" />
+                  <Label layoutX="32.0" layoutY="73.0" text="Description" />
+                  <Label layoutX="33.0" layoutY="11.0" text="Title" />
+               </children>
+            </AnchorPane>
+        </content>
+      </TitledPane>
+      <Button fx:id="btnSend" layoutX="116.0" layoutY="531.0" mnemonicParsing="false" onAction="#handleSendPressed" prefHeight="39.0" prefWidth="174.0" text="Send" />
+      <Button fx:id="btnCancel" layoutX="296.0" layoutY="531.0" mnemonicParsing="false" onAction="#handleCancelPressed" prefHeight="39.0" prefWidth="173.0" text="Back" />
+      <TitledPane layoutX="14.0" layoutY="360.0" prefHeight="151.0" prefWidth="527.0" text="Refund">
+        <content>
+          <AnchorPane prefHeight="136.0" prefWidth="494.0">
+               <children>
+                  <Label layoutX="219.0" layoutY="55.0" text="₪">
+                     <font>
+                        <Font size="29.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="txtRefund" layoutX="80.0" layoutY="66.0" prefHeight="0.0" prefWidth="130.0" />
+                  <Label layoutX="14.0" layoutY="72.0" text="Refund" />
+                  <Label layoutX="14.0" layoutY="28.0" text="Optional giving a refund to customer account" />
+                  <ComboBox fx:id="cmbBranch" layoutX="336.0" layoutY="66.0" prefWidth="150.0" />
+                  <Label layoutX="261.0" layoutY="72.0" text="In Branch" />
+               </children>
+            </AnchorPane>
+        </content>
+      </TitledPane>
+      <TitledPane animated="false" collapsible="false" layoutX="14.0" layoutY="206.0" prefHeight="151.0" prefWidth="527.0" text="Your Replyment">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <TextArea fx:id="txtReply" layoutX="42.4" layoutY="42.4" prefHeight="111.0" prefWidth="538.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+        </content>
+      </TitledPane>
+   </children>
+</AnchorPane>
