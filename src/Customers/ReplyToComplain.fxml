@@ -22,7 +22,7 @@
       </TitledPane>
       <Button fx:id="btnSend" layoutX="116.0" layoutY="531.0" mnemonicParsing="false" onAction="#handleSendPressed" prefHeight="39.0" prefWidth="174.0" text="Send" />
       <Button fx:id="btnCancel" layoutX="296.0" layoutY="531.0" mnemonicParsing="false" onAction="#handleCancelPressed" prefHeight="39.0" prefWidth="173.0" text="Back" />
-      <TitledPane layoutX="14.0" layoutY="360.0" prefHeight="151.0" prefWidth="527.0" text="Refund">
+      <TitledPane expanded="false" layoutX="14.0" layoutY="360.0" prefHeight="151.0" prefWidth="527.0" text="Refund">
         <content>
           <AnchorPane prefHeight="136.0" prefWidth="494.0">
                <children>
@@ -35,7 +35,7 @@
                   <Label layoutX="14.0" layoutY="72.0" text="Refund" />
                   <Label layoutX="14.0" layoutY="28.0" text="Optional giving a refund to customer account" />
                   <ComboBox fx:id="cmbBranch" layoutX="336.0" layoutY="66.0" prefWidth="150.0" />
-                  <Label layoutX="261.0" layoutY="72.0" text="In Branch" />
+                  <Label layoutX="261.0" layoutY="70.0" text="In Branch" />
                </children>
             </AnchorPane>
         </content>

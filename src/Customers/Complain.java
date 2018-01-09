@@ -17,7 +17,8 @@ public class Complain implements IRefundAble, Serializable {
 	private int customerId;
 	private int refundId;
 	private int customerServiceId;
-
+	private boolean isActive;
+	
 	public int getId() {
 		return id;
 	}
@@ -71,17 +72,18 @@ public class Complain implements IRefundAble, Serializable {
 	}
 
 	public Complain(Date creationDate, String title, String details, int customerId,
-			int customerServiceId) {
+			int customerServiceId,boolean isActive) {
 		super();
 		this.creationDate = creationDate;
 		this.title = title;
 		this.details = details;
 		this.customerId = customerId;
 		this.customerServiceId = customerServiceId;
+		this.isActive = isActive;
 	}
 
 	public Complain(int id, Date creationDate, String title, String details, int customerId,
-			int customerServiceId) {
+			int customerServiceId,boolean isActive) {
 		super();
 		this.id = id;
 		this.creationDate = creationDate;
@@ -89,6 +91,14 @@ public class Complain implements IRefundAble, Serializable {
 		this.details = details;
 		this.customerId = customerId;
 		this.customerServiceId = customerServiceId;
+		this.isActive = isActive;
 	}
-	
+
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
 }

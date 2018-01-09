@@ -132,6 +132,10 @@ public class ReplyController implements Initializable {
 			ArrayList<Object> paramListUpdateAccount = new ArrayList<>();
 			paramListUpdateAccount.add(accountToUpdate);
 			packet.setParametersForCommand(Command.updateAccountsBycId, paramListUpdateAccount);
+			ArrayList<Object> paramListComplain = new ArrayList<>();
+			complain.setActive(false);
+			paramListComplain.add(complain);
+			packet.setParametersForCommand(Command.updateComplain, paramListComplain);
 		}
 
 		Reply reply = new Reply(complainId, replyment);

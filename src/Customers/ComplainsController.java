@@ -113,7 +113,7 @@ public class ComplainsController implements Initializable {
 		String details = txtAddDesc.getText();
 		int customerServiceId = User.getuId();
 		java.sql.Date sqlDate = new java.sql.Date(new java.util.Date().getTime());
-		Complain complain = new Complain(sqlDate, title, details, customerId, 1); // Update to customerServiceId 
+		Complain complain = new Complain(sqlDate, title, details, customerId, 1,true); // Update to customerServiceId 
 		
 		Packet packet = new Packet();
 		packet.addCommand(Command.addComplain);
@@ -184,17 +184,22 @@ public class ComplainsController implements Initializable {
 					String textDate = "Date: ";
 					String textTitle = "Subject: ";
 					String textContent = "Content: ";
+					String textDone = "Done";
 					
 					HBox dateElement = new HBox(new Label(textDate), new Text(String.format("%s", complain.getCreationDate().toString())));
 					HBox titleElement = new HBox (new Label(textTitle) , new Text(String.format("%s", complain.getTitle())));
 					HBox infoElement = new HBox (new Label(textContent) , new Text(String.format("%s", complain.getDetails())));
 					VBox detialsElements = new VBox(dateElement,titleElement,infoElement);
-				 	VBox replyElement = new VBox(createButtonHandler(complain));
-				 	HBox hBox = new HBox(replyElement,detialsElements);
+					VBox operationElement;
+					if(complain.isActive())
+						operationElement = new VBox(createReplyButtonHandler(complain));
+					else
+						operationElement = new VBox(new Label(textDone));
+				 	HBox hBox = new HBox(operationElement,detialsElements);
 				 	dateElement.setPadding(new Insets(5,10,5,20));
 				 	titleElement.setPadding(new Insets(5,10,5,20));
 				 	infoElement.setPadding(new Insets(5,10,5,20));
-				 	replyElement.setPadding(new Insets(5,10,5,0));
+				 	operationElement.setPadding(new Insets(5,10,5,0));
                     hBox.setStyle("-fx-border-style:solid inside;"+
                     			  "-fx-border-width:1;"+
                     			  "-fx-border-insets:5;"+
@@ -203,7 +208,7 @@ public class ComplainsController implements Initializable {
                     setGraphic(hBox);
 				}
 				
-				private Button createButtonHandler(Complain complain)
+				private Button createReplyButtonHandler(Complain complain)
 				{
 					
 						String textReply = "Reply";
