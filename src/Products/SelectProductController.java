@@ -869,7 +869,7 @@ public class SelectProductController implements Initializable
 		if (catalogUse == CatalogUse.viewingCatalog || catalogUse == CatalogUse.order)
 		{
 			btnAddCatalogProduct.setDisable(true);
-			btnAddCatalogProduct.setText("Add To Cart");
+			btnAddCatalogProduct.setText("Go To Cart");
 			
 			Image image = new Image("cart.png");
 			ImageView view = new ImageView(image);
