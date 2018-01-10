@@ -255,6 +255,7 @@ public class CartController implements Initializable
 							cartProducts.remove(pro);
 							SelectProductController.productsSelected.remove(pro);
 							fillCatalogItems();
+							updateTotalPrice();
 						});
 						
 						VBox delBox = new VBox(delButton);
@@ -271,32 +272,7 @@ public class CartController implements Initializable
 	                    
 	                    setGraphic(hBox);
 					}
-					
-					private void updateTotalPrice()
-					{
-						double totalPrice = 0.0;
-						int totalItems = 0;
-						for (Map.Entry<Product, Integer> entry : cartProducts.entrySet())
-						{
-							totalPrice += getFinalPrice((CatalogProduct)entry.getKey()) * entry.getValue();
-							totalItems += entry.getValue();
-						}
-						
-						lblPrice.setText(String.format("Total Price: %.2f¤ , Total Items: %d", totalPrice, totalItems));
-					}
-					
-					private double getFinalPrice(Product pro)
-					{
-						CatalogProductDetails productDetails = SelectProductController.catalogProductWithAdditionalDetails.get(pro);
-						if (productDetails.catalogSale == null)
-							return pro.getPrice();
-						
-						int discount = productDetails.catalogSale.getDiscount();
-						double percantage = (double)discount / 100.0;
-						
-						double priceAfterDiscount = pro.getPrice() * (1 - percantage);
-						return priceAfterDiscount;
-					}
+
 					
 				    @Override
 					protected void updateItem(Product item, boolean empty) {
@@ -319,6 +295,32 @@ public class CartController implements Initializable
 	                event.consume();
 	            }
 	        });
+		}
+		
+		private double getFinalPrice(Product pro)
+		{
+			CatalogProductDetails productDetails = SelectProductController.catalogProductWithAdditionalDetails.get(pro);
+			if (productDetails.catalogSale == null)
+				return pro.getPrice();
+			
+			int discount = productDetails.catalogSale.getDiscount();
+			double percantage = (double)discount / 100.0;
+			
+			double priceAfterDiscount = pro.getPrice() * (1 - percantage);
+			return priceAfterDiscount;
+		}
+		
+		private void updateTotalPrice()
+		{
+			double totalPrice = 0.0;
+			int totalItems = 0;
+			for (Map.Entry<Product, Integer> entry : cartProducts.entrySet())
+			{
+				totalPrice += getFinalPrice((CatalogProduct)entry.getKey()) * entry.getValue();
+				totalItems += entry.getValue();
+			}
+			
+			lblPrice.setText(String.format("Total Price: %.2f¤ , Total Items: %d", totalPrice, totalItems));
 		}
 		
 		public void registerAddFromCatalogButton()
@@ -360,7 +362,7 @@ public class CartController implements Initializable
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		registerAddFromCatalogButton();
 		fillCatalogItems();
-		
+		updateTotalPrice();
 	}
 
 }
