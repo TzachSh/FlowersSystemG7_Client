@@ -68,8 +68,8 @@ public class CartController implements Initializable
 	  public static int branchId  = -1;
 	  
 	  /**
-		 * Show an Alert dialog with custom info
-		 */
+		* Show an Alert dialog with custom info
+	   */
 		public void displayAlert(AlertType type , String title , String header , String content)
 		{
 			Alert alert = new Alert(type);
@@ -297,6 +297,9 @@ public class CartController implements Initializable
 	        });
 		}
 		
+		/**
+		 * Calculate the final price, even after the discount if have
+		 */
 		private double getFinalPrice(Product pro)
 		{
 			CatalogProductDetails productDetails = SelectProductController.catalogProductWithAdditionalDetails.get(pro);
@@ -310,6 +313,9 @@ public class CartController implements Initializable
 			return priceAfterDiscount;
 		}
 		
+		/**
+		 * Update the label of total price
+		 */
 		private void updateTotalPrice()
 		{
 			double totalPrice = 0.0;
@@ -323,6 +329,9 @@ public class CartController implements Initializable
 			lblPrice.setText(String.format("Total Price: %.2f¤ , Total Items: %d", totalPrice, totalItems));
 		}
 		
+		/**
+		 * Register an event that occurs when clicking on Add From Catalog button
+		 */
 		public void registerAddFromCatalogButton()
 		{
 			btnAddFromCatalog.setOnAction(new EventHandler<ActionEvent>() {
