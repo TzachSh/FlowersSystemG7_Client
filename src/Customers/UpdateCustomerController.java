@@ -261,17 +261,17 @@ public class UpdateCustomerController implements Initializable {
 		{
 			//adding account status to the combo box
 			ArrayList<String> AccStatus = new ArrayList<>();
-			AccStatus.add(AccountStatus.Active.toString());
-			AccStatus.add(AccountStatus.Blocked.toString());
-			AccStatus.add(AccountStatus.Closed.toString());
+			AccStatus.add(AccountStatus.Active.name());
+			AccStatus.add(AccountStatus.Blocked.name());
+			AccStatus.add(AccountStatus.Closed.name());
 			observelistStatus = FXCollections.observableArrayList(AccStatus);
 			cbStatus.setItems(observelistStatus);
 			//checking which status the customer got to show him in combo box (the shown value).
-			if(accList.get(0).getAccountStatus().toString().equals("Active"))
+			if(accList.get(0).getAccountStatus().toString().equals("0"))
 				cbStatus.getSelectionModel().select(0);
-			else if(accList.get(0).getAccountStatus().toString().equals("Blocked"))
+			else if(accList.get(0).getAccountStatus().toString().equals("1"))
 				cbStatus.getSelectionModel().select(1);
-			else if(accList.get(0).getAccountStatus().toString().equals("Closed"))
+			else if(accList.get(0).getAccountStatus().toString().equals("2"))
 				cbStatus.getSelectionModel().select(2);
 		}
 		else//there is no account for this user , we hide account fields
@@ -304,7 +304,7 @@ public class UpdateCustomerController implements Initializable {
 		
 		//adding array list to the packet's command so the Query can get information for statement .	
 		ArrayList<Object> userl=new ArrayList<>();
-		userl.add(new Customer(Integer.parseInt(txtCustomerID.getText()),0));
+		userl.add(Integer.parseInt(txtCustomerID.getText()));
 		packet.setParametersForCommand(Command.getCustomersKeyByuId, userl);
 		
 		
@@ -344,7 +344,7 @@ public class UpdateCustomerController implements Initializable {
 				packet.setParametersForCommand(Command.getAccountbycID, accl);
 				//adding array list to the packet's command so the Query can get information for statement .	
 				ArrayList<Object> cusl=new ArrayList<>();
-				cusl.add(new Customer(Integer.parseInt(txtCustomerID.getText()), 0));
+				cusl.add(Integer.parseInt(txtCustomerID.getText()));
 				packet.setParametersForCommand(Command.getUserByuId, cusl);
 				
 				//sending the packet
@@ -517,9 +517,9 @@ public class UpdateCustomerController implements Initializable {
 				packet.addCommand(Command.updateAccountsBycId);
 				
 				AccountStatus accstatusvar;
-				if(newstatus.equals(AccountStatus.Active.toString()))
+				if(newstatus.equals(AccountStatus.Active.name()))
 					accstatusvar=AccountStatus.Active;
-				else if(newstatus.equals(AccountStatus.Blocked.toString()))
+				else if(newstatus.equals(AccountStatus.Blocked.name()))
 					accstatusvar=AccountStatus.Blocked;
 				else
 					accstatusvar=AccountStatus.Closed;

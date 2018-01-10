@@ -220,7 +220,7 @@ public class AccountController implements Initializable{
 		packet.addCommand(Command.getCustomersKeyByuId);
 		ArrayList<Object> userl=new ArrayList<>();
 		//adding the information to the packet
-		userl.add(new Customer(Integer.parseInt(txtID.getText()),0));
+		userl.add(Integer.parseInt(txtID.getText()));
 		packet.setParametersForCommand(Command.getCustomersKeyByuId, userl);
 		//sending the packet
 		SystemSender send = new SystemSender(packet);
@@ -254,7 +254,7 @@ public class AccountController implements Initializable{
 				packet.addCommand(Command.getAccountbycID);
 				//adding the information to the packet
 				ArrayList<Object> accl=new ArrayList<>();
-				accl.add(new Account(cList.get(0).getId(), 0, 0, AccountStatus.Active, "0000000000000000"));
+				accl.add(cList.get(0).getId());
 				packet.setParametersForCommand(Command.getAccountbycID, accl);
 				//sending the packet
 				SystemSender send = new SystemSender(packet);
