@@ -3,6 +3,7 @@ package Customers;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import PacketSender.Command;
@@ -25,12 +26,15 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -39,9 +43,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-
+/**
+ * 
+ * Complains controller which performs adding new complains and follow them 
+ *
+ */
 public class ComplainsController implements Initializable {
 
+	//FXML components
 	@FXML private TextField txtCustId;
 	@FXML private Button btnSearch;
 	@FXML private Button btnAdd;
@@ -50,10 +59,18 @@ public class ComplainsController implements Initializable {
 	@FXML private TextArea txtAddDesc;
 	@FXML private TextField txtAddTitle;
 	@FXML private TextField txtAddCustId;
+	@FXML private TabPane complainsTabedPane;
 	
+	//List to be updated
 	private ObservableList<Complain> data;
 	private ArrayList<Complain> allComplainsList;
+	private ArrayList<Complain> currentServiceEmployeeComplains;
 	
+	/**
+	 * Show the scene view of complains management
+	 * 
+	 * @param primaryStage - current stage to build
+	 */
 	public void start(Stage primaryStage) {
 		
 		String title = "Complains Management";
@@ -77,6 +94,10 @@ public class ComplainsController implements Initializable {
 		}
 	}
 	
+	/**
+	 * Display the relevant complains of current service employee which is connected to the system
+	 * and add them to the list view component
+	 */
 	@FXML
 	private void displayComplains()
 	{
@@ -86,25 +107,40 @@ public class ComplainsController implements Initializable {
 		
 		sender.registerHandler(new IResultHandler() {
 			
+			/**
+			 * On waiting for a message from the server
+			 */
 			@Override
 			public void onWaitingForResult() {
 				// TODO Auto-generated method stub
 				
 			}
-			
+			/**
+			 * On getting a message from the server
+			 */
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub
 				if(p.getResultState())
 				{
 					allComplainsList = p.<Complain>convertedResultListForCommand(Command.getComplains);
-					data = FXCollections.observableArrayList(allComplainsList);
+					currentServiceEmployeeComplains = new ArrayList<>();
+					
+					for(Complain complain : allComplainsList)
+						if (complain.getCustomerServiceId() == User.getuId())
+							currentServiceEmployeeComplains.add(complain);
+
+					data = FXCollections.observableArrayList(currentServiceEmployeeComplains);
 					cListView.setItems(data);
 				}	
 			}
 		});
 		sender.start();
 	}
+	/**handle adding new complain button pressed.
+	 * getting information from the fields and send a request to the DB for inserting
+	 * @param event - the button event handler
+	 */
 	@FXML
 	public void handleAddNewComplain(Event event)
 	{
@@ -122,24 +158,54 @@ public class ComplainsController implements Initializable {
 		packet.setParametersForCommand(Command.addComplain, paramList);
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
-			
+			/**
+			 * On waiting for a message from the server
+			 */
 			@Override
 			public void onWaitingForResult() {
 				// TODO Auto-generated method stub
-				
 			}
-			
+			/**
+			 * On getting a message from the server
+			 */
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub
+				Alert alert;
 				if (p.getResultState())
 				{
-					data.add(complain);
+					displayComplains();
+					alert = new Alert(AlertType.INFORMATION,"The complain has been added successfully!");
+					 Optional<ButtonType> result = alert.showAndWait();
+			            if (result.get() == ButtonType.OK){
+			            	alert.hide();
+			            	clearFields();
+			            	complainsTabedPane.getSelectionModel().select(0);		                
+			            }
+				}
+				else
+				{
+					alert = new Alert(AlertType.ERROR,p.getExceptionMessage());
+					alert.show();
 				}
 			}
 		});
 		sender.start();
 	}
+	
+	/**
+	 * Clear all of the text fields used to add a new complain
+	 */
+	private void clearFields()
+	{
+		txtAddCustId.clear();
+		txtAddDesc.clear();
+		txtAddTitle.clear();
+	}
+	/**
+	 * Display complains of a relevant customer by pressing the search button
+	 * @param event - the button event handler
+	 */
 	
 	@FXML
 	private void handleSearchPressed(Event event) {
@@ -158,27 +224,41 @@ public class ComplainsController implements Initializable {
 		cListView.setItems(data);
 	}
 	
+	/**
+	 * Handle the text field of searching to show all of the complains when it is empty
+	 * after a search is completed
+	 */
 	@FXML
-	private void setSearchOntTextChange()
+	private void setSearchOnTextChange()
 	{
 		txtCustId.textProperty().addListener((observable, oldValue, newValue) -> {
 		   if(newValue.isEmpty())
 		   {
-			   data = FXCollections.observableArrayList(allComplainsList);
+			   data = FXCollections.observableArrayList(currentServiceEmployeeComplains);
 			   cListView.setItems(data);
 		   }
 		});
 	}
+	/**
+	 * Define a customized cell of each row of the list view, to show a button and labels in it.
+	 */
 
 	private void setListCellFactory()
 	{
 		cListView.setCellFactory(new Callback<ListView<Complain>, ListCell<Complain>>() {
 			
+			/**
+			 * Create handler for each cell of the list view
+			 */
 			@Override
 			public ListCell<Complain> call(ListView<Complain> param) {
 				// TODO Auto-generated method stub
 				return new ListCell<Complain>() {
 					
+				/**
+				 * 	Set handler for each row, is a corresponding to the status of the complain, if it's active will show a "Reply" button near to it, else will be shown "Done"
+				 * @param complain - show the complain's details in the fields such as date , subject and content
+				 */
 				private void setCellHandler(Complain complain)
 				{
 					String textDate = "Date: ";
@@ -207,7 +287,11 @@ public class ComplainsController implements Initializable {
                     hBox.setPadding(new Insets(10));
                     setGraphic(hBox);
 				}
-				
+				/**
+				 * Creating a button handler which is navigates to the relevant reply view for each complain
+				 * @param complain - Create a new handler for this complain
+				 * @return Button which handled to open a matching view of a specific complain
+				 */
 				private Button createReplyButtonHandler(Complain complain)
 				{
 					
@@ -243,6 +327,11 @@ public class ComplainsController implements Initializable {
 						return btnReply;
 					}
 
+				/**
+				 * Update each row of the list view by the received item
+				 * @param item - the complain to show it's details
+				 * @param empty - to check if the item is null or not
+				 */
 					@Override
 				protected void updateItem(Complain item, boolean empty) {
 					// TODO Auto-generated method stub
@@ -255,11 +344,15 @@ public class ComplainsController implements Initializable {
 		});
 	}
 	
+	/**
+	 * Perform an initialization for the list view by defining the handler for each row, setting the handler for the search text field
+	 * and showing all the relevant complains of the current employee 
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// TODO Auto-generated method stub
 		setListCellFactory();
-		setSearchOntTextChange();
+		setSearchOnTextChange();
 		displayComplains();
 	}
 	

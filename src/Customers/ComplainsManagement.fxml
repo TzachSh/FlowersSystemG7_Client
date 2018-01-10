@@ -13,7 +13,7 @@
             <Font size="21.0" />
          </font>
       </Label>
-      <TabPane layoutY="60.0" prefHeight="438.0" prefWidth="520.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane fx:id="complainsTabedPane" layoutY="60.0" prefHeight="438.0" prefWidth="520.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="Complains View">
             <content>

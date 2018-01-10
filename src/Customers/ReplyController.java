@@ -3,6 +3,7 @@ package Customers;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import Branches.Branch;
@@ -21,7 +22,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -29,7 +33,13 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 
-public class ReplyController implements Initializable {
+/**
+ * 
+ * Reply controller which is handling complain reply, and giving a refund to customer
+ *
+ */
+public class ReplyController {
+	//FXML components
 	@FXML
 	private Button btnSend;
 	@FXML
@@ -45,17 +55,27 @@ public class ReplyController implements Initializable {
 	@FXML 
 	private ComboBox<Branch> cmbBranch;
 	
+	//List to be updated during runtime
 	private ArrayList<Branch> branchList;
 	private ObservableList<Branch> data;
 	
+	//Complain to show its details
 	private Complain complain;
+	//List to save the accounts for the specific customer
 	private ArrayList<Account> customerAccList;
 	
+	/**
+	 * Passing the complain to show which is passed from the ComplainsController 
+	 * @param complain - get the relevant complain to show
+	 */
 	public void setComplain(Complain complain)
 	{
 		this.complain = complain;
 	}
 	
+	/**
+	 * Setting up the scene view to show
+	 */
 	public void start() {
 		String title = "Replyment";
 		String srcFXML = "/Customers/ReplyToComplain.fxml";
@@ -76,6 +96,10 @@ public class ReplyController implements Initializable {
 		}
 
 	}
+	/**
+	 * Handle cancel button pressed, back to the Complains view
+	 * @param event - event to be handled
+	 */
 	@FXML
 	private void handleCancelPressed(Event event)
 	{
@@ -85,6 +109,11 @@ public class ReplyController implements Initializable {
 		
 	}
 	
+	/**
+	 * Getting a customer account by branch id
+	 * @param bId - branch id to get the account of
+	 * @return relevant account by branch id, if exists
+	 */
 	private Account getCustomerAccountInBranch(int bId)
 	{
 		Account retAcc = null;
@@ -95,6 +124,11 @@ public class ReplyController implements Initializable {
 		return retAcc;		
 	}
 	
+	/**
+	 * Handle send button press, getting the texts from the text fields, parse them in to Reply object 
+	 * and a Refund object if has been choose to give a refund, and save them to the DB 
+	 * @param event - even to be handled
+	 */
 	@FXML 
 	private void handleSendPressed(Event event)
 	{
@@ -147,23 +181,43 @@ public class ReplyController implements Initializable {
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
 
+			/**
+			 * On waiting for a message from the server
+			 */
 			@Override
 			public void onWaitingForResult() {
 				// TODO Auto-generated method stub
 			}
-
+			/**
+			 * On getting a message from the server
+			 */
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub
+				Alert alert;
 				if (p.getResultState()) {
-
+					alert = new Alert(AlertType.INFORMATION,"Refund has been sent");
+					 Optional<ButtonType> result = alert.showAndWait();
+			            if (result.get() == ButtonType.OK){
+			            	alert.hide();
+			            	((Node) event.getSource()).getScene().getWindow().hide();
+			        		ComplainsController complainsController = new ComplainsController();
+			        		complainsController.start(new Stage());			                
+			            }
+				}
+				else
+				{
+					alert = new Alert(AlertType.ERROR,p.getExceptionMessage());
+					alert.show();
 				}
 			}
 		});
 		sender.start();
 	}
 	
-	//*
+	/**
+	 * Initializing a Combo Box component with the relevant branches which the customer is registered to 
+	 */
 	private void initCmb()
 	{
 		cmbSetConverter();
@@ -181,6 +235,10 @@ public class ReplyController implements Initializable {
 		}
 	}
 
+	/**
+	 * Initializing the component by showing the complain's info and set the refund text field to zero.
+	 * @param complain - initialize text fields with information from this complain
+	 */
 	public void setComponents(Complain complain)
 	{
 		setComplain(complain);
@@ -190,22 +248,36 @@ public class ReplyController implements Initializable {
 		txtRefund.setText("0.0");
 	}
 	
+	/**
+	 * Set a converted for each branch object to be shown in the Combo Box,
+	 * To show it's name
+	 */
 	private void cmbSetConverter()
 	{
 		cmbBranch.setConverter(new StringConverter<Branch>() {
 
+			/**
+			 * Getting a Branch object by his name
+			 * @param string - string to be converted to a Branch object
+			 */
 			@Override
 			public Branch fromString(String string) {
 				return null;
 			}
-
+			/**
+			 * getting a String of the name of a branch by a Branch object
+			 * Branch to be converted in to a String name
+			 */
 			@Override
 			public String toString(Branch object) {
 				return String.format("%s", object.getName());
 			}
 		});
 	}
-	
+	/**
+	 * Initializing customer details by getting his Accounts,
+	 * Then initializing the Combo Box to show branches which he has account in them.
+	 */
 	private void initCustomerDetails()
 	{
 		Packet packet = new Packet();
@@ -218,12 +290,17 @@ public class ReplyController implements Initializable {
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
 			
+			/**
+			 * On waiting for a message from the server
+			 */
 			@Override
 			public void onWaitingForResult() {
 				// TODO Auto-generated method stub
 				
 			}
-			
+			/**
+			 * On getting a message from the server
+			 */
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub
@@ -238,8 +315,4 @@ public class ReplyController implements Initializable {
 		sender.start();
 	}
 
-	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) {
-		// TODO Auto-generated method stub
-	}
 }
