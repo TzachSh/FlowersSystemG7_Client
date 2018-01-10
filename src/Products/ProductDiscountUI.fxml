@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="234.0" prefWidth="342.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Products.CatalogDiscountController">
+   <children>
+      <Button layoutX="270.0" layoutY="192.0" mnemonicParsing="false" text="Button" />
+      <TextField fx:id="txtDiscount" layoutX="119.0" layoutY="117.0" prefHeight="25.0" prefWidth="104.0" promptText="enter discount" />
+      <ComboBox fx:id="cmbCatalogProduct" layoutX="119.0" layoutY="61.0" prefWidth="150.0" promptText="choose product" />
+      <Label layoutX="41.0" layoutY="65.0" text="Product:" />
+      <Label layoutX="49.0" layoutY="121.0" text="Discount:" />
+      <Label layoutX="74.0" layoutY="14.0" text="Discunt for Catalog products" />
+   </children>
+</AnchorPane>

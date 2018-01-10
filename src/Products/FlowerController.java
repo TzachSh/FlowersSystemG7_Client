@@ -157,9 +157,10 @@ public class FlowerController extends Application implements Initializable {
 		{
 			throw new Exception("Please choose color");
 		}
-		if(txtprice.getText().length()==0 || Double.valueOf(txtprice.getText())<0)
+		if(txtprice.getText().length()==0 || Double.parseDouble(txtprice.getText())<0) {
 			lblErrPrice.setText("*");
 			throw new Exception("Please fill price correctly");
+		}
 	}
 	/**
 	 * load fxml Flower GUI

@@ -335,13 +335,13 @@ public class UpdateCustomerController implements Initializable {
 				//opening packet
 				Packet packet = new Packet();
 				//adding commands to the packet
-				packet.addCommand(Command.getAccountBycId);
+				packet.addCommand(Command.getAccountbycID);
 				packet.addCommand(Command.getUserByuId);
 				packet.addCommand(Command.getMemberShip);
 				//adding array list to the packet's command so the Query can get information for statement .	
 				ArrayList<Object> accl=new ArrayList<>();
-				accl.add(new Account(0, cList.get(0).getId(), 0, 0, AccountStatus.Active, ""));
-				packet.setParametersForCommand(Command.getAccountBycId, accl);
+				accl.add(cList.get(0).getId());
+				packet.setParametersForCommand(Command.getAccountbycID, accl);
 				//adding array list to the packet's command so the Query can get information for statement .	
 				ArrayList<Object> cusl=new ArrayList<>();
 				cusl.add(new Customer(Integer.parseInt(txtCustomerID.getText()), 0));
@@ -360,7 +360,7 @@ public class UpdateCustomerController implements Initializable {
 					@Override
 					public void onReceivingResult(Packet p) {
 						//getting the result from the Query
-						accList=p.<Account>convertedResultListForCommand(Command.getAccountBycId);
+						accList=p.<Account>convertedResultListForCommand(Command.getAccountbycID);
 						uList=p.<User>convertedResultListForCommand(Command.getUserByuId);
 						memshipList=p.<Membership>convertedResultListForCommand(Command.getMemberShip);
 						

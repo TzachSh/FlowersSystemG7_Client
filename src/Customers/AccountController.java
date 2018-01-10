@@ -251,11 +251,11 @@ public class AccountController implements Initializable{
 				//the customer exist , so we add the information
 				currentCustomer=cList.get(0);
 				Packet packet = new Packet();
-				packet.addCommand(Command.getAccountBycId);
+				packet.addCommand(Command.getAccountbycID);
 				//adding the information to the packet
 				ArrayList<Object> accl=new ArrayList<>();
 				accl.add(new Account(cList.get(0).getId(), 0, 0, AccountStatus.Active, "0000000000000000"));
-				packet.setParametersForCommand(Command.getAccountBycId, accl);
+				packet.setParametersForCommand(Command.getAccountbycID, accl);
 				//sending the packet
 				SystemSender send = new SystemSender(packet);
 				send.registerHandler(new IResultHandler() {
@@ -273,7 +273,7 @@ public class AccountController implements Initializable{
 						if (p.getResultState())
 						{
 							//checking if the customer got account
-							accList=p.<Account>convertedResultListForCommand(Command.getAccountBycId);
+							accList=p.<Account>convertedResultListForCommand(Command.getAccountbycID);
 							if(!accList.isEmpty())
 							{
 								showError("Customer Already Have Account");

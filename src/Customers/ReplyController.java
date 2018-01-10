@@ -211,7 +211,7 @@ public class ReplyController implements Initializable {
 		Packet packet = new Packet();
 		ArrayList<Object> paramList = new ArrayList<>();
 		paramList.add(complain.getCustomerId());
-		packet.setParametersForCommand(Command.getAccountBycId, paramList);
+		packet.setParametersForCommand(Command.getAccountbycID, paramList);
 		packet.addCommand(Command.getBranches);
 		ArrayList<Object> paramListBranches = new ArrayList<>();
 		packet.setParametersForCommand(Command.getBranches, paramListBranches);
@@ -229,7 +229,7 @@ public class ReplyController implements Initializable {
 				// TODO Auto-generated method stub
 				if(p.getResultState())
 				{
-					customerAccList = p.<Account>convertedResultListForCommand(Command.getAccountBycId);
+					customerAccList = p.<Account>convertedResultListForCommand(Command.getAccountbycID);
 					branchList = p.<Branch>convertedResultListForCommand(Command.getBranches);
 					initCmb();
 				}
