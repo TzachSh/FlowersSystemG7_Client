@@ -45,6 +45,9 @@ import javafx.util.Callback;
 
 public class CartController implements Initializable
 {
+      @FXML
+      private Button btnBackToCatalog;
+    
 	  @FXML
 	  private MenuItem btnAddFromCatalog;
 
@@ -66,6 +69,18 @@ public class CartController implements Initializable
 	  private ObservableList<Product> data;
 	
 	  public static int branchId  = -1;
+	  
+	  private static boolean comesFromCatalog = false;
+	  
+	  
+	  /**
+	   * Initialize the state if the controller called from catalog, for back button
+	   * @param comesFromCatalog True - if called from Catalog Viewer, False - else
+	   */
+	  public void setComesFromCatalog(boolean comesFromCatalogState)
+	  {
+		  comesFromCatalog = comesFromCatalogState;
+	  }
 	  
 	  /**
 		* Show an Alert dialog with custom info
@@ -337,22 +352,43 @@ public class CartController implements Initializable
 			btnAddFromCatalog.setOnAction(new EventHandler<ActionEvent>() {
 	            @Override
 	            public void handle(ActionEvent event) {
-	            	try 
-	        		{
-	        			lstCart.getScene().getWindow().hide(); //hiding primary window
-	        			Stage primaryStage = new Stage();
-	        			SelectProductController catalogProductController = new SelectProductController();
-	        			catalogProductController.setForCart(SelectProductUI.customer);
-	        			catalogProductController.start(primaryStage);
-	        		}
-	        		catch (Exception e) 
-	        		{
-	        			displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Add Catalog Window", e.getMessage());
-	        		}
+	            	showSelectProductFrm();
 	            }
 	        });
 		}
+		
+		/**
+		 * Open Catalog Viewer Form
+		 */
+		private void showSelectProductFrm()
+		{
+			try 
+    		{
+    			lstCart.getScene().getWindow().hide(); //hiding primary window
+    			Stage primaryStage = new Stage();
+    			SelectProductController catalogProductController = new SelectProductController();
+    			catalogProductController.setForCart(SelectProductUI.customer);
+    			catalogProductController.start(primaryStage);
+    		}
+    		catch (Exception e) 
+    		{
+    			displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Add Catalog Window", e.getMessage());
+    		}
+		}
 	
+		/**
+		 * Register an event that occurs when clicking on Back To Catalog button
+		 */
+		public void registerBackToCatalogButton()
+		{
+			btnBackToCatalog.setOnAction(new EventHandler<ActionEvent>() {
+	            @Override
+	            public void handle(ActionEvent event) {
+	            	showSelectProductFrm();
+	            }
+	        });
+		}
+		
 	  public void start(Stage primaryStage) throws Exception {	
 			
 			String srcFXML = "/Products/CartUI.fxml";
@@ -370,8 +406,12 @@ public class CartController implements Initializable
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		registerAddFromCatalogButton();
+		registerBackToCatalogButton();
 		fillCatalogItems();
 		updateTotalPrice();
+		
+		if (comesFromCatalog)
+			btnBackToCatalog.setVisible(true);
 	}
 
 }

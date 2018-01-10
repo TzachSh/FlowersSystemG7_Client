@@ -880,6 +880,7 @@ public class SelectProductController implements Initializable
 
 	        			// call to controller of order to open order window
 	        			CartController cartController = new CartController();
+	        			cartController.setComesFromCatalog(true);
 	        			CartController.branchId = cmbBranch.getSelectionModel().getSelectedIndex();
 	        			cartController.addProductsToCartMap(productsSelected);
 	        			cartController.start(primaryStage);

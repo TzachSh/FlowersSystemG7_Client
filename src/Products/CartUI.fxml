@@ -34,5 +34,6 @@
             <Font size="14.0" />
          </font>
       </Label>
+      <Button fx:id="btnBackToCatalog" layoutX="48.0" layoutY="62.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="104.0" text="Back To Catalog" visible="false" />
    </children>
 </AnchorPane>
