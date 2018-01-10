@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="629.0" prefWidth="582.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Products.CartController">
+   <children>
+      <Label layoutX="234.0" layoutY="27.0" text="Cart Shopping" underline="true" AnchorPane.topAnchor="27.0">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <TitledPane animated="false" collapsible="false" layoutX="34.0" layoutY="96.0" prefHeight="360.0" prefWidth="515.0" text="Cart Editor" AnchorPane.bottomAnchor="84.0" AnchorPane.leftAnchor="34.0" AnchorPane.rightAnchor="33.0" AnchorPane.topAnchor="96.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="322.0" prefWidth="513.0">
+               <children>
+                  <ListView fx:id="lstCart" layoutX="157.0" layoutY="30.0" prefHeight="341.0" prefWidth="513.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+        </content>
+      </TitledPane>
+      <MenuButton layoutX="437.0" layoutY="62.0" lineSpacing="8.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="104.0" text="Add To Cart" AnchorPane.rightAnchor="41.0" AnchorPane.topAnchor="62.0">
+        <items>
+          <MenuItem fx:id="btnAddFromCatalog" mnemonicParsing="false" text="Add From Catalog" />
+          <MenuItem fx:id="btnAddCustomProduct" mnemonicParsing="false" text="Add Custom Product" />
+        </items>
+      </MenuButton>
+      <Button fx:id="btnPurchase" layoutX="246.0" layoutY="492.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="90.0" text="Purchase" AnchorPane.bottomAnchor="15.0" />
+      <Label fx:id="lblPrice" contentDisplay="CENTER" layoutX="34.0" layoutY="464.0" prefHeight="17.0" prefWidth="515.0" text="Total Price: 0₪ , Total Items: 0" textFill="RED" AnchorPane.bottomAnchor="56.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

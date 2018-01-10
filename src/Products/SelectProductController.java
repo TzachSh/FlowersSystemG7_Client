@@ -89,7 +89,7 @@ public class SelectProductController implements Initializable
     private Label lblCurrentBranch;
 
     /** enum for indicate the window that call to this controller  */
-    public enum CatalogUse { updateSale, order, updateCatalog, viewingCatalog }
+    public enum CatalogUse { updateSale, order, updateCatalog, viewingCatalog, cart }
     
     /**  linkedHashMap for easy mapping from catalogProduct to it's details such sales and image */
 	public static LinkedHashMap<CatalogProduct, CatalogProductDetails> catalogProductWithAdditionalDetails = new LinkedHashMap<>();
@@ -101,7 +101,7 @@ public class SelectProductController implements Initializable
 	public static ArrayList<FileSystem> catalogImagesList = new ArrayList<>();
 	
 	/** the selection products in the listview, used for order operation */
-	public static ArrayList<CatalogProduct> productsSelected = new ArrayList<>();
+	public static ArrayList<Product> productsSelected = new ArrayList<>();
 
 	public static ArrayList<Account> userAccountsList = new ArrayList<>();
 	public static ArrayList<Branch> branchList = new ArrayList<>();
@@ -113,8 +113,6 @@ public class SelectProductController implements Initializable
 	private static User userLogged;
 	private ObservableList<CatalogProduct> data;
 	private boolean hasAccountForCurrentBranch = false;
-
-	
 	
 	/**
 	 * Show an Alert dialog with custom info
@@ -151,6 +149,16 @@ public class SelectProductController implements Initializable
 	}
 	
 	/**
+	 *  Set the controller to initialize for ordering from cart
+	 */
+	public void setForCart(User user)
+	{
+		userLogged = user;
+		catalogUse = CatalogUse.cart;
+		title = "Add To Cart";	
+	}
+	
+	/**
 	 * Set the controller to initialize for viewing in catalog and also order
 	 */
 	public void setForViewingCatalog(User user)
@@ -182,7 +190,10 @@ public class SelectProductController implements Initializable
 			branches.add(br.toString());
 		
 		ObservableList<String> observeBranchesList = FXCollections.observableArrayList(branches);
+		
 		cmbBranch.setItems(observeBranchesList);
+		
+		cmbBranch.getSelectionModel().select(CartController.branchId);
 	}
 	
 	/**
@@ -415,7 +426,7 @@ public class SelectProductController implements Initializable
 			}
 
 			
-			btnAddCatalogProduct.setDisable(true);
+			updateTotalPriceAndAddToCartButton();
 		}
 		else
 		{
@@ -468,7 +479,7 @@ public class SelectProductController implements Initializable
 					proType.setFont(new Font(14));
 					proType.setStyle("-fx-font-weight: bold");
 					
-					Text price = new Text(pro.getPrice() + "¤");
+					Text price = new Text(String.format("%.2f¤", pro.getPrice()));
 					price.setFont(new Font(14));
 					
 					VBox productImage = new VBox(imgView);
@@ -486,7 +497,7 @@ public class SelectProductController implements Initializable
 						
 						// add text for price after discount
 						double finalPrice = getFinalPrice(pro);
-						Text sale = new Text(finalPrice + "¤");
+						Text sale = new Text(String.format("%.2f¤", finalPrice));
 						sale.setFill(Color.GREEN);
 						sale.setFont(new Font(14));
 						sale.setStyle("-fx-font-weight: bold");
@@ -610,7 +621,7 @@ public class SelectProductController implements Initializable
 						modify.setPrefWidth(95);
 						buttons = new VBox(modify);
 					}
-					else if (catalogUse == CatalogUse.order || catalogUse == CatalogUse.viewingCatalog)
+					else if (catalogUse == CatalogUse.order || catalogUse == CatalogUse.viewingCatalog || catalogUse == CatalogUse.cart)
 					{
 						Button add = new Button("Add");
 					
@@ -623,7 +634,7 @@ public class SelectProductController implements Initializable
 							setAddOrderStyles(add);
 						}
 						
-						if (cmbBranch.getSelectionModel().getSelectedIndex() == -1 || !hasAccountForCurrentBranch)
+						if (cmbBranch.getSelectionModel().getSelectedIndex() == -1 || !hasAccountForCurrentBranch || productsSelected.contains(pro))
 						{
 							add.setDisable(true);
 						}
@@ -656,14 +667,15 @@ public class SelectProductController implements Initializable
 				
 				private void setDelOrderStyles(Button del)
 				{
-					del.setText("Del");
+					del.setText("Added");
+					/*
 					Image imageModify = new Image("x-button.png");
 					ImageView viewModify = new ImageView(imageModify);
 					viewModify.setFitWidth(15);
 					viewModify.setFitHeight(15);
 					del.setGraphic(viewModify);
 					del.setPrefWidth(60);
-					
+					*/
 					setStyle("-fx-background-color: moccasin;");
 				}
 				
@@ -679,44 +691,16 @@ public class SelectProductController implements Initializable
 						}
 						else // exists, remove from collection
 						{
-							productsSelected.remove(pro);
+							//productsSelected.remove(pro);
 							
 							setAddOrderStyles(button);
 						}
 						
-						if (productsSelected.size() == 0)
-						{
-							lblBranch.setVisible(false);
-							btnAddCatalogProduct.setDisable(true);
-						}
-						else
-						{
-							double totalPrice = 0.0;
-							for (CatalogProduct product : productsSelected)
-							{
-								totalPrice += getFinalPrice(product);
-							}
-							
-							lblBranch.setVisible(true);
-							lblBranch.setText(String.format("Total Products: %d, Total Price: %.2f¤", productsSelected.size(), totalPrice));
-							btnAddCatalogProduct.setDisable(false);
-						}
+						updateTotalPriceAndAddToCartButton();
 					
 					});
 				}
 				
-				private double getFinalPrice(CatalogProduct pro)
-				{
-					CatalogProductDetails productDetails = catalogProductWithAdditionalDetails.get(pro);
-					if (productDetails.catalogSale == null)
-						return pro.getPrice();
-					
-					int discount = productDetails.catalogSale.getDiscount();
-					double percantage = (double)discount / 100.0;
-					
-					double priceAfterDiscount = pro.getPrice() * (1 - percantage);
-					return priceAfterDiscount;
-				}
 				
 			    @Override
 				protected void updateItem(CatalogProduct item, boolean empty) {
@@ -739,6 +723,46 @@ public class SelectProductController implements Initializable
                 event.consume();
             }
         });
+	}
+	
+	/**
+	 * Calculate the final price, even after the discount if have
+	 */
+	private double getFinalPrice(CatalogProduct pro)
+	{
+		CatalogProductDetails productDetails = catalogProductWithAdditionalDetails.get(pro);
+		if (productDetails.catalogSale == null)
+			return pro.getPrice();
+		
+		int discount = productDetails.catalogSale.getDiscount();
+		double percantage = (double)discount / 100.0;
+		
+		double priceAfterDiscount = pro.getPrice() * (1 - percantage);
+		return priceAfterDiscount;
+	}
+	
+	/**
+	 * Update the label of total price and the disabling state of cart button
+	 */
+	private void updateTotalPriceAndAddToCartButton()
+	{
+		if (productsSelected.size() == 0)
+		{
+			lblBranch.setVisible(false);
+			btnAddCatalogProduct.setDisable(true);
+		}
+		else
+		{
+			double totalPrice = 0.0;
+			for (Product product : productsSelected)
+			{
+				totalPrice += getFinalPrice((CatalogProduct)product);
+			}
+			
+			lblBranch.setVisible(true);
+			lblBranch.setText(String.format("Total Products: %d, Total Price: %.2f¤", productsSelected.size(), totalPrice));
+			btnAddCatalogProduct.setDisable(false);
+		}
 	}
 	
 	/**
@@ -811,6 +835,9 @@ public class SelectProductController implements Initializable
 			entry.getValue().catalogSale = null;
 		}
 		
+		productsSelected.clear();
+		CartController.cartProducts.clear();
+		
 		branchId = -1;
 	}
 	
@@ -852,6 +879,10 @@ public class SelectProductController implements Initializable
 	        			Stage primaryStage = new Stage();
 
 	        			// call to controller of order to open order window
+	        			CartController cartController = new CartController();
+	        			CartController.branchId = cmbBranch.getSelectionModel().getSelectedIndex();
+	        			cartController.addProductsToCartMap(productsSelected);
+	        			cartController.start(primaryStage);
 	        		}
 	        		catch (Exception e) 
 	        		{
@@ -866,9 +897,9 @@ public class SelectProductController implements Initializable
 	 */
 	public void initFormByUses()
 	{
-		if (catalogUse == CatalogUse.viewingCatalog || catalogUse == CatalogUse.order)
+		if (catalogUse == CatalogUse.viewingCatalog || catalogUse == CatalogUse.order || catalogUse == CatalogUse.cart)
 		{
-			btnAddCatalogProduct.setDisable(true);
+			updateTotalPriceAndAddToCartButton();
 			btnAddCatalogProduct.setText("Go To Cart");
 			
 			Image image = new Image("cart.png");
@@ -878,7 +909,7 @@ public class SelectProductController implements Initializable
 			btnAddCatalogProduct.setGraphic(view);
 			btnAddCatalogProduct.setPrefWidth(115);
 			
-			linkChangeBranch.setVisible(false);
+			//linkChangeBranch.setVisible(false);
 			registerAddToCartButtonHandle();
 		}
 		else if (catalogUse == CatalogUse.updateSale)
@@ -922,6 +953,7 @@ public class SelectProductController implements Initializable
 		lblTitle.setVisible(true);
 		lblTitle.setText(title);
 		initializeCollections();
+		
 	}
 
 	/**
