@@ -22,18 +22,13 @@
             </AnchorPane>
         </content>
       </TitledPane>
-      <MenuButton layoutX="437.0" layoutY="62.0" lineSpacing="8.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="104.0" text="Add To Cart" AnchorPane.rightAnchor="41.0" AnchorPane.topAnchor="62.0">
-        <items>
-          <MenuItem fx:id="btnAddFromCatalog" mnemonicParsing="false" text="Add From Catalog" />
-          <MenuItem fx:id="btnAddCustomProduct" mnemonicParsing="false" text="Add Custom Product" />
-        </items>
-      </MenuButton>
       <Button fx:id="btnPurchase" layoutX="246.0" layoutY="492.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="90.0" text="Purchase" AnchorPane.bottomAnchor="15.0" />
       <Label fx:id="lblPrice" contentDisplay="CENTER" layoutX="34.0" layoutY="464.0" prefHeight="17.0" prefWidth="515.0" text="Total Price: 0₪ , Total Items: 0" textFill="RED" AnchorPane.bottomAnchor="56.0">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Button fx:id="btnBackToCatalog" layoutX="48.0" layoutY="62.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="104.0" text="Back To Catalog" visible="false" />
+      <Button fx:id="btnBackToCatalog" layoutX="48.0" layoutY="62.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="104.0" text="Back To Catalog" />
+      <Button fx:id="btnAddCustomProduct" layoutX="411.0" layoutY="62.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="127.0" text="Add Custom Product" />
    </children>
 </AnchorPane>
