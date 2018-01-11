@@ -6,27 +6,30 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane prefHeight="613.0" prefWidth="688.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+<AnchorPane prefHeight="659.0" prefWidth="688.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label layoutX="214.0" layoutY="14.0" text="Survey Management" underline="true">
          <font>
             <Font size="24.0" />
          </font>
       </Label>
-      <TabPane layoutX="4.0" layoutY="49.0" prefHeight="552.0" prefWidth="679.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane layoutX="4.0" layoutY="49.0" prefHeight="593.0" prefWidth="679.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="Survey List">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <ListView layoutX="14.0" layoutY="14.0" prefHeight="519.0" prefWidth="651.0" />
+                     </children></AnchorPane>
             </content>
           </Tab>
           <Tab text="Create Survey">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="459.0" prefWidth="580.0">
                      <children>
-                        <Label layoutX="10.0" layoutY="14.0" text="Follow the steps below" />
-                        <TabPane layoutX="-1.0" layoutY="60.0" prefHeight="337.0" prefWidth="679.0" tabClosingPolicy="UNAVAILABLE">
+                        <Button layoutX="196.0" layoutY="495.0" mnemonicParsing="false" text="&lt;&lt;Previous" />
+                        <Label layoutX="10.0" layoutY="14.0" text="Follow the steps below:" />
+                        <TabPane layoutX="-1.0" layoutY="60.0" prefHeight="424.0" prefWidth="679.0" tabClosingPolicy="UNAVAILABLE">
                           <tabs>
                             <Tab text="Step 1">
                               <content>
@@ -46,7 +49,7 @@
                                     </AnchorPane>
                               </content>
                             </Tab>
-                            <Tab text="Step 2">
+                            <Tab disable="true" text="Step 2">
                               <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="391.0" prefWidth="580.0">
                                        <children>
@@ -64,7 +67,7 @@
                                     </AnchorPane>
                               </content>
                             </Tab>
-                              <Tab text="Step 3">
+                              <Tab disable="true" text="Step 3">
                                 <content>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
@@ -82,7 +85,7 @@
                                     </AnchorPane>
                                 </content>
                               </Tab>
-                              <Tab text="Step 4">
+                              <Tab disable="true" text="Step 4">
                                 <content>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
@@ -100,39 +103,62 @@
                                     </AnchorPane>
                                 </content>
                               </Tab>
-                              <Tab text="Step 5">
+                              <Tab disable="true" text="Step 5">
                                 <content>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <TitledPane animated="false" layoutX="10.0" layoutY="36.0" prefHeight="145.0" prefWidth="659.0" text="Question">
+                                          <TitledPane animated="false" layoutX="11.0" layoutY="36.0" prefHeight="146.0" prefWidth="659.0" text="Question">
                                             <content>
-                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                   <children>
+                                                      <Label layoutX="14.0" layoutY="19.0" text="Content" />
+                                                      <TextField layoutX="86.0" layoutY="14.0" prefHeight="39.0" prefWidth="555.0" />
+                                                   </children></AnchorPane>
                                             </content>
                                           </TitledPane>
                                        </children>
                                     </AnchorPane>
                                 </content>
                               </Tab>
-                              <Tab text="Step 6">
+                              <Tab disable="true" text="Step 6">
                                 <content>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <TitledPane animated="false" layoutX="10.0" layoutY="36.0" prefHeight="220.0" prefWidth="660.0" text="Question">
+                                          <TitledPane animated="false" layoutX="10.0" layoutY="36.0" prefHeight="146.0" prefWidth="660.0" text="Question">
                                             <content>
-                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                   <children>
+                                                      <Label layoutX="15.0" layoutY="19.0" text="Content" />
+                                                      <TextField layoutX="87.0" layoutY="14.0" prefHeight="39.0" prefWidth="555.0" />
+                                                   </children></AnchorPane>
                                             </content>
                                           </TitledPane>
                                        </children>
                                     </AnchorPane>
                                 </content>
                               </Tab>
-                              <Tab text="Confirm">
+                              <Tab disable="true" text="Confirm">
                                 <content>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="196.0" prefWidth="679.0">
                                        <children>
-                                          <TitledPane animated="false" layoutX="10.0" layoutY="36.0" prefHeight="220.0" prefWidth="660.0" text="Confirmation">
+                                          <TitledPane animated="false" layoutX="10.0" layoutY="10.0" prefHeight="359.0" prefWidth="660.0" text="Confirmation">
                                             <content>
-                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="652.0" />
+                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="652.0">
+                                                   <children>
+                                                      <Label layoutX="14.0" layoutY="14.0" text="One" />
+                                                      <TextField layoutX="66.0" layoutY="8.0" prefHeight="39.0" prefWidth="579.0" />
+                                                      <Label layoutX="14.0" layoutY="54.0" text="Two" />
+                                                      <Label layoutX="14.0" layoutY="94.0" text="Three" />
+                                                      <Label layoutX="14.0" layoutY="133.0" text="Four" />
+                                                      <Label layoutX="15.0" layoutY="172.0" text="Five" />
+                                                      <Label layoutX="17.0" layoutY="212.0" text="Six" />
+                                                      <TextField layoutX="66.0" layoutY="48.0" prefHeight="39.0" prefWidth="579.0" />
+                                                      <TextField layoutX="66.0" layoutY="88.0" prefHeight="39.0" prefWidth="579.0" />
+                                                      <TextField layoutX="66.0" layoutY="128.0" prefHeight="39.0" prefWidth="579.0" />
+                                                      <TextField layoutX="66.0" layoutY="169.0" prefHeight="39.0" prefWidth="579.0" />
+                                                      <TextField layoutX="66.0" layoutY="210.0" prefHeight="39.0" prefWidth="579.0" />
+                                                      <Button layoutX="257.0" layoutY="266.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="94.0" text="Save" />
+                                                   </children></AnchorPane>
                                             </content>
                                           </TitledPane>
                                        </children>
@@ -141,6 +167,7 @@
                               </Tab>
                           </tabs>
                         </TabPane>
+                        <Button layoutX="340.0" layoutY="496.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="117.0" text="Next&gt;&gt;" />
                      </children>
                   </AnchorPane>
             </content>
