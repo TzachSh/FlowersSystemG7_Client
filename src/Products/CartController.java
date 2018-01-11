@@ -48,8 +48,7 @@ public class CartController implements Initializable
       @FXML
       private Button btnBackToCatalog;
     
-	  @FXML
-	  private MenuItem btnAddFromCatalog;
+	
 
 	  @FXML
 	  private Button btnPurchase;
@@ -60,8 +59,8 @@ public class CartController implements Initializable
 	  @FXML
       private ListView<Product> lstCart;
 
-	  @FXML
-	  private MenuItem btnAddCustomProduct;
+	   @FXML
+	   private Button btnAddCustomProduct;
 	
 	   /** Map for save all both catalog products and custom product and their quantity for the cart  */
 	  public static LinkedHashMap<Product, Integer> cartProducts = new LinkedHashMap<>();
@@ -345,19 +344,6 @@ public class CartController implements Initializable
 		}
 		
 		/**
-		 * Register an event that occurs when clicking on Add From Catalog button
-		 */
-		public void registerAddFromCatalogButton()
-		{
-			btnAddFromCatalog.setOnAction(new EventHandler<ActionEvent>() {
-	            @Override
-	            public void handle(ActionEvent event) {
-	            	showSelectProductFrm();
-	            }
-	        });
-		}
-		
-		/**
 		 * Open Catalog Viewer Form
 		 */
 		private void showSelectProductFrm()
@@ -405,13 +391,14 @@ public class CartController implements Initializable
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		registerAddFromCatalogButton();
 		registerBackToCatalogButton();
 		fillCatalogItems();
 		updateTotalPrice();
 		
 		if (comesFromCatalog)
-			btnBackToCatalog.setVisible(true);
+			btnBackToCatalog.setText("Back To Catalog");
+		else
+			btnBackToCatalog.setText("Add From Catalog");
 	}
 
 }
