@@ -419,7 +419,7 @@ public class SelectProductController implements Initializable
 			Account account = getAccountByBranchId(branch.getbId());
 			if (account != null)
 				hasAccountForCurrentBranch = true;
-			else
+			else if (catalogUse != CatalogUse.updateSale)
 			{
 				hasAccountForCurrentBranch = false;
 				displayAlert(AlertType.WARNING, "Warning!", "No Account!", "You don't have account for selected branch, Please contact with Branch Manager for open a new one");
@@ -586,6 +586,8 @@ public class SelectProductController implements Initializable
 						modify.setGraphic(viewModify);
 						modify.setPrefWidth(78);
 						
+						registerUpdateCatalog(modify, pro);
+						
 						Button remove = new Button("Delete");
 						Image imageRemove = new Image("delete.png");
 						ImageView viewRemove = new ImageView(imageRemove);
@@ -698,6 +700,25 @@ public class SelectProductController implements Initializable
 						
 						updateTotalPriceAndAddToCartButton();
 					
+					});
+				}
+				
+				public void registerUpdateCatalog(Button button, CatalogProduct pro)
+				{
+					button.setOnMouseClicked((event) -> {
+						
+						try
+						{
+						Stage stage = (Stage)button.getScene().getWindow();
+				    	  stage.close();
+						CatalogProductController catalogProductController = new CatalogProductController();
+						catalogProductController.setCatalogProductForUpdating(pro, catalogProductWithAdditionalDetails.get(pro).catalogImage);
+						catalogProductController.start(new Stage());
+						}
+						catch (Exception e) 
+		        		{
+		        			displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Add Catalog Window", e.getMessage());
+		        		}
 					});
 				}
 				
@@ -855,6 +876,7 @@ public class SelectProductController implements Initializable
 	        			Stage primaryStage = new Stage();
 	        			CatalogProductController catalogProductController = new CatalogProductController();
 	        			catalogProductController.setCatalogProductForInserting();
+	        			catalogProductController.comesFromCatalog = true;
 	        			catalogProductController.start(primaryStage);
 	        		}
 	        		catch (Exception e) 
