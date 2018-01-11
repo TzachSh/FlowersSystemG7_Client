@@ -15,8 +15,9 @@ public class EditProductUI extends Application
 	@Override
 	public void start(Stage arg0) throws Exception
 	{
+		/*
 		CatalogProductController catalogProductController = new CatalogProductController();
-		catalogProductController.setCatalogProductForInserting();
-		catalogProductController.start(arg0);
+		catalogProductController.setCatalogProductForInserting(arg0);
+		catalogProductController.start(arg0);*/
 	}
 }

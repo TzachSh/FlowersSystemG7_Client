@@ -3,7 +3,9 @@ package Products;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringBufferInputStream;
 import java.net.URL;
+import java.nio.channels.CancelledKeyException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -20,6 +22,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -39,6 +42,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 
 
@@ -143,17 +147,22 @@ public class CatalogProductController implements Initializable
 		private static boolean updateForm;
 		private static CatalogProduct catalogProduct;
 		private static FileSystem imageProduct;
-		private static ArrayList<FlowerInProduct> flowersInTheProduct = new ArrayList<>(); 
+		private static ArrayList<FlowerInProduct> flowersInTheProduct = new ArrayList<>();
+		/** set all active and not active catalog products from db */
+		private static ArrayList<CatalogProduct> catalogProductsList = new ArrayList<>();
 		private ArrayList<ProductType> productTypesList = new ArrayList<>();
 		private ArrayList<Flower> flowersList = new ArrayList<>();
-		private Stage primaryStage;
+		private static Stage primaryStage;
+		//private static Stage prevStage;
 		public static boolean comesFromCatalog = false;
+		private static SelectProductController selectController;
 	/**
 	 * Prepare the Form for updating an exists product
 	 * @param product The instance of the product to update
 	 */
-	public void setCatalogProductForUpdating(CatalogProduct product, FileSystem productImage)
+	public void setCatalogProductForUpdating(CatalogProduct product, FileSystem productImage, SelectProductController selectProController)
 	{
+		selectController = selectProController;
 		if (product != null && productImage != null) // uses for update product
 		{
 			catalogProduct = product;
@@ -165,15 +174,16 @@ public class CatalogProductController implements Initializable
 		}
 		else // set for insert
 		{
-			setCatalogProductForInserting();
+			setCatalogProductForInserting(selectProController);
 		}
 	}
 	
 	/**
 	 * Prepare the Form for inserting a new product
 	 */
-	public void setCatalogProductForInserting()
+	public void setCatalogProductForInserting(SelectProductController selectProController)
 	{
+		selectController = selectProController;
 		catalogProduct = new CatalogProduct();
 		imageProduct = new FileSystem();
 		flowersInTheProduct = new ArrayList<>();
@@ -215,6 +225,28 @@ public class CatalogProductController implements Initializable
 	}
 	
 	/**
+	 * Check if there is in the collection of products the specific name
+	 * @param productName The name if catalog product to check if it already exists
+	 */
+	public boolean productNameIsAlreadyExists(String productName)
+	{
+		for (CatalogProduct product : catalogProductsList)
+		{
+			if (updateForm)
+			{
+				if (product.getId() != catalogProduct.getId() && product.getName().toLowerCase().equals(productName.toLowerCase()))
+					return true;
+			}
+			else
+			{
+				if (product.getName().toLowerCase().equals(productName.toLowerCase()))
+					return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
 	 * Send a request to the server for getting all the Collections for product Types and Flowers
 	 */
 	public void pushAllTypesAndFlowers()
@@ -222,6 +254,7 @@ public class CatalogProductController implements Initializable
 		Packet packet = new Packet();
 		packet.addCommand(Command.getProductTypes);
 		packet.addCommand(Command.getFlowers);
+		packet.addCommand(Command.getAllCatalogProducts);
 		
 		// create the thread for send to server the message
 		SystemSender send = new SystemSender(packet);
@@ -238,7 +271,7 @@ public class CatalogProductController implements Initializable
 				{
 					setProductsTypes(p.<ProductType>convertedResultListForCommand(Command.getProductTypes));
 					setFlowers(p.<Flower>convertedResultListForCommand(Command.getFlowers));
-					
+					catalogProductsList = p.<CatalogProduct>convertedResultListForCommand(Command.getAllCatalogProducts);
 					setComboBoxTypesList(productTypesList);
 					setComboBoxFlowersList(flowersList);
 					
@@ -398,6 +431,8 @@ public class CatalogProductController implements Initializable
 		{
 			updateProductToDB(catalogProduct, imageProduct, flowersInTheProduct);
 		}
+		
+		selectController.fillCatalogItems();
 	}
 	
 	public void clearAllForm()
@@ -552,6 +587,7 @@ public class CatalogProductController implements Initializable
 				if (p.getResultState())
 				{
 					displayAlert(AlertType.INFORMATION, "Success Updating", "Updating To Database", "Successfull!");
+					
 					pressedCancelButton();
 				}
 				else
@@ -652,11 +688,12 @@ public class CatalogProductController implements Initializable
 	public void pressedCancelButton()
 	{
 		 try {
-		  Stage stage = (Stage)btnCancel1.getScene().getWindow();
-		  stage.close();
 		  
+		  primaryStage.close();
+	
 		  if (updateForm || comesFromCatalog)
 		  {
+			 
 			SelectProductController selectController = new SelectProductController();
 			selectController.setForUpdateCatalog(SelectProductUI.customer);
 		  	selectController.start(new Stage());
@@ -683,6 +720,9 @@ public class CatalogProductController implements Initializable
 		
 		try
 		{
+			if (productNameIsAlreadyExists(name))
+				throw new Exception();
+			
 			updateProductDetails(name, price, selectedTypeIndex);
 		
 			// select Flower Pane as the next tab
@@ -697,6 +737,16 @@ public class CatalogProductController implements Initializable
 		{
 			tabFlowers.setDisable(true);
 			displayAlert(AlertType.ERROR, "Error", "Selected Type Error", "Failed On Saving Product Details, Make Sure You Selected Type");
+		}
+		catch (Exception e)
+		{
+			displayAlert(AlertType.ERROR, "Error", "Duplicate Product Name", "The Product Name is Already Exists! Please Enter another one.");
+			
+			tabFlowers.setDisable(true);
+			tabImage.setDisable(true);
+			tabProduct.setDisable(false);
+			SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
+			selectionModel.select(0);
 		}
 	}
 	
@@ -1106,6 +1156,29 @@ public class CatalogProductController implements Initializable
 		primaryStage.setResizable(false);
 		primaryStage.setScene(scene);		
 		primaryStage.show();
+		
+		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+	          public void handle(WindowEvent we) {
+	        	  try {
+	        		  primaryStage.close();
+	        		  
+	        		  if (updateForm || comesFromCatalog)
+	        		  {
+	        			SelectProductController selectController = new SelectProductController();
+	        			selectController.setForUpdateCatalog(SelectProductUI.customer);
+	        		  	selectController.start(new Stage());
+	        		  }
+	        		  else
+	        		  {
+	        			  //<< back to menu >>
+	        		  }
+	        		} 
+	        		 catch (Exception e) {
+	        			// TODO Auto-generated catch block
+	        			e.printStackTrace();
+	        		}
+	          }
+	      }); 
 	}
 	
 	@Override
@@ -1125,7 +1198,7 @@ public class CatalogProductController implements Initializable
 		int selectedFlowerIndex = cmbFlower.getSelectionModel().getSelectedIndex();
 		productDetailsValidation(txtName.getText(), txtPrice.getText(), selectedTypeIndex);
 		addingFlowerValidation(selectedFlowerIndex, txtQty.getText());
-		flowersDetailsValidation();
+		flowersDetailsValidation();       
 	}
 	
 }

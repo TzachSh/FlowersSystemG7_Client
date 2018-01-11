@@ -20,7 +20,8 @@ public class SelectProductUI extends Application {
 	public void start(Stage arg0) throws Exception {
 		SelectProductController selectController = new SelectProductController();
 		customer = new Customer(1, 2, 1);
-		//selectController.setForUpdateSale(new Employee(1, "t", "1234", true, Permission.Administrator, 1, Role.BranchManager, 2));
+		Employee employee = new Employee(1, "t", "1234", true, Permission.Administrator, 1, Role.BranchManager, 2);
+		//selectController.setForUpdateCatalog(employee);
 		//selectController.setForViewingCatalog(customer);
 		selectController.setForUpdateSale(new Employee(1, "t", "1234", true, Permission.Administrator, 1, Role.BranchManager, 2));
 		selectController.start(arg0);

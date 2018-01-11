@@ -5,6 +5,7 @@ package Products;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 import java.util.Map;
@@ -77,7 +78,7 @@ public class SelectProductController implements Initializable
     private Label lblTitle;
 
     @FXML
-    private ListView<CatalogProduct> listViewCatalog;
+    private ListView<Product> listViewCatalog;
 
     @FXML
     private Label lblBranch;
@@ -92,14 +93,8 @@ public class SelectProductController implements Initializable
     public enum CatalogUse { updateSale, order, updateCatalog, viewingCatalog, cart }
     
     /**  linkedHashMap for easy mapping from catalogProduct to it's details such sales and image */
-	public static LinkedHashMap<CatalogProduct, CatalogProductDetails> catalogProductWithAdditionalDetails = new LinkedHashMap<>();
+	public static LinkedHashMap<Product, CatalogProductDetails> catalogProductWithAdditionalDetails = new LinkedHashMap<>();
 
-	/** all catalog products */
-	public static ArrayList<CatalogProduct> catalogProductsList = new ArrayList<>();
-	
-	/** all images of products */
-	public static ArrayList<FileSystem> catalogImagesList = new ArrayList<>();
-	
 	/** the selection products in the listview, used for order operation */
 	public static ArrayList<Product> productsSelected = new ArrayList<>();
 
@@ -111,9 +106,10 @@ public class SelectProductController implements Initializable
 	private static String title;
 	private static int branchId;
 	private static User userLogged;
-	private ObservableList<CatalogProduct> data;
+	private ObservableList<Product> data;
 	private boolean hasAccountForCurrentBranch = false;
-	
+	public static Stage mainStage;
+	private static SelectProductController controllerInstance;
 	/**
 	 * Show an Alert dialog with custom info
 	 */
@@ -225,9 +221,9 @@ public class SelectProductController implements Initializable
 				ArrayList<CatalogInBranch> sales = p.<CatalogInBranch>convertedResultListForCommand(Command.getBranchSales);
 
 				// link each catalog product to it's sales, if there is a sale
-				for (Map.Entry<CatalogProduct, CatalogProductDetails> entry : catalogProductWithAdditionalDetails.entrySet())
+				for (Map.Entry<Product, CatalogProductDetails> entry : catalogProductWithAdditionalDetails.entrySet())
 				{
-					CatalogProduct pro = entry.getKey();
+					CatalogProduct pro = (CatalogProduct)entry.getKey();
 					CatalogProductDetails proDetails = entry.getValue();
 					
 					proDetails.catalogSale = null;
@@ -280,6 +276,61 @@ public class SelectProductController implements Initializable
 		return null;
 	}
 	
+	/**
+	 * Set a specific product as deleted, by changing it's state in db to unActive
+	 * @param pro The product object to check as deleted
+	 */
+	public void setProductAsDeleted(CatalogProduct pro)
+	{
+		Packet packet = new Packet();
+		packet.addCommand(Command.setProductAsDeleted);
+		
+		ArrayList<Object> product=new ArrayList<>();
+		product.add(pro);
+		packet.setParametersForCommand(Command.setProductAsDeleted, product);
+		
+		// create the thread for send to server the message
+		SystemSender send = new SystemSender(packet);
+
+		// register the handler that occurs when the data arrived from the server
+		send.registerHandler(new IResultHandler() {
+
+			@Override
+			public void onReceivingResult(Packet p) {
+				if (p.getResultState())
+				{
+					deleteProductFromLists((Product)pro);
+					fillCatalogItems();
+				}
+				else
+				{
+					displayAlert(AlertType.ERROR, "Error", "Exception Error:", p.getExceptionMessage());
+				}
+			}
+
+			@Override
+			public void onWaitingForResult() { }
+		});
+		send.start();
+		
+	}
+	
+	/**
+	 * Delete an instance product from all lists
+	 */
+	private void deleteProductFromLists(Product product)
+	{
+		for (
+			    Iterator<Map.Entry<Product, CatalogProductDetails>> iter = catalogProductWithAdditionalDetails.entrySet().iterator();
+			    iter.hasNext();
+			) {
+			    Map.Entry<Product, CatalogProductDetails> entry = iter.next();
+			    if (product.getId() == entry.getKey().getId()) {
+			        iter.remove();
+			        break; // if only want to remove first match.
+			    }
+			}
+	}
 	
 	/**
 	 * Get from the server all the collections that uses for the controller and set to each attribute
@@ -317,8 +368,8 @@ public class SelectProductController implements Initializable
 			{
 				if (p.getResultState())
 				{
-					catalogImagesList = p.<FileSystem>convertedResultListForCommand(Command.getCatalogImage);
-					catalogProductsList = p.<CatalogProduct>convertedResultListForCommand(Command.getCatalogProducts);
+					ArrayList<FileSystem> catalogImagesList = p.<FileSystem>convertedResultListForCommand(Command.getCatalogImage);
+					ArrayList<CatalogProduct> catalogProductsList = p.<CatalogProduct>convertedResultListForCommand(Command.getCatalogProducts);
 					ArrayList<FlowerInProduct> flowersInProductList = p.<FlowerInProduct>convertedResultListForCommand(Command.getFlowersInProducts);
 					branchList = p.<Branch>convertedResultListForCommand(Command.getBranches);
 					flowersList = p.<Flower>convertedResultListForCommand(Command.getFlowers);
@@ -367,6 +418,7 @@ public class SelectProductController implements Initializable
 	
 	public void start(Stage primaryStage) throws Exception {	
 		
+		mainStage = primaryStage;
 		String srcFXML = "/Products/SelectProductApp.fxml";
 		String srcCSS = "/Products/application.css";
 		
@@ -438,20 +490,38 @@ public class SelectProductController implements Initializable
 	}
 	
 	/**
+	 * Get Catalog Product Details by Product Id
+	 */
+	public CatalogProductDetails getProductById(int productId)
+	{
+		for (Map.Entry<Product, CatalogProductDetails> entry : catalogProductWithAdditionalDetails.entrySet())
+		{
+			if (entry.getKey().getId() == productId)
+				return entry.getValue();
+		}
+		return null;
+	}
+	
+	/**
 	 * Fill all catalog items to the customize listview dynamically
 	 */
 	public void fillCatalogItems()
 	{
-		data = FXCollections.observableArrayList(catalogProductsList);
-		listViewCatalog.setCellFactory(new Callback<ListView<CatalogProduct>, ListCell<CatalogProduct>>() {
+		data = FXCollections.observableArrayList(new ArrayList<>(catalogProductWithAdditionalDetails.keySet()));
+		listViewCatalog.setCellFactory(new Callback<ListView<Product>, ListCell<Product>>() {
 			
 			@Override
-			public ListCell<CatalogProduct> call(ListView<CatalogProduct> param) {
-				return new ListCell<CatalogProduct>() {
+			public ListCell<Product> call(ListView<Product> param) {
+				return new ListCell<Product>() {
 					
-				private void setCellHandler(CatalogProduct pro)
+				private void setCellHandler(Product pro)
 				{
-					CatalogProductDetails proDetails = catalogProductWithAdditionalDetails.get(pro);
+					CatalogProductDetails proDetails = getProductById(pro.getId());
+					
+					if (proDetails == null)
+						return;
+					
+					CatalogProduct catalogProduct = (CatalogProduct)pro;
 					
 					// define catalog image
 					ImageView imgView = new ImageView();
@@ -464,13 +534,17 @@ public class SelectProductController implements Initializable
 					{ 
 						img = proDetails.catalogImage.getImage();
 					}
+					catch (Exception e) 
+					{ 
+						img = new Image("blank.png");
+					}
 					
 					imgView.setImage(img);
 					imgView.setFitWidth(100);
 					imgView.setFitHeight(100);
 					//
 					
-					Text proName = new Text(pro.getName());
+					Text proName = new Text(catalogProduct.getName());
 					proName.setFont(new Font(16));
 					proName.setStyle("-fx-font-weight: bold");
 					
@@ -496,7 +570,7 @@ public class SelectProductController implements Initializable
 						price.setFill(Color.RED);
 						
 						// add text for price after discount
-						double finalPrice = getFinalPrice(pro);
+						double finalPrice = getFinalPrice(catalogProduct);
 						Text sale = new Text(String.format("%.2f¤", finalPrice));
 						sale.setFill(Color.GREEN);
 						sale.setFont(new Font(14));
@@ -552,7 +626,7 @@ public class SelectProductController implements Initializable
 					
 					flowers.setSpacing(2);
 					
-					VBox buttons = createButtonsVBox(hasSale, pro);
+					VBox buttons = createButtonsVBox(hasSale, catalogProduct);
 					
 					productDetails.setSpacing(5);
 					
@@ -595,6 +669,8 @@ public class SelectProductController implements Initializable
 						viewRemove.setFitHeight(20);
 						remove.setGraphic(viewRemove);
 						remove.setPrefWidth(78);
+						
+						registerDeleteProduct(remove, pro);
 						
 						buttons = new VBox(modify, remove);
 					}
@@ -710,21 +786,29 @@ public class SelectProductController implements Initializable
 						try
 						{
 						Stage stage = (Stage)button.getScene().getWindow();
-				    	  stage.close();
+				    	stage.hide();
 						CatalogProductController catalogProductController = new CatalogProductController();
-						catalogProductController.setCatalogProductForUpdating(pro, catalogProductWithAdditionalDetails.get(pro).catalogImage);
+						CatalogProductDetails proDetails = getProductById(pro.getId());
+						catalogProductController.setCatalogProductForUpdating(pro, proDetails.catalogImage, controllerInstance);
 						catalogProductController.start(new Stage());
 						}
 						catch (Exception e) 
-		        		{
-		        			displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Add Catalog Window", e.getMessage());
-		        		}
+						{
+							displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Add Catalog Window", e.getMessage());
+						}
+					});
+				}
+
+				public void registerDeleteProduct(Button button, CatalogProduct pro)
+				{
+					button.setOnMouseClicked((event) -> {
+						setProductAsDeleted(pro);
 					});
 				}
 				
 				
 			    @Override
-				protected void updateItem(CatalogProduct item, boolean empty) {
+				protected void updateItem(Product item, boolean empty) {
 					//super.updateItem(item, empty);
 						
 					 if (item != null) {	
@@ -746,6 +830,8 @@ public class SelectProductController implements Initializable
         });
 	}
 	
+
+
 	/**
 	 * Calculate the final price, even after the discount if have
 	 */
@@ -851,7 +937,7 @@ public class SelectProductController implements Initializable
 	 */
 	public void clearCatalogInBranchInstances()
 	{
-		for (Map.Entry<CatalogProduct, CatalogProductDetails> entry : catalogProductWithAdditionalDetails.entrySet())
+		for (Map.Entry<Product, CatalogProductDetails> entry : catalogProductWithAdditionalDetails.entrySet())
 		{
 			entry.getValue().catalogSale = null;
 		}
@@ -867,15 +953,18 @@ public class SelectProductController implements Initializable
 	 */
 	public void registerAddCatalogButtonHandle()
 	{
+		
+		
 		btnAddCatalogProduct.setOnAction(new EventHandler<ActionEvent>() {
 	            @Override
 	            public void handle(ActionEvent event) {
 	            	try 
 	        		{
-	        			((Node)event.getSource()).getScene().getWindow().hide(); //hiding primary window
-	        			Stage primaryStage = new Stage();
-	        			CatalogProductController catalogProductController = new CatalogProductController();
-	        			catalogProductController.setCatalogProductForInserting();
+	            		Stage primaryStage = (Stage)((Node)event.getSource()).getScene().getWindow();
+	            		primaryStage.hide(); //hiding primary window
+
+	            		CatalogProductController catalogProductController = new CatalogProductController();
+	            		catalogProductController.setCatalogProductForInserting(controllerInstance);
 	        			catalogProductController.comesFromCatalog = true;
 	        			catalogProductController.start(primaryStage);
 	        		}
@@ -944,9 +1033,9 @@ public class SelectProductController implements Initializable
 			cmbBranch.getSelectionModel().select(index);
 			cmbBranch.setDisable(true);
 			linkChangeBranch.setVisible(false);
-			lblBranch.setVisible(true);
-			lblBranch.setText("Current Branch: " + branchList.get(index));
-			lblBranch.setTextFill(Color.BLACK);
+			lblBranch.setVisible(false);
+			//lblBranch.setText("Current Branch: " + branchList.get(index));
+			//lblBranch.setTextFill(Color.BLACK);
 		}
 		else if (catalogUse == CatalogUse.updateCatalog)
 		{
@@ -976,7 +1065,7 @@ public class SelectProductController implements Initializable
 		lblTitle.setVisible(true);
 		lblTitle.setText(title);
 		initializeCollections();
-		
+		controllerInstance = this;
 	}
 
 	/**
