@@ -156,6 +156,8 @@ public class CatalogProductController implements Initializable
 		//private static Stage prevStage;
 		public static boolean comesFromCatalog = false;
 		private static SelectProductController selectController;
+		
+		
 	/**
 	 * Prepare the Form for updating an exists product
 	 * @param product The instance of the product to update
