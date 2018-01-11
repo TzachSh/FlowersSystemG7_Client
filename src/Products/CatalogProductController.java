@@ -13,6 +13,7 @@ import PacketSender.FileSystem;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
+import Products.SelectProductController.CatalogUse;
 import Users.User;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -146,7 +147,7 @@ public class CatalogProductController implements Initializable
 		private ArrayList<ProductType> productTypesList = new ArrayList<>();
 		private ArrayList<Flower> flowersList = new ArrayList<>();
 		private Stage primaryStage;
-		
+		public static boolean comesFromCatalog = false;
 	/**
 	 * Prepare the Form for updating an exists product
 	 * @param product The instance of the product to update
@@ -470,7 +471,7 @@ public class CatalogProductController implements Initializable
 					pro.setId(productResult.getId());
 					imageProduct.setProductId(productResult.getId());
 					displayAlert(AlertType.INFORMATION, "Success Inserting", "Inserting To Database", "Successfull!");
-					clearAllForm();
+					pressedCancelButton();
 				}
 				else
 				{
@@ -654,9 +655,10 @@ public class CatalogProductController implements Initializable
 		  Stage stage = (Stage)btnCancel1.getScene().getWindow();
 		  stage.close();
 		  
-		  if (updateForm)
+		  if (updateForm || comesFromCatalog)
 		  {
 			SelectProductController selectController = new SelectProductController();
+			selectController.setForUpdateCatalog(SelectProductUI.customer);
 		  	selectController.start(new Stage());
 		  }
 		  else
