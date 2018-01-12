@@ -35,7 +35,6 @@ public class ComplainsManagementUI extends Application {
 	@Override
 	public void start(Stage arg0) throws Exception {
 		// TODO Auto-generated method stub
-
 		Employee employee = new CustomerService(1,"lol","111",true,null,11,Role.CustomerService,1,null);
 		ComplainsController complainsController = new ComplainsController(employee);
 		complainsController.start(arg0);
