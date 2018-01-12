@@ -21,8 +21,17 @@ public class Complain implements IRefundAble, Serializable {
 	private String details;
 	private int customerId;
 	private int customerServiceId;
+	private int branchId;
 	private boolean isActive;
 	
+	public int getBranchId() {
+		return branchId;
+	}
+
+	public void setBranchId(int branchId) {
+		this.branchId = branchId;
+	}
+
 	/**
 	 * 
 	 * @return complain id
@@ -132,7 +141,7 @@ public class Complain implements IRefundAble, Serializable {
 	 * for Client side use
 	 */
 	public Complain(Date creationDate, String title, String details, int customerId,
-			int customerServiceId,boolean isActive) {
+			int customerServiceId,boolean isActive,int branchId) {
 		super();
 		this.creationDate = creationDate;
 		this.title = title;
@@ -140,6 +149,7 @@ public class Complain implements IRefundAble, Serializable {
 		this.customerId = customerId;
 		this.customerServiceId = customerServiceId;
 		this.isActive = isActive;
+		this.branchId = branchId;
 	}
 
 	/**
@@ -156,7 +166,7 @@ public class Complain implements IRefundAble, Serializable {
 	 * for server side use
 	 */
 	public Complain(int id, Date creationDate, String title, String details, int customerId,
-			int customerServiceId,boolean isActive) {
+			int customerServiceId,boolean isActive,int branchId) {
 		super();
 		this.id = id;
 		this.creationDate = creationDate;
@@ -165,6 +175,7 @@ public class Complain implements IRefundAble, Serializable {
 		this.customerId = customerId;
 		this.customerServiceId = customerServiceId;
 		this.isActive = isActive;
+		this.branchId = branchId;
 	}
 
 	/**

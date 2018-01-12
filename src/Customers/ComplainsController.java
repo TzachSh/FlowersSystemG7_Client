@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import Branches.Branch;
 import Branches.CustomerService;
 import Branches.Employee;
 import PacketSender.Command;
@@ -45,6 +46,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 /**
  * 
  * Complains controller which performs adding new complains and follow them 
@@ -62,15 +64,54 @@ public class ComplainsController implements Initializable {
 	@FXML private TextField txtAddTitle;
 	@FXML private TextField txtAddCustId;
 	@FXML private TabPane complainsTabedPane;
+	@FXML private ComboBox<Branch> cmbBranch;
+	
 	
 	//List to be updated
 	private ObservableList<Complain> data;
+	private ArrayList<Branch> branchList;
+	private ObservableList<Branch> branchData;
 	private ArrayList<Complain> allComplainsList;
 	private ArrayList<Complain> currentServiceEmployeeComplains;
+	private ArrayList<Account> customerAccList;
 	
 	//Save current user accessed
 	public static Employee customerService;
 	
+	/**
+	 * Initializing a Combo Box component with the relevant branches which the customer is registered to 
+	 */
+	private void initCmb()
+	{
+		cmbSetConverter();
+		
+		branchData = FXCollections.observableArrayList(branchList);
+		cmbBranch.setItems(branchData);
+		cmbBranch.getSelectionModel().selectFirst();
+	}
+	
+	private void cmbSetConverter()
+	{
+		cmbBranch.setConverter(new StringConverter<Branch>() {
+
+			/**
+			 * Getting a Branch object by his name
+			 * @param string - string to be converted to a Branch object
+			 */
+			@Override
+			public Branch fromString(String string) {
+				return null;
+			}
+			/**
+			 * getting a String of the name of a branch by a Branch object
+			 * Branch to be converted in to a String name
+			 */
+			@Override
+			public String toString(Branch object) {
+				return String.format("%s", object.getName());
+			}
+		});
+	}
 	
 	
 	public Employee getCustomerService() {
@@ -107,6 +148,16 @@ public class ComplainsController implements Initializable {
 			System.out.println(e);
 			e.printStackTrace();
 		}
+	}
+	
+	private Account getCustomerAccountInBranch(int bId)
+	{
+		Account retAcc = null;
+		for(Account account : customerAccList)
+			if(account.getBranchId() == bId)
+				retAcc = account;
+		
+		return retAcc;		
 	}
 	
 	public ComplainsController(Employee employee)
@@ -168,12 +219,12 @@ public class ComplainsController implements Initializable {
 		String details = txtAddDesc.getText();
 		int customerServiceId = customerService.getuId();
 		java.sql.Date sqlDate = new java.sql.Date(new java.util.Date().getTime());
-		Complain complain = new Complain(sqlDate, title, details, customerId, customerServiceId,true); // Update to customerServiceId 
+	//	Complain complain = new Complain(sqlDate, title, details, customerId, customerServiceId,true); // Update to customerServiceId 
 		
 		Packet packet = new Packet();
 		packet.addCommand(Command.addComplain);
 		ArrayList<Object> paramList = new ArrayList<>();
-		paramList.add(complain);
+		//paramList.add(complain);
 		packet.setParametersForCommand(Command.addComplain, paramList);
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
@@ -361,6 +412,39 @@ public class ComplainsController implements Initializable {
 				}};
 			}
 		});
+	}
+	
+	private void initBranchesCmb()
+	{
+		Packet packet = new Packet();
+		packet.addCommand(Command.getBranches);
+		ArrayList<Object> paramListBranches = new ArrayList<>();
+		packet.setParametersForCommand(Command.getBranches, paramListBranches);
+		SystemSender sender = new SystemSender(packet);
+		sender.registerHandler(new IResultHandler() {
+			
+			/**
+			 * On waiting for a message from the server
+			 */
+			@Override
+			public void onWaitingForResult() {
+				// TODO Auto-generated method stub
+				
+			}
+			/**
+			 * On getting a message from the server
+			 */
+			@Override
+			public void onReceivingResult(Packet p) {
+				// TODO Auto-generated method stub
+				if(p.getResultState())
+				{
+					branchList = p.<Branch>convertedResultListForCommand(Command.getBranches);
+					initCmb();
+				}
+			}
+		});
+		sender.start();
 	}
 	
 	/**

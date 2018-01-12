@@ -54,8 +54,10 @@
                                     <Label layoutX="14.0" layoutY="18.0" text="Customer ID" />
                                     <TextField fx:id="txtAddCustId" layoutX="131.0" layoutY="12.0" prefHeight="6.0" prefWidth="184.0" />
                                     <TextField fx:id="txtAddTitle" layoutX="131.0" layoutY="56.0" prefHeight="0.0" prefWidth="185.0" />
-                                    <TextArea fx:id="txtAddDesc" layoutX="131.0" layoutY="101.0" prefHeight="138.0" prefWidth="271.0" />
+                                    <TextArea fx:id="txtAddDesc" layoutX="131.0" layoutY="101.0" prefHeight="79.0" prefWidth="271.0" />
                                     <Button fx:id="btnAddSave" layoutX="185.0" layoutY="247.0" mnemonicParsing="false" onAction="#handleAddNewComplain" prefHeight="39.0" prefWidth="134.0" text="Save" />
+                                    <Label layoutX="14.0" layoutY="193.0" text="Branch" />
+                                    <ComboBox fx:id="cmbBranch" layoutX="131.0" layoutY="193.0" prefHeight="39.0" prefWidth="185.0" />
                                  </children>
                               </AnchorPane>
                           </content>

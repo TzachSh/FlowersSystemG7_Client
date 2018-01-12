@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import Branches.Employee;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
@@ -59,6 +60,8 @@ public class CreateSurveyController implements Initializable {
 	@FXML
 	private TextField txtSubject;
 	
+	public static Employee employee;
+	
 	private int curStep = 1;
 	/**
 	 * Show the scene view of complains management
@@ -84,6 +87,11 @@ public class CreateSurveyController implements Initializable {
 			System.out.println(e);
 			e.printStackTrace();
 		}
+	}
+	
+	public CreateSurveyController(Employee employee)
+	{
+		
 	}
 	
 	private void performNextStep()
@@ -236,18 +244,7 @@ public class CreateSurveyController implements Initializable {
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
 			
-			private void attachQuestionsToSurvey(Packet p)
-			{
-				Survey survey = (p.<Survey>convertedResultListForCommand(Command.getAllSurvey)).get(0);  
-				
-				//Parameter list for addQuestionsToSurvey
-				ArrayList<Object> paramListAttach = new ArrayList<>();
-				for(Object question : paramListQuestion)
-					paramListAttach.add(new SurveyQuestion(survey.getId(),((Question)question).getId()));
 
-				packet.addCommand(Command.addQuestionsToServey);
-				packet.setParametersForCommand(Command.addQuestionsToServey, paramListAttach);
-			}
 			
 			@Override
 			public void onWaitingForResult() {

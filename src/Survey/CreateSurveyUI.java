@@ -3,7 +3,11 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import Branches.CustomerService;
+import Branches.Employee;
+import Branches.Role;
 import Products.CatalogProductController;
+import Users.Permission;
 import Users.User;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -32,7 +36,8 @@ public class CreateSurveyUI extends Application {
 	public void start(Stage arg0) throws Exception {
 		// TODO Auto-generated method stub
 
-		CreateSurveyController sc = new CreateSurveyController();
+		Employee customerService = new CustomerService(1,"user1","123,",true,Permission.Limited,1,Role.CustomerService,1,null);
+		CreateSurveyController sc = new CreateSurveyController(customerService);
 		sc.start(arg0);
 	}
 }
