@@ -375,8 +375,26 @@ public class CreateSurveyController implements Initializable {
 					Packet packet = new Packet();
 					ArrayList<Object> paramList = new ArrayList<>(); 
 					survey.setActive(state);
+					paramList.add(survey);
 					packet.addCommand(Command.updateSurvey);
 					packet.setParametersForCommand(Command.updateSurvey, paramList);
+					
+					SystemSender sender = new SystemSender(packet);
+					sender.registerHandler(new IResultHandler() {
+						
+						@Override
+						public void onWaitingForResult() {
+							// TODO Auto-generated method stub
+							
+						}
+						
+						@Override
+						public void onReceivingResult(Packet p) {
+							// TODO Auto-generated method stub
+							
+						}
+					});
+					
 				}
 				
 				private Button createAddConclusionButton(Survey survey) {
