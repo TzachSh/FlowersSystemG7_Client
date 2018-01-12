@@ -1,13 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import java.lang.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane prefHeight="225.0" prefWidth="281.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+<AnchorPane prefHeight="624.0" prefWidth="615.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label fx:id="lblBranchName" layoutX="14.0" layoutY="14.0" text="Branch Name" />
+      <Label fx:id="lblBranchName" layoutX="14.0" layoutY="14.0" text="branch name" />
+      <Label fx:id="lblBranchNumber" layoutX="207.0" layoutY="14.0" text="branch number" />
+      <Label fx:id="lblEmployeeName" layoutX="392.0" layoutY="14.0" text="Manager " />
+      <Separator layoutY="39.0" prefHeight="4.0" prefWidth="615.0" />
+      <TableView fx:id="table1" layoutY="210.0" prefHeight="200.0" prefWidth="615.0">
+        <columns>
+          <TableColumn prefWidth="75.0" text="C1" />
+          <TableColumn prefWidth="75.0" text="C2" />
+        </columns>
+      </TableView>
+      <TableView fx:id="table2" layoutY="410.0" prefHeight="200.0" prefWidth="615.0">
+        <columns>
+          <TableColumn prefWidth="75.0" text="C1" />
+          <TableColumn prefWidth="75.0" text="C2" />
+        </columns>
+      </TableView>
+      <ComboBox fx:id="cbReports" layoutX="84.0" layoutY="43.0" prefWidth="150.0" />
+      <Label layoutX="14.0" layoutY="47.0" text="Report" />
+      <Label layoutX="14.0" layoutY="81.0" text="Year" />
+      <Label layoutX="13.0" layoutY="116.0" text="Quarterly" />
+      <Button fx:id="btnGenerateReport" layoutX="85.0" layoutY="185.0" mnemonicParsing="false" onAction="#generateReport" prefHeight="25.0" prefWidth="149.0" text="Generate Report" />
+      <RadioButton fx:id="rbcomp" layoutX="246.0" layoutY="116.0" mnemonicParsing="false" text="Compare Quarterlies" />
+      <Label fx:id="lbQuarterlycomp" layoutX="8.0" layoutY="155.0" text="Quarterly 2" />
+      <ComboBox fx:id="cbYear" layoutX="84.0" layoutY="77.0" prefWidth="150.0" />
+      <ComboBox fx:id="cbQuarterly2" layoutX="84.0" layoutY="151.0" prefWidth="150.0" />
+      <ComboBox fx:id="cbQuarterly1" layoutX="84.0" layoutY="112.0" prefWidth="150.0" />
    </children>
 </AnchorPane>
