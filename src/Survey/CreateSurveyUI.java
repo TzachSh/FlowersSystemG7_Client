@@ -38,6 +38,7 @@ public class CreateSurveyUI extends Application {
 
 		Employee customerService = new CustomerService(1,"user1","123,",true,Permission.Limited,1,Role.CustomerService,1,null);
 		CreateSurveyController sc = new CreateSurveyController(customerService);
+		sc.employee = customerService;
 		sc.start(arg0);
 	}
 }

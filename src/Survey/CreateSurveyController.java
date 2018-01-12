@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import Branches.Employee;
+import Branches.Role;
 import Customers.Complain;
 import Customers.ReplyController;
 import PacketSender.Command;
@@ -336,26 +337,29 @@ public class CreateSurveyController implements Initializable {
 				 * 	Set handler for each row, is a corresponding to the status of the complain, if it's active will show a "Reply" button near to it, else will be shown "Done"
 				 * @param complain - show the complain's details in the fields such as date , subject and content
 				 */
-				private void setCellHandler(Survey survey)
+				private void setCellHandler(Survey survey,SurveyConclusion surveyConclusion)
 				{
-				/*	String textDate = "Date: ";
-					String textTitle = "Subject: ";
-					String textContent = "Content: ";
-					String textDone = "Done";
+					String textTitle = "Subject:";
+					String textActive = "Status:";
+					String textConclusion = "Expert Conclusion:";
+					String status = ( (survey.isActive() == true ) ? "Active" : "InActive");
 					
-					HBox dateElement = new HBox(new Label(textDate), new Text(String.format("%s", complain.getCreationDate().toString())));
-					HBox titleElement = new HBox (new Label(textTitle) , new Text(String.format("%s", complain.getTitle())));
-					HBox infoElement = new HBox (new Label(textContent) , new Text(String.format("%s", complain.getDetails())));
-					VBox detialsElements = new VBox(dateElement,titleElement,infoElement);
+					HBox titleElement = new HBox(new Label(textTitle), new Text(survey.getSubject()));
+					HBox statusElement = new HBox (new Label(textActive) , new Text(status));
+					HBox conclusionElement = new HBox (new Label(textConclusion) , new Text("Text Text Text Text"));
+					VBox detailsElement = new VBox(titleElement,statusElement,conclusionElement);
+		
 					VBox operationElement;
-					if(complain.isActive())
-						operationElement = new VBox(createReplyButtonHandler(complain));
+					if(employee.getRole() == Role.CustomerService && survey.isActive())
+						operationElement = new VBox(createInActivateButtonHandler(survey));
+					else if (employee.getRole() == Role.CustomerService && !survey.isActive())
+						operationElement = new VBox(createActivateButtonHandler(survey));
 					else
-						operationElement = new VBox(new Label(textDone));
-				 	HBox hBox = new HBox(operationElement,detialsElements);
-				 	dateElement.setPadding(new Insets(5,10,5,20));
+						operationElement = new VBox(createAddConclusionButton(survey));
+				 	HBox hBox = new HBox(operationElement,detailsElement);
 				 	titleElement.setPadding(new Insets(5,10,5,20));
-				 	infoElement.setPadding(new Insets(5,10,5,20));
+				 	statusElement.setPadding(new Insets(5,10,5,20));
+				 	conclusionElement.setPadding(new Insets(5,10,5,20));
 				 	operationElement.setPadding(new Insets(5,10,5,0));
                     hBox.setStyle("-fx-border-style:solid inside;"+
                     			  "-fx-border-width:1;"+
@@ -363,48 +367,48 @@ public class CreateSurveyController implements Initializable {
                     			  "-fx-border-radius:5;");
                     hBox.setPadding(new Insets(10));
                     setGraphic(hBox);
-*/				}
+				}
+				private Button createAddConclusionButton(Survey survey) {
+					
+					return null;
+				}
 				/**
 				 * Creating a button handler which is navigates to the relevant reply view for each complain
 				 * @param complain - Create a new handler for this complain
 				 * @return Button which handled to open a matching view of a specific complain
 				 */
-				private Button createReplyButtonHandler(Survey complain)
+				private Button createInActivateButtonHandler(Survey survey)
 				{
-					/*
-						String textReply = "Reply";
-						Button btnReply;
+					
+						String textAction = "Inactivate";
+						Button btnAction;
 
-						btnReply = new Button(textReply);
-						btnReply.setOnMouseClicked((event) -> {
-							String title = "Replyment";
-							String srcFXML = "/Customers/ReplyUI.fxml";
-
-							((Node) event.getSource()).getScene().getWindow().hide();
-							Stage primaryStage = new Stage();
-							FXMLLoader loader = new FXMLLoader();
-							Pane root;
-							try {
-								root = loader.load(getClass().getResource(srcFXML).openStream());
-								ReplyController replyController = loader.<ReplyController>getController();
-								replyController.setComponents(complain);
-
-								Scene scene = new Scene(root);
-								primaryStage.setTitle(title);
-								primaryStage.setScene(scene);
-								primaryStage.show();
-
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-
+						btnAction = new Button(textAction);
+						btnAction.setOnMouseClicked((event) -> {
+							
 						});
 
-						return btnReply;*/
-						return null;
-					}
+						return btnAction;
+				}
+				
+				/**
+				 * Creating a button handler which is navigates to the relevant reply view for each complain
+				 * @param complain - Create a new handler for this complain
+				 * @return Button which handled to open a matching view of a specific complain
+				 */
+				private Button createActivateButtonHandler(Survey survey)
+				{
+					
+						String textAction = "Activate";
+						Button btnAction;
 
+						btnAction = new Button(textAction);
+						btnAction.setOnMouseClicked((event) -> {
+							
+						});
+
+						return btnAction;
+				}
 				/**
 				 * Update each row of the list view by the received item
 				 * @param item - the complain to show it's details
@@ -412,20 +416,23 @@ public class CreateSurveyController implements Initializable {
 				 */
 					@Override
 				protected void updateItem(Survey item, boolean empty) {
+						
 					// TODO Auto-generated method stub
 					super.updateItem(item, empty);
 					 if (item != null) {	
-						 	setCellHandler(item);
+						 	setCellHandler(item , null);
                         }
 				}};
 			}
 		});
 	}
 
+
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub
+		setListCellFactory();
 		displaySurvey();
 	}
 }
