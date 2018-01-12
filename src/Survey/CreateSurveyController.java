@@ -112,11 +112,6 @@ public class CreateSurveyController implements Initializable {
 		}
 	}
 	
-	public CreateSurveyController(Employee employee)
-	{
-		
-	}
-	
 	private void performNextStep()
 	{
 		int currentSelected = tabSteps.getSelectionModel().getSelectedIndex();
@@ -359,10 +354,10 @@ public class CreateSurveyController implements Initializable {
 					HBox conclusionElement = new HBox (new Label(textConclusion) , new Text("Text Text Text Text"));
 					VBox detailsElement = new VBox(titleElement,statusElement,conclusionElement);
 		
-					VBox operationElement;
+					VBox operationElement=null;
 					if(employee.getRole() == Role.CustomerService)
 						operationElement = new VBox(createActivityButtonHandler(survey,activeStatus));
-					else
+					else if(employee.getRole() == Role.ServiceExpert && !survey.isActive())
 						operationElement = new VBox(createAddConclusionButton(survey));
 					
 				 	HBox hBox = new HBox(operationElement,detailsElement);
@@ -428,14 +423,20 @@ public class CreateSurveyController implements Initializable {
 							if(survey.isActive()) {
 								btnAction.setText("Activate");
 								activeStatus.setText("Inactive");
-								performOperation(survey, false);
-								
+								performOperation(survey, false);		
 							}
 							else
 							{
-								btnAction.setText("Inactivate");
-								activeStatus.setText("Active");
-								performOperation(survey, true);
+								if (!isActivatedSurvey(dataSurvey)) {
+									btnAction.setText("Inactivate");
+									activeStatus.setText("Active");
+									performOperation(survey, true);
+								}
+								else
+								{
+									Alert alert = new Alert(AlertType.INFORMATION,"Only one survey can be activated in a time");
+									alert.show();
+								}
 							}
 						});
 
