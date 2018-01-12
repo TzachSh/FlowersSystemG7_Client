@@ -6,20 +6,21 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="parent" prefHeight="596.0" prefWidth="688.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="parent" prefHeight="586.0" prefWidth="688.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label layoutX="214.0" layoutY="7.0" text="Survey Management" underline="true">
          <font>
             <Font size="24.0" />
          </font>
       </Label>
-      <TabPane layoutX="4.0" layoutY="49.0" prefHeight="593.0" prefWidth="679.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane fx:id="tabOptions" layoutX="4.0" layoutY="49.0" prefHeight="570.0" prefWidth="679.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="Survey List">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <ListView fx:id="sListView" layoutX="14.0" layoutY="14.0" prefHeight="519.0" prefWidth="651.0" />
+                        <ListView fx:id="sListView" layoutX="14.0" layoutY="14.0" prefHeight="419.0" prefWidth="651.0" />
+                        <Label layoutX="14.0" layoutY="452.0" text="*While there is an activated survey, you can't create another one" />
                      </children></AnchorPane>
             </content>
           </Tab>
@@ -27,8 +28,8 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="459.0" prefWidth="580.0">
                      <children>
-                        <Label layoutX="10.0" layoutY="14.0" text="Follow the steps below:" />
-                        <TabPane fx:id="tabSteps" layoutX="-1.0" layoutY="60.0" prefHeight="424.0" prefWidth="679.0" tabClosingPolicy="UNAVAILABLE">
+                        <Label layoutX="10.0" layoutY="9.0" text="Follow the steps below:" />
+                        <TabPane fx:id="tabSteps" layoutX="-1.0" layoutY="38.0" prefHeight="424.0" prefWidth="679.0" tabClosingPolicy="UNAVAILABLE">
                           <tabs>
                             <Tab text="Step 1">
                               <content>
@@ -169,8 +170,8 @@
                               </Tab>
                           </tabs>
                         </TabPane>
-                        <Button fx:id="btnPrev" layoutX="182.0" layoutY="491.0" mnemonicParsing="false" onAction="#prevPressedHandler" prefHeight="50.0" prefWidth="150.0" text="&lt;&lt;Previous" />
-                        <Button fx:id="btnNext" layoutX="362.0" layoutY="492.0" mnemonicParsing="false" onAction="#nextPressedHandler" prefHeight="50.0" prefWidth="150.0" text="Next&gt;&gt;" />
+                        <Button fx:id="btnPrev" layoutX="182.0" layoutY="463.0" mnemonicParsing="false" onAction="#prevPressedHandler" prefHeight="50.0" prefWidth="150.0" text="&lt;&lt;Previous" />
+                        <Button fx:id="btnNext" layoutX="362.0" layoutY="464.0" mnemonicParsing="false" onAction="#nextPressedHandler" prefHeight="50.0" prefWidth="150.0" text="Next&gt;&gt;" />
                      </children>
                   </AnchorPane>
             </content>

@@ -31,6 +31,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -41,6 +42,8 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 public class CreateSurveyController implements Initializable {
+	@FXML
+	private TabPane tabOptions;
 	@FXML 
 	private TabPane tabSteps;
 	@FXML
@@ -77,6 +80,8 @@ public class CreateSurveyController implements Initializable {
 	private TextField txtSubject;
 	@FXML
 	private ListView<Survey> sListView;
+	@FXML
+	private ObservableList<Survey> dataSurvey;
 	
 	public static Employee employee;
 	
@@ -283,7 +288,10 @@ public class CreateSurveyController implements Initializable {
 				// TODO Auto-generated method stub
 				if(p.getResultState())
 				{
-					
+					Alert alert = new Alert(AlertType.INFORMATION,"The survey inserted successfully!");
+					alert.show();
+					tabOptions.getSelectionModel().select(0);
+					displaySurvey();
 				}
 			}
 		});
@@ -313,7 +321,8 @@ public class CreateSurveyController implements Initializable {
 				if(p.getResultState())
 				{
 					ArrayList<Survey> survyList = p.<Survey>convertedResultListForCommand(Command.getSurvey);
-					ObservableList<Survey> dataSurvey = FXCollections.observableArrayList(survyList);
+					dataSurvey = FXCollections.observableArrayList(survyList);
+					defineOptionTabState(dataSurvey);
 					sListView.setItems(dataSurvey);
 				}
 			}
@@ -339,23 +348,23 @@ public class CreateSurveyController implements Initializable {
 				 */
 				private void setCellHandler(Survey survey,SurveyConclusion surveyConclusion)
 				{
-					String textTitle = "Subject:";
-					String textActive = "Status:";
-					String textConclusion = "Expert Conclusion:";
+					String textTitle = "Subject: ";
+					String textActive = "Status: ";
+					String textConclusion = "Expert Conclusion: ";
 					String status = ( (survey.isActive() == true ) ? "Active" : "InActive");
+					Text activeStatus = new Text(status);
 					
 					HBox titleElement = new HBox(new Label(textTitle), new Text(survey.getSubject()));
-					HBox statusElement = new HBox (new Label(textActive) , new Text(status));
+					HBox statusElement = new HBox (new Label(textActive) , activeStatus);
 					HBox conclusionElement = new HBox (new Label(textConclusion) , new Text("Text Text Text Text"));
 					VBox detailsElement = new VBox(titleElement,statusElement,conclusionElement);
 		
 					VBox operationElement;
-					if(employee.getRole() == Role.CustomerService && survey.isActive())
-						operationElement = new VBox(createInActivateButtonHandler(survey));
-					else if (employee.getRole() == Role.CustomerService && !survey.isActive())
-						operationElement = new VBox(createActivateButtonHandler(survey));
+					if(employee.getRole() == Role.CustomerService)
+						operationElement = new VBox(createActivityButtonHandler(survey,activeStatus));
 					else
 						operationElement = new VBox(createAddConclusionButton(survey));
+					
 				 	HBox hBox = new HBox(operationElement,detailsElement);
 				 	titleElement.setPadding(new Insets(5,10,5,20));
 				 	statusElement.setPadding(new Insets(5,10,5,20));
@@ -391,9 +400,12 @@ public class CreateSurveyController implements Initializable {
 						@Override
 						public void onReceivingResult(Packet p) {
 							// TODO Auto-generated method stub
-							
+								if (p.getResultState()) {
+									defineOptionTabState(dataSurvey);
+								}
 						}
 					});
+					sender.start();
 					
 				}
 				
@@ -406,38 +418,30 @@ public class CreateSurveyController implements Initializable {
 				 * @param complain - Create a new handler for this complain
 				 * @return Button which handled to open a matching view of a specific complain
 				 */
-				private Button createInActivateButtonHandler(Survey survey)
+				private Button createActivityButtonHandler(Survey survey , Text activeStatus)
 				{
 					
-						String textAction = "Inactivate";
-						Button btnAction;
-
-						btnAction = new Button(textAction);
+						String textAction = (survey.isActive() == true ) ? "Inactivate" : "Activate";
+						Button btnAction = new Button(textAction);
+						
 						btnAction.setOnMouseClicked((event) -> {
-							
+							if(survey.isActive()) {
+								btnAction.setText("Activate");
+								activeStatus.setText("Inactive");
+								performOperation(survey, false);
+								
+							}
+							else
+							{
+								btnAction.setText("Inactivate");
+								activeStatus.setText("Active");
+								performOperation(survey, true);
+							}
 						});
 
 						return btnAction;
 				}
 				
-				/**
-				 * Creating a button handler which is navigates to the relevant reply view for each complain
-				 * @param complain - Create a new handler for this complain
-				 * @return Button which handled to open a matching view of a specific complain
-				 */
-				private Button createActivateButtonHandler(Survey survey)
-				{
-					
-						String textAction = "Activate";
-						Button btnAction;
-
-						btnAction = new Button(textAction);
-						btnAction.setOnMouseClicked((event) -> {
-							
-						});
-
-						return btnAction;
-				}
 				/**
 				 * Update each row of the list view by the received item
 				 * @param item - the complain to show it's details
@@ -456,7 +460,31 @@ public class CreateSurveyController implements Initializable {
 		});
 	}
 
-
+	private boolean isActivatedSurvey(ObservableList<Survey> surveyList)
+	{
+		boolean retVal = false;
+		for(Survey survey : surveyList)
+			if(survey.isActive()) {
+				retVal = true;
+				break;
+			}
+		return retVal;
+	}
+	
+	private void defineOptionTabState(ObservableList<Survey> surveyList)
+	{
+		if(isActivatedSurvey(surveyList)) {
+			tabOptions.getSelectionModel().select(1);
+			tabOptions.getSelectionModel().getSelectedItem().setDisable(true);
+			tabOptions.getSelectionModel().select(0);
+		}
+		else
+		{
+			tabOptions.getSelectionModel().select(1);
+			tabOptions.getSelectionModel().getSelectedItem().setDisable(false);
+			tabOptions.getSelectionModel().select(0);
+		}
+	}
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
