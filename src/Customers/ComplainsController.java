@@ -100,7 +100,11 @@ public class ComplainsController implements Initializable {
 			 */
 			@Override
 			public Branch fromString(String string) {
-				return null;
+				Branch retBranch = null;
+				for(Branch branch : branchList)
+					if(branch.getName().equals(string))
+						retBranch = branch;
+				return retBranch;
 			}
 			/**
 			 * getting a String of the name of a branch by a Branch object
@@ -219,12 +223,13 @@ public class ComplainsController implements Initializable {
 		String details = txtAddDesc.getText();
 		int customerServiceId = customerService.getuId();
 		java.sql.Date sqlDate = new java.sql.Date(new java.util.Date().getTime());
-	//	Complain complain = new Complain(sqlDate, title, details, customerId, customerServiceId,true); // Update to customerServiceId 
+		int branchId = cmbBranch.getSelectionModel().getSelectedItem().getbId();
+		Complain complain = new Complain(sqlDate, title, details, customerId, customerServiceId,true,branchId); // Update to customerServiceId 
 		
 		Packet packet = new Packet();
 		packet.addCommand(Command.addComplain);
 		ArrayList<Object> paramList = new ArrayList<>();
-		//paramList.add(complain);
+		paramList.add(complain);
 		packet.setParametersForCommand(Command.addComplain, paramList);
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
@@ -457,6 +462,7 @@ public class ComplainsController implements Initializable {
 		setListCellFactory();
 		setSearchOnTextChange();
 		displayComplains();
+		initBranchesCmb();
 	}
 	
 }

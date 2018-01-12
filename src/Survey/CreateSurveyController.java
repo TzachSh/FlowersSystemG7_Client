@@ -240,12 +240,13 @@ public class CreateSurveyController implements Initializable {
 		
 		packet.addCommand(Command.addQuestions);
 		packet.setParametersForCommand(Command.addQuestions , paramListQuestion);
-		
+		packet.addCommand(Command.addQuestionsToServey);
+		ArrayList<Object> paramListSurvyQuestion = new ArrayList<>();
+		paramListSurvyQuestion.add(new SurveyQuestion(0,0));
+		packet.setParametersForCommand(Command.addQuestionsToServey, paramListSurvyQuestion);
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
-			
-
-			
+				
 			@Override
 			public void onWaitingForResult() {
 				// TODO Auto-generated method stub
