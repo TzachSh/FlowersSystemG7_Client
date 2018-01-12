@@ -233,12 +233,13 @@ public class CreateSurveyController implements Initializable {
 		packet.addCommand(Command.addQuestions);
 		packet.setParametersForCommand(Command.addQuestions , paramListQuestion);
 		
-		//Parameter list for attachQuestionToSurvey
+		//Parameter list for addQuestionsToSurvey
 		ArrayList<Object> paramListAttach = new ArrayList<>();
-		paramListAttach.add(survey);
-		//Attach question to specific survey
-		packet.addCommand(Command.attachQuestionsToServey);
-		packet.setParametersForCommand(Command.attachQuestionsToServey, paramListAttach);
+		for(Object question : paramListQuestion)
+			paramListAttach.add(new SurveyQuestion(survey.getId(),((Question)question).getId()));
+
+		packet.addCommand(Command.addQuestionsToServey);
+		packet.setParametersForCommand(Command.addQuestionsToServey, paramListAttach);
 		
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
