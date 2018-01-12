@@ -238,7 +238,7 @@ public class CreateSurveyController implements Initializable {
 			
 			private void attachQuestionsToSurvey(Packet p)
 			{
-				Survey survey = p.<Survey>convertedResultListForCommand(Command.)  
+				Survey survey = (p.<Survey>convertedResultListForCommand(Command.getAllSurvey)).get(0);  
 				
 				//Parameter list for addQuestionsToSurvey
 				ArrayList<Object> paramListAttach = new ArrayList<>();
