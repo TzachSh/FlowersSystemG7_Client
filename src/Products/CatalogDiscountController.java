@@ -3,14 +3,17 @@ package Products;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.swing.JOptionPane;
 
+import Branches.Branch;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
+import Products.SelectProductController.CatalogProductDetails;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -21,33 +24,113 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-public class CatalogDiscountController extends Application implements Initializable {
+public class CatalogDiscountController implements Initializable {
 	
 
-	@FXML
-	ComboBox<CatalogProduct> cmbCatalogProduct;
-	@FXML
-	TextField txtDiscount;
+	 @FXML
+	 private Button btnCancel;
+
+	 @FXML
+	 private TextField txtDiscount;
+
+	 @FXML
+	 private Label lblErrorDiscount;
+
+	 @FXML
+	 private Button btnSave;
+
+	 @FXML
+	 private TextField txtBranch;
+
+	 @FXML
+	 private TextField txtProduct;
 	
-	private int brannchId;
-	private ArrayList<CatalogInBranch> disc;
-	public CatalogDiscountController(int branchId)
+	 private static SelectProductController selectIController;
+	 private static CatalogProduct catalogProduct;
+	 private static Stage mainStage;
+	 
+	public void setCatalogDiscount(SelectProductController selectController, CatalogProduct product)
 	{
-		super();
-		this.brannchId=branchId;
+		selectIController = selectController;
+		catalogProduct = product;
 	}
-	public CatalogDiscountController()
+	
+	public void onPressedCancelButton()
 	{
-		super();
+		mainStage.close();
 	}
+	
+	/**
+	 * Show an Alert dialog with custom info
+	 */
+	public void displayAlert(AlertType type , String title , String header , String content)
+	{
+		Alert alert = new Alert(type);
+		alert.setTitle(title);
+		alert.setHeaderText(header);
+		alert.setContentText(content);
+		alert.showAndWait();
+	}
+	
+	public void onPressedSaveButton()
+	{
+		int discountConverted = Integer.valueOf(txtDiscount.getText());
+		int branchId = selectIController.branchId;
+		int catPId = catalogProduct.getCatalogProductId();
+		
+		CatalogInBranch catInBranch = new CatalogInBranch(branchId, catPId, discountConverted);
+		Packet packet = new Packet();
+		packet.addCommand(Command.addSaleCatalogInBranch);
+		
+		ArrayList<Object> param = new ArrayList<>();
+		param.add(catInBranch);
+		
+		packet.setParametersForCommand(Command.addSaleCatalogInBranch, param);
+		
+		// create the thread for send to server the message
+		SystemSender send = new SystemSender(packet);
+
+		// register the handler that occurs when the data arrived from the server
+		send.registerHandler(new IResultHandler() {
+
+			@Override
+			public void onReceivingResult(Packet p) {
+				if (p.getResultState())
+				{
+					int pId = catalogProduct.getId();
+					selectIController.getProductById(pId).catalogSale = catInBranch;
+					selectIController.fillCatalogItems();
+					displayAlert(AlertType.INFORMATION, "Success", "Updated Successfull", "The Sale for current product was updated Successfully!");
+					mainStage.close();
+				}
+				else
+				{
+					displayAlert(AlertType.ERROR, "Error", "Exception Error:", p.getExceptionMessage());
+				}
+			}
+
+			@Override
+			public void onWaitingForResult() { }
+					
+		});
+				
+		send.start();
+		
+	}
+
 	public void start(Stage primaryStage) throws Exception {
-
-		String title = "Products";
+		
+		mainStage = primaryStage;
+		String title = "Product Discount";
 		String srcFXML = "/Products/ProductDiscountUI.fxml";
 		String srcCSS = "/Products/application.css";
 		
@@ -65,65 +148,60 @@ public class CatalogDiscountController extends Application implements Initializa
 			System.out.println(e);
 			e.printStackTrace();
 		}
-		
-		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			
+	}
+	
+	/**
+	 * Handler event on changing text on Discount textField
+	 */
+	public void setDiscountChangeHandler()
+	{
+		txtDiscount.textProperty().addListener(new ChangeListener<String>() {
 			@Override
-			public void handle(WindowEvent event) {
-				// TODO Auto-generated method stub
-				Platform.exit();
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
+			{
+				boolean valid = true;
+				if (newValue.isEmpty())
+				{
+					lblErrorDiscount.setVisible(true);
+					valid = false;
+				}
+				else
+				{
+					// check if number is valid
+					try
+					{
+						int discountConverted = Integer.valueOf(newValue);
+						if (discountConverted <= 0)
+							throw new NumberFormatException();
+						
+						lblErrorDiscount.setVisible(false);
+					}
+					catch (NumberFormatException e)
+					{
+						lblErrorDiscount.setVisible(true);
+						valid = false;
+					}
+				}
+				
+				if (valid)
+				{
+					btnSave.setDisable(false);
+				}
+				else
+				{
+					btnSave.setDisable(true);
+				}
 			}
 		});
-
 	}
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		// set listener to combobox when other item has been choosed
-				cmbCatalogProduct.valueProperty().addListener(new ChangeListener<CatalogProduct>() {
-					@Override
-					public void changed(ObservableValue<? extends CatalogProduct> observable, CatalogProduct oldValue,
-							CatalogProduct newValue) {
-							
-						double discount =(disc.stream().filter(c->c.getCatalogProductId()==newValue.getCatalogProductId()).findFirst()).get().getDiscount();
-						txtDiscount.setText("" +discount);
-					}
-				});
-				
-				
-				Packet packet = new Packet();//create packet to send
-				packet.addCommand(Command.getCatalogProducts);//add command
-				packet.addCommand(Command.getDiscountsByBranch);
-				ArrayList<Object> param = new ArrayList<>(Arrays.asList(brannchId));
-				packet.setParametersForCommand(Command.getCatalogProducts,param);
-				packet.setParametersForCommand(Command.getDiscountsByBranch, param);
-				// create the thread for send to server the message
-				SystemSender send = new SystemSender(packet);
-
-				// register the handler that occurs when the data arrived from the server
-				send.registerHandler(new IResultHandler() {
-					@Override
-					public void onWaitingForResult() {//waiting when send
-					}
-
-					@Override
-					public void onReceivingResult(Packet p)//set combobox values
-					{
-						
-						if (p.getResultState())
-						{
-							ArrayList<CatalogProduct> cList = p.<CatalogProduct>convertedResultListForCommand(Command.getCatalogProducts);
-							
-							cmbCatalogProduct.getItems().addAll(cList);
-							
-							disc = p.<CatalogInBranch>convertedResultListForCommand(Command.getDiscountsByBranch);
-							
-						}
-						else//if it was error in connection
-							JOptionPane.showMessageDialog(null,"Connection error","Error",JOptionPane.ERROR_MESSAGE);
-					}
-				});
-				send.start();
+		Branch branch = selectIController.getBranchByBranchId(selectIController.branchId);
+		txtBranch.setText(branch.getName());
 		
+		txtProduct.setText(catalogProduct.getName());
+		
+		setDiscountChangeHandler();
 	}
 }

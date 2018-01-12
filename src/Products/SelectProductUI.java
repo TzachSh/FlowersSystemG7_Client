@@ -22,8 +22,8 @@ public class SelectProductUI extends Application {
 		customer = new Customer(1, 2, 1);
 		Employee employee = new Employee(1, "t", "1234", true, Permission.Administrator, 1, Role.BranchManager, 2);
 		//selectController.setForUpdateCatalog(employee);
-		//selectController.setForViewingCatalog(customer);
-		selectController.setForUpdateSale(new Employee(1, "t", "1234", true, Permission.Administrator, 1, Role.BranchManager, 2));
+		selectController.setForViewingCatalog(customer);
+		//selectController.setForUpdateSale(new Employee(1, "t", "1234", true, Permission.Administrator, 1, Role.BranchManager, 1));
 		selectController.start(arg0);
 	}
 }

@@ -16,7 +16,6 @@ public class CatalogDiscountUI extends Application {
 	public void start(Stage arg0) throws Exception {
 		// TODO Auto-generated method stub
 
-		CatalogDiscountController productsController = new CatalogDiscountController(1);
-		productsController.start(arg0);
+		
 	}
 }

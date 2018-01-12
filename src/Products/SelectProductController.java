@@ -104,7 +104,7 @@ public class SelectProductController implements Initializable
 	public static ArrayList<ProductType> productsTypeList = new ArrayList<>();
 	public static CatalogUse catalogUse;
 	private static String title;
-	private static int branchId;
+	public static int branchId;
 	private static User userLogged;
 	private ObservableList<Product> data;
 	private boolean hasAccountForCurrentBranch = false;
@@ -252,7 +252,7 @@ public class SelectProductController implements Initializable
 	 * Get the instance of account by branch Id
 	 * @param branchId The branch Id for searching account
 	 */
-	private Account getAccountByBranchId(int branchId)
+	public Account getAccountByBranchId(int branchId)
 	{
 		for (Account account : userAccountsList)
 		{
@@ -263,10 +263,24 @@ public class SelectProductController implements Initializable
 	}
 	
 	/**
+	 * Get the instance of branch by branch Id
+	 * @param branchId The branch Id for searching
+	 */
+	public Branch getBranchByBranchId(int branchId)
+	{
+		for (Branch branch : branchList)
+		{
+			if (branch.getbId() == branchId)
+				return branch;
+		}
+		return null;
+	}
+	
+	/**
 	 * Get the instance of Product Type by type id
 	 * @param typeId The Type id for searching type
 	 */
-	private ProductType getProductTypeByTypeId(int typeId)
+	public ProductType getProductTypeByTypeId(int typeId)
 	{
 		for (ProductType type : productsTypeList)
 		{
@@ -432,6 +446,50 @@ public class SelectProductController implements Initializable
 	}
 	
 	/**
+	 * Delete Sale For specific catalog in branch in db and in the list
+	 * @param catInBranch CatalogInBranch object to delete
+	 * @param pro CatalogProduct object of deleted product
+	 */
+	public void deleteSaleForCatalogInBranch(CatalogInBranch catInBranch, CatalogProduct pro)
+	{
+		Packet packet = new Packet();
+		packet.addCommand(Command.deleteSaleCatalogInBranch);
+		
+		ArrayList<Object> param = new ArrayList<>();
+		param.add(catInBranch);
+		
+		packet.setParametersForCommand(Command.deleteSaleCatalogInBranch, param);
+		
+		// create the thread for send to server the message
+		SystemSender send = new SystemSender(packet);
+
+		// register the handler that occurs when the data arrived from the server
+		send.registerHandler(new IResultHandler() {
+
+			@Override
+			public void onReceivingResult(Packet p) {
+				if (p.getResultState())
+				{
+					int pId = pro.getId();
+					getProductById(pId).catalogSale = null;
+					fillCatalogItems();
+					displayAlert(AlertType.INFORMATION, "Success", "Deleted Successfull", "The Sale for current product was deleted Successfully!");
+				}
+				else
+				{
+					displayAlert(AlertType.ERROR, "Error", "Exception Error:", p.getExceptionMessage());
+				}
+			}
+
+			@Override
+			public void onWaitingForResult() { }
+					
+		});
+				
+		send.start();
+	}
+	
+	/**
 	 * return the index in the collection of branches that equals to branchId
 	 * @param branchId The branch id to search for
 	 * @return -1 if not found, else if found
@@ -470,9 +528,14 @@ public class SelectProductController implements Initializable
 			// if there is no account, disable the option for select products, or add to cart
 			Account account = getAccountByBranchId(branch.getbId());
 			if (account != null)
+			{
+				lblBranch.setVisible(false);
 				hasAccountForCurrentBranch = true;
+			}
 			else if (catalogUse != CatalogUse.updateSale)
 			{
+				lblBranch.setText("You don't have an Account! Contact with Branch Manager for Open");
+				lblBranch.setVisible(true);
 				hasAccountForCurrentBranch = false;
 				displayAlert(AlertType.WARNING, "Warning!", "No Account!", "You don't have account for selected branch, Please contact with Branch Manager for open a new one");
 			}
@@ -498,6 +561,19 @@ public class SelectProductController implements Initializable
 		{
 			if (entry.getKey().getId() == productId)
 				return entry.getValue();
+		}
+		return null;
+	}
+	
+	/**
+	 * Get Catalog Product by Product Id
+	 */
+	public CatalogProduct getCatalogProductById(int productId)
+	{
+		for (Map.Entry<Product, CatalogProductDetails> entry : catalogProductWithAdditionalDetails.entrySet())
+		{
+			if (entry.getKey().getId() == productId)
+				return (CatalogProduct)entry.getKey();
 		}
 		return null;
 	}
@@ -685,6 +761,8 @@ public class SelectProductController implements Initializable
 							viewModify.setFitWidth(15);
 							viewModify.setFitHeight(15);
 							modify.setGraphic(viewModify);
+							
+							registerDeleteSaleButtonHandler(modify, pro);
 						}
 						else
 						{
@@ -694,6 +772,8 @@ public class SelectProductController implements Initializable
 							viewModify.setFitWidth(15);
 							viewModify.setFitHeight(15);
 							modify.setGraphic(viewModify);
+							
+							registerAddSaleButtonHandler(modify, pro);
 						}
 						
 						modify.setPrefWidth(95);
@@ -779,6 +859,40 @@ public class SelectProductController implements Initializable
 					});
 				}
 				
+				public void registerDeleteSaleButtonHandler(Button button, CatalogProduct pro)
+				{
+				
+					button.setOnMouseClicked((event) -> {
+						try
+						{
+							CatalogInBranch catInBranch = getProductById(pro.getId()).catalogSale;
+							
+							deleteSaleForCatalogInBranch(catInBranch, pro);
+						}
+						catch (Exception e) 
+						{
+							displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Add Discount Window", e.getMessage());
+						}
+					});
+				}
+				
+				public void registerAddSaleButtonHandler(Button button, CatalogProduct pro)
+				{
+				
+					button.setOnMouseClicked((event) -> {
+						try
+						{
+							CatalogDiscountController disController = new CatalogDiscountController();		
+							disController.setCatalogDiscount(controllerInstance, pro);
+							disController.start(new Stage());
+						}
+						catch (Exception e) 
+						{
+							displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Add Discount Window", e.getMessage());
+						}
+					});
+				}
+				
 				public void registerUpdateCatalog(Button button, CatalogProduct pro)
 				{
 					button.setOnMouseClicked((event) -> {
@@ -855,7 +969,9 @@ public class SelectProductController implements Initializable
 	{
 		if (productsSelected.size() == 0)
 		{
-			lblBranch.setVisible(false);
+			if (hasAccountForCurrentBranch)
+				lblBranch.setVisible(false);
+			
 			btnAddCatalogProduct.setDisable(true);
 		}
 		else
