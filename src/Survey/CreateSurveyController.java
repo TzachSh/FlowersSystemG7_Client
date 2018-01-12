@@ -233,16 +233,21 @@ public class CreateSurveyController implements Initializable {
 		packet.addCommand(Command.addQuestions);
 		packet.setParametersForCommand(Command.addQuestions , paramListQuestion);
 		
-		//Parameter list for addQuestionsToSurvey
-		ArrayList<Object> paramListAttach = new ArrayList<>();
-		for(Object question : paramListQuestion)
-			paramListAttach.add(new SurveyQuestion(survey.getId(),((Question)question).getId()));
-
-		packet.addCommand(Command.addQuestionsToServey);
-		packet.setParametersForCommand(Command.addQuestionsToServey, paramListAttach);
-		
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
+			
+			private void attachQuestionsToSurvey(Packet p)
+			{
+				Survey survey = p.<Survey>convertedResultListForCommand(Command.)  
+				
+				//Parameter list for addQuestionsToSurvey
+				ArrayList<Object> paramListAttach = new ArrayList<>();
+				for(Object question : paramListQuestion)
+					paramListAttach.add(new SurveyQuestion(survey.getId(),((Question)question).getId()));
+
+				packet.addCommand(Command.addQuestionsToServey);
+				packet.setParametersForCommand(Command.addQuestionsToServey, paramListAttach);
+			}
 			
 			@Override
 			public void onWaitingForResult() {
