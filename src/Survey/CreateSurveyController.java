@@ -10,6 +10,8 @@ import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
 import Users.User;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +21,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -59,8 +62,13 @@ public class CreateSurveyController implements Initializable {
 	private TextField txtCfmQ6;
 	@FXML
 	private TextField txtSubject;
+	@FXML
+	private ListView<Survey> sListView;
 	
 	public static Employee employee;
+	
+	private ArrayList<Survey> survyList;
+	private ObservableList<Survey> dataSurvey;
 	
 	private int curStep = 1;
 	/**
@@ -217,12 +225,19 @@ public class CreateSurveyController implements Initializable {
 	private void savePressedHandler(Event event)
 	{
 		String subject = txtSubject.getText();
+		if(subject.isEmpty())
+		{
+			Alert alert = new Alert(AlertType.INFORMATION,"Please enter a subject");
+			alert.show();
+			return;
+		}
+		
 		//int creatorId = User.getuId();
 		int creatorId = 1;
 		
 		//Parameter list for addSurvey
 		ArrayList<Object> paramListSurvey = new ArrayList<>();
-		Survey survey = new Survey(subject, creatorId);
+		Survey survey = new Survey(subject, creatorId,true);
 		paramListSurvey.add(survey);
 		
 		//Parameter list for addQuestion
@@ -265,9 +280,40 @@ public class CreateSurveyController implements Initializable {
 		sender.start();
 	}
 	
+	private void displaySurvey()
+	{
+		Packet packet = new Packet();
+		ArrayList<Object> paramList = new ArrayList<>();
+		packet.addCommand(Command.getSurvey);
+		packet.setParametersForCommand(Command.getSurvey, paramList);
+		
+		SystemSender sender = new SystemSender(packet);
+		sender.registerHandler(new IResultHandler() {
+			
+			@Override
+			public void onWaitingForResult() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onReceivingResult(Packet p) {
+				// TODO Auto-generated method stub
+				if(p.getResultState())
+				{
+					survyList = p.<Survey>convertedResultListForCommand(Command.getSurvey);
+					dataSurvey = FXCollections.observableArrayList(survyList);
+					sListView.setItems(dataSurvey);
+					
+				}
+			}
+		});
+		sender.start();
+	}
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub
-		
+		displaySurvey();
 	}
 }
