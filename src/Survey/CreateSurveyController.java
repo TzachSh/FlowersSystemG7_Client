@@ -368,6 +368,17 @@ public class CreateSurveyController implements Initializable {
                     hBox.setPadding(new Insets(10));
                     setGraphic(hBox);
 				}
+				
+				
+				private void performOperation(Survey survey , boolean state)
+				{
+					Packet packet = new Packet();
+					ArrayList<Object> paramList = new ArrayList<>(); 
+					survey.setActive(state);
+					packet.addCommand(Command.updateSurvey);
+					packet.setParametersForCommand(Command.updateSurvey, paramList);
+				}
+				
 				private Button createAddConclusionButton(Survey survey) {
 					
 					return null;
