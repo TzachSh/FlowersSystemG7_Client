@@ -1,10 +1,13 @@
 package Survey;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import Branches.Employee;
+import Customers.Complain;
+import Customers.ReplyController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
@@ -16,16 +19,25 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 public class CreateSurveyController implements Initializable {
 	@FXML 
@@ -66,9 +78,6 @@ public class CreateSurveyController implements Initializable {
 	private ListView<Survey> sListView;
 	
 	public static Employee employee;
-	
-	private ArrayList<Survey> survyList;
-	private ObservableList<Survey> dataSurvey;
 	
 	private int curStep = 1;
 	/**
@@ -280,6 +289,7 @@ public class CreateSurveyController implements Initializable {
 		sender.start();
 	}
 	
+	@FXML
 	private void displaySurvey()
 	{
 		Packet packet = new Packet();
@@ -301,15 +311,117 @@ public class CreateSurveyController implements Initializable {
 				// TODO Auto-generated method stub
 				if(p.getResultState())
 				{
-					survyList = p.<Survey>convertedResultListForCommand(Command.getSurvey);
-					dataSurvey = FXCollections.observableArrayList(survyList);
+					ArrayList<Survey> survyList = p.<Survey>convertedResultListForCommand(Command.getSurvey);
+					ObservableList<Survey> dataSurvey = FXCollections.observableArrayList(survyList);
 					sListView.setItems(dataSurvey);
-					
 				}
 			}
 		});
 		sender.start();
 	}
+	
+	private void setListCellFactory()
+	{
+		sListView.setCellFactory(new Callback<ListView<Survey>, ListCell<Survey>>() {
+			
+			/**
+			 * Create handler for each cell of the list view
+			 */
+			@Override
+			public ListCell<Survey> call(ListView<Survey> param) {
+				// TODO Auto-generated method stub
+				return new ListCell<Survey>() {
+					
+				/**
+				 * 	Set handler for each row, is a corresponding to the status of the complain, if it's active will show a "Reply" button near to it, else will be shown "Done"
+				 * @param complain - show the complain's details in the fields such as date , subject and content
+				 */
+				private void setCellHandler(Survey survey)
+				{
+				/*	String textDate = "Date: ";
+					String textTitle = "Subject: ";
+					String textContent = "Content: ";
+					String textDone = "Done";
+					
+					HBox dateElement = new HBox(new Label(textDate), new Text(String.format("%s", complain.getCreationDate().toString())));
+					HBox titleElement = new HBox (new Label(textTitle) , new Text(String.format("%s", complain.getTitle())));
+					HBox infoElement = new HBox (new Label(textContent) , new Text(String.format("%s", complain.getDetails())));
+					VBox detialsElements = new VBox(dateElement,titleElement,infoElement);
+					VBox operationElement;
+					if(complain.isActive())
+						operationElement = new VBox(createReplyButtonHandler(complain));
+					else
+						operationElement = new VBox(new Label(textDone));
+				 	HBox hBox = new HBox(operationElement,detialsElements);
+				 	dateElement.setPadding(new Insets(5,10,5,20));
+				 	titleElement.setPadding(new Insets(5,10,5,20));
+				 	infoElement.setPadding(new Insets(5,10,5,20));
+				 	operationElement.setPadding(new Insets(5,10,5,0));
+                    hBox.setStyle("-fx-border-style:solid inside;"+
+                    			  "-fx-border-width:1;"+
+                    			  "-fx-border-insets:5;"+
+                    			  "-fx-border-radius:5;");
+                    hBox.setPadding(new Insets(10));
+                    setGraphic(hBox);
+*/				}
+				/**
+				 * Creating a button handler which is navigates to the relevant reply view for each complain
+				 * @param complain - Create a new handler for this complain
+				 * @return Button which handled to open a matching view of a specific complain
+				 */
+				private Button createReplyButtonHandler(Survey complain)
+				{
+					/*
+						String textReply = "Reply";
+						Button btnReply;
+
+						btnReply = new Button(textReply);
+						btnReply.setOnMouseClicked((event) -> {
+							String title = "Replyment";
+							String srcFXML = "/Customers/ReplyUI.fxml";
+
+							((Node) event.getSource()).getScene().getWindow().hide();
+							Stage primaryStage = new Stage();
+							FXMLLoader loader = new FXMLLoader();
+							Pane root;
+							try {
+								root = loader.load(getClass().getResource(srcFXML).openStream());
+								ReplyController replyController = loader.<ReplyController>getController();
+								replyController.setComponents(complain);
+
+								Scene scene = new Scene(root);
+								primaryStage.setTitle(title);
+								primaryStage.setScene(scene);
+								primaryStage.show();
+
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+
+						});
+
+						return btnReply;*/
+						return null;
+					}
+
+				/**
+				 * Update each row of the list view by the received item
+				 * @param item - the complain to show it's details
+				 * @param empty - to check if the item is null or not
+				 */
+					@Override
+				protected void updateItem(Survey item, boolean empty) {
+					// TODO Auto-generated method stub
+					super.updateItem(item, empty);
+					 if (item != null) {	
+						 	setCellHandler(item);
+                        }
+				}};
+			}
+		});
+	}
+
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
