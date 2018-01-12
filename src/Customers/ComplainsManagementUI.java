@@ -4,6 +4,9 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import Branches.CustomerService;
+import Branches.Employee;
+import Branches.Role;
 import Products.CatalogProductController;
 import Users.User;
 import javafx.application.Application;
@@ -33,7 +36,8 @@ public class ComplainsManagementUI extends Application {
 	public void start(Stage arg0) throws Exception {
 		// TODO Auto-generated method stub
 
-		ComplainsController complainsController = new ComplainsController();
+		Employee employee = new CustomerService(1,"lol","111",true,null,11,Role.CustomerService,1,null);
+		ComplainsController complainsController = new ComplainsController(employee);
 		complainsController.start(arg0);
 	}
 }

@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import Branches.CustomerService;
+import Branches.Employee;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
@@ -66,6 +68,19 @@ public class ComplainsController implements Initializable {
 	private ArrayList<Complain> allComplainsList;
 	private ArrayList<Complain> currentServiceEmployeeComplains;
 	
+	//Save current user accessed
+	public static Employee customerService;
+	
+	
+	
+	public Employee getCustomerService() {
+		return customerService;
+	}
+
+	public void setCustomerService(Employee customerService) {
+		ComplainsController.customerService = customerService;
+	}
+
 	/**
 	 * Show the scene view of complains management
 	 * 
@@ -94,6 +109,10 @@ public class ComplainsController implements Initializable {
 		}
 	}
 	
+	public ComplainsController(Employee employee)
+	{
+		this.customerService = employee;
+	}
 	/**
 	 * Display the relevant complains of current service employee which is connected to the system
 	 * and add them to the list view component
@@ -127,7 +146,7 @@ public class ComplainsController implements Initializable {
 					currentServiceEmployeeComplains = new ArrayList<>();
 					
 					for(Complain complain : allComplainsList)
-						if (complain.getCustomerServiceId() == User.getuId())
+						if (complain.getCustomerServiceId() == customerService.getuId())
 							currentServiceEmployeeComplains.add(complain);
 
 					data = FXCollections.observableArrayList(currentServiceEmployeeComplains);
@@ -147,9 +166,9 @@ public class ComplainsController implements Initializable {
 		int customerId = Integer.parseInt(txtAddCustId.getText());
 		String title = txtAddTitle.getText();
 		String details = txtAddDesc.getText();
-		int customerServiceId = User.getuId();
+		int customerServiceId = customerService.getuId();
 		java.sql.Date sqlDate = new java.sql.Date(new java.util.Date().getTime());
-		Complain complain = new Complain(sqlDate, title, details, customerId, 1,true); // Update to customerServiceId 
+		Complain complain = new Complain(sqlDate, title, details, customerId, customerServiceId,true); // Update to customerServiceId 
 		
 		Packet packet = new Packet();
 		packet.addCommand(Command.addComplain);

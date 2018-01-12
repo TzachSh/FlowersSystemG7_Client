@@ -104,7 +104,7 @@ public class ReplyController {
 	private void handleCancelPressed(Event event)
 	{
 		((Node) event.getSource()).getScene().getWindow().hide();
-		ComplainsController complainsController = new ComplainsController();
+		ComplainsController complainsController = new ComplainsController(ComplainsController.customerService);
 		complainsController.start(new Stage());
 		
 	}
@@ -201,7 +201,7 @@ public class ReplyController {
 			            if (result.get() == ButtonType.OK){
 			            	alert.hide();
 			            	((Node) event.getSource()).getScene().getWindow().hide();
-			        		ComplainsController complainsController = new ComplainsController();
+			        		ComplainsController complainsController = new ComplainsController(ComplainsController.customerService);
 			        		complainsController.start(new Stage());			                
 			            }
 				}
