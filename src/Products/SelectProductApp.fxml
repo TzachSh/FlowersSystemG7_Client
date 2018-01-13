@@ -15,8 +15,6 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="lblBranchSelect" layoutX="26.0" layoutY="57.0" text="Branch Catalog:" />
-      <ComboBox fx:id="cmbBranch" layoutX="123.0" layoutY="53.0" onAction="#onClickingBranchComboBox" prefHeight="25.0" prefWidth="166.0" promptText="Select Branch" />
       <TitledPane animated="false" collapsible="false" layoutX="10.0" layoutY="99.0" prefHeight="384.0" prefWidth="641.0" text="Catalog Products" AnchorPane.bottomAnchor="51.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="99.0">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
@@ -27,9 +25,7 @@
         </content>
       </TitledPane>
       <Separator fx:id="sep" layoutX="502.0" layoutY="49.0" orientation="VERTICAL" prefHeight="33.0" prefWidth="6.0" AnchorPane.rightAnchor="152.0" />
-      <Label fx:id="lblBranch" layoutX="123.0" layoutY="80.0" text="Select Branch for Viewing Discounts Sales and for Buying" textFill="RED" />
+      <Label fx:id="lblBranch" layoutX="179.0" layoutY="57.0" text="Select Branch for Viewing Discounts Sales and for Buying" textFill="RED" />
       <Button fx:id="btnAddCatalogProduct" alignment="CENTER_RIGHT" layoutX="545.0" layoutY="49.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="122.0" text="Add To Catalog" textAlignment="CENTER" wrapText="true" AnchorPane.rightAnchor="14.0" />
-      <Hyperlink fx:id="linkChangeBranch" layoutX="294.0" layoutY="54.0" onAction="#onClickingChangeBranchLink" text="Change" underline="true" visible="false" />
-      <Label fx:id="lblCurrentBranch" layoutX="349.0" layoutY="57.0" text="Current Branch:" visible="false" />
    </children>
 </AnchorPane>
