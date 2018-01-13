@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import Branches.Employee;
+import PacketSender.Command;
 import PacketSender.Packet;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -92,7 +93,8 @@ public class AnswerSurveyController implements Initializable{
 		ArrayList<Object> paramListSurveyQuestion = new ArrayList<>();
 		
 		Packet packet = new Packet();
-		
+		packet.addCommand(Command.getSurvey);
+		packet.addCommand(Command.getQuestions);
 				
 	}
 
