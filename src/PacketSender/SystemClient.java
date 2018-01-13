@@ -58,7 +58,14 @@ public class SystemClient extends AbstractClient
 			public void run() {
 				if (handler != null)
 					handler.onReceivingResult((Packet)msg);
+				
+					try
+					{
+						closeConnection();
+					}
+					catch (Exception e) { }
 				}
 		});
+		
 	}
 }
