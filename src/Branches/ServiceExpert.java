@@ -23,4 +23,5 @@ public class ServiceExpert extends Employee implements Serializable {
 		super(uId, user, password, isLogged,permission, eId, role, bId);
 		this.surveyConclusionList = surveyConclusionList;
 	}
+
 }

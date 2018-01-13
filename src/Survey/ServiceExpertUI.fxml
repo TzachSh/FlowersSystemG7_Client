@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="768.0" prefWidth="833.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label layoutX="329.0" layoutY="7.0" text="Survey Analyze" underline="true">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Button fx:id="btnSubmit" layoutX="369.0" layoutY="722.0" mnemonicParsing="false" onAction="#onSubmitPressedHandler" text="Submit" />
+      <TitledPane animated="false" collapsible="false" layoutX="57.0" layoutY="48.0" prefHeight="448.0" prefWidth="657.0" text="Survey Results">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="401.0" prefWidth="717.0">
+               <children>
+                  <Label layoutX="23.0" layoutY="14.0" text="Question" />
+                  <Label fx:id="lblQ1" layoutX="117.0" layoutY="14.0" text="Q1" />
+                  <Label fx:id="lblQ2" layoutX="117.0" layoutY="79.0" text="Q2" />
+                  <Label layoutX="23.0" layoutY="79.0" text="Question" />
+                  <Label fx:id="lblQ3" layoutX="118.0" layoutY="146.0" text="Q3" />
+                  <Label layoutX="24.0" layoutY="146.0" text="Question" />
+                  <Label fx:id="lblQ4" layoutX="118.0" layoutY="213.0" text="Q4" />
+                  <Label layoutX="24.0" layoutY="213.0" text="Question" />
+                  <Label fx:id="lblQ5" layoutX="118.0" layoutY="279.0" text="Q5" />
+                  <Label layoutX="24.0" layoutY="279.0" text="Question" />
+                  <Label fx:id="lblQ6" layoutX="118.0" layoutY="348.0" text="Q6" />
+                  <Label layoutX="24.0" layoutY="348.0" text="Question" />
+                  <Slider fx:id="sliderA6" disable="true" layoutX="165.0" layoutY="380.0" max="10.0" min="1.0" />
+                  <Label layoutX="24.0" layoutY="375.0" text="Answer Average" />
+                  <Label layoutX="24.0" layoutY="307.0" text="Answer Average" />
+                  <Slider fx:id="sliderA5" disable="true" layoutX="165.0" layoutY="312.0" max="10.0" min="1.0" />
+                  <Label layoutX="25.0" layoutY="240.0" text="Answer Average" />
+                  <Slider fx:id="sliderA4" disable="true" layoutX="166.0" layoutY="245.0" max="10.0" min="1.0" />
+                  <Label layoutX="24.0" layoutY="173.0" text="Answer Average" />
+                  <Slider fx:id="sliderA3" disable="true" layoutX="165.0" layoutY="178.0" max="10.0" min="1.0" />
+                  <Label layoutX="24.0" layoutY="106.0" text="Answer Average" />
+                  <Slider fx:id="sliderA2" disable="true" layoutX="165.0" layoutY="111.0" max="10.0" min="1.0" />
+                  <Label layoutX="25.0" layoutY="41.0" text="Answer Average" />
+                  <Slider fx:id="sliderA1" disable="true" layoutX="166.0" layoutY="46.0" max="10.0" min="1.0" />
+                  <Label fx:id="lblA1" layoutX="305.0" layoutY="43.0" text="calculate" />
+                  <Label fx:id="lblA2" layoutX="305.0" layoutY="108.0" text="calculate" />
+                  <Label fx:id="lblA3" layoutX="305.0" layoutY="173.0" text="calculate" />
+                  <Label fx:id="lblA4" layoutX="305.0" layoutY="242.0" text="calculate" />
+                  <Label fx:id="lblA5" layoutX="305.0" layoutY="307.0" text="calculate" />
+                  <Label fx:id="lblA6" layoutX="305.0" layoutY="375.0" text="calculate" />
+               </children>
+            </AnchorPane>
+        </content>
+      </TitledPane>
+      <TitledPane animated="false" collapsible="false" layoutX="57.0" layoutY="499.0" prefHeight="220.0" prefWidth="719.0" text="Conclusion">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <TextArea layoutX="14.0" layoutY="8.0" prefHeight="180.0" prefWidth="717.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+        </content>
+      </TitledPane>
+   </children>
+</AnchorPane>
