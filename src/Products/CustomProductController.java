@@ -5,12 +5,17 @@ package Products;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.swing.JOptionPane;
+
+import com.sun.scenario.effect.impl.prism.PrImage;
 
 import Customers.Customer;
 import PacketSender.Command;
@@ -34,6 +39,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
@@ -59,70 +65,45 @@ public class CustomProductController implements Initializable {
 	@FXML
 	private TextField txtMaxCost;
 	@FXML
-	private ComboBox<String> cmbColor;
+	private ComboBox<ColorProduct> cmbColor;
 	@FXML
 	private ListView<Flower> flowerListView;
 	@FXML
 	private Label lblCashLeft;
 	@FXML
 	private Button btnReset;
-	private Customer customer;
-	private CartController cartController;
+	@FXML
+	private Label lblTotalPrice;
+	@FXML
+	private ComboBox<ProductType> cmbProductType;
+	@FXML
+	private TextArea txtBlessing;
+	@FXML
+	private Button btnAddBlessing;
+	@FXML
+	private Button btnCancel;
 	private ArrayList<ColorProduct> cList;
+	private ArrayList<ProductType> typeList;
 	private ObservableList<Flower> data;
 	private ArrayList<Flower> flowerList;
 	private double cashLeft;
-	private LinkedHashMap<Flower,Integer> flowerInProduct= new LinkedHashMap<>();;
+	private double maxPrice;
+	private LinkedHashMap<Flower,Integer> flowerInProduct= new LinkedHashMap<>();
+	private Stage primaryStage;;
 	public CustomProductController() {
 		super();
 	}
 	public CustomProductController(CartController cartController,Customer customer) {
-		this.customer=customer;
-		this.cartController=cartController;
 	}
-	private void getColors()
-	{
-		Packet packet = new Packet();//create packet to send
-		packet.addCommand(Command.getColors);//add command
-	
-		
-		// create the thread for send to server the message
-		SystemSender send = new SystemSender(packet);
 
-		// register the handler that occurs when the data arrived from the server
-		send.registerHandler(new IResultHandler() {
-			@Override
-			public void onWaitingForResult() {//waiting when send
-			}
-
-			@Override
-			public void onReceivingResult(Packet p)//set combobox values
-			{
-				ArrayList<String> col = new ArrayList<>();
-				if (p.getResultState())
-				{
-					cList = p.<ColorProduct>convertedResultListForCommand(Command.getColors);
-					
-					for (ColorProduct color : cList)
-					{
-						col.add(color.getColorName());
-					}
-					cmbColor.getItems().addAll(col);
-				}
-				else//if it was error in connection
-					JOptionPane.showMessageDialog(null,"Connection error","Error",JOptionPane.ERROR_MESSAGE);
-			}
-		});
-		send.start();
-	}
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		getFlowers();
-		getColors();
+		getData();
 		
 		paneFlowers.setVisible(false);
 		setSettingBtn();
 		setResetBtn();
+		setAddToOrderBtn();
 		txtMaxCost.textProperty().addListener(new ChangeListener<String>() {
 
 			@Override
@@ -140,12 +121,61 @@ public class CustomProductController implements Initializable {
 		});
 	
 	}
+	private void setAddToOrderBtn() {
+		btnAddToCart.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event)
+			{
+				if (JOptionPane.showConfirmDialog(null, "Do you want to add blessing?", "Notification",
+				        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+					Stage stage = new Stage();
+					String srcFXML = "/Products/BlessingUI.fxml";
+					String srcCSS = "/Products/application.css";
+					Parent root;
+					try {
+						root = FXMLLoader.load(getClass().getResource(srcFXML));
+						Scene scene = new Scene(root);
+						scene.getStylesheets().add(getClass().getResource(srcCSS).toExternalForm());
+						stage.setTitle("Custom product");
+						stage.setScene(scene);
+						primaryStage.hide();
+						stage.show();
+
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					
+				} else {
+				   addToCartCloseWindow();
+				}
+				
+			}
+		});		
+		
+	}
+	protected void addToCartCloseWindow() {
+		for(Entry<Flower, Integer> set : flowerInProduct.entrySet())
+		{/*
+			int productType = cmbProductType.getSelectionModel().getSelectedItem().getId();
+			CustomProduct product = new CustomProduct(null,productType , maxPrice-cashLeft, null, null, blessing);
+			FlowerInProduct fl = new FlowerInProduct(set.getKey().getId(), set.getValue());*/
+		}
+		//CartController.cartProducts.keySet()
+		
+	}
 	private void setResetBtn() {
 		btnReset.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				txtMaxCost.setText("");
-				//cmbColor.set
+				cmbColor.getSelectionModel().clearSelection();
+				paneFlowers.setVisible(false);
+				txtMaxCost.setDisable(false);
+				cmbColor.setDisable(false);
+				btnFind.setDisable(false);
+				lblCashLeft.setText("");
+				flowerInProduct.clear();
+				lblTotalPrice.setText("");
 			}
 		});		
 	}
@@ -159,9 +189,10 @@ public class CustomProductController implements Initializable {
 					paneFlowers.setVisible(true);
 					txtMaxCost.setDisable(true);
 					cmbColor.setDisable(true);
-					cashLeft=Double.parseDouble(txtMaxCost.getText());
+					maxPrice=cashLeft=Double.parseDouble(txtMaxCost.getText());
 					initList();
 					lblCashLeft.setText("Cash left:"+cashLeft);
+					lblTotalPrice.setText("Total: "+(maxPrice-cashLeft));
 				}
 				catch(Exception e)
 				{
@@ -175,6 +206,8 @@ public class CustomProductController implements Initializable {
 					msg = "Invalid cost";
 				if(cmbColor.getValue()== null)
 					msg= msg+"\r\nChoose dominant color";
+				if(cmbProductType.getValue()== null)
+					msg= msg+"\r\nChoose product type";
 				if(msg.length()>0)
 					throw new Exception(msg);
 			}
@@ -182,6 +215,7 @@ public class CustomProductController implements Initializable {
 		
 	}
 	public void start(Stage primaryStage) throws IOException {
+		this.primaryStage=primaryStage;
 		String srcFXML = "/Products/CustomProductUI.fxml";
 		String srcCSS = "/Products/application.css";
 		Parent root = FXMLLoader.load(getClass().getResource(srcFXML));
@@ -191,12 +225,12 @@ public class CustomProductController implements Initializable {
 		primaryStage.setScene(scene);		
 		primaryStage.show();
 	}
-
-	public void getFlowers()
+	public void getData()
 	{
 		Packet packet = new Packet();//create packet to send
 		packet.addCommand(Command.getFlowers);//add command
-	
+		packet.addCommand(Command.getColors);//add command
+		packet.addCommand(Command.getProductTypes);//add command
 		
 		// create the thread for send to server the message
 		SystemSender send = new SystemSender(packet);
@@ -214,6 +248,10 @@ public class CustomProductController implements Initializable {
 				if (p.getResultState())
 				{
 					flowerList= p.<Flower>convertedResultListForCommand(Command.getFlowers);
+					cList = p.<ColorProduct>convertedResultListForCommand(Command.getColors);
+					typeList = p.<ProductType>convertedResultListForCommand(Command.getProductTypes);
+					cmbProductType.getItems().addAll(typeList);
+					cmbColor.getItems().addAll(cList);
 					
 				}
 				else//if it was error in connection
@@ -224,7 +262,8 @@ public class CustomProductController implements Initializable {
 	}
 	public void initList()
 	{
-		data = FXCollections.observableArrayList(flowerList);
+		ArrayList<Flower> tempList = flowerList.stream().filter(c->c.getPrice()<=maxPrice && c.getColor()==cmbColor.getSelectionModel().getSelectedItem().getColId()).collect(Collectors.toCollection(ArrayList::new));
+		data = FXCollections.observableArrayList(tempList);
 		flowerListView.setCellFactory(new Callback<ListView<Flower>, ListCell<Flower>>() {
 			
 			@Override
@@ -283,6 +322,7 @@ public class CustomProductController implements Initializable {
 											flowerInProduct.remove(flo);
 										cashLeft+=flo.getPrice();
 										lblCashLeft.setText("Cash left:"+cashLeft);
+										lblTotalPrice.setText("Total: "+(maxPrice-cashLeft));
 									}
 								});
 								
@@ -297,6 +337,7 @@ public class CustomProductController implements Initializable {
 									}
 									cashLeft-=flo.getPrice();
 									lblCashLeft.setText("Cash left:"+cashLeft);
+									lblTotalPrice.setText("Total: "+(maxPrice-cashLeft));
 									qty.setText(""+flowerInProduct.get(flo));
 									priceQty.setText(""+Integer.parseInt(qty.getText())*flo.getPrice());
 								});
@@ -336,7 +377,6 @@ public class CustomProductController implements Initializable {
 
             @Override
             public void handle(MouseEvent event) {
-            	//listViewCatalog.getSelectionModel().select(-1);
                 event.consume();
             }
         });
