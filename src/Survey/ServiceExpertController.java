@@ -48,7 +48,7 @@ public class ServiceExpertController implements Initializable {
 	private ArrayList<Survey> surveyList;
 	private ArrayList<SurveyQuestion> surveyQuestionList;
 	private ArrayList<Question> questionList;
-	private ArrayList<AnswerSurvey> answerSurveyList;
+	private ArrayList<AnswerSurvey> averageAnswerSurveyList;
 	public static Employee serviceExpert;
 	
 	public void start(Stage primaryStage) {
@@ -82,15 +82,19 @@ public class ServiceExpertController implements Initializable {
 		ArrayList<Object> paramListSurvey = new ArrayList<>();
 		ArrayList<Object> paramListQuestion = new ArrayList<>();
 		ArrayList<Object> paramListSurveyQuestion = new ArrayList<>();
+		ArrayList<Object> paramListAverageAnswers = new ArrayList<>();
+		paramListAverageAnswers.add(survey.getId());
 		
 		Packet packet = new Packet();
 		packet.addCommand(Command.getSurvey);
 		packet.addCommand(Command.getQuestions);
 		packet.addCommand(Command.getSurveyQuestions);
+		packet.addCommand(Command.getAverageAnswersBySurveyId);
 		
 		packet.setParametersForCommand(Command.getSurvey, paramListSurvey);
 		packet.setParametersForCommand(Command.getQuestions, paramListQuestion);
 		packet.setParametersForCommand(Command.getSurveyQuestions, paramListSurveyQuestion);
+		packet.setParametersForCommand(Command.getAverageAnswersBySurveyId, paramListAverageAnswers);
 		
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
@@ -109,7 +113,7 @@ public class ServiceExpertController implements Initializable {
 					surveyList = p.<Survey>convertedResultListForCommand(Command.getSurvey);
 					questionList = p.<Question>convertedResultListForCommand(Command.getQuestions);
 					surveyQuestionList = p.<SurveyQuestion>convertedResultListForCommand(Command.getSurveyQuestions);
-					
+					averageAnswerSurveyList = p.<AnswerSurvey>convertedResultListForCommand(Command.getAverageAnswersBySurveyId);
 					displayQuestion();
 					initSliders();
 				}
