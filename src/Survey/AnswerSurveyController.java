@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import Branches.Employee;
+import Customers.ComplainsController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
@@ -16,11 +17,14 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
 public class AnswerSurveyController implements Initializable{
@@ -157,30 +161,43 @@ public class AnswerSurveyController implements Initializable{
 		return Integer.parseInt(label.getText());
 	}
 	
-	private void setAnswerSurveyList(Survey survey)
-	{
-		ArrayList<AnswerSurvey> answerSurveyList = new ArrayList<>();
-		ArrayList<Integer> answersList = getAllAnswers();
-		int curAnswerIndex = 0;
-		
-		for(SurveyQuestion surveyQuestion : survey.getSurveyQuestionList())
-			answerSurveyList.add(new AnswerSurvey(surveyQuestion.getId(), branchEmployee.getBranchId(), answersList.get(curAnswerIndex++)) );
-	}
-	
 	@FXML
 	private void onSubmitPressedHandler(Event event)
 	{ 
-		setAnswerSurveyList(activeSurvey);
+		ArrayList<Integer> answersList = getAllAnswers();
+		int curAnswerIndex = 0;
 		
 		ArrayList<Object> paramListAnswerSurvey = new ArrayList<>();
 		
 		for(SurveyQuestion surveyQuestion : activeSurvey.getSurveyQuestionList())
-			for(AnswerSurvey answerSurvey : surveyQuestion.getAnswerSurveyList())
-				paramListAnswerSurvey.add(answerSurvey);
+			paramListAnswerSurvey.add(new AnswerSurvey(surveyQuestion.getId(), branchEmployee.getBranchId(), answersList.get(curAnswerIndex)));
 		
 		Packet packet = new Packet();
-		//packet.addCommand(Command);
+		packet.addCommand(Command.addAnswerSurvey);
+		packet.setParametersForCommand(Command.addAnswerSurvey, paramListAnswerSurvey);
 		
+		SystemSender sender = new SystemSender(packet);
+		
+		sender.registerHandler(new IResultHandler() {
+			
+			@Override
+			public void onWaitingForResult() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onReceivingResult(Packet p) {
+				// TODO Auto-generated method stub
+				if(p.getResultState())
+				{
+					Alert alert = new Alert(AlertType.INFORMATION,"The answers has been submited!");
+					alert.showAndWait();
+					((Node) event.getSource()).getScene().getWindow().hide();
+				}
+			}
+		});
+		sender.start();
 	}
 	
 	private Survey getActiveSurvey()
