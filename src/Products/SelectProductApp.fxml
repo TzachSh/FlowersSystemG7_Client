@@ -25,7 +25,7 @@
         </content>
       </TitledPane>
       <Separator fx:id="sep" layoutX="502.0" layoutY="49.0" orientation="VERTICAL" prefHeight="33.0" prefWidth="6.0" AnchorPane.rightAnchor="152.0" />
-      <Label fx:id="lblBranch" layoutX="179.0" layoutY="57.0" text="Select Branch for Viewing Discounts Sales and for Buying" textFill="RED" />
+      <Label fx:id="lblBranch" alignment="CENTER_RIGHT" layoutX="18.0" layoutY="57.0" prefHeight="17.0" prefWidth="472.0" text="Select Branch for Viewing Discounts Sales and for Buying" textFill="RED" />
       <Button fx:id="btnAddCatalogProduct" alignment="CENTER_RIGHT" layoutX="545.0" layoutY="49.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="122.0" text="Add To Catalog" textAlignment="CENTER" wrapText="true" AnchorPane.rightAnchor="14.0" />
    </children>
 </AnchorPane>
