@@ -64,6 +64,8 @@ public class CustomProductController implements Initializable {
 	private ListView<Flower> flowerListView;
 	@FXML
 	private Label lblCashLeft;
+	@FXML
+	private Button btnReset;
 	private Customer customer;
 	private CartController cartController;
 	private ArrayList<ColorProduct> cList;
@@ -120,6 +122,7 @@ public class CustomProductController implements Initializable {
 		
 		paneFlowers.setVisible(false);
 		setSettingBtn();
+		setResetBtn();
 		txtMaxCost.textProperty().addListener(new ChangeListener<String>() {
 
 			@Override
@@ -136,6 +139,15 @@ public class CustomProductController implements Initializable {
 			}
 		});
 	
+	}
+	private void setResetBtn() {
+		btnReset.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				txtMaxCost.setText("");
+				//cmbColor.set
+			}
+		});		
 	}
 	private void setSettingBtn() {
 		btnFind.setOnAction(new EventHandler<ActionEvent>() {
