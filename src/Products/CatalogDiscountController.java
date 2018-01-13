@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 import javax.swing.JOptionPane;
 
 import Branches.Branch;
+import Login.CustomerMenuController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
@@ -84,7 +85,7 @@ public class CatalogDiscountController implements Initializable {
 	public void onPressedSaveButton()
 	{
 		int discountConverted = Integer.valueOf(txtDiscount.getText());
-		int branchId = selectIController.branchId;
+		int branchId = CustomerMenuController.currentBranch.getbId();
 		int catPId = catalogProduct.getCatalogProductId();
 		
 		CatalogInBranch catInBranch = new CatalogInBranch(branchId, catPId, discountConverted);
@@ -197,8 +198,8 @@ public class CatalogDiscountController implements Initializable {
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		Branch branch = selectIController.getBranchByBranchId(selectIController.branchId);
-		txtBranch.setText(branch.getName());
+		if (CustomerMenuController.currentBranch != null)
+			txtBranch.setText(CustomerMenuController.currentBranch.getName());
 		
 		txtProduct.setText(catalogProduct.getName());
 		

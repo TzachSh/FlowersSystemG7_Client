@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
-
 import Products.SelectProductController.CatalogProductDetails;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -62,8 +61,6 @@ public class CartController implements Initializable
 	  public static LinkedHashMap<Product, Integer> cartProducts = new LinkedHashMap<>();
 	
 	  private ObservableList<Product> data;
-	
-	  public static int branchId  = -1;
 	  
 	  private static boolean comesFromCatalog = false;
 	  

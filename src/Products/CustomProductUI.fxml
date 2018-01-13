@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="536.0" prefWidth="517.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Products.CustomProductController">
+   <children>
+      <TitledPane animated="false" collapsible="false" layoutX="20.0" layoutY="14.0" prefHeight="206.0" prefWidth="477.0" text="Settings">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <Button fx:id="btnFind" layoutX="391.0" layoutY="143.0" mnemonicParsing="false" text="Find flowers" />
+                  <TextField fx:id="txtMaxCost" layoutX="163.0" layoutY="37.0" promptText="enter price range" />
+                  <ComboBox fx:id="cmbColor" layoutX="163.0" layoutY="90.0" prefWidth="150.0" />
+                  <Label layoutX="69.0" layoutY="41.0" text="Price range:" />
+                  <Label layoutX="69.0" layoutY="94.0" text="Dominant color" />
+                  <Label fx:id="lblCashLeft" layoutX="172.0" layoutY="147.0" />
+               </children>
+            </AnchorPane>
+        </content>
+      </TitledPane>
+      <TitledPane fx:id="paneFlowers" animated="false" collapsible="false" layoutX="20.0" layoutY="237.0" prefHeight="206.0" prefWidth="477.0" text="Choose flowers to your product">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <ListView fx:id="flowerListView" layoutX="6.0" prefHeight="180.0" prefWidth="464.0" />
+               </children></AnchorPane>
+        </content>
+      </TitledPane>
+      <Button fx:id="btnAddToCart" layoutX="412.0" layoutY="475.0" mnemonicParsing="false" text="Add to order" />
+   </children>
+</AnchorPane>

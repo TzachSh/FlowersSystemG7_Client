@@ -7,22 +7,19 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-
 import java.util.Map;
 import java.util.ResourceBundle;
-
 import Branches.Branch;
 import Branches.Employee;
 import Customers.Account;
-import Customers.AccountStatus;
 import Customers.Customer;
+import Login.CustomerMenuController;
 import Login.LoginController;
 import PacketSender.Command;
 import PacketSender.FileSystem;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
-import Users.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -62,18 +59,12 @@ public class SelectProductController implements Initializable
 {
     @FXML
     private Separator sep;
-    
-    @FXML
-    private Hyperlink linkChangeBranch;
 
     @FXML
     private Button btnClose;
 
     @FXML
     private Button btnAddCatalogProduct;
-
-    @FXML
-    private ComboBox<String> cmbBranch;
 
     @FXML
     private Label lblTitle;
@@ -84,12 +75,6 @@ public class SelectProductController implements Initializable
     @FXML
     private Label lblBranch;
 
-    @FXML
-    private Label lblBranchSelect;
-    
-    @FXML
-    private Label lblCurrentBranch;
-
     /** enum for indicate the window that call to this controller  */
     public enum CatalogUse { updateSale, order, updateCatalog, viewingCatalog, cart }
     
@@ -99,15 +84,11 @@ public class SelectProductController implements Initializable
 	/** the selection products in the listview, used for order operation */
 	public static ArrayList<Product> productsSelected = new ArrayList<>();
 
-	public static ArrayList<Account> userAccountsList = new ArrayList<>();
-	public static ArrayList<Branch> branchList = new ArrayList<>();
 	public static ArrayList<Flower> flowersList = new ArrayList<>();
 	public static ArrayList<ProductType> productsTypeList = new ArrayList<>();
 	public static CatalogUse catalogUse;
 	private static String title;
-	public static int branchId;
 	private ObservableList<Product> data;
-	private boolean hasAccountForCurrentBranch = false;
 	public static Stage mainStage;
 	private static SelectProductController controllerInstance;
 	/**
@@ -130,7 +111,6 @@ public class SelectProductController implements Initializable
 	{
 		catalogUse = CatalogUse.updateSale;
 		title = "Updating Sales";
-		branchId = ((Employee)LoginController.userLogged).getBranchId();
 	}
 	
 	/**
@@ -170,33 +150,14 @@ public class SelectProductController implements Initializable
 	}
 	
 	/**
-	 * Initialize the ComboBox of Branches with List of branches
-	 * @param branchesList the collection of branches to insert to Branch ComboBox
-	 */
-	public void setComboBoxBrancesList(ArrayList<Branch> branchesList)
-	{
-		ArrayList<String> branches = new ArrayList<>();
-		
-		for (Branch br : branchesList)
-			branches.add(br.toString());
-		
-		ObservableList<String> observeBranchesList = FXCollections.observableArrayList(branches);
-		
-		cmbBranch.setItems(observeBranchesList);
-		
-		cmbBranch.getSelectionModel().select(CartController.branchId);
-	}
-	
-	/**
 	 * Send to the server request to get the discount of the selected branch
-	 * @param index The index in the collection of branches or in the comboBox
 	 */
-	public void setDiscountsForSelectedBranch(int index)
+	public void setDiscountsForSelectedBranch()
 	{
-		if (index == -1)
+		if (CustomerMenuController.currentBranch == null)
 			return;
 		
-		int branchId = branchList.get(index).getbId();
+		int branchId = CustomerMenuController.currentBranch.getbId();
 		Packet packet = new Packet();
 		packet.addCommand(Command.getBranchSales);
 		
@@ -241,34 +202,6 @@ public class SelectProductController implements Initializable
 		});
 		
 		send.start();
-	}
-	
-	/**
-	 * Get the instance of account by branch Id
-	 * @param branchId The branch Id for searching account
-	 */
-	public Account getAccountByBranchId(int branchId)
-	{
-		for (Account account : userAccountsList)
-		{
-			if (account.getBranchId() == branchId)
-				return account;
-		}
-		return null;
-	}
-	
-	/**
-	 * Get the instance of branch by branch Id
-	 * @param branchId The branch Id for searching
-	 */
-	public Branch getBranchByBranchId(int branchId)
-	{
-		for (Branch branch : branchList)
-		{
-			if (branch.getbId() == branchId)
-				return branch;
-		}
-		return null;
 	}
 	
 	/**
@@ -350,20 +283,8 @@ public class SelectProductController implements Initializable
 		packet.addCommand(Command.getCatalogProducts);
 		packet.addCommand(Command.getFlowersInProducts);
 		packet.addCommand(Command.getCatalogImage);
-		packet.addCommand(Command.getBranches);
 		packet.addCommand(Command.getFlowers);
 		packet.addCommand(Command.getProductTypes);
-		
-		
-		if (LoginController.userLogged instanceof Customer)
-		{
-			packet.addCommand(Command.getAccountbycID);
-			int cid = ((Customer)LoginController.userLogged).getId();
-			
-			ArrayList<Object> accl=new ArrayList<>();
-			accl.add(cid);
-			packet.setParametersForCommand(Command.getAccountbycID, accl);
-		}
 		
 		// create the thread for send to server the message
 		SystemSender send = new SystemSender(packet);
@@ -381,14 +302,8 @@ public class SelectProductController implements Initializable
 					ArrayList<FileSystem> catalogImagesList = p.<FileSystem>convertedResultListForCommand(Command.getCatalogImage);
 					ArrayList<CatalogProduct> catalogProductsList = p.<CatalogProduct>convertedResultListForCommand(Command.getCatalogProducts);
 					ArrayList<FlowerInProduct> flowersInProductList = p.<FlowerInProduct>convertedResultListForCommand(Command.getFlowersInProducts);
-					branchList = p.<Branch>convertedResultListForCommand(Command.getBranches);
 					flowersList = p.<Flower>convertedResultListForCommand(Command.getFlowers);
 					productsTypeList = p.<ProductType>convertedResultListForCommand(Command.getProductTypes);
-					if (LoginController.userLogged instanceof Customer)
-					{
-						userAccountsList = p.<Account>convertedResultListForCommand(Command.getAccountbycID);
-					}
-					
 					
 					for (int i = 0; i < catalogProductsList.size(); i++)
 					{
@@ -412,7 +327,6 @@ public class SelectProductController implements Initializable
 						catalogProductWithAdditionalDetails.put(pro, cp);
 					}
 					
-					setComboBoxBrancesList(branchList);
 					initFormByUses();
 					fillCatalogItems();
 				}
@@ -483,69 +397,6 @@ public class SelectProductController implements Initializable
 		});
 				
 		send.start();
-	}
-	
-	/**
-	 * return the index in the collection of branches that equals to branchId
-	 * @param branchId The branch id to search for
-	 * @return -1 if not found, else if found
-	 */
-	private int getIndexByBranchId(int branchId)
-	{
-		for (int i = 0; i < branchList.size(); i++)
-		{
-			if (branchList.get(i).getbId() == branchId)
-				return i;
-		}
-		return -1;
-	}
-	
-	/**
-	 * Event that occurs when choosing an item on the Branch comboBox
-	 */
-	public void onClickingBranchComboBox()
-	{
-		linkChangeBranch.setVisible(true);
-		linkChangeBranch.setVisited(false);
-		
-		cmbBranch.setDisable(true);
-		int index = cmbBranch.getSelectionModel().getSelectedIndex();
-		if (index != -1)
-		{
-			lblBranch.setVisible(false);
-			lblCurrentBranch.setVisible(true);
-			
-			Branch branch = branchList.get(index);
-			lblCurrentBranch.setText("Current Branch: " + branch);
-			lblCurrentBranch.setTextFill(Color.BLACK);
-			setDiscountsForSelectedBranch(index);
-			
-			// alert if the user has no account for this branch
-			// if there is no account, disable the option for select products, or add to cart
-			Account account = getAccountByBranchId(branch.getbId());
-			if (account != null)
-			{
-				lblBranch.setVisible(false);
-				hasAccountForCurrentBranch = true;
-			}
-			else if (catalogUse != CatalogUse.updateSale)
-			{
-				lblBranch.setText("You don't have an Account! Contact with Branch Manager for Open");
-				lblBranch.setVisible(true);
-				hasAccountForCurrentBranch = false;
-				displayAlert(AlertType.WARNING, "Warning!", "No Account!", "You don't have account for selected branch, Please contact with Branch Manager for open a new one");
-			}
-
-			
-			updateTotalPriceAndAddToCartButton();
-		}
-		else
-		{
-			lblBranch.setVisible(true);
-			lblCurrentBranch.setVisible(false);
-			lblBranch.setText("Select Branch for Viewing Discounts Sales and for Buying");
-			lblBranch.setTextFill(Color.RED);
-		}
 	}
 	
 	/**
@@ -788,7 +639,7 @@ public class SelectProductController implements Initializable
 							setAddOrderStyles(add);
 						}
 						
-						if (cmbBranch.getSelectionModel().getSelectedIndex() == -1 || !hasAccountForCurrentBranch || productsSelected.contains(pro))
+						if (CustomerMenuController.currentBranch == null || !CustomerMenuController.hasAccountForCurrentBranch || productsSelected.contains(pro))
 						{
 							add.setDisable(true);
 						}
@@ -965,7 +816,7 @@ public class SelectProductController implements Initializable
 	{
 		if (productsSelected.size() == 0)
 		{
-			if (hasAccountForCurrentBranch)
+			if (CustomerMenuController.hasAccountForCurrentBranch)
 				lblBranch.setVisible(false);
 			
 			btnAddCatalogProduct.setDisable(true);
@@ -997,53 +848,7 @@ public class SelectProductController implements Initializable
 		}
 		return null;
 	}
-	
-	/**
-	 * Event that occurs when clicking on the link for changing the current branch
-	 */
-	public void onClickingChangeBranchLink()
-	{
-		if (productsSelected.size() > 0) // user is already select product from some branch
-		{
-			// alert warning and ask for yes or no, if press yes he will lost all current selected
-			Alert alert = new Alert(Alert.AlertType.WARNING);
-			alert.setTitle("Selecting Another Branch");
-			alert.setContentText("This Operation will Cause to your Cart and Choices to be erased! Are you Sure?");
-			ButtonType okButton = new ButtonType("Yes", ButtonData.YES);
-			ButtonType noButton = new ButtonType("No", ButtonData.NO);
-			
-			alert.getButtonTypes().setAll(okButton, noButton);
-			alert.showAndWait().ifPresent(type -> {
-			        if (type == okButton)
-			        {
-			        	clearBranchSelection();
-			        } 
-			});
-		}
-		else
-		{
-			clearBranchSelection();
-		}
-	}
-	
-	/**
-	 * Clear the combobox of the current branch, and set status for empty branch
-	 */
-	private void clearBranchSelection()
-	{
-		productsSelected.clear();
-    	
-    	cmbBranch.getSelectionModel().select(-1);
-		lblBranch.setVisible(true);
-		cmbBranch.setDisable(false);
-		clearCatalogInBranchInstances();
-		lblBranch.setText("Select Branch for Viewing Discounts Sales and for Buying");
-		linkChangeBranch.setVisible(false);
-		fillCatalogItems();
-		
-		btnAddCatalogProduct.setDisable(true);
-	}
-	
+
 	/**
 	 * Clear the sales for each catalog product in the collection
 	 */
@@ -1056,8 +861,6 @@ public class SelectProductController implements Initializable
 		
 		productsSelected.clear();
 		CartController.cartProducts.clear();
-		
-		branchId = -1;
 	}
 	
 	/**
@@ -1065,8 +868,6 @@ public class SelectProductController implements Initializable
 	 */
 	public void registerAddCatalogButtonHandle()
 	{
-		
-		
 		btnAddCatalogProduct.setOnAction(new EventHandler<ActionEvent>() {
 	            @Override
 	            public void handle(ActionEvent event) {
@@ -1077,7 +878,7 @@ public class SelectProductController implements Initializable
 
 	            		CatalogProductController catalogProductController = new CatalogProductController();
 	            		catalogProductController.setCatalogProductForInserting(controllerInstance);
-	        			catalogProductController.comesFromCatalog = true;
+	            		CatalogProductController.comesFromCatalog = true;
 	        			catalogProductController.start(primaryStage);
 	        		}
 	        		catch (Exception e) 
@@ -1104,7 +905,6 @@ public class SelectProductController implements Initializable
 	        			// call to controller of order to open order window
 	        			CartController cartController = new CartController();
 	        			cartController.setComesFromCatalog(true);
-	        			CartController.branchId = cmbBranch.getSelectionModel().getSelectedIndex();
 	        			cartController.addProductsToCartMap(productsSelected);
 	        			cartController.start(primaryStage);
 	        		}
@@ -1133,21 +933,17 @@ public class SelectProductController implements Initializable
 			btnAddCatalogProduct.setGraphic(view);
 			btnAddCatalogProduct.setPrefWidth(115);
 			
-			//linkChangeBranch.setVisible(false);
 			registerAddToCartButtonHandle();
+			
+			if (!CustomerMenuController.hasAccountForCurrentBranch)
+				lblBranch.setText("You don't have an Account! Contact with Branch Manager for Open");
 		}
 		else if (catalogUse == CatalogUse.updateSale)
 		{
 			btnAddCatalogProduct.setVisible(false);
 			sep.setVisible(false);
-			// select the branch of employee manager on the combobox
-			int index = getIndexByBranchId(branchId);
-			cmbBranch.getSelectionModel().select(index);
-			cmbBranch.setDisable(true);
-			linkChangeBranch.setVisible(false);
+		
 			lblBranch.setVisible(false);
-			//lblBranch.setText("Current Branch: " + branchList.get(index));
-			//lblBranch.setTextFill(Color.BLACK);
 		}
 		else if (catalogUse == CatalogUse.updateCatalog)
 		{
@@ -1163,10 +959,9 @@ public class SelectProductController implements Initializable
 			
 			sep.setVisible(true);
 			lblBranch.setVisible(false);
-			lblBranchSelect.setVisible(false);
-			cmbBranch.setVisible(false);
+			
 			lblBranch.setVisible(false);
-			linkChangeBranch.setVisible(false);
+			
 			registerAddCatalogButtonHandle();
 		}
 	}
@@ -1178,6 +973,7 @@ public class SelectProductController implements Initializable
 		lblTitle.setText(title);
 		initializeCollections();
 		controllerInstance = this;
+		setDiscountsForSelectedBranch();
 	}
 
 	/**
