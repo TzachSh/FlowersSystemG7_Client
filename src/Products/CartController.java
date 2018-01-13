@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
-
 import Products.SelectProductController.CatalogProductDetails;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
