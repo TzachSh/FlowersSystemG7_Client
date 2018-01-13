@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import Products.SelectProductController.CatalogProductDetails;
-import Products.SelectProductController.CatalogUse;
-import Users.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,7 +17,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -27,7 +24,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -353,7 +349,7 @@ public class CartController implements Initializable
     			lstCart.getScene().getWindow().hide(); //hiding primary window
     			Stage primaryStage = new Stage();
     			SelectProductController catalogProductController = new SelectProductController();
-    			catalogProductController.setForCart(SelectProductUI.customer);
+    			catalogProductController.setForCart();
     			catalogProductController.start(primaryStage);
     		}
     		catch (Exception e) 

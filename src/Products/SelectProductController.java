@@ -16,6 +16,7 @@ import Branches.Employee;
 import Customers.Account;
 import Customers.AccountStatus;
 import Customers.Customer;
+import Login.LoginController;
 import PacketSender.Command;
 import PacketSender.FileSystem;
 import PacketSender.IResultHandler;
@@ -105,7 +106,6 @@ public class SelectProductController implements Initializable
 	public static CatalogUse catalogUse;
 	private static String title;
 	public static int branchId;
-	private static User userLogged;
 	private ObservableList<Product> data;
 	private boolean hasAccountForCurrentBranch = false;
 	public static Stage mainStage;
@@ -126,20 +126,18 @@ public class SelectProductController implements Initializable
 	 * Set the controller to initialize for updating sale
 	 * @param user Branch Employee object
 	 */
-	public void setForUpdateSale(User user)
+	public void setForUpdateSale()
 	{
-		userLogged = user;
 		catalogUse = CatalogUse.updateSale;
 		title = "Updating Sales";
-		branchId = ((Employee)user).getBranchId();
+		branchId = ((Employee)LoginController.userLogged).getBranchId();
 	}
 	
 	/**
 	 *  Set the controller to initialize for ordering
 	 */
-	public void setForOrder(User user)
+	public void setForOrder()
 	{
-		userLogged = user;
 		catalogUse = CatalogUse.order;
 		title = "Add To Cart";
 	}
@@ -147,9 +145,8 @@ public class SelectProductController implements Initializable
 	/**
 	 *  Set the controller to initialize for ordering from cart
 	 */
-	public void setForCart(User user)
+	public void setForCart()
 	{
-		userLogged = user;
 		catalogUse = CatalogUse.cart;
 		title = "Add To Cart";	
 	}
@@ -157,9 +154,8 @@ public class SelectProductController implements Initializable
 	/**
 	 * Set the controller to initialize for viewing in catalog and also order
 	 */
-	public void setForViewingCatalog(User user)
+	public void setForViewingCatalog()
 	{
-		userLogged = user;
 		catalogUse = CatalogUse.viewingCatalog;
 		title = "Catalog Products Viewer";
 	}
@@ -167,9 +163,8 @@ public class SelectProductController implements Initializable
 	/**
 	 * Set the controller to initialize for updating Catalog
 	 */
-	public void setForUpdateCatalog(User user)
+	public void setForUpdateCatalog()
 	{
-		userLogged = user;
 		catalogUse = CatalogUse.updateCatalog;
 		title = "Updating Catalog Products";
 	}
@@ -359,10 +354,11 @@ public class SelectProductController implements Initializable
 		packet.addCommand(Command.getFlowers);
 		packet.addCommand(Command.getProductTypes);
 		
-		if (userLogged instanceof Customer)
+		
+		if (LoginController.userLogged instanceof Customer)
 		{
 			packet.addCommand(Command.getAccountbycID);
-			int cid = ((Customer)userLogged).getId();
+			int cid = ((Customer)LoginController.userLogged).getId();
 			
 			ArrayList<Object> accl=new ArrayList<>();
 			accl.add(cid);
@@ -388,7 +384,7 @@ public class SelectProductController implements Initializable
 					branchList = p.<Branch>convertedResultListForCommand(Command.getBranches);
 					flowersList = p.<Flower>convertedResultListForCommand(Command.getFlowers);
 					productsTypeList = p.<ProductType>convertedResultListForCommand(Command.getProductTypes);
-					if (userLogged instanceof Customer)
+					if (LoginController.userLogged instanceof Customer)
 					{
 						userAccountsList = p.<Account>convertedResultListForCommand(Command.getAccountbycID);
 					}
