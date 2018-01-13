@@ -42,12 +42,12 @@
                   <Slider fx:id="sliderA2" disable="true" layoutX="165.0" layoutY="111.0" max="10.0" min="1.0" />
                   <Label layoutX="25.0" layoutY="41.0" text="Answer Average" />
                   <Slider fx:id="sliderA1" disable="true" layoutX="166.0" layoutY="46.0" max="10.0" min="1.0" />
-                  <Label fx:id="lblA1" layoutX="305.0" layoutY="43.0" text="calculate" />
-                  <Label fx:id="lblA2" layoutX="305.0" layoutY="108.0" text="calculate" />
-                  <Label fx:id="lblA3" layoutX="305.0" layoutY="173.0" text="calculate" />
-                  <Label fx:id="lblA4" layoutX="305.0" layoutY="242.0" text="calculate" />
-                  <Label fx:id="lblA5" layoutX="305.0" layoutY="307.0" text="calculate" />
-                  <Label fx:id="lblA6" layoutX="305.0" layoutY="375.0" text="calculate" />
+                  <Label fx:id="lblA1" layoutX="305.0" layoutY="43.0" text="No answers yet" />
+                  <Label fx:id="lblA2" layoutX="305.0" layoutY="108.0" text="No answers yet" />
+                  <Label fx:id="lblA3" layoutX="305.0" layoutY="173.0" text="No answers yet" />
+                  <Label fx:id="lblA4" layoutX="305.0" layoutY="242.0" text="No answers yet" />
+                  <Label fx:id="lblA5" layoutX="305.0" layoutY="307.0" text="No answers yet" />
+                  <Label fx:id="lblA6" layoutX="305.0" layoutY="375.0" text="No answers yet" />
                </children>
             </AnchorPane>
         </content>

@@ -88,6 +88,7 @@ public class ServiceExpertController implements Initializable {
 		ArrayList<Object> paramListQuestion = new ArrayList<>();
 		ArrayList<Object> paramListSurveyQuestion = new ArrayList<>();
 		ArrayList<Object> paramListAverageAnswers = new ArrayList<>();
+		ArrayList<Object> paramListConclusionList = new ArrayList<>();
 		paramListAverageAnswers.add(survey.getId());
 		
 		Packet packet = new Packet();
@@ -95,11 +96,13 @@ public class ServiceExpertController implements Initializable {
 		packet.addCommand(Command.getQuestions);
 		packet.addCommand(Command.getSurveyQuestions);
 		packet.addCommand(Command.getAverageAnswersBySurveyId);
+		packet.addCommand(Command.getConclusions);
 		
 		packet.setParametersForCommand(Command.getSurvey, paramListSurvey);
 		packet.setParametersForCommand(Command.getQuestions, paramListQuestion);
 		packet.setParametersForCommand(Command.getSurveyQuestions, paramListSurveyQuestion);
 		packet.setParametersForCommand(Command.getAverageAnswersBySurveyId, paramListAverageAnswers);
+		packet.setParametersForCommand(Command.getConclusions, paramListConclusionList);
 		
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
@@ -115,16 +118,25 @@ public class ServiceExpertController implements Initializable {
 				// TODO Auto-generated method stub
 				if(p.getResultState())
 				{
+					ArrayList<SurveyConclusion> surveyConclusionList = p.<SurveyConclusion>convertedResultListForCommand(Command.getConclusions);
 					questionList = p.<Question>convertedResultListForCommand(Command.getQuestions);
 					surveyQuestionList = p.<SurveyQuestion>convertedResultListForCommand(Command.getSurveyQuestions);
 					averageAnswerSurveyList = p.<AnswerSurvey>convertedResultListForCommand(Command.getAverageAnswersBySurveyId);
 					displayQuestion();
 					initSliders(averageAnswerSurveyList);
 					initAnswerLabels(averageAnswerSurveyList);
+					initTextArea(surveyConclusionList);
 				}
 			}
 		});
 		sender.start();
+	}
+	
+	private void initTextArea(ArrayList<SurveyConclusion> surveyConclusionList) {
+		for(SurveyConclusion surveyConclusion : surveyConclusionList)
+			if(surveyConclusion.getId() == survey.getSurveyConclusionId())
+				txtConclusion.setText(surveyConclusion.getConclusion());
+		
 	}
 	
 	private void setSliderValue(Slider slider , int value)
@@ -137,24 +149,29 @@ public class ServiceExpertController implements Initializable {
 		label.setText(String.format("%d",value));
 	}
 	
-	private void initAnswerLabels(ArrayList<AnswerSurvey> averageAnswerSurveyList2)
+	private void initAnswerLabels(ArrayList<AnswerSurvey> averageAnswerSurveyList)
 	{
-		initLabelsAverageAnswer(lblA1,averageAnswerSurveyList.get(0).getAnswer());
-		initLabelsAverageAnswer(lblA2,averageAnswerSurveyList.get(1).getAnswer());
-		initLabelsAverageAnswer(lblA3,averageAnswerSurveyList.get(2).getAnswer());
-		initLabelsAverageAnswer(lblA4,averageAnswerSurveyList.get(3).getAnswer());
-		initLabelsAverageAnswer(lblA5,averageAnswerSurveyList.get(4).getAnswer());
-		initLabelsAverageAnswer(lblA6,averageAnswerSurveyList.get(5).getAnswer());
+		if (averageAnswerSurveyList.size() > 0) {
+			initLabelsAverageAnswer(lblA1, averageAnswerSurveyList.get(0).getAnswer());
+			initLabelsAverageAnswer(lblA2, averageAnswerSurveyList.get(1).getAnswer());
+			initLabelsAverageAnswer(lblA3, averageAnswerSurveyList.get(2).getAnswer());
+			initLabelsAverageAnswer(lblA4, averageAnswerSurveyList.get(3).getAnswer());
+			initLabelsAverageAnswer(lblA5, averageAnswerSurveyList.get(4).getAnswer());
+			initLabelsAverageAnswer(lblA6, averageAnswerSurveyList.get(5).getAnswer());
+		}
 	}
 	
 	private void initSliders(ArrayList<AnswerSurvey> averageAnswerSurveyList)
 	{
-		setSliderValue(sliderA1,averageAnswerSurveyList.get(0).getAnswer());
-		setSliderValue(sliderA2,averageAnswerSurveyList.get(1).getAnswer());
-		setSliderValue(sliderA3,averageAnswerSurveyList.get(2).getAnswer());
-		setSliderValue(sliderA4,averageAnswerSurveyList.get(3).getAnswer());
-		setSliderValue(sliderA5,averageAnswerSurveyList.get(4).getAnswer());
-		setSliderValue(sliderA6,averageAnswerSurveyList.get(5).getAnswer());
+		if(averageAnswerSurveyList.size() > 0) {
+			setSliderValue(sliderA1, averageAnswerSurveyList.get(0).getAnswer());
+			setSliderValue(sliderA2, averageAnswerSurveyList.get(1).getAnswer());
+			setSliderValue(sliderA3, averageAnswerSurveyList.get(2).getAnswer());
+			setSliderValue(sliderA4, averageAnswerSurveyList.get(3).getAnswer());
+			setSliderValue(sliderA5, averageAnswerSurveyList.get(4).getAnswer());
+			setSliderValue(sliderA6, averageAnswerSurveyList.get(5).getAnswer());
+		}
+		
 	}
 	
 	private ArrayList<Question> getQuestionsOfSurvey(Survey survey)
@@ -165,7 +182,6 @@ public class ServiceExpertController implements Initializable {
 			for(Question question : questionList)
 				if(surveyQuestion.getQuestionId() == question.getId())
 					questionsOfSurvey.add(question);
-		
 		return questionsOfSurvey;
 	}
 	
@@ -179,12 +195,14 @@ public class ServiceExpertController implements Initializable {
 		attachQuestionToSurvey(survey);
 		ArrayList<Question> questionsToDisplay = getQuestionsOfSurvey(survey);
 		
-		setLabelQuestion(questionsToDisplay.get(0), lblQ1);
-		setLabelQuestion(questionsToDisplay.get(1), lblQ2);
-		setLabelQuestion(questionsToDisplay.get(2), lblQ3);
-		setLabelQuestion(questionsToDisplay.get(3), lblQ4);
-		setLabelQuestion(questionsToDisplay.get(4), lblQ5);
-		setLabelQuestion(questionsToDisplay.get(5), lblQ6);
+		if (questionsToDisplay.size() > 0) {
+			setLabelQuestion(questionsToDisplay.get(0), lblQ1);
+			setLabelQuestion(questionsToDisplay.get(1), lblQ2);
+			setLabelQuestion(questionsToDisplay.get(2), lblQ3);
+			setLabelQuestion(questionsToDisplay.get(3), lblQ4);
+			setLabelQuestion(questionsToDisplay.get(4), lblQ5);
+			setLabelQuestion(questionsToDisplay.get(5), lblQ6);
+		}
 	}
 	
 	
