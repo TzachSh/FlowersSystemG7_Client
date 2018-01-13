@@ -170,7 +170,7 @@ public class AnswerSurveyController implements Initializable{
 		ArrayList<Object> paramListAnswerSurvey = new ArrayList<>();
 		
 		for(SurveyQuestion surveyQuestion : activeSurvey.getSurveyQuestionList())
-			paramListAnswerSurvey.add(new AnswerSurvey(surveyQuestion.getId(), branchEmployee.getBranchId(), answersList.get(curAnswerIndex)));
+			paramListAnswerSurvey.add(new AnswerSurvey(surveyQuestion.getId(), branchEmployee.getBranchId(), answersList.get(curAnswerIndex++)));
 		
 		Packet packet = new Packet();
 		packet.addCommand(Command.addAnswerSurvey);
@@ -191,7 +191,7 @@ public class AnswerSurveyController implements Initializable{
 				// TODO Auto-generated method stub
 				if(p.getResultState())
 				{
-					Alert alert = new Alert(AlertType.INFORMATION,"The answers has been submited!");
+					Alert alert = new Alert(AlertType.INFORMATION,"The answers have been submited!");
 					alert.showAndWait();
 					((Node) event.getSource()).getScene().getWindow().hide();
 				}
