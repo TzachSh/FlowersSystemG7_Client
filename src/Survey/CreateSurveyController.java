@@ -243,11 +243,11 @@ public class CreateSurveyController implements Initializable {
 		}
 		
 		//int creatorId = User.getuId();
-		int creatorId = 1;
+		int creatorId = employee.getuId();
 		
 		//Parameter list for addSurvey
 		ArrayList<Object> paramListSurvey = new ArrayList<>();
-		Survey survey = new Survey(subject, creatorId,true);
+		Survey survey = new Survey(subject, creatorId,false);
 		paramListSurvey.add(survey);
 		
 		//Parameter list for addQuestion
@@ -283,6 +283,7 @@ public class CreateSurveyController implements Initializable {
 				// TODO Auto-generated method stub
 				if(p.getResultState())
 				{
+					resertComponents();
 					Alert alert = new Alert(AlertType.INFORMATION,"The survey inserted successfully!");
 					alert.show();
 					tabOptions.getSelectionModel().select(0);
@@ -317,7 +318,6 @@ public class CreateSurveyController implements Initializable {
 				{
 					ArrayList<Survey> survyList = p.<Survey>convertedResultListForCommand(Command.getSurvey);
 					dataSurvey = FXCollections.observableArrayList(survyList);
-					defineOptionTabState(dataSurvey);
 					sListView.setItems(dataSurvey);
 				}
 			}
@@ -396,7 +396,7 @@ public class CreateSurveyController implements Initializable {
 						public void onReceivingResult(Packet p) {
 							// TODO Auto-generated method stub
 								if (p.getResultState()) {
-									defineOptionTabState(dataSurvey);
+								//	defineOptionTabState(dataSurvey);
 								}
 						}
 					});
@@ -472,7 +472,7 @@ public class CreateSurveyController implements Initializable {
 		return retVal;
 	}
 	
-	private void defineOptionTabState(ObservableList<Survey> surveyList)
+/*	private void defineOptionTabState(ObservableList<Survey> surveyList)
 	{
 		if(isActivatedSurvey(surveyList)) {
 			tabOptions.getSelectionModel().select(1);
@@ -486,7 +486,7 @@ public class CreateSurveyController implements Initializable {
 			tabOptions.getSelectionModel().select(0);
 		}
 	}
-	
+	*/
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub
