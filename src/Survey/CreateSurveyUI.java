@@ -6,6 +6,7 @@ import java.util.List;
 import Branches.CustomerService;
 import Branches.Employee;
 import Branches.Role;
+import Branches.ServiceExpert;
 import Products.CatalogProductController;
 import Users.Permission;
 import Users.User;
@@ -36,9 +37,9 @@ public class CreateSurveyUI extends Application {
 	public void start(Stage arg0) throws Exception {
 		// TODO Auto-generated method stub
 
-		Employee customerService = new CustomerService(1,"user1","123,",true,Permission.Limited,1,Role.CustomerService,1,null);
+		Employee serviceExpert = new ServiceExpert(1,"user1","123,",true,Permission.Limited,1,Role.ServiceExpert,1,null);
 		CreateSurveyController sc = new CreateSurveyController();
-		sc.employee = customerService;
+		sc.employee = serviceExpert;
 		sc.start(arg0);
 	}
 }

@@ -16,7 +16,9 @@ import PacketSender.SystemSender;
 import Users.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -359,6 +361,10 @@ public class CreateSurveyController implements Initializable {
 						operationElement = new VBox(createActivityButtonHandler(survey,activeStatus));
 					else if(employee.getRole() == Role.ServiceExpert && !survey.isActive())
 						operationElement = new VBox(createAddConclusionButton(survey));
+					else if(employee.getRole() == Role.ServiceExpert && survey.isActive()) {
+						String textStillActive = "Not Done";
+						operationElement = new VBox(new Label(textStillActive));
+					}
 					
 				 	HBox hBox = new HBox(operationElement,detailsElement);
 				 	titleElement.setPadding(new Insets(5,10,5,20));
@@ -372,7 +378,6 @@ public class CreateSurveyController implements Initializable {
                     hBox.setPadding(new Insets(10));
                     setGraphic(hBox);
 				}
-				
 				
 				private void performOperation(Survey survey , boolean state)
 				{
@@ -406,7 +411,22 @@ public class CreateSurveyController implements Initializable {
 				
 				private Button createAddConclusionButton(Survey survey) {
 					
-					return null;
+					String btnText = "Add Conclusion";
+					Button btnAddConclusion = new Button(btnText);
+					
+					btnAddConclusion.setOnAction(new EventHandler<ActionEvent>() {
+						
+						@Override
+						public void handle(ActionEvent arg0) {
+							// TODO Auto-generated method stub
+							ServiceExpertController sc = new ServiceExpertController();
+							sc.serviceExpert = employee;
+							sc.setSurvey(survey);
+							sc.start(new Stage());
+						}
+					});
+					
+					return btnAddConclusion;
 				}
 				/**
 				 * Creating a button handler which is navigates to the relevant reply view for each complain
@@ -472,21 +492,6 @@ public class CreateSurveyController implements Initializable {
 		return retVal;
 	}
 	
-/*	private void defineOptionTabState(ObservableList<Survey> surveyList)
-	{
-		if(isActivatedSurvey(surveyList)) {
-			tabOptions.getSelectionModel().select(1);
-			tabOptions.getSelectionModel().getSelectedItem().setDisable(true);
-			tabOptions.getSelectionModel().select(0);
-		}
-		else
-		{
-			tabOptions.getSelectionModel().select(1);
-			tabOptions.getSelectionModel().getSelectedItem().setDisable(false);
-			tabOptions.getSelectionModel().select(0);
-		}
-	}
-	*/
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub

@@ -6,17 +6,17 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="768.0" prefWidth="833.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="508.0" prefWidth="1040.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label layoutX="329.0" layoutY="7.0" text="Survey Analyze" underline="true">
+      <Label layoutX="389.0" layoutY="8.0" text="Survey Analyze" underline="true">
          <font>
             <Font size="24.0" />
          </font>
       </Label>
-      <Button fx:id="btnSubmit" layoutX="369.0" layoutY="722.0" mnemonicParsing="false" onAction="#onSubmitPressedHandler" text="Submit" />
-      <TitledPane animated="false" collapsible="false" layoutX="57.0" layoutY="48.0" prefHeight="448.0" prefWidth="657.0" text="Survey Results">
+      <Button fx:id="btnSubmit" layoutX="707.0" layoutY="275.0" mnemonicParsing="false" text="Submit" />
+      <TitledPane animated="false" collapsible="false" layoutX="14.0" layoutY="51.0" prefHeight="448.0" prefWidth="455.0" text="Survey Results">
         <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="401.0" prefWidth="717.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="408.0" prefWidth="389.0">
                <children>
                   <Label layoutX="23.0" layoutY="14.0" text="Question" />
                   <Label fx:id="lblQ1" layoutX="117.0" layoutY="14.0" text="Q1" />
@@ -52,7 +52,7 @@
             </AnchorPane>
         </content>
       </TitledPane>
-      <TitledPane animated="false" collapsible="false" layoutX="57.0" layoutY="499.0" prefHeight="220.0" prefWidth="719.0" text="Conclusion">
+      <TitledPane animated="false" collapsible="false" layoutX="489.0" layoutY="51.0" prefHeight="220.0" prefWidth="534.0" text="Conclusion">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>

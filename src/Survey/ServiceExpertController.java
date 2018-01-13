@@ -1,8 +1,17 @@
 package Survey;
 
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
+
 import Branches.Employee;
+import PacketSender.Command;
+import PacketSender.IResultHandler;
+import PacketSender.Packet;
+import PacketSender.SystemSender;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -10,7 +19,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.stage.Stage;
 
-public class ServiceExpertController {
+public class ServiceExpertController implements Initializable {
 	
 	@FXML private Slider sliderA1;
 	@FXML private Slider sliderA2;
@@ -35,13 +44,17 @@ public class ServiceExpertController {
 	
 	@FXML Button btnSubmit;
 	
-	static Employee serviceExpert;
-	
+	private Survey survey;
+	private ArrayList<Survey> surveyList;
+	private ArrayList<SurveyQuestion> surveyQuestionList;
+	private ArrayList<Question> questionList;
+	private ArrayList<AnswerSurvey> answerSurveyList;
+	public static Employee serviceExpert;
 	
 	public void start(Stage primaryStage) {
 		
-		String title = "Answer Survey";
-		String srcFXML = "/Survey/AnswerSurveyUI.fxml";
+		String title = "Survey Analyze";
+		String srcFXML = "/Survey/ServiceExpertUI.fxml";
 		
 		try {
 			FXMLLoader loader = new FXMLLoader();
@@ -59,5 +72,102 @@ public class ServiceExpertController {
 		}
 	}
 	
+	public void setSurvey(Survey survey)
+	{
+		this.survey = survey;
+	}
+	
+	private void initData()
+	{
+		ArrayList<Object> paramListSurvey = new ArrayList<>();
+		ArrayList<Object> paramListQuestion = new ArrayList<>();
+		ArrayList<Object> paramListSurveyQuestion = new ArrayList<>();
+		
+		Packet packet = new Packet();
+		packet.addCommand(Command.getSurvey);
+		packet.addCommand(Command.getQuestions);
+		packet.addCommand(Command.getSurveyQuestions);
+		
+		packet.setParametersForCommand(Command.getSurvey, paramListSurvey);
+		packet.setParametersForCommand(Command.getQuestions, paramListQuestion);
+		packet.setParametersForCommand(Command.getSurveyQuestions, paramListSurveyQuestion);
+		
+		SystemSender sender = new SystemSender(packet);
+		sender.registerHandler(new IResultHandler() {
+			
+			@Override
+			public void onWaitingForResult() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onReceivingResult(Packet p) {
+				// TODO Auto-generated method stub
+				if(p.getResultState())
+				{
+					surveyList = p.<Survey>convertedResultListForCommand(Command.getSurvey);
+					questionList = p.<Question>convertedResultListForCommand(Command.getQuestions);
+					surveyQuestionList = p.<SurveyQuestion>convertedResultListForCommand(Command.getSurveyQuestions);
+					
+					displayQuestion();
+					initSliders();
+				}
+			}
+		});
+		sender.start();
+	}
+	
+	private void initSliders()
+	{
+		
+	}
+	
+	private ArrayList<Question> getQuestionsOfSurvey(Survey survey)
+	{
+		ArrayList<Question> questionsOfSurvey = new ArrayList<>();
+		
+		for(SurveyQuestion surveyQuestion : survey.getSurveyQuestionList())
+			for(Question question : questionList)
+				if(surveyQuestion.getQuestionId() == question.getId())
+					questionsOfSurvey.add(question);
+		
+		return questionsOfSurvey;
+	}
+	
+	private void setLabelQuestion(Question question , Label label)
+	{
+		label.setText(question.getQuesiton());
+	}
+	
+	private void displayQuestion()
+	{
+		attachQuestionToSurvey(survey);
+		ArrayList<Question> questionsToDisplay = getQuestionsOfSurvey(survey);
+		
+		setLabelQuestion(questionsToDisplay.get(0), lblQ1);
+		setLabelQuestion(questionsToDisplay.get(1), lblQ2);
+		setLabelQuestion(questionsToDisplay.get(2), lblQ3);
+		setLabelQuestion(questionsToDisplay.get(3), lblQ4);
+		setLabelQuestion(questionsToDisplay.get(4), lblQ5);
+		setLabelQuestion(questionsToDisplay.get(5), lblQ6);
+	}
+	
+	
+	private void attachQuestionToSurvey(Survey survey)
+	{
+		ArrayList<SurveyQuestion> setSurveyQuestionList = new ArrayList<>();
+		
+		for(SurveyQuestion surveyQuestion : surveyQuestionList)
+			if(surveyQuestion.getSurveyId() == survey.getId())
+				setSurveyQuestionList.add(new SurveyQuestion(surveyQuestion.getId(), survey.getId(), surveyQuestion.getQuestionId()));
+		
+		survey.setSurveyQuestionList(setSurveyQuestionList);
+	}
 
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		// TODO Auto-generated method stub
+		initData();
+	}
 }
