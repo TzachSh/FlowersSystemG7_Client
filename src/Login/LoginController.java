@@ -65,20 +65,14 @@ public class LoginController implements Initializable {
 		alert.showAndWait();
 	}
 	
-	/**
-	 * Set user as employee or customer and fill all object parameters
-	 * @param user
-	 */
-	public void determineEmployeeOrCustomer(User user)
+	public void performLoggedOut(User user)
 	{
 		Packet packet = new Packet();
-		packet.addCommand(Command.getCustomersKeyByuId);
-		packet.addCommand(Command.getEmployeeByUid);
+		packet.addCommand(Command.setUserLoggedInState);
 		
-		ArrayList<Object> param = new ArrayList<>(Arrays.asList(user.getuId()));
-		
-		packet.setParametersForCommand(Command.getCustomersKeyByuId, param);
-		packet.setParametersForCommand(Command.getEmployeeByUid, param);
+		user.setLogged(false);
+		ArrayList<Object> paramState = new ArrayList<>(Arrays.asList(user));
+		packet.setParametersForCommand(Command.setUserLoggedInState, paramState);
 		
 		// create the thread for send to server the message
 		SystemSender send = new SystemSender(packet);
@@ -90,22 +84,70 @@ public class LoginController implements Initializable {
 		public void onReceivingResult(Packet p) {
 			if (p.getResultState())
 			{
-				ArrayList<Customer> customer = p.<Customer>convertedResultListForCommand(Command.getCustomersKeyByuId);
-				ArrayList<Employee> employee = p.<Employee>convertedResultListForCommand(Command.getEmployeeByUid);
+				displayAlert(AlertType.ERROR, "Logout", "Logout Successfull", "You are Logged out from the system Successfully");
+				Platform.exit();
+			}
+			else
+			{
+				displayAlert(AlertType.ERROR, "Error", "Exception Error", p.getExceptionMessage());
+			}
+	   	}
+
+		@Override
+		public void onWaitingForResult() { }			
+	});
+					
+	   send.start();
+	}
+	
+	/**
+	 * Set user as employee or customer and fill all object parameters
+	 * @param user
+	 */
+	public void determineEmployeeOrCustomer(User user)
+	{
+		Packet packet = new Packet();
+		packet.addCommand(Command.getCustomersKeyByuId);
+		packet.addCommand(Command.getEmployeeByUid);
+		packet.addCommand(Command.setUserLoggedInState);
+		
+		ArrayList<Object> param = new ArrayList<>(Arrays.asList(user.getuId()));
+		ArrayList<Object> paramState = new ArrayList<>(Arrays.asList(user));
+		
+		packet.setParametersForCommand(Command.getCustomersKeyByuId, param);
+		packet.setParametersForCommand(Command.getEmployeeByUid, param);
+		packet.setParametersForCommand(Command.setUserLoggedInState, paramState);
+		
+		// create the thread for send to server the message
+		SystemSender send = new SystemSender(packet);
+
+		// register the handler that occurs when the data arrived from the server
+		send.registerHandler(new IResultHandler() {
+
+		@Override
+		public void onReceivingResult(Packet p) {
+			if (p.getResultState())
+			{
+				ArrayList<Customer> customerList = p.<Customer>convertedResultListForCommand(Command.getCustomersKeyByuId);
+				ArrayList<Employee> employeeList = p.<Employee>convertedResultListForCommand(Command.getEmployeeByUid);
 			
 				// it's a customer, set user instance as customer object
-				if (customer.size() > 0)
+				if (customerList.size() > 0)
 				{
-					userLogged = customer.get(0);
+					Customer customer = customerList.get(0);
+					userLogged = new Customer(user, customer.getId(), customer.getMembershipId());
 					// <?---- open a menu of customers >
 				}
 				
 				// it's an employee, set user instance as employee object
-				else if (employee.size() > 0)
+				else if (employeeList.size() > 0)
 				{
-					userLogged = employee.get(0);
+					Employee employee = employeeList.get(0);
+					userLogged = new Employee(user, employee.geteId(), employee.getRole(), employee.getBranchId());
 					// <?---- open a menu of employee by it's role >
 				}
+				
+				System.out.println();
 			}
 			else
 			{
@@ -169,11 +211,12 @@ public class LoginController implements Initializable {
 						
 						// user successful login
 						// determine if it's customer or employee and initialize it's fields
+						user.setLogged(true);
 						determineEmployeeOrCustomer(user);
 					}
 					else
 					{
-						displayAlert(AlertType.ERROR, "Error", "Login Failed", "User name Or Password are incorrect!");
+						displayAlert(AlertType.ERROR, "Error", "Login Failed", "User name or Password are incorrect!");
 					}
 				}
 				else
@@ -190,6 +233,9 @@ public class LoginController implements Initializable {
 		send.start();
     }
     
+    /**
+     * Open a new window for configuration the connection to the server
+     */
     public void showConfigurationForm(ActionEvent event)
     {
     	try

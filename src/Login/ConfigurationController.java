@@ -31,6 +31,7 @@ public class ConfigurationController implements Initializable {
     private TextField txtAddress;
 	
 	public static String address = "localhost";
+	
 	public static int port = 5555;
 	
 	
