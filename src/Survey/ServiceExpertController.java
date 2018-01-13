@@ -54,6 +54,7 @@ public class ServiceExpertController implements Initializable {
 	private ArrayList<SurveyQuestion> surveyQuestionList;
 	private ArrayList<Question> questionList;
 	private ArrayList<AnswerSurvey> averageAnswerSurveyList;
+	private ArrayList<SurveyConclusion> surveyConclusionList;
 	public static Employee serviceExpert;
 	
 	public void start(Stage primaryStage) {
@@ -118,7 +119,7 @@ public class ServiceExpertController implements Initializable {
 				// TODO Auto-generated method stub
 				if(p.getResultState())
 				{
-					ArrayList<SurveyConclusion> surveyConclusionList = p.<SurveyConclusion>convertedResultListForCommand(Command.getConclusions);
+					surveyConclusionList = p.<SurveyConclusion>convertedResultListForCommand(Command.getConclusions);
 					questionList = p.<Question>convertedResultListForCommand(Command.getQuestions);
 					surveyQuestionList = p.<SurveyQuestion>convertedResultListForCommand(Command.getSurveyQuestions);
 					averageAnswerSurveyList = p.<AnswerSurvey>convertedResultListForCommand(Command.getAverageAnswersBySurveyId);
@@ -226,8 +227,15 @@ public class ServiceExpertController implements Initializable {
 		paramListConclusion.add(surveyConclusion);
 		
 		Packet packet = new Packet();
-		packet.addCommand(Command.addConclusion);
-		packet.setParametersForCommand(Command.addConclusion, paramListConclusion);
+		if(txtConclusion.getText().isEmpty()) {
+			packet.addCommand(Command.addConclusion);
+			packet.setParametersForCommand(Command.addConclusion, paramListConclusion);
+		}
+		else
+		{
+			packet.addCommand(Command.updateConclusion);
+			packet.setParametersForCommand(Command.updateConclusion, paramListConclusion);
+		}
 		
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
@@ -246,6 +254,9 @@ public class ServiceExpertController implements Initializable {
 					Alert alert = new Alert(AlertType.INFORMATION,"The conclusion has been saved");
 					alert.showAndWait();
 					closeWindow(event);
+					CreateSurveyController surveyController = new CreateSurveyController();
+					CreateSurveyController.employee = serviceExpert;
+					surveyController.start(new Stage());
 				}
 			}
 		});
