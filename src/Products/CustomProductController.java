@@ -5,6 +5,8 @@ package Products;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
@@ -29,13 +31,20 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
@@ -53,11 +62,15 @@ public class CustomProductController implements Initializable {
 	private ComboBox<String> cmbColor;
 	@FXML
 	private ListView<Flower> flowerListView;
+	@FXML
+	private Label lblCashLeft;
 	private Customer customer;
 	private CartController cartController;
 	private ArrayList<ColorProduct> cList;
 	private ObservableList<Flower> data;
 	private ArrayList<Flower> flowerList;
+	private double cashLeft;
+	private LinkedHashMap<Flower,Integer> flowerInProduct= new LinkedHashMap<>();;
 	public CustomProductController() {
 		super();
 	}
@@ -134,7 +147,9 @@ public class CustomProductController implements Initializable {
 					paneFlowers.setVisible(true);
 					txtMaxCost.setDisable(true);
 					cmbColor.setDisable(true);
+					cashLeft=Double.parseDouble(txtMaxCost.getText());
 					initList();
+					lblCashLeft.setText("Cash left:"+cashLeft);
 				}
 				catch(Exception e)
 				{
@@ -210,13 +225,84 @@ public class CustomProductController implements Initializable {
 								VBox nameBox = new VBox(flower);
 								Text price = new Text(""+flo.getPrice());
 								VBox priceBox = new VBox(price);
+								nameBox.setMinWidth(50);
 								
-								HBox line = new HBox(nameBox,priceBox);
+
+								Button decButton = new Button();
+								Image imageDec = new Image("minusQty.png");
+						        ImageView viewDec = new ImageView(imageDec);
+						        if(flowerInProduct.containsKey(flo) && flowerInProduct.get(flo)>0)
+						        	decButton.setDisable(false);
+						        else
+						        	decButton.setDisable(true);
+						       
+								viewDec.setFitWidth(10);
+								viewDec.setFitHeight(10);
+								decButton.setGraphic(viewDec);
+								decButton.setPrefWidth(12);
+								
+								
+			                    Button incButton = new Button();
+							    Image imageInc = new Image("addQty.png");
+							    ImageView viewInc = new ImageView(imageInc);
+								viewInc.setFitWidth(10);
+								viewInc.setFitHeight(10);
+								incButton.setGraphic(viewInc);
+								incButton.setPrefWidth(12);
+								 if(cashLeft<flo.getPrice())
+									 incButton.setDisable(true);
+								 else
+									 incButton.setDisable(false);
+								
+								Text qty = new Text(""+(flowerInProduct.get(flo)==null?0:flowerInProduct.get(flo)));
+								qty.setFont(new Font(13.5));
+								qty.setFill(Color.RED);
+								qty.setTextAlignment(TextAlignment.CENTER);
+								
+								Text priceQty = new Text(""+Integer.parseInt(qty.getText())*flo.getPrice());
+								VBox prBox = new VBox(priceQty);
+								
+								decButton.setOnMouseClicked((event) -> {
+									if(flowerInProduct.containsKey(flo) && flowerInProduct.get(flo)>0)
+									{
+										flowerInProduct.put(flo, flowerInProduct.get(flo)-1);
+										qty.setText(""+flowerInProduct.get(flo));
+										if(flowerInProduct.get(flo)==0)
+											flowerInProduct.remove(flo);
+										cashLeft+=flo.getPrice();
+										lblCashLeft.setText("Cash left:"+cashLeft);
+									}
+								});
+								
+								incButton.setOnMouseClicked((event) -> {
+									if(flowerInProduct.containsKey(flo))
+									{
+										flowerInProduct.put(flo, flowerInProduct.get(flo)+1);
+									}
+									else {
+										flowerInProduct.put(flo, 1);
+										//decButton.setDisable(false);
+									}
+									cashLeft-=flo.getPrice();
+									lblCashLeft.setText("Cash left:"+cashLeft);
+									qty.setText(""+flowerInProduct.get(flo));
+									priceQty.setText(""+Integer.parseInt(qty.getText())*flo.getPrice());
+								});
+								
+								VBox decBtn = new VBox(decButton);
+								VBox addBtn = new VBox(incButton);
+								
+								HBox line = new HBox(nameBox,priceBox,decBtn,qty,addBtn,prBox);
 								line.setStyle("-fx-border-style: solid inside;"
 							 	        + "-fx-border-width: 1;" + "-fx-border-insets: 5;"
 							 	        + "-fx-border-radius: 5;");
 								line.setSpacing(10);
-			                    line.setPadding(new Insets(10));
+			                    line.setPadding(new Insets(50));
+			                    
+			                  
+			                    
+			                    
+			                    
 			                    setGraphic(line);
 							}
 							
@@ -234,5 +320,13 @@ public class CustomProductController implements Initializable {
 		});
 		
 		flowerListView.setItems(data);
+		flowerListView.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent event) {
+            	//listViewCatalog.getSelectionModel().select(-1);
+                event.consume();
+            }
+        });
 	}
 }

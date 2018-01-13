@@ -16,6 +16,7 @@
                   <ComboBox fx:id="cmbColor" layoutX="163.0" layoutY="90.0" prefWidth="150.0" />
                   <Label layoutX="69.0" layoutY="41.0" text="Price range:" />
                   <Label layoutX="69.0" layoutY="94.0" text="Dominant color" />
+                  <Label fx:id="lblCashLeft" layoutX="172.0" layoutY="147.0" />
                </children>
             </AnchorPane>
         </content>
