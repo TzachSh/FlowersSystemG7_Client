@@ -6,10 +6,13 @@ import java.util.ResourceBundle;
 
 import Branches.Employee;
 import PacketSender.Command;
+import PacketSender.IResultHandler;
 import PacketSender.Packet;
+import PacketSender.SystemSender;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -36,7 +39,16 @@ public class AnswerSurveyController implements Initializable{
 	@FXML private Label lblA5;
 	@FXML private Label lblA6;
 	
+	@FXML private Label lblQ1;
+	@FXML private Label lblQ2;
+	@FXML private Label lblQ3;
+	@FXML private Label lblQ4;
+	@FXML private Label lblQ5;
+	@FXML private Label lblQ6;
+	
 	@FXML Button btnSubmit;
+	
+	private Survey activeSurvey;
 	
 	private ArrayList<Survey> surveyList;
 	private ArrayList<SurveyQuestion> surveyQuestionList;
@@ -95,13 +107,139 @@ public class AnswerSurveyController implements Initializable{
 		Packet packet = new Packet();
 		packet.addCommand(Command.getSurvey);
 		packet.addCommand(Command.getQuestions);
+		packet.addCommand(Command.getSurveyQuestions);
+		
+		packet.setParametersForCommand(Command.getSurvey, paramListSurvey);
+		packet.setParametersForCommand(Command.getQuestions, paramListQuestion);
+		packet.setParametersForCommand(Command.getSurveyQuestions, paramListSurveyQuestion);
+		
+		SystemSender sender = new SystemSender(packet);
+		sender.registerHandler(new IResultHandler() {
+			
+			@Override
+			public void onWaitingForResult() {
+				// TODO Auto-generated method stub
 				
+			}
+			
+			@Override
+			public void onReceivingResult(Packet p) {
+				// TODO Auto-generated method stub
+				if(p.getResultState())
+				{
+					surveyList = p.<Survey>convertedResultListForCommand(Command.getSurvey);
+					questionList = p.<Question>convertedResultListForCommand(Command.getQuestions);
+					surveyQuestionList = p.<SurveyQuestion>convertedResultListForCommand(Command.getSurveyQuestions);
+					
+					displayQuestion();
+				}
+			}
+		});
+		sender.start();
+	}
+	
+	private ArrayList<Integer> getAllAnswers()
+	{
+		ArrayList<Integer> answersList = new ArrayList<>();
+		
+		answersList.add(getAnswer(lblA1));
+		answersList.add(getAnswer(lblA2));
+		answersList.add(getAnswer(lblA3));
+		answersList.add(getAnswer(lblA4));
+		answersList.add(getAnswer(lblA5));
+		answersList.add(getAnswer(lblA6));
+		
+		return answersList;
+	}
+	
+	private Integer getAnswer(Label label)
+	{
+		return Integer.parseInt(label.getText());
+	}
+	
+	private void setAnswerSurveyList(Survey survey)
+	{
+		ArrayList<AnswerSurvey> answerSurveyList = new ArrayList<>();
+		ArrayList<Integer> answersList = getAllAnswers();
+		int curAnswerIndex = 0;
+		
+		for(SurveyQuestion surveyQuestion : survey.getSurveyQuestionList())
+			answerSurveyList.add(new AnswerSurvey(surveyQuestion.getId(), branchEmployee.getBranchId(), answersList.get(curAnswerIndex++)) );
+	}
+	
+	@FXML
+	private void onSubmitPressedHandler(Event event)
+	{ 
+		setAnswerSurveyList(activeSurvey);
+		
+		ArrayList<Object> paramListAnswerSurvey = new ArrayList<>();
+		
+		for(SurveyQuestion surveyQuestion : activeSurvey.getSurveyQuestionList())
+			for(AnswerSurvey answerSurvey : surveyQuestion.getAnswerSurveyList())
+				paramListAnswerSurvey.add(answerSurvey);
+		
+		Packet packet = new Packet();
+		//packet.addCommand(Command);
+		
+	}
+	
+	private Survey getActiveSurvey()
+	{
+		Survey retSurvey = null;
+		for(Survey survey : surveyList)
+			if(survey.isActive())
+				retSurvey = survey;
+		
+		return retSurvey;
+	}
+	
+	private void attachQuestionToSurvey(Survey survey)
+	{
+		ArrayList<SurveyQuestion> setSurveyQuestionList = new ArrayList<>();
+		
+		for(SurveyQuestion surveyQuestion : surveyQuestionList)
+			if(surveyQuestion.getSurveyId() == survey.getId())
+				setSurveyQuestionList.add(new SurveyQuestion(surveyQuestion.getId(), survey.getId(), surveyQuestion.getQuestionId()));
+		
+		survey.setSurveyQuestionList(setSurveyQuestionList);
+	}
+	
+	private ArrayList<Question> getQuestionsOfSurvey(Survey survey)
+	{
+		ArrayList<Question> questionsOfSurvey = new ArrayList<>();
+		
+		for(SurveyQuestion surveyQuestion : survey.getSurveyQuestionList())
+			for(Question question : questionList)
+				if(surveyQuestion.getQuestionId() == question.getId())
+					questionsOfSurvey.add(question);
+		
+		return questionsOfSurvey;
+	}
+	
+	private void setLabelQuestion(Question question , Label label)
+	{
+		label.setText(question.getQuesiton());
+	}
+	
+	private void displayQuestion()
+	{
+	    activeSurvey = getActiveSurvey();
+		attachQuestionToSurvey(activeSurvey);
+		ArrayList<Question> questionsToDisplay = getQuestionsOfSurvey(activeSurvey);
+		
+		setLabelQuestion(questionsToDisplay.get(0), lblQ1);
+		setLabelQuestion(questionsToDisplay.get(1), lblQ2);
+		setLabelQuestion(questionsToDisplay.get(2), lblQ3);
+		setLabelQuestion(questionsToDisplay.get(3), lblQ4);
+		setLabelQuestion(questionsToDisplay.get(4), lblQ5);
+		setLabelQuestion(questionsToDisplay.get(5), lblQ6);
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub
 		initSliders();
+		initData();
 	}
 	
 }
