@@ -362,7 +362,7 @@ public class CreateSurveyController implements Initializable {
 					else if(employee.getRole() == Role.ServiceExpert && !survey.isActive())
 						operationElement = new VBox(createAddConclusionButton(survey));
 					else if(employee.getRole() == Role.ServiceExpert && survey.isActive()) {
-						String textStillActive = "Not Done";
+						String textStillActive = "Running";
 						operationElement = new VBox(new Label(textStillActive));
 					}
 					

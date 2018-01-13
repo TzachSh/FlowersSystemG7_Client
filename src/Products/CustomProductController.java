@@ -56,7 +56,7 @@ public class CustomProductController implements Initializable {
 	private Customer customer;
 	private CartController cartController;
 	private ArrayList<ColorProduct> cList;
-	private ObservableList<Product> data;
+	private ObservableList<Flower> data;
 	private ArrayList<Flower> flowerList;
 	public CustomProductController() {
 		super();
@@ -102,8 +102,9 @@ public class CustomProductController implements Initializable {
 	}
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		getFlowers();
 		getColors();
-		initList();
+		
 		paneFlowers.setVisible(false);
 		setSettingBtn();
 		txtMaxCost.textProperty().addListener(new ChangeListener<String>() {
@@ -133,6 +134,7 @@ public class CustomProductController implements Initializable {
 					paneFlowers.setVisible(true);
 					txtMaxCost.setDisable(true);
 					cmbColor.setDisable(true);
+					initList();
 				}
 				catch(Exception e)
 				{
@@ -185,6 +187,7 @@ public class CustomProductController implements Initializable {
 				if (p.getResultState())
 				{
 					flowerList= p.<Flower>convertedResultListForCommand(Command.getFlowers);
+					
 				}
 				else//if it was error in connection
 					JOptionPane.showMessageDialog(null,"Connection error","Error",JOptionPane.ERROR_MESSAGE);
@@ -194,7 +197,7 @@ public class CustomProductController implements Initializable {
 	}
 	public void initList()
 	{
-		//data = FXCollections.observableArrayList(new ArrayList<>())
+		data = FXCollections.observableArrayList(flowerList);
 		flowerListView.setCellFactory(new Callback<ListView<Flower>, ListCell<Flower>>() {
 			
 			@Override
@@ -216,8 +219,20 @@ public class CustomProductController implements Initializable {
 			                    line.setPadding(new Insets(10));
 			                    setGraphic(line);
 							}
+							
+							 @Override
+								protected void updateItem(Flower item, boolean empty) {
+									//super.updateItem(item, empty);
+										
+									 if (item != null) {	
+										 	setCellHandler(item);
+				                        }
+							 }
+							
 						};
 			}
 		});
+		
+		flowerListView.setItems(data);
 	}
 }

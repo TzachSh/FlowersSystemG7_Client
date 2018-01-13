@@ -9,14 +9,19 @@ import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
 public class ServiceExpertController implements Initializable {
@@ -42,10 +47,10 @@ public class ServiceExpertController implements Initializable {
 	@FXML private Label lblQ5;
 	@FXML private Label lblQ6;
 	
+	@FXML private TextArea txtConclusion;
 	@FXML Button btnSubmit;
 	
 	private Survey survey;
-	private ArrayList<Survey> surveyList;
 	private ArrayList<SurveyQuestion> surveyQuestionList;
 	private ArrayList<Question> questionList;
 	private ArrayList<AnswerSurvey> averageAnswerSurveyList;
@@ -110,21 +115,46 @@ public class ServiceExpertController implements Initializable {
 				// TODO Auto-generated method stub
 				if(p.getResultState())
 				{
-					surveyList = p.<Survey>convertedResultListForCommand(Command.getSurvey);
 					questionList = p.<Question>convertedResultListForCommand(Command.getQuestions);
 					surveyQuestionList = p.<SurveyQuestion>convertedResultListForCommand(Command.getSurveyQuestions);
 					averageAnswerSurveyList = p.<AnswerSurvey>convertedResultListForCommand(Command.getAverageAnswersBySurveyId);
 					displayQuestion();
-					initSliders();
+					initSliders(averageAnswerSurveyList);
+					initAnswerLabels(averageAnswerSurveyList);
 				}
 			}
 		});
 		sender.start();
 	}
 	
-	private void initSliders()
+	private void setSliderValue(Slider slider , int value)
 	{
-		
+		slider.setValue(value);
+	}
+	
+	private void initLabelsAverageAnswer(Label label , int value)
+	{
+		label.setText(String.format("%d",value));
+	}
+	
+	private void initAnswerLabels(ArrayList<AnswerSurvey> averageAnswerSurveyList2)
+	{
+		initLabelsAverageAnswer(lblA1,averageAnswerSurveyList.get(0).getAnswer());
+		initLabelsAverageAnswer(lblA2,averageAnswerSurveyList.get(1).getAnswer());
+		initLabelsAverageAnswer(lblA3,averageAnswerSurveyList.get(2).getAnswer());
+		initLabelsAverageAnswer(lblA4,averageAnswerSurveyList.get(3).getAnswer());
+		initLabelsAverageAnswer(lblA5,averageAnswerSurveyList.get(4).getAnswer());
+		initLabelsAverageAnswer(lblA6,averageAnswerSurveyList.get(5).getAnswer());
+	}
+	
+	private void initSliders(ArrayList<AnswerSurvey> averageAnswerSurveyList)
+	{
+		setSliderValue(sliderA1,averageAnswerSurveyList.get(0).getAnswer());
+		setSliderValue(sliderA2,averageAnswerSurveyList.get(1).getAnswer());
+		setSliderValue(sliderA3,averageAnswerSurveyList.get(2).getAnswer());
+		setSliderValue(sliderA4,averageAnswerSurveyList.get(3).getAnswer());
+		setSliderValue(sliderA5,averageAnswerSurveyList.get(4).getAnswer());
+		setSliderValue(sliderA6,averageAnswerSurveyList.get(5).getAnswer());
 	}
 	
 	private ArrayList<Question> getQuestionsOfSurvey(Survey survey)
@@ -167,6 +197,46 @@ public class ServiceExpertController implements Initializable {
 				setSurveyQuestionList.add(new SurveyQuestion(surveyQuestion.getId(), survey.getId(), surveyQuestion.getQuestionId()));
 		
 		survey.setSurveyQuestionList(setSurveyQuestionList);
+	}
+	
+	@FXML
+	private void onSubmitPressedHandle(Event event)
+	{
+		SurveyConclusion surveyConclusion = new SurveyConclusion(serviceExpert.geteId(), txtConclusion.getText());
+		
+		ArrayList<Object> paramListConclusion = new ArrayList<>();
+		paramListConclusion.add(surveyConclusion);
+		
+		Packet packet = new Packet();
+		packet.addCommand(Command.addConclusion);
+		packet.setParametersForCommand(Command.addConclusion, paramListConclusion);
+		
+		SystemSender sender = new SystemSender(packet);
+		sender.registerHandler(new IResultHandler() {
+			
+			@Override
+			public void onWaitingForResult() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onReceivingResult(Packet p) {
+				// TODO Auto-generated method stub
+				if(p.getResultState())
+				{
+					Alert alert = new Alert(AlertType.INFORMATION,"The conclusion has been saved");
+					alert.showAndWait();
+					closeWindow(event);
+				}
+			}
+		});
+		sender.start();
+	}
+	
+	private void closeWindow(Event event)
+	{
+		((Node) event.getSource()).getScene().getWindow().hide();
 	}
 
 	@Override
