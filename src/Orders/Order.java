@@ -17,6 +17,9 @@ public class Order implements Serializable {
 	private ArrayList<ProductInOrder> productInOrderList;
 	private Refund Refund;
 	private Delivery deliery;
+	private int brId;
+	private int stId;
+	
 	
 	public int getoId() {
 		return id;
@@ -85,6 +88,15 @@ public class Order implements Serializable {
 		this.productInOrderList = productInOrderList;
 		Refund = refund;
 		this.deliery = deliery;
+	}
+	public Order(int id,Date creationDate, Date requestedDate,int cId,int stId,int brId)
+	{
+		this.id=id;
+		this.creationDate=creationDate;
+		this.requestedDate=requestedDate;
+		this.customerId=cId;
+		this.stId=stId;
+		this.brId=brId;
 	}
 
 }
