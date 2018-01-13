@@ -61,8 +61,6 @@ public class CartController implements Initializable
 	  public static LinkedHashMap<Product, Integer> cartProducts = new LinkedHashMap<>();
 	
 	  private ObservableList<Product> data;
-	
-	  public static int branchId  = -1;
 	  
 	  private static boolean comesFromCatalog = false;
 	  
