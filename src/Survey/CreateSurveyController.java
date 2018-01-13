@@ -1,19 +1,15 @@
 package Survey;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import Branches.Employee;
 import Branches.Role;
-import Customers.Complain;
-import Customers.ReplyController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
-import Users.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -33,11 +29,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -84,6 +77,8 @@ public class CreateSurveyController implements Initializable {
 	private ListView<Survey> sListView;
 	@FXML
 	private ObservableList<Survey> dataSurvey;
+	
+	private ArrayList<SurveyConclusion> surveyConclusionList;
 	
 	public static Employee employee;
 	
@@ -301,8 +296,14 @@ public class CreateSurveyController implements Initializable {
 	{
 		Packet packet = new Packet();
 		ArrayList<Object> paramList = new ArrayList<>();
+		ArrayList<Object> paramListConclusionList = new ArrayList<>();
+		
 		packet.addCommand(Command.getSurvey);
+		packet.addCommand(Command.getConclusions);
+		
 		packet.setParametersForCommand(Command.getSurvey, paramList);
+		packet.setParametersForCommand(Command.getConclusions, paramListConclusionList);
+		
 		
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
@@ -318,13 +319,23 @@ public class CreateSurveyController implements Initializable {
 				// TODO Auto-generated method stub
 				if(p.getResultState())
 				{
+					surveyConclusionList = p.<SurveyConclusion>convertedResultListForCommand(Command.getConclusions);
 					ArrayList<Survey> survyList = p.<Survey>convertedResultListForCommand(Command.getSurvey);
+					attachConclusionToSurvey(surveyConclusionList,survyList);
 					dataSurvey = FXCollections.observableArrayList(survyList);
 					sListView.setItems(dataSurvey);
 				}
 			}
 		});
 		sender.start();
+	}
+	
+	private void attachConclusionToSurvey(ArrayList<SurveyConclusion> surveyConclusionList , ArrayList<Survey> surveyList)
+	{
+		for(SurveyConclusion surveyConclusion : surveyConclusionList)
+			for(Survey survey : surveyList)
+			if(surveyConclusion.getId() == survey.getSurveyConclusionId())
+				survey.setSurveyConclusionId(surveyConclusion.getId());
 	}
 	
 	private void setListCellFactory()
@@ -353,7 +364,7 @@ public class CreateSurveyController implements Initializable {
 					
 					HBox titleElement = new HBox(new Label(textTitle), new Text(survey.getSubject()));
 					HBox statusElement = new HBox (new Label(textActive) , activeStatus);
-					HBox conclusionElement = new HBox (new Label(textConclusion) , new Text("Text Text Text Text"));
+					HBox conclusionElement = new HBox (new Label(textConclusion) , getConclusionText(survey));
 					VBox detailsElement = new VBox(titleElement,statusElement,conclusionElement);
 		
 					VBox operationElement=null;
@@ -377,6 +388,11 @@ public class CreateSurveyController implements Initializable {
                     			  "-fx-border-radius:5;");
                     hBox.setPadding(new Insets(10));
                     setGraphic(hBox);
+				}
+				
+				private Text getConclusionText(Survey survey)
+				{
+					return new Text(getConclusionBySurvey(survey));
 				}
 				
 				private void performOperation(Survey survey , boolean state)
@@ -408,6 +424,11 @@ public class CreateSurveyController implements Initializable {
 					sender.start();
 					
 				}
+		
+				private void closeWindow(Event event)
+				{
+					((Node) event.getSource()).getScene().getWindow().hide();
+				}
 				
 				private Button createAddConclusionButton(Survey survey) {
 					
@@ -419,6 +440,7 @@ public class CreateSurveyController implements Initializable {
 						@Override
 						public void handle(ActionEvent arg0) {
 							// TODO Auto-generated method stub
+							closeWindow(arg0);
 							ServiceExpertController sc = new ServiceExpertController();
 							sc.serviceExpert = employee;
 							sc.setSurvey(survey);
@@ -481,6 +503,15 @@ public class CreateSurveyController implements Initializable {
 		});
 	}
 
+	private String getConclusionBySurvey(Survey survey)
+	{
+		String conclusion = "Not conclused yet";
+		for(SurveyConclusion surveyConclusion : surveyConclusionList )
+			if(surveyConclusion.getId() == survey.getSurveyConclusionId())
+				conclusion = surveyConclusion.getConclusion();
+		return conclusion;
+	}
+	
 	private boolean isActivatedSurvey(ObservableList<Survey> surveyList)
 	{
 		boolean retVal = false;
