@@ -45,6 +45,7 @@ public class LoginController implements Initializable {
 	
 	public static User userLogged;
 	
+	private static Stage mainStage;
 	/**
 	 * Show an Alert dialog with custom info
 	 */
@@ -57,12 +58,12 @@ public class LoginController implements Initializable {
 		alert.showAndWait();
 	}
 	
-	public void performLoggedOut(User user)
+	private void changeUserLoginState(User user, boolean loggedIn)
 	{
 		Packet packet = new Packet();
 		packet.addCommand(Command.setUserLoggedInState);
 		
-		user.setLogged(false);
+		user.setLogged(loggedIn);
 		ArrayList<Object> paramState = new ArrayList<>(Arrays.asList(user));
 		packet.setParametersForCommand(Command.setUserLoggedInState, paramState);
 		
@@ -76,8 +77,11 @@ public class LoginController implements Initializable {
 		public void onReceivingResult(Packet p) {
 			if (p.getResultState())
 			{
-				displayAlert(AlertType.ERROR, "Logout", "Logout Successfull", "You are Logged out from the system Successfully");
-				Platform.exit();
+				if (!loggedIn) // only for logout operation
+				{
+					displayAlert(AlertType.ERROR, "Logout", "Logout Successfull", "You are Logged out from the system Successfully");
+					Platform.exit();
+				}
 			}
 			else
 			{
@@ -93,22 +97,38 @@ public class LoginController implements Initializable {
 	}
 	
 	/**
+	 * Perform logged out from the system, and set the logged in status to 0
+	 * @param user The user that logged out
+	 */
+	public void performLoggedOut(User user)
+	{
+		changeUserLoginState(user, false);
+	}
+	
+	/**
+	 * Perform logged in to the system, and set the logged in status to 1
+	 * @param user The user that logged in
+	 */
+	public void performLoggedIn(User user)
+	{
+		changeUserLoginState(user, true);
+	}
+	
+	/**
 	 * Set user as employee or customer and fill all object parameters
 	 * @param user
 	 */
 	public void determineEmployeeOrCustomer(User user)
 	{
+		LoginController currentLogin = this;
 		Packet packet = new Packet();
 		packet.addCommand(Command.getCustomersKeyByuId);
 		packet.addCommand(Command.getEmployeeByUid);
-		packet.addCommand(Command.setUserLoggedInState);
 		
 		ArrayList<Object> param = new ArrayList<>(Arrays.asList(user.getuId()));
-		ArrayList<Object> paramState = new ArrayList<>(Arrays.asList(user));
-		
+
 		packet.setParametersForCommand(Command.getCustomersKeyByuId, param);
 		packet.setParametersForCommand(Command.getEmployeeByUid, param);
-		packet.setParametersForCommand(Command.setUserLoggedInState, paramState);
 		
 		// create the thread for send to server the message
 		SystemSender send = new SystemSender(packet);
@@ -129,6 +149,19 @@ public class LoginController implements Initializable {
 					Customer customer = customerList.get(0);
 					userLogged = new Customer(user, customer.getId(), customer.getMembershipId());
 					// <?---- open a menu of customers >
+					try
+					{
+						performLoggedIn(user);
+						mainStage.close();
+						CustomerMenuController menu = new CustomerMenuController();
+						menu.setLoginController(currentLogin);
+						menu.start(new Stage());
+					}
+					catch (Exception e)
+					{
+						performLoggedOut(user);
+						displayAlert(AlertType.ERROR, "Error", "Exception Error", e.getMessage());
+					}
 				}
 				
 				// it's an employee, set user instance as employee object
@@ -240,6 +273,8 @@ public class LoginController implements Initializable {
     }
     
 	public void start(Stage primaryStage) throws Exception {
+		this.mainStage = primaryStage;
+		
 		String title = "Login";
 		String srcFXML = "/Login/LoginUI.fxml";
 
