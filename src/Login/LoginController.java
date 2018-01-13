@@ -46,6 +46,7 @@ public class LoginController implements Initializable {
 	public static User userLogged;
 	
 	private static Stage mainStage;
+	
 	/**
 	 * Show an Alert dialog with custom info
 	 */
@@ -79,7 +80,7 @@ public class LoginController implements Initializable {
 			{
 				if (!loggedIn) // only for logout operation
 				{
-					displayAlert(AlertType.ERROR, "Logout", "Logout Successfull", "You are Logged out from the system Successfully");
+					displayAlert(AlertType.INFORMATION, "Logout", "Logout Successfull", "You are Logged out from the system Successfully");
 					Platform.exit();
 				}
 			}

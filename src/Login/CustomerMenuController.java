@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
+import javax.swing.JOptionPane;
+
 import Branches.Branch;
 import Customers.Account;
 import Customers.Customer;
@@ -14,6 +16,7 @@ import PacketSender.Packet;
 import PacketSender.SystemSender;
 import Products.CartController;
 import Products.SelectProductController;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -352,7 +355,8 @@ public class CustomerMenuController implements Initializable {
 			
 			primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 		          public void handle(WindowEvent we) {
-		        	  Alert alert = new Alert(Alert.AlertType.WARNING);
+
+		            Alert alert = new Alert(Alert.AlertType.WARNING);
 		      		alert.setTitle("Logged Out");
 		      		alert.setContentText("Are you Sure?");
 		      		ButtonType okButton = new ButtonType("Yes", ButtonData.YES);
@@ -363,6 +367,7 @@ public class CustomerMenuController implements Initializable {
 		      		        if (type == okButton)
 		      		        {
 		      		        	loginController.performLoggedOut(LoginController.userLogged);
+		      		        	System.exit(0);
 		      		        } 
 		      		        else
 		      		        {
