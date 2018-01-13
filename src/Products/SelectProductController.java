@@ -7,14 +7,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-
 import java.util.Map;
 import java.util.ResourceBundle;
-
 import Branches.Branch;
 import Branches.Employee;
 import Customers.Account;
-import Customers.AccountStatus;
 import Customers.Customer;
 import Login.LoginController;
 import PacketSender.Command;
@@ -22,7 +19,6 @@ import PacketSender.FileSystem;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
-import Users.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
