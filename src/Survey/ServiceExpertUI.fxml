@@ -13,7 +13,7 @@
             <Font size="24.0" />
          </font>
       </Label>
-      <Button fx:id="btnSubmit" layoutX="707.0" layoutY="275.0" mnemonicParsing="false" text="Submit" />
+      <Button fx:id="btnSubmit" onAction="#onSubmitPressedHandle" layoutX="707.0" layoutY="275.0" mnemonicParsing="false" text="Submit" />
       <TitledPane animated="false" collapsible="false" layoutX="14.0" layoutY="51.0" prefHeight="448.0" prefWidth="455.0" text="Survey Results">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="408.0" prefWidth="389.0">
