@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="601.0" prefWidth="762.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+   <children>
+      <Label layoutX="304.0" layoutY="4.0" text="Answer Servey" underline="true">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Label layoutX="23.0" layoutY="41.0" text="Answer the following questions with the customer" />
+      <Button fx:id="btnSubmit" onAction="#onSubmitPressedHandler" layoutX="340.0" layoutY="548.0" mnemonicParsing="false" text="Submit" />
+      <TitledPane animated="false" collapsible="false" layoutX="21.0" layoutY="72.0" prefHeight="463.0" prefWidth="719.0" text="Qustions">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="454.0" prefWidth="628.0">
+               <children>
+                  <Label layoutX="23.0" layoutY="14.0" text="Question" />
+                  <Label fx:id="lblQ1" layoutX="117.0" layoutY="14.0" text="Q1" />
+                  <Label fx:id="lblQ2" layoutX="117.0" layoutY="79.0" text="Q2" />
+                  <Label layoutX="23.0" layoutY="79.0" text="Question" />
+                  <Label fx:id="lblQ3" layoutX="118.0" layoutY="146.0" text="Q3" />
+                  <Label layoutX="24.0" layoutY="146.0" text="Question" />
+                  <Label fx:id="lblQ4" layoutX="118.0" layoutY="213.0" text="Q4" />
+                  <Label layoutX="24.0" layoutY="213.0" text="Question" />
+                  <Label fx:id="lblQ5" layoutX="118.0" layoutY="279.0" text="Q5" />
+                  <Label layoutX="24.0" layoutY="279.0" text="Question" />
+                  <Label fx:id="lblQ6" layoutX="118.0" layoutY="348.0" text="Q6" />
+                  <Label layoutX="24.0" layoutY="348.0" text="Question" />
+                  <Slider fx:id="sliderA6" layoutX="118.0" layoutY="380.0" max="10.0" min="1.0" value="5.0" />
+                  <Label layoutX="24.0" layoutY="375.0" text="Answer" />
+                  <Label layoutX="24.0" layoutY="307.0" text="Answer" />
+                  <Slider fx:id="sliderA5" layoutX="118.0" layoutY="312.0" max="10.0" min="1.0" value="5.0" />
+                  <Label layoutX="25.0" layoutY="240.0" text="Answer" />
+                  <Slider fx:id="sliderA4" layoutX="119.0" layoutY="245.0" max="10.0" min="1.0" value="5.0" />
+                  <Label layoutX="24.0" layoutY="173.0" text="Answer" />
+                  <Slider fx:id="sliderA3" layoutX="118.0" layoutY="178.0" max="10.0" min="1.0" value="5.0" />
+                  <Label layoutX="24.0" layoutY="106.0" text="Answer" />
+                  <Slider fx:id="sliderA2" layoutX="118.0" layoutY="111.0" max="10.0" min="1.0" value="5.0" />
+                  <Label layoutX="25.0" layoutY="41.0" text="Answer" />
+                  <Slider fx:id="sliderA1" layoutX="119.0" layoutY="46.0" max="10.0" min="1.0" value="5.0" />
+                  <Label fx:id="lblA1" layoutX="272.0" layoutY="43.0" text="5" />
+                  <Label fx:id="lblA2" layoutX="272.0" layoutY="108.0" text="5" />
+                  <Label fx:id="lblA3" layoutX="272.0" layoutY="173.0" text="5" />
+                  <Label fx:id="lblA4" layoutX="272.0" layoutY="242.0" text="5" />
+                  <Label fx:id="lblA5" layoutX="272.0" layoutY="307.0" text="5" />
+                  <Label fx:id="lblA6" layoutX="272.0" layoutY="375.0" text="5" />
+               </children>
+            </AnchorPane>
+        </content>
+      </TitledPane>
+   </children>
+</AnchorPane>

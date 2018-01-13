@@ -41,4 +41,20 @@ public class Employee extends User implements Serializable {
 		setRole(role);
 		setBranchId(branchId);
 	}
+	
+	public Employee(User user, int eId,Role role,int branchId)
+	{
+		super(user);
+		seteId(eId);
+		setRole(role);
+		setBranchId(branchId);
+	}
+	
+	public Employee(int uId, int eId,Role role,int branchId)
+	{
+		super(uId);
+		seteId(eId);
+		setRole(role);
+		setBranchId(branchId);
+	}
 }

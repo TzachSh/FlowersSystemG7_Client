@@ -3,7 +3,6 @@ package Products;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringBufferInputStream;
 import java.net.URL;
 import java.nio.channels.CancelledKeyException;
 import java.util.ArrayList;
@@ -697,7 +696,7 @@ public class CatalogProductController implements Initializable
 		  {
 			 
 			SelectProductController selectController = new SelectProductController();
-			selectController.setForUpdateCatalog(SelectProductUI.customer);
+			selectController.setForUpdateCatalog();
 		  	selectController.start(new Stage());
 		  }
 		  else
@@ -1167,7 +1166,7 @@ public class CatalogProductController implements Initializable
 	        		  if (updateForm || comesFromCatalog)
 	        		  {
 	        			SelectProductController selectController = new SelectProductController();
-	        			selectController.setForUpdateCatalog(SelectProductUI.customer);
+	        			selectController.setForUpdateCatalog();
 	        		  	selectController.start(new Stage());
 	        		  }
 	        		  else

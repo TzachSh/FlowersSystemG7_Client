@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+import Login.ConfigurationController;
+
 
 /**
  * This Class uses as thread that create a request to the server for the relevant data
@@ -16,7 +18,7 @@ public class SystemSender extends Thread
 	/**
 	 *  private attributes
 	 */
-	final int DEFUALT_PORT = 5555;
+	
 	private SystemClient client;
 	private Packet packet;
 	private IResultHandler handler;
@@ -58,23 +60,9 @@ public class SystemSender extends Thread
 	 * @return Instance of Client
 	 */
 	private SystemClient initClient(IResultHandler handler) {
-		String host;
-		int port;
-		try 
-		{
-			File cfgFile = new File(System.getProperty("user.dir")+"/" +"cfgClient.txt");
-			FileReader fileReader = new FileReader(cfgFile);
-			@SuppressWarnings("resource")
-			BufferedReader bufferedReader = new BufferedReader(fileReader);
-			host = bufferedReader.readLine();
-			port = Integer.parseInt(bufferedReader.readLine());
-		}
-		catch (Exception e) 
-		{
-			host = "localhost";
-			port = DEFUALT_PORT;
-		}
-
+		String host = ConfigurationController.address;
+		int port = ConfigurationController.port;
+		
 		return new SystemClient(handler, host, port);
 	}
 	

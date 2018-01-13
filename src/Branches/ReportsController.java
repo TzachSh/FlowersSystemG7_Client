@@ -8,7 +8,7 @@ import java.util.ResourceBundle;
 
 import javax.swing.JOptionPane;
 
-
+import Customers.Membership;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
@@ -42,11 +42,22 @@ public class ReportsController implements Initializable{
 	@FXML
 	private ComboBox<String> cbQuarterly2;
 	@FXML
+	private ComboBox<String> cbBranches;
+	@FXML
+	private ComboBox<String> cbBranchesName;
+	@FXML
+	private ComboBox<String> cbBranchTwoName;
+	@FXML
+	private ComboBox<String> cbBranchTwoNumber;
+	@FXML
 	private Label lbQuarterlycomp;
 	@FXML
 	private RadioButton rbcomp;
 	@FXML
+	private RadioButton rbcompbranch;
+	@FXML
 	private Button btnGenerateReport;
+	private ArrayList<Branch> branchlist;
 
 	private Employee employee;
 	
@@ -71,6 +82,7 @@ public class ReportsController implements Initializable{
 			Parent root = loader.load();
 			Scene scene = new Scene(root);
 			primaryStage.setTitle(title);
+			primaryStage.setResizable(false);
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch (Exception e) {
@@ -104,9 +116,55 @@ public class ReportsController implements Initializable{
                 "Error", 
                 JOptionPane.ERROR_MESSAGE);
 	}
+	
+	public void handleBranchNumber()
+	{
+		cbBranchesName.getSelectionModel().select(cbBranches.getSelectionModel().getSelectedIndex());
+	}
+	public void handleBranchTwoNumber()
+	{
+		cbBranchTwoName.getSelectionModel().select(cbBranchTwoNumber.getSelectionModel().getSelectedIndex());
+
+	}
+	public void handleBranchTwoName()
+	{
+		cbBranchTwoNumber.getSelectionModel().select(cbBranchTwoName.getSelectionModel().getSelectedIndex());
+	}
+	public void handleBranchName()
+	{
+		cbBranches.getSelectionModel().select(cbBranchesName.getSelectionModel().getSelectedIndex());
+	}
+	public void handleBranchTwoComp()
+	{
+
+		if(rbcompbranch.isSelected())
+		{
+			cbBranchTwoName.setVisible(true);
+			cbBranchTwoNumber.setVisible(true);
+		}
+		else
+		{
+			cbBranchTwoName.setVisible(false);
+			cbBranchTwoNumber.setVisible(false);
+		}
+	}
+	public void handleRadioButton()
+	{
+
+		if(rbcomp.isSelected())
+		{
+			lbQuarterlycomp.setVisible(true);
+			cbQuarterly2.setVisible(true);
+		}
+		else
+		{
+			lbQuarterlycomp.setVisible(false);
+			cbQuarterly2.setVisible(false);
+		}
+	}
 	private void initComboBox()
 	{
-		ObservableList<String> observelistReport,observelistYear,observelistQuarterly;
+		ObservableList<String> observelistReport,observelistYear,observelistQuarterly,observelistBranch;
 		//adding reports to combo box
 		ArrayList<String> report = new ArrayList<>();
 		report.add("Orders");
@@ -138,11 +196,33 @@ public class ReportsController implements Initializable{
 		cbQuarterly2.setItems(observelistQuarterly);
 		cbQuarterly1.getSelectionModel().selectFirst();
 		cbQuarterly2.getSelectionModel().selectFirst();
+		ArrayList<String> Branchnumber = new ArrayList<>();
+		ArrayList<String> BranchName = new ArrayList<>();
+		if(employee.getRole().toString().equals((Role.BranchesManager).toString()))
+		{
+			for(Branch br:branchlist)
+			{
+				Branchnumber.add(br.getbId()+"");
+				BranchName.add(br.getName());
+			}
+			observelistBranch = FXCollections.observableArrayList(Branchnumber);
+			cbBranches.setItems(observelistBranch);
+			cbBranches.getSelectionModel().selectFirst();
+			cbBranchTwoNumber.setItems(observelistBranch);
+			cbBranchTwoNumber.getSelectionModel().select(1);
 
-		
+			observelistBranch = FXCollections.observableArrayList(BranchName);
+			cbBranchesName.setItems(observelistBranch);
+			cbBranchesName.getSelectionModel().selectFirst();
+			cbBranchTwoName.setItems(observelistBranch);
+			cbBranchTwoName.getSelectionModel().select(1);
+			
+		}
+	
 
 	}
 	
+
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// hiding table 2 that is needed for branches manager and hiding both of them until the required information gathered from the user
@@ -151,65 +231,72 @@ public class ReportsController implements Initializable{
 		rbcomp.setVisible(false);
 		cbQuarterly2.setVisible(false);
 		lbQuarterlycomp.setVisible(false);
+		cbBranches.setVisible(false);
+		cbBranchesName.setVisible(false);
+		cbBranchTwoName.setVisible(false);
+		cbBranchTwoNumber.setVisible(false);
+		rbcompbranch.setVisible(false);
+		
 		
 		Packet packet = new Packet();
-		initComboBox();
-		//adding command and the information for the query to use them
-		//getting manager information
-		if(employee.getRole().toString().equals((Role.BranchManager).toString()))
-		{
-			packet.addCommand(Command.getBranchBybrId);
-			ArrayList<Object> branchstringname=new ArrayList<>();
-			branchstringname.add(employee.getBranchId());
-			packet.setParametersForCommand(Command.getBranchBybrId, branchstringname);
-			SystemSender send = new SystemSender(packet);
-			send.registerHandler(new IResultHandler() {
+		packet.addCommand(Command.getBranches);
+		SystemSender send = new SystemSender(packet);
+		send.registerHandler(new IResultHandler() {
+			
+			@Override
+			public void onWaitingForResult() {
+				// TODO Auto-generated method stub
 				
-				@Override
-				public void onWaitingForResult() {
-					// TODO Auto-generated method stub
-					
-				}
-				
-				@Override
-				public void onReceivingResult(Packet p) {
-					// TODO Auto-generated method stub
-					
-					ArrayList<String> result = new ArrayList<>();
-					if (p.getResultState())
-					{
-						//checking if the customer got account
-						result=p.<String>convertedResultListForCommand(Command.getBranchBybrId);
-						if(result.isEmpty()==true)
-						{
-							showError("Error , Please Try Again");
+			}
+			
+			@Override
+			public void onReceivingResult(Packet p) {
+				// TODO Auto-generated method stub
+				 branchlist = p.<Branch>convertedResultListForCommand(Command.getBranches);
+				 if (p.getResultState()) 
+				 {
+					initComboBox(); 
+					 if(branchlist.isEmpty()==true)
+					 {
+						 showError("Error , Please Try Again");
 							return;
-						}
-						//there is no account for the user , so we set visible for the adding account 
-						lblBranchName.setText("Branch Name : "+result.get(0));
-						lblBranchNumber.setText("Branch Number : "+employee.getBranchId());
+					 }
+					 if(employee.getRole().toString().equals((Role.BranchManager).toString()))
+					 {
+						 lblBranchNumber.setVisible(true);
+						
+						 for(Branch br:branchlist)
+							 if(br.getbId()==employee.getBranchId())
+							 {
+								lblBranchName.setText("Branch Name : "+br.getName().toString());
+								lblBranchNumber.setText("Branch Number : "+br.getbId());
+							 }
+						 
+					 }
+					 else		 
+					 {
+						//its the branches manager
+						lblBranchNumber.setVisible(true);
+						cbBranches.setVisible(true);
+						cbBranchesName.setVisible(true);
+						rbcomp.setVisible(true);
 						String name=employee.getUser().toString();
 						lblEmployeeName.setText("Manager : "+name);
+						rbcompbranch.setVisible(true);
 						
-					}
-					else
-						System.out.println("Fail: " + p.getExceptionMessage());					
+					 }
+					 String name=employee.getUser().toString();
+					 lblEmployeeName.setText("Manager : "+name);
+
+		
 				}
-			});
-			//sending the packet
-			send.start();
-		}
-		else
-		{
-			//its the branches manager
-			rbcomp.setVisible(true);
-			cbQuarterly2.setVisible(true);
-			lbQuarterlycomp.setVisible(true);
-			lblBranchName.setVisible(false);
-			lblBranchNumber.setVisible(false);
-			String name=employee.getUser().toString();
-			lblEmployeeName.setText("Manager : "+name);
-		}
+				else
+					System.out.println("Fail: " + p.getExceptionMessage());	
+				 
+			}
+		});
+		send.start();
+
 
 	}
 }

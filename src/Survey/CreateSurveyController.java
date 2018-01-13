@@ -16,7 +16,9 @@ import PacketSender.SystemSender;
 import Users.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -110,11 +112,6 @@ public class CreateSurveyController implements Initializable {
 			System.out.println(e);
 			e.printStackTrace();
 		}
-	}
-	
-	public CreateSurveyController(Employee employee)
-	{
-		
 	}
 	
 	private void performNextStep()
@@ -248,11 +245,11 @@ public class CreateSurveyController implements Initializable {
 		}
 		
 		//int creatorId = User.getuId();
-		int creatorId = 1;
+		int creatorId = employee.getuId();
 		
 		//Parameter list for addSurvey
 		ArrayList<Object> paramListSurvey = new ArrayList<>();
-		Survey survey = new Survey(subject, creatorId,true);
+		Survey survey = new Survey(subject, creatorId,false);
 		paramListSurvey.add(survey);
 		
 		//Parameter list for addQuestion
@@ -288,6 +285,7 @@ public class CreateSurveyController implements Initializable {
 				// TODO Auto-generated method stub
 				if(p.getResultState())
 				{
+					resertComponents();
 					Alert alert = new Alert(AlertType.INFORMATION,"The survey inserted successfully!");
 					alert.show();
 					tabOptions.getSelectionModel().select(0);
@@ -322,7 +320,6 @@ public class CreateSurveyController implements Initializable {
 				{
 					ArrayList<Survey> survyList = p.<Survey>convertedResultListForCommand(Command.getSurvey);
 					dataSurvey = FXCollections.observableArrayList(survyList);
-					defineOptionTabState(dataSurvey);
 					sListView.setItems(dataSurvey);
 				}
 			}
@@ -359,11 +356,15 @@ public class CreateSurveyController implements Initializable {
 					HBox conclusionElement = new HBox (new Label(textConclusion) , new Text("Text Text Text Text"));
 					VBox detailsElement = new VBox(titleElement,statusElement,conclusionElement);
 		
-					VBox operationElement;
+					VBox operationElement=null;
 					if(employee.getRole() == Role.CustomerService)
 						operationElement = new VBox(createActivityButtonHandler(survey,activeStatus));
-					else
+					else if(employee.getRole() == Role.ServiceExpert && !survey.isActive())
 						operationElement = new VBox(createAddConclusionButton(survey));
+					else if(employee.getRole() == Role.ServiceExpert && survey.isActive()) {
+						String textStillActive = "Not Done";
+						operationElement = new VBox(new Label(textStillActive));
+					}
 					
 				 	HBox hBox = new HBox(operationElement,detailsElement);
 				 	titleElement.setPadding(new Insets(5,10,5,20));
@@ -377,7 +378,6 @@ public class CreateSurveyController implements Initializable {
                     hBox.setPadding(new Insets(10));
                     setGraphic(hBox);
 				}
-				
 				
 				private void performOperation(Survey survey , boolean state)
 				{
@@ -401,7 +401,7 @@ public class CreateSurveyController implements Initializable {
 						public void onReceivingResult(Packet p) {
 							// TODO Auto-generated method stub
 								if (p.getResultState()) {
-									defineOptionTabState(dataSurvey);
+								//	defineOptionTabState(dataSurvey);
 								}
 						}
 					});
@@ -411,7 +411,22 @@ public class CreateSurveyController implements Initializable {
 				
 				private Button createAddConclusionButton(Survey survey) {
 					
-					return null;
+					String btnText = "Add Conclusion";
+					Button btnAddConclusion = new Button(btnText);
+					
+					btnAddConclusion.setOnAction(new EventHandler<ActionEvent>() {
+						
+						@Override
+						public void handle(ActionEvent arg0) {
+							// TODO Auto-generated method stub
+							ServiceExpertController sc = new ServiceExpertController();
+							sc.serviceExpert = employee;
+							sc.setSurvey(survey);
+							sc.start(new Stage());
+						}
+					});
+					
+					return btnAddConclusion;
 				}
 				/**
 				 * Creating a button handler which is navigates to the relevant reply view for each complain
@@ -428,14 +443,20 @@ public class CreateSurveyController implements Initializable {
 							if(survey.isActive()) {
 								btnAction.setText("Activate");
 								activeStatus.setText("Inactive");
-								performOperation(survey, false);
-								
+								performOperation(survey, false);		
 							}
 							else
 							{
-								btnAction.setText("Inactivate");
-								activeStatus.setText("Active");
-								performOperation(survey, true);
+								if (!isActivatedSurvey(dataSurvey)) {
+									btnAction.setText("Inactivate");
+									activeStatus.setText("Active");
+									performOperation(survey, true);
+								}
+								else
+								{
+									Alert alert = new Alert(AlertType.INFORMATION,"Only one survey can be activated in a time");
+									alert.show();
+								}
 							}
 						});
 
@@ -469,21 +490,6 @@ public class CreateSurveyController implements Initializable {
 				break;
 			}
 		return retVal;
-	}
-	
-	private void defineOptionTabState(ObservableList<Survey> surveyList)
-	{
-		if(isActivatedSurvey(surveyList)) {
-			tabOptions.getSelectionModel().select(1);
-			tabOptions.getSelectionModel().getSelectedItem().setDisable(true);
-			tabOptions.getSelectionModel().select(0);
-		}
-		else
-		{
-			tabOptions.getSelectionModel().select(1);
-			tabOptions.getSelectionModel().getSelectedItem().setDisable(false);
-			tabOptions.getSelectionModel().select(0);
-		}
 	}
 	
 	@Override
