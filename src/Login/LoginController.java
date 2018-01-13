@@ -146,8 +146,6 @@ public class LoginController implements Initializable {
 					userLogged = new Employee(user, employee.geteId(), employee.getRole(), employee.getBranchId());
 					// <?---- open a menu of employee by it's role >
 				}
-				
-				System.out.println();
 			}
 			else
 			{
