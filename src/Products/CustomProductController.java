@@ -5,6 +5,7 @@ package Products;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -39,6 +40,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
@@ -56,8 +59,20 @@ import javafx.util.Callback;
 
 public class CustomProductController implements Initializable {
 
+	
+	/**
+	 * This class controlling the creation custom which customer created.
+	 * The customer can add flower that matches the dominant color which he entered
+	 * and the max price will be the maximum which he entered. Each time the customer add new flower it will shown in listView
+	 * The customer can also reduce the number of flowers in the product. Customer can add blessing to his product if he didn't do it and add "add to order" the
+	 * System will ask him if he want to add blessing otherwise it will open cart with new product in it
+	 */
+	
+	/**
+	 * FXML controls
+	 */
 	@FXML
-	private TitledPane paneFlowers;
+	private TabPane paneFlowers;
 	@FXML
 	private Button btnFind;
 	@FXML
@@ -78,32 +93,34 @@ public class CustomProductController implements Initializable {
 	private ComboBox<ProductType> cmbProductType;
 	@FXML
 	private TextArea txtBlessing;
-	@FXML
-	private Button btnAddBlessing;
-	@FXML
-	private Button btnCancel;
-	private ArrayList<ColorProduct> cList;
-	private ArrayList<ProductType> typeList;
-	private ObservableList<Flower> data;
-	private ArrayList<Flower> flowerList;
+
+	private ArrayList<ColorProduct> cList;//storing colors from db
+	private ArrayList<ProductType> typeList;//storing type of products
+	private ObservableList<Flower> data;//storing flowers in observable list to get option to update it when app is run
+	private ArrayList<Flower> flowerList;//all flowers from db
 	private double cashLeft;
 	private double maxPrice;
 	private LinkedHashMap<Flower,Integer> flowerInProduct= new LinkedHashMap<>();
 	private Stage primaryStage;;
+	/**
+	 * to available run javafx
+	 */
 	public CustomProductController() {
 		super();
 	}
-	public CustomProductController(CartController cartController,Customer customer) {
-	}
-
+	/**
+	 * Initialize the data and controls before open the window
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		getData();
 		
+		//init controls
 		paneFlowers.setVisible(false);
 		setSettingBtn();
 		setResetBtn();
 		setAddToOrderBtn();
+		//validate price by using regex
 		txtMaxCost.textProperty().addListener(new ChangeListener<String>() {
 
 			@Override
@@ -121,46 +138,87 @@ public class CustomProductController implements Initializable {
 		});
 	
 	}
+	/**
+	 * init addToOrder handle. if blessing is empty ask if customer want to add blessing
+	 */
 	private void setAddToOrderBtn() {
 		btnAddToCart.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event)
 			{
-				if (JOptionPane.showConfirmDialog(null, "Do you want to add blessing?", "Notification",
+				//display notification
+				if (txtBlessing.getText().length()==0 && JOptionPane.showConfirmDialog(null, "Do you want to add blessing?", "Notification",
 				        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-					Stage stage = new Stage();
-					String srcFXML = "/Products/BlessingUI.fxml";
-					String srcCSS = "/Products/application.css";
-					Parent root;
-					try {
-						root = FXMLLoader.load(getClass().getResource(srcFXML));
-						Scene scene = new Scene(root);
-						scene.getStylesheets().add(getClass().getResource(srcCSS).toExternalForm());
-						stage.setTitle("Custom product");
-						stage.setScene(scene);
-						primaryStage.hide();
-						stage.show();
+					paneFlowers.getSelectionModel().select(1);
 
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					
 				} else {
-				   addToCartCloseWindow();
+				   addToCartCloseWindow();//continue to cart
 				}
 				
 			}
 		});		
 		
 	}
+	/**
+	 * getParameters for new custom product and send to create
+	 */
 	protected void addToCartCloseWindow() {
-		for(Entry<Flower, Integer> set : flowerInProduct.entrySet())
-		{/*
-			int productType = cmbProductType.getSelectionModel().getSelectedItem().getId();
-			CustomProduct product = new CustomProduct(null,productType , maxPrice-cashLeft, null, null, blessing);
-			FlowerInProduct fl = new FlowerInProduct(set.getKey().getId(), set.getValue());*/
-		}
-		//CartController.cartProducts.keySet()
+			int productType = cmbProductType.getSelectionModel().getSelectedItem().getId();//get typeId from combobox
+			CustomProduct product = new CustomProduct(-1,productType , maxPrice-cashLeft, null, null, txtBlessing.getText());
+			ArrayList<Object> pList = new ArrayList<>(Arrays.asList(product));
+			ArrayList<Object> fList = new ArrayList<>();
+			for(Entry<Flower, Integer> set : flowerInProduct.entrySet())
+			{
+				fList.add(new FlowerInProduct(set.getKey().getId(), set.getValue()));
+			}
+			createCustomProduct(pList,fList);
+		//CartController.cartProducts.keySet();
+		
+	}
+	/**
+	 * @param pList custom product
+	 * @param fList flowers in product
+	 * sending to server product with flowers to insert to database and get the product back to display in the cart
+	 */
+	private void createCustomProduct(ArrayList<Object> pList, ArrayList<Object> fList ) {
+		Packet packet = new Packet();//create packet to send
+		packet.addCommand(Command.CreateCustomProduct);//add command
+		
+		
+		packet.setParametersForCommand(Command.CreateCustomProduct,pList);
+		packet.setParametersForCommand(Command.insertFlowersInProduct, fList);
+		// create the thread for send to server the message
+		SystemSender send = new SystemSender(packet);
+
+		// register the handler that occurs when the data arrived from the server
+		send.registerHandler(new IResultHandler() {
+
+			@Override
+			public void onWaitingForResult() {//waiting when send
+			}
+
+			@Override
+			public void onReceivingResult(Packet p)//set combobox values
+			{
+				if (p.getResultState())
+				{
+					Stage cartStage = new Stage();
+					CartController cartController = new CartController();
+        			cartController.setComesFromCatalog(false);
+        			Product product= p.<Product>convertedResultListForCommand(Command.CreateCustomProduct).get(0);
+        			product.setFlowerInProductList(p.<FlowerInProduct>convertedResultListForCommand(Command.CreateCustomProduct));
+        			cartController.addProductsToCartMap(product);
+        			try {
+						cartController.start(cartStage);
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(null,"Failed to open Cart"+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+					}
+				}
+				else//if it was error in connection
+					JOptionPane.showMessageDialog(null,"Connection error","Error",JOptionPane.ERROR_MESSAGE);
+			}
+		});
+		send.start();
 		
 	}
 	private void setResetBtn() {

@@ -185,7 +185,7 @@ public class CartController implements Initializable
 						}
 						else
 						{
-							img = new Image("customProduct");
+							img = new Image("/noImage.png");
 						}
 						
 						imgView.setImage(img);
@@ -329,7 +329,10 @@ public class CartController implements Initializable
 			int totalItems = 0;
 			for (Map.Entry<Product, Integer> entry : cartProducts.entrySet())
 			{
-				totalPrice += getFinalPrice((CatalogProduct)entry.getKey()) * entry.getValue();
+				if(entry.getKey() instanceof CatalogProduct)
+					totalPrice += getFinalPrice((CatalogProduct)entry.getKey()) * entry.getValue();
+				else
+					totalPrice+=((CustomProduct)entry.getKey()).getPrice();
 				totalItems += entry.getValue();
 			}
 			
@@ -392,6 +395,11 @@ public class CartController implements Initializable
 			btnBackToCatalog.setText("Back To Catalog");
 		else
 			btnBackToCatalog.setText("Add From Catalog");
+	}
+
+	public void addProductsToCartMap(Product product) {
+		if (!cartProducts.containsKey(product))
+			  cartProducts.put(product, 1);
 	}
 
 }

@@ -24,14 +24,28 @@
             </AnchorPane>
         </content>
       </TitledPane>
-      <TitledPane fx:id="paneFlowers" animated="false" collapsible="false" layoutX="20.0" layoutY="268.0" prefHeight="206.0" prefWidth="477.0" text="Choose flowers to your product">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-               <children>
-                  <ListView fx:id="flowerListView" layoutX="6.0" prefHeight="180.0" prefWidth="464.0" />
-               </children></AnchorPane>
-        </content>
-      </TitledPane>
+      <TabPane fx:id="paneFlowers" layoutX="20.0" layoutY="260.0" prefHeight="219.0" prefWidth="477.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="choose flowers">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <ListView fx:id="flowerListView" prefHeight="180.0" prefWidth="477.0" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Add blessing">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TextArea fx:id="txtBlessing" layoutX="14.0" layoutY="15.0" prefHeight="161.0" prefWidth="437.0" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
       <Button fx:id="btnAddToCart" layoutX="412.0" layoutY="488.0" mnemonicParsing="false" text="Add to order" />
       <Button fx:id="btnReset" layoutX="35.0" layoutY="488.0" mnemonicParsing="false" text="Reset" />
       <Label fx:id="lblTotalPrice" layoutX="315.0" layoutY="467.0" />
