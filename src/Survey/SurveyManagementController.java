@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 
 import Branches.Employee;
 import Branches.Role;
+import Customers.Complain;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
@@ -36,7 +37,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
-public class CreateSurveyController implements Initializable {
+public class SurveyManagementController implements Initializable {
 	@FXML
 	private TabPane tabOptions;
 	@FXML 
@@ -80,7 +81,7 @@ public class CreateSurveyController implements Initializable {
 	
 	
 	private ArrayList<SurveyConclusion> surveyConclusionList;
-	private SurveyConclusion surveyConclusion;
+	private ArrayList<Survey> survyList;
 	public static Employee employee;
 	
 	private int curStep = 1;
@@ -213,6 +214,8 @@ public class CreateSurveyController implements Initializable {
 		tabSteps.getSelectionModel().select(0);
 		tabSteps.getSelectionModel().getSelectedItem().setDisable(false);
 		
+		dataSurvey.clear();
+		
 		setButtonsVisiblity(true);
 	}
 	
@@ -319,10 +322,9 @@ public class CreateSurveyController implements Initializable {
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub
 				if(p.getResultState())
-				{
+				{	
 					surveyConclusionList = p.<SurveyConclusion>convertedResultListForCommand(Command.getConclusions);
-					ArrayList<Survey> survyList = p.<Survey>convertedResultListForCommand(Command.getSurvey);
-					attachConclusionToSurvey(surveyConclusionList,survyList);
+					survyList = p.<Survey>convertedResultListForCommand(Command.getSurvey);
 					dataSurvey = FXCollections.observableArrayList(survyList);
 					sListView.setItems(dataSurvey);
 				}
@@ -331,13 +333,15 @@ public class CreateSurveyController implements Initializable {
 		sender.start();
 	}
 	
-	private void attachConclusionToSurvey(ArrayList<SurveyConclusion> surveyConclusionList , ArrayList<Survey> surveyList)
+	private SurveyConclusion getConclusionBySurvey(ArrayList<SurveyConclusion> surveyConclusionList , Survey survey)
 	{
-		
+		SurveyConclusion surveyConclusion = null;
 		for(SurveyConclusion sc : surveyConclusionList)
-			for(Survey survey : surveyList)
 			if(sc.getSurId() == survey.getId())
 				surveyConclusion = sc;
+		
+		return surveyConclusion;
+		
 	}
 	
 	private void setListCellFactory()
@@ -356,7 +360,7 @@ public class CreateSurveyController implements Initializable {
 				 * 	Set handler for each row, is a corresponding to the status of the complain, if it's active will show a "Reply" button near to it, else will be shown "Done"
 				 * @param complain - show the complain's details in the fields such as date , subject and content
 				 */
-				private void setCellHandler(Survey survey,SurveyConclusion surveyConclusion)
+				private void setCellHandler(Survey survey)
 				{
 					String textTitle = "Subject: ";
 					String textActive = "Status: ";
@@ -364,9 +368,11 @@ public class CreateSurveyController implements Initializable {
 					String status = ( (survey.isActive() == true ) ? "Active" : "InActive");
 					Text activeStatus = new Text(status);
 					
+					SurveyConclusion surveyConclusion = getConclusionBySurvey(surveyConclusionList, survey);
+					
 					HBox titleElement = new HBox(new Label(textTitle), new Text(survey.getSubject()));
 					HBox statusElement = new HBox (new Label(textActive) , activeStatus);
-					HBox conclusionElement = new HBox (new Label(textConclusion) , getConclusionText());
+					HBox conclusionElement = new HBox (new Label(textConclusion) , getConclusionText(surveyConclusion));
 					VBox detailsElement = new VBox(titleElement,statusElement,conclusionElement);
 		
 					VBox operationElement=null;
@@ -397,7 +403,7 @@ public class CreateSurveyController implements Initializable {
                     setGraphic(hBox);
 				}
 				
-				private Text getConclusionText()
+				private Text getConclusionText(SurveyConclusion surveyConclusion)
 				{
 					Text text;
 					if(surveyConclusion != null)
@@ -510,7 +516,7 @@ public class CreateSurveyController implements Initializable {
 					// TODO Auto-generated method stub
 					super.updateItem(item, empty);
 					 if (item != null) {	
-						 	setCellHandler(item , null);
+						 	setCellHandler(item);
                         }
 				}};
 			}
