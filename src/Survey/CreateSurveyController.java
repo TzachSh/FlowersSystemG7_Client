@@ -78,8 +78,9 @@ public class CreateSurveyController implements Initializable {
 	@FXML
 	private ObservableList<Survey> dataSurvey;
 	
-	private ArrayList<SurveyConclusion> surveyConclusionList;
 	
+	private ArrayList<SurveyConclusion> surveyConclusionList;
+	private SurveyConclusion surveyConclusion;
 	public static Employee employee;
 	
 	private int curStep = 1;
@@ -332,10 +333,11 @@ public class CreateSurveyController implements Initializable {
 	
 	private void attachConclusionToSurvey(ArrayList<SurveyConclusion> surveyConclusionList , ArrayList<Survey> surveyList)
 	{
-		for(SurveyConclusion surveyConclusion : surveyConclusionList)
+		
+		for(SurveyConclusion sc : surveyConclusionList)
 			for(Survey survey : surveyList)
-			if(surveyConclusion.getId() == survey.getSurveyConclusionId())
-				survey.setSurveyConclusionId(surveyConclusion.getId());
+			if(sc.getSurId() == survey.getId())
+				surveyConclusion = sc;
 	}
 	
 	private void setListCellFactory()
@@ -364,15 +366,15 @@ public class CreateSurveyController implements Initializable {
 					
 					HBox titleElement = new HBox(new Label(textTitle), new Text(survey.getSubject()));
 					HBox statusElement = new HBox (new Label(textActive) , activeStatus);
-					HBox conclusionElement = new HBox (new Label(textConclusion) , getConclusionText(survey));
+					HBox conclusionElement = new HBox (new Label(textConclusion) , getConclusionText());
 					VBox detailsElement = new VBox(titleElement,statusElement,conclusionElement);
 		
 					VBox operationElement=null;
 					if(employee.getRole() == Role.CustomerService)
 						operationElement = new VBox(createActivityButtonHandler(survey,activeStatus));
-					else if(employee.getRole() == Role.ServiceExpert && !survey.isActive() && survey.getSurveyConclusionId() == 0)
+					else if(employee.getRole() == Role.ServiceExpert && !survey.isActive() && surveyConclusion == null)
 						operationElement = new VBox(createAddConclusionButton(survey));
-					else if(employee.getRole() == Role.ServiceExpert && survey.getSurveyConclusionId() != 0)
+					else if(employee.getRole() == Role.ServiceExpert && surveyConclusion != null)
 					{
 						String textConclusedState = "Already Conclused";
 						operationElement = new VBox(new Label(textConclusedState));
@@ -395,9 +397,16 @@ public class CreateSurveyController implements Initializable {
                     setGraphic(hBox);
 				}
 				
-				private Text getConclusionText(Survey survey)
+				private Text getConclusionText()
 				{
-					return new Text(getConclusionBySurvey(survey));
+					Text text;
+					if(surveyConclusion != null)
+						text = new Text(surveyConclusion.getConclusion());
+					else
+						text = new Text("Not Conclused Yet");
+					
+					return text;
+						
 				}
 				
 				private void performOperation(Survey survey , boolean state)
@@ -506,15 +515,6 @@ public class CreateSurveyController implements Initializable {
 				}};
 			}
 		});
-	}
-
-	private String getConclusionBySurvey(Survey survey)
-	{
-		String conclusion = "Not conclused yet";
-		for(SurveyConclusion surveyConclusion : surveyConclusionList )
-			if(surveyConclusion.getId() == survey.getSurveyConclusionId())
-				conclusion = surveyConclusion.getConclusion();
-		return conclusion;
 	}
 	
 	private boolean isActivatedSurvey(ObservableList<Survey> surveyList)

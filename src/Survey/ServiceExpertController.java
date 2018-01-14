@@ -126,19 +126,12 @@ public class ServiceExpertController implements Initializable {
 					displayQuestion();
 					initSliders(averageAnswerSurveyList);
 					initAnswerLabels(averageAnswerSurveyList);
-					initTextArea(surveyConclusionList);
 				}
 			}
 		});
 		sender.start();
 	}
 	
-	private void initTextArea(ArrayList<SurveyConclusion> surveyConclusionList) {
-		for(SurveyConclusion surveyConclusion : surveyConclusionList)
-			if(surveyConclusion.getId() == survey.getSurveyConclusionId())
-				txtConclusion.setText(surveyConclusion.getConclusion());
-		
-	}
 	
 	private void setSliderValue(Slider slider , int value)
 	{
@@ -221,14 +214,15 @@ public class ServiceExpertController implements Initializable {
 	@FXML
 	private void onSubmitPressedHandle(Event event)
 	{
-		SurveyConclusion surveyConclusion = new SurveyConclusion(serviceExpert.geteId(), txtConclusion.getText());
+		SurveyConclusion surveyConclusion = new SurveyConclusion(serviceExpert.geteId(), txtConclusion.getText(),survey.getId());
 		
-		ArrayList<Object> paramListConclusion = new ArrayList<>();
-		paramListConclusion.add(surveyConclusion);
+		ArrayList<Object> paramListAddConclusion = new ArrayList<>();
+		
+		paramListAddConclusion.add(surveyConclusion);
 		
 		Packet packet = new Packet();
 		packet.addCommand(Command.addConclusion);
-		packet.setParametersForCommand(Command.addConclusion, paramListConclusion);
+		packet.setParametersForCommand(Command.addConclusion, paramListAddConclusion);
 		
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
