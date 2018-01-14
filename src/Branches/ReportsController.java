@@ -104,7 +104,7 @@ public class ReportsController implements Initializable{
 		packet.setParametersForCommand(cmd, info1);
 	}
 	@SuppressWarnings("unchecked")
-	public void BuildTableView(TableView<IncomeReport> table ,IncomeReport incomeReport)
+	public void BuildTableViewForIncome(TableView<IncomeReport> table ,IncomeReport incomeReport)
 	{
 		table.getColumns().clear();
 		ObservableList<IncomeReport> data = FXCollections.observableArrayList(incomeReport);
@@ -119,6 +119,20 @@ public class ReportsController implements Initializable{
 
 		table.getColumns().addAll(branchId,branchName,branchIncome);
 		table.setVisible(true);
+	}
+	public void BuildBarChartForComplain(BarChart<String,Integer> barch, int active ,int notactive)
+	{
+		barch.setVisible(true);
+		barch.getData().clear();
+		barch.setTitle("Complains Status 1");
+		XYChart.Series<String, Integer> ser1=new XYChart.Series<>();
+		XYChart.Series<String, Integer> ser2=new XYChart.Series<>();
+		ser1.getData().add(new XYChart.Data<>("",active));
+		ser1.setName("Active");
+		ser2.getData().add(new XYChart.Data<>("",notactive));
+		ser2.setName("Not Active");
+		barch.getData().add(ser1);
+		barch.getData().add(ser2);
 	}
 	/**
 	 * 
@@ -236,6 +250,8 @@ public class ReportsController implements Initializable{
 								notactive1++;
 						}	
 						//filling and initialize the barchart
+						BuildBarChartForComplain(barChart, active1, notactive1);
+						/*
 						barChart.setVisible(true);
 						barChart.getData().clear();
 						barChart.setTitle("Complains Status 1");
@@ -246,7 +262,7 @@ public class ReportsController implements Initializable{
 						ser2.getData().add(new XYChart.Data<>("",notactive1));
 						ser2.setName("Not Active");
 						barChart.getData().add(ser1);
-						barChart.getData().add(ser2);
+						barChart.getData().add(ser2);*/
 					}
 					else
 						System.out.println("Fail: " + p.getExceptionMessage());	
@@ -282,6 +298,8 @@ public class ReportsController implements Initializable{
 								notactive2++;
 						}	
 						//filling and initialize the barchart
+						BuildBarChartForComplain(barChart1, active2, notactive2);
+						/*
 						barChart1.setVisible(true);
 						barChart1.getData().clear();
 						barChart1.setTitle("Complains Status 2");
@@ -292,7 +310,7 @@ public class ReportsController implements Initializable{
 						ser4.getData().add(new XYChart.Data<>("",notactive2));
 						ser4.setName("Not Active");
 						barChart1.getData().add(ser3);
-						barChart1.getData().add(ser4);
+						barChart1.getData().add(ser4);*/
 					}
 					else
 						System.out.println("Fail: " + p.getExceptionMessage());	
@@ -366,7 +384,7 @@ public class ReportsController implements Initializable{
 							//building the incoming result 
 							IncomeReport newincomereport=new IncomeReport(incomeReport1.get(0).getBrId(), incomeReport1.get(0).getBrName(), incomeReport1.get(0).getAmount());
 							//sending the wanted table and the result to function that builds the tableview
-							BuildTableView(table1Income, newincomereport);
+							BuildTableViewForIncome(table1Income, newincomereport);
 						}
 						else
 							System.out.println("Fail: " + p.getExceptionMessage());		
@@ -396,7 +414,7 @@ public class ReportsController implements Initializable{
 							//building the incoming result 
 							IncomeReport newincomereport=new IncomeReport(incomeReport2.get(0).getBrId(), incomeReport2.get(0).getBrName(), incomeReport2.get(0).getAmount());
 							//sending the wanted table and the result to function that builds the tableview
-							BuildTableView(table2Income, newincomereport);
+							BuildTableViewForIncome(table2Income, newincomereport);
 						}
 						else
 							System.out.println("Fail: " + p.getExceptionMessage());	
@@ -463,6 +481,8 @@ public class ReportsController implements Initializable{
 								notactive++;
 						}	
 						//filling and initialize the barchart
+						BuildBarChartForComplain(barChart, active, notactive);
+						/*
 						barChart.setVisible(true);
 						barChart.setTitle("Complains Status");
 						XYChart.Series<String, Integer> ser1=new XYChart.Series<>();
@@ -472,7 +492,7 @@ public class ReportsController implements Initializable{
 						ser2.getData().add(new XYChart.Data<>("",notactive));
 						ser2.setName("Not Active");
 						barChart.getData().add(ser1);
-						barChart.getData().add(ser2);
+						barChart.getData().add(ser2);*/
 					}
 					else
 						System.out.println("Fail: " + p.getExceptionMessage());	
@@ -521,7 +541,7 @@ public class ReportsController implements Initializable{
 						//building the incoming result 
 						IncomeReport newincomereport=new IncomeReport(IncomeList.get(0).getBrId(), IncomeList.get(0).getBrName(), IncomeList.get(0).getAmount());
 						//sending the wanted table and the result to function that builds the tableview
-						BuildTableView(table1Income, newincomereport);
+						BuildTableViewForIncome(table1Income, newincomereport);
 						
 					}
 					else
