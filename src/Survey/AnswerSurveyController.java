@@ -241,6 +241,7 @@ public class AnswerSurveyController implements Initializable{
 	private void displayQuestion()
 	{
 	    activeSurvey = getActiveSurvey();
+	    if(activeSurvey != null) {
 		attachQuestionToSurvey(activeSurvey);
 		ArrayList<Question> questionsToDisplay = getQuestionsOfSurvey(activeSurvey);
 		
@@ -250,6 +251,12 @@ public class AnswerSurveyController implements Initializable{
 		setLabelQuestion(questionsToDisplay.get(3), lblQ4);
 		setLabelQuestion(questionsToDisplay.get(4), lblQ5);
 		setLabelQuestion(questionsToDisplay.get(5), lblQ6);
+	    }
+	    else
+	    {
+	    	Alert alert = new Alert(AlertType.INFORMATION,"The is no active surevy!");
+			alert.showAndWait();
+	    }
 	}
 
 	@Override

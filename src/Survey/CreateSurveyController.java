@@ -370,8 +370,13 @@ public class CreateSurveyController implements Initializable {
 					VBox operationElement=null;
 					if(employee.getRole() == Role.CustomerService)
 						operationElement = new VBox(createActivityButtonHandler(survey,activeStatus));
-					else if(employee.getRole() == Role.ServiceExpert && !survey.isActive())
+					else if(employee.getRole() == Role.ServiceExpert && !survey.isActive() && survey.getSurveyConclusionId() == 0)
 						operationElement = new VBox(createAddConclusionButton(survey));
+					else if(employee.getRole() == Role.ServiceExpert && survey.getSurveyConclusionId() != 0)
+					{
+						String textConclusedState = "Already Conclused";
+						operationElement = new VBox(new Label(textConclusedState));
+					}
 					else if(employee.getRole() == Role.ServiceExpert && survey.isActive()) {
 						String textStillActive = "Running";
 						operationElement = new VBox(new Label(textStillActive));
@@ -417,7 +422,7 @@ public class CreateSurveyController implements Initializable {
 						public void onReceivingResult(Packet p) {
 							// TODO Auto-generated method stub
 								if (p.getResultState()) {
-								//	defineOptionTabState(dataSurvey);
+								
 								}
 						}
 					});

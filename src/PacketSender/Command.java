@@ -68,6 +68,6 @@ public enum Command implements Serializable
 	getAverageAnswersBySurveyId,
 	addConclusion,
 	getConclusions,
-	updateConclusion, 
+	updateConclusion,
 	getComplainsForReport
 	}

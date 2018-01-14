@@ -37,9 +37,10 @@ public class CreateSurveyUI extends Application {
 	public void start(Stage arg0) throws Exception {
 		// TODO Auto-generated method stub
 
-		Employee serviceExpert = new ServiceExpert(1,"user1","123,",true,Permission.Limited,1,Role.ServiceExpert,1,null);
+		//Employee service = new ServiceExpert(1,"user1","123,",true,Permission.Limited,1,Role.ServiceExpert,1,null);
+		Employee service = new CustomerService(1,"user1","123,",true,Permission.Limited,1,Role.CustomerService,1,null);
 		CreateSurveyController sc = new CreateSurveyController();
-		sc.employee = serviceExpert;
+		sc.employee = service;
 		sc.start(arg0);
 	}
 }

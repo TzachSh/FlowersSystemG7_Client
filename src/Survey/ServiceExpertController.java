@@ -227,15 +227,8 @@ public class ServiceExpertController implements Initializable {
 		paramListConclusion.add(surveyConclusion);
 		
 		Packet packet = new Packet();
-		if(txtConclusion.getText().isEmpty()) {
-			packet.addCommand(Command.addConclusion);
-			packet.setParametersForCommand(Command.addConclusion, paramListConclusion);
-		}
-		else
-		{
-			packet.addCommand(Command.updateConclusion);
-			packet.setParametersForCommand(Command.updateConclusion, paramListConclusion);
-		}
+		packet.addCommand(Command.addConclusion);
+		packet.setParametersForCommand(Command.addConclusion, paramListConclusion);
 		
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
