@@ -10,6 +10,7 @@ import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -23,6 +24,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class ServiceExpertController implements Initializable {
 	
@@ -68,6 +70,7 @@ public class ServiceExpertController implements Initializable {
 			loader.setController(this);
 			Parent root = loader.load();
 			Scene scene = new Scene(root);
+			setOnCloseListener(primaryStage);
 			primaryStage.setTitle(title);
 			primaryStage.setScene(scene);
 			primaryStage.show();
@@ -126,19 +129,12 @@ public class ServiceExpertController implements Initializable {
 					displayQuestion();
 					initSliders(averageAnswerSurveyList);
 					initAnswerLabels(averageAnswerSurveyList);
-					initTextArea(surveyConclusionList);
 				}
 			}
 		});
 		sender.start();
 	}
 	
-	private void initTextArea(ArrayList<SurveyConclusion> surveyConclusionList) {
-		for(SurveyConclusion surveyConclusion : surveyConclusionList)
-			if(surveyConclusion.getId() == survey.getSurveyConclusionId())
-				txtConclusion.setText(surveyConclusion.getConclusion());
-		
-	}
 	
 	private void setSliderValue(Slider slider , int value)
 	{
@@ -221,21 +217,15 @@ public class ServiceExpertController implements Initializable {
 	@FXML
 	private void onSubmitPressedHandle(Event event)
 	{
-		SurveyConclusion surveyConclusion = new SurveyConclusion(serviceExpert.geteId(), txtConclusion.getText());
+		SurveyConclusion surveyConclusion = new SurveyConclusion(serviceExpert.geteId(), txtConclusion.getText(),survey.getId());
 		
-		ArrayList<Object> paramListConclusion = new ArrayList<>();
-		paramListConclusion.add(surveyConclusion);
+		ArrayList<Object> paramListAddConclusion = new ArrayList<>();
+		
+		paramListAddConclusion.add(surveyConclusion);
 		
 		Packet packet = new Packet();
-		if(txtConclusion.getText().isEmpty()) {
-			packet.addCommand(Command.addConclusion);
-			packet.setParametersForCommand(Command.addConclusion, paramListConclusion);
-		}
-		else
-		{
-			packet.addCommand(Command.updateConclusion);
-			packet.setParametersForCommand(Command.updateConclusion, paramListConclusion);
-		}
+		packet.addCommand(Command.addConclusion);
+		packet.setParametersForCommand(Command.addConclusion, paramListAddConclusion);
 		
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
@@ -254,8 +244,8 @@ public class ServiceExpertController implements Initializable {
 					Alert alert = new Alert(AlertType.INFORMATION,"The conclusion has been saved");
 					alert.showAndWait();
 					closeWindow(event);
-					CreateSurveyController surveyController = new CreateSurveyController();
-					CreateSurveyController.employee = serviceExpert;
+					SurveyManagementController surveyController = new SurveyManagementController();
+					SurveyManagementController.employee = serviceExpert;
 					surveyController.start(new Stage());
 				}
 			}
@@ -266,6 +256,17 @@ public class ServiceExpertController implements Initializable {
 	private void closeWindow(Event event)
 	{
 		((Node) event.getSource()).getScene().getWindow().hide();
+	}
+	
+	private void setOnCloseListener(Stage stage)
+	{
+		 stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+	          public void handle(WindowEvent we) {
+	        	  SurveyManagementController surveyController = new SurveyManagementController();
+					SurveyManagementController.employee = serviceExpert;
+					surveyController.start(new Stage());
+	          }
+	      });        
 	}
 
 	@Override

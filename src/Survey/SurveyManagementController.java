@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 
 import Branches.Employee;
 import Branches.Role;
+import Customers.Complain;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
@@ -36,7 +37,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
-public class CreateSurveyController implements Initializable {
+public class SurveyManagementController implements Initializable {
 	@FXML
 	private TabPane tabOptions;
 	@FXML 
@@ -78,8 +79,9 @@ public class CreateSurveyController implements Initializable {
 	@FXML
 	private ObservableList<Survey> dataSurvey;
 	
-	private ArrayList<SurveyConclusion> surveyConclusionList;
 	
+	private ArrayList<SurveyConclusion> surveyConclusionList;
+	private ArrayList<Survey> survyList;
 	public static Employee employee;
 	
 	private int curStep = 1;
@@ -212,6 +214,8 @@ public class CreateSurveyController implements Initializable {
 		tabSteps.getSelectionModel().select(0);
 		tabSteps.getSelectionModel().getSelectedItem().setDisable(false);
 		
+		dataSurvey.clear();
+		
 		setButtonsVisiblity(true);
 	}
 	
@@ -318,10 +322,9 @@ public class CreateSurveyController implements Initializable {
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub
 				if(p.getResultState())
-				{
+				{	
 					surveyConclusionList = p.<SurveyConclusion>convertedResultListForCommand(Command.getConclusions);
-					ArrayList<Survey> survyList = p.<Survey>convertedResultListForCommand(Command.getSurvey);
-					attachConclusionToSurvey(surveyConclusionList,survyList);
+					survyList = p.<Survey>convertedResultListForCommand(Command.getSurvey);
 					dataSurvey = FXCollections.observableArrayList(survyList);
 					sListView.setItems(dataSurvey);
 				}
@@ -330,12 +333,15 @@ public class CreateSurveyController implements Initializable {
 		sender.start();
 	}
 	
-	private void attachConclusionToSurvey(ArrayList<SurveyConclusion> surveyConclusionList , ArrayList<Survey> surveyList)
+	private SurveyConclusion getConclusionBySurvey(ArrayList<SurveyConclusion> surveyConclusionList , Survey survey)
 	{
-		for(SurveyConclusion surveyConclusion : surveyConclusionList)
-			for(Survey survey : surveyList)
-			if(surveyConclusion.getId() == survey.getSurveyConclusionId())
-				survey.setSurveyConclusionId(surveyConclusion.getId());
+		SurveyConclusion surveyConclusion = null;
+		for(SurveyConclusion sc : surveyConclusionList)
+			if(sc.getSurId() == survey.getId())
+				surveyConclusion = sc;
+		
+		return surveyConclusion;
+		
 	}
 	
 	private void setListCellFactory()
@@ -354,7 +360,7 @@ public class CreateSurveyController implements Initializable {
 				 * 	Set handler for each row, is a corresponding to the status of the complain, if it's active will show a "Reply" button near to it, else will be shown "Done"
 				 * @param complain - show the complain's details in the fields such as date , subject and content
 				 */
-				private void setCellHandler(Survey survey,SurveyConclusion surveyConclusion)
+				private void setCellHandler(Survey survey)
 				{
 					String textTitle = "Subject: ";
 					String textActive = "Status: ";
@@ -362,16 +368,23 @@ public class CreateSurveyController implements Initializable {
 					String status = ( (survey.isActive() == true ) ? "Active" : "InActive");
 					Text activeStatus = new Text(status);
 					
+					SurveyConclusion surveyConclusion = getConclusionBySurvey(surveyConclusionList, survey);
+					
 					HBox titleElement = new HBox(new Label(textTitle), new Text(survey.getSubject()));
 					HBox statusElement = new HBox (new Label(textActive) , activeStatus);
-					HBox conclusionElement = new HBox (new Label(textConclusion) , getConclusionText(survey));
+					HBox conclusionElement = new HBox (new Label(textConclusion) , getConclusionText(surveyConclusion));
 					VBox detailsElement = new VBox(titleElement,statusElement,conclusionElement);
 		
 					VBox operationElement=null;
 					if(employee.getRole() == Role.CustomerService)
 						operationElement = new VBox(createActivityButtonHandler(survey,activeStatus));
-					else if(employee.getRole() == Role.ServiceExpert && !survey.isActive())
+					else if(employee.getRole() == Role.ServiceExpert && !survey.isActive() && surveyConclusion == null)
 						operationElement = new VBox(createAddConclusionButton(survey));
+					else if(employee.getRole() == Role.ServiceExpert && surveyConclusion != null)
+					{
+						String textConclusedState = "Already Conclused";
+						operationElement = new VBox(new Label(textConclusedState));
+					}
 					else if(employee.getRole() == Role.ServiceExpert && survey.isActive()) {
 						String textStillActive = "Running";
 						operationElement = new VBox(new Label(textStillActive));
@@ -390,9 +403,16 @@ public class CreateSurveyController implements Initializable {
                     setGraphic(hBox);
 				}
 				
-				private Text getConclusionText(Survey survey)
+				private Text getConclusionText(SurveyConclusion surveyConclusion)
 				{
-					return new Text(getConclusionBySurvey(survey));
+					Text text;
+					if(surveyConclusion != null)
+						text = new Text(surveyConclusion.getConclusion());
+					else
+						text = new Text("Not Conclused Yet");
+					
+					return text;
+						
 				}
 				
 				private void performOperation(Survey survey , boolean state)
@@ -417,7 +437,7 @@ public class CreateSurveyController implements Initializable {
 						public void onReceivingResult(Packet p) {
 							// TODO Auto-generated method stub
 								if (p.getResultState()) {
-								//	defineOptionTabState(dataSurvey);
+								
 								}
 						}
 					});
@@ -496,20 +516,11 @@ public class CreateSurveyController implements Initializable {
 					// TODO Auto-generated method stub
 					super.updateItem(item, empty);
 					 if (item != null) {	
-						 	setCellHandler(item , null);
+						 	setCellHandler(item);
                         }
 				}};
 			}
 		});
-	}
-
-	private String getConclusionBySurvey(Survey survey)
-	{
-		String conclusion = "Not conclused yet";
-		for(SurveyConclusion surveyConclusion : surveyConclusionList )
-			if(surveyConclusion.getId() == survey.getSurveyConclusionId())
-				conclusion = surveyConclusion.getConclusion();
-		return conclusion;
 	}
 	
 	private boolean isActivatedSurvey(ObservableList<Survey> surveyList)

@@ -58,6 +58,7 @@ public class AnswerSurveyController implements Initializable{
 	private ArrayList<SurveyQuestion> surveyQuestionList;
 	private ArrayList<Question> questionList;
 	
+	private Stage stage;
 	public static Employee branchEmployee;
 
 	/**
@@ -69,6 +70,7 @@ public class AnswerSurveyController implements Initializable{
 		
 		String title = "Answer Survey";
 		String srcFXML = "/Survey/AnswerSurveyUI.fxml";
+		stage = primaryStage;
 		
 		try {
 			FXMLLoader loader = new FXMLLoader();
@@ -241,6 +243,12 @@ public class AnswerSurveyController implements Initializable{
 	private void displayQuestion()
 	{
 	    activeSurvey = getActiveSurvey();
+	    if(activeSurvey == null) {
+	    	Alert alert = new Alert(AlertType.INFORMATION,"The is no active surevy!");
+			alert.showAndWait();
+			stage.close();
+	    }
+	    else {	
 		attachQuestionToSurvey(activeSurvey);
 		ArrayList<Question> questionsToDisplay = getQuestionsOfSurvey(activeSurvey);
 		
@@ -250,6 +258,7 @@ public class AnswerSurveyController implements Initializable{
 		setLabelQuestion(questionsToDisplay.get(3), lblQ4);
 		setLabelQuestion(questionsToDisplay.get(4), lblQ5);
 		setLabelQuestion(questionsToDisplay.get(5), lblQ6);
+	    }
 	}
 
 	@Override
