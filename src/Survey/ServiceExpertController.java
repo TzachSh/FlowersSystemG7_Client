@@ -49,6 +49,9 @@ public class ServiceExpertController implements Initializable {
 	@FXML private Label lblQ5;
 	@FXML private Label lblQ6;
 	
+	@FXML private Label lblStart;
+	@FXML private Label lblEnd;
+	
 	@FXML private TextArea txtConclusion;
 	@FXML Button btnSubmit;
 	
@@ -127,6 +130,7 @@ public class ServiceExpertController implements Initializable {
 					surveyQuestionList = p.<SurveyQuestion>convertedResultListForCommand(Command.getSurveyQuestions);
 					averageAnswerSurveyList = p.<AnswerSurvey>convertedResultListForCommand(Command.getAverageAnswersBySurveyId);
 					displayQuestion();
+					displayDates(survey);
 					initSliders(averageAnswerSurveyList);
 					initAnswerLabels(averageAnswerSurveyList);
 				}
@@ -202,6 +206,11 @@ public class ServiceExpertController implements Initializable {
 		}
 	}
 	
+	private void displayDates(Survey survey)
+	{
+		lblStart.setText(survey.getActivatedDate().toString());
+		lblStart.setText(survey.getClosedDate().toString());
+	}
 	
 	private void attachQuestionToSurvey(Survey survey)
 	{

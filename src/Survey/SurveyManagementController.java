@@ -248,6 +248,7 @@ public class SurveyManagementController implements Initializable {
 		
 		//Parameter list for addSurvey
 		ArrayList<Object> paramListSurvey = new ArrayList<>();
+		java.sql.Date sqlDate = new java.sql.Date(new java.util.Date().getTime());
 		Survey survey = new Survey(subject, creatorId,false);
 		paramListSurvey.add(survey);
 		
@@ -355,6 +356,12 @@ public class SurveyManagementController implements Initializable {
 			public ListCell<Survey> call(ListView<Survey> param) {
 				// TODO Auto-generated method stub
 				return new ListCell<Survey>() {
+					HBox titleElement;
+					HBox statusElement;
+					HBox conclusionElement;
+					HBox activatedDateElement;
+					HBox closedDateElement;
+					VBox detailsElement;
 					
 				/**
 				 * 	Set handler for each row, is a corresponding to the status of the complain, if it's active will show a "Reply" button near to it, else will be shown "Done"
@@ -363,21 +370,49 @@ public class SurveyManagementController implements Initializable {
 				private void setCellHandler(Survey survey)
 				{
 					String textTitle = "Subject: ";
+					String textActivatedDate = "Activated Date: ";
+					String textClosedDate = "Closed Date: ";
 					String textActive = "Status: ";
 					String textConclusion = "Expert Conclusion: ";
 					String status = ( (survey.isActive() == true ) ? "Active" : "InActive");
 					Text activeStatus = new Text(status);
+					Text activatedDate =  new Text();
+					Text closedDate = new Text();
 					
 					SurveyConclusion surveyConclusion = getConclusionBySurvey(surveyConclusionList, survey);
 					
-					HBox titleElement = new HBox(new Label(textTitle), new Text(survey.getSubject()));
-					HBox statusElement = new HBox (new Label(textActive) , activeStatus);
-					HBox conclusionElement = new HBox (new Label(textConclusion) , getConclusionText(surveyConclusion));
-					VBox detailsElement = new VBox(titleElement,statusElement,conclusionElement);
+					titleElement = new HBox(new Label(textTitle), new Text(survey.getSubject()));
+					statusElement = new HBox (new Label(textActive) , activeStatus);
+					conclusionElement = new HBox (new Label(textConclusion) , getConclusionText(surveyConclusion));
+					activatedDateElement = new HBox();
+					closedDateElement = new HBox();
+					detailsElement = new VBox();
+		
+					if(survey.getClosedDate() != null) {
+						activatedDate = new Text(survey.getActivatedDate().toString());
+						closedDate = new Text(survey.getClosedDate().toString());
+						activatedDateElement = new HBox (new Label(textActivatedDate) , activatedDate);
+						activatedDateElement.setPadding(new Insets(5,10,5,20));
+						closedDateElement = new HBox (new Label(textClosedDate) , closedDate );
+						closedDateElement.setPadding(new Insets(5,10,5,20));
+						detailsElement = new VBox(titleElement,activatedDateElement,closedDateElement,statusElement,conclusionElement);
+					}
+					else if(survey.getActivatedDate() != null) {
+						activatedDate = new Text(survey.getActivatedDate().toString());
+						activatedDateElement = new HBox (new Label(textActivatedDate) , activatedDate);
+						activatedDateElement.setPadding(new Insets(5,10,5,20));
+						detailsElement = new VBox(titleElement,activatedDateElement,statusElement,conclusionElement);
+					}
+					else
+					{
+						activatedDateElement.setPadding(new Insets(5,10,5,20));
+						detailsElement = new VBox(titleElement,statusElement,conclusionElement);
+					}
+					
 		
 					VBox operationElement=null;
 					if(employee.getRole() == Role.CustomerService)
-						operationElement = new VBox(createActivityButtonHandler(survey,activeStatus));
+						operationElement = new VBox(createActivityButtonHandler(survey,activeStatus,closedDateElement,closedDate,activatedDateElement,activatedDate,detailsElement));
 					else if(employee.getRole() == Role.ServiceExpert && !survey.isActive() && surveyConclusion == null)
 						operationElement = new VBox(createAddConclusionButton(survey));
 					else if(employee.getRole() == Role.ServiceExpert && surveyConclusion != null)
@@ -393,6 +428,8 @@ public class SurveyManagementController implements Initializable {
 				 	HBox hBox = new HBox(operationElement,detailsElement);
 				 	titleElement.setPadding(new Insets(5,10,5,20));
 				 	statusElement.setPadding(new Insets(5,10,5,20));
+				 	
+				 	
 				 	conclusionElement.setPadding(new Insets(5,10,5,20));
 				 	operationElement.setPadding(new Insets(5,10,5,0));
                     hBox.setStyle("-fx-border-style:solid inside;"+
@@ -442,7 +479,6 @@ public class SurveyManagementController implements Initializable {
 						}
 					});
 					sender.start();
-					
 				}
 		
 				private void closeWindow(Event event)
@@ -472,10 +508,13 @@ public class SurveyManagementController implements Initializable {
 				}
 				/**
 				 * Creating a button handler which is navigates to the relevant reply view for each complain
+				 * @param activatedDateElement 
+				 * @param closedDateElement 
+				 * @param detailsElement 
 				 * @param complain - Create a new handler for this complain
 				 * @return Button which handled to open a matching view of a specific complain
 				 */
-				private Button createActivityButtonHandler(Survey survey , Text activeStatus)
+				private Button createActivityButtonHandler(Survey survey , Text activeStatus , HBox closedDateElement, Text closedDate , HBox activatedDateElement, Text activatedDate, VBox detailsElement)
 				{
 					
 						String textAction = (survey.isActive() == true ) ? "Inactivate" : "Activate";
@@ -485,6 +524,22 @@ public class SurveyManagementController implements Initializable {
 							if(survey.isActive()) {
 								btnAction.setText("Activate");
 								activeStatus.setText("Inactive");
+								java.sql.Date sqlDate = new java.sql.Date(new java.util.Date().getTime());
+								closedDate.setText(sqlDate.toString());
+								if(closedDateElement == null) {
+									closedDateElement.getChildren().addAll(new Label("Closed Date: "), closedDate);
+									closedDateElement.setPadding(new Insets(5, 10, 5, 20));
+									detailsElement.getChildren().add(closedDateElement);
+								}
+								else
+								{
+									closedDateElement.getChildren().remove(0 , closedDateElement.getChildren().size());
+									closedDateElement.getChildren().addAll(new Label("Closed Date: "), closedDate);
+									closedDateElement.setPadding(new Insets(5, 10, 5, 20));
+									detailsElement.getChildren().add(closedDateElement);
+								}
+								detailsElement.getChildren().remove(activatedDateElement);
+								survey.setClosedDate(sqlDate);
 								performOperation(survey, false);		
 							}
 							else
@@ -492,6 +547,24 @@ public class SurveyManagementController implements Initializable {
 								if (!isActivatedSurvey(dataSurvey)) {
 									btnAction.setText("Inactivate");
 									activeStatus.setText("Active");
+									
+									java.sql.Date sqlDate = new java.sql.Date(new java.util.Date().getTime());
+									activatedDate.setText(sqlDate.toString());
+									if(activatedDateElement == null) {
+										activatedDateElement.getChildren().addAll(new Label("Activated Date: "), activatedDate);
+										activatedDateElement.setPadding(new Insets(5, 10, 5, 20));
+										detailsElement.getChildren().add(activatedDateElement);
+									}
+									else
+									{
+										activatedDateElement.getChildren().remove(0 , activatedDateElement.getChildren().size());
+										activatedDateElement.getChildren().addAll(new Label("Activated Date: "), activatedDate);
+										activatedDateElement.setPadding(new Insets(5, 10, 5, 20));
+										detailsElement.getChildren().add(activatedDateElement);
+									}
+									detailsElement.getChildren().remove(closedDateElement);
+									survey.setActivatedDate(sqlDate);
+									survey.setClosedDate(null);
 									performOperation(survey, true);
 								}
 								else
@@ -501,7 +574,6 @@ public class SurveyManagementController implements Initializable {
 								}
 							}
 						});
-
 						return btnAction;
 				}
 				
