@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 import javax.swing.JOptionPane;
 
 import com.sun.org.apache.bcel.internal.generic.NEW;
+import com.sun.xml.internal.bind.v2.runtime.reflect.Lister.Pack;
 
 import Customers.Complain;
 import Customers.Membership;
@@ -35,8 +36,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import jdk.nashorn.internal.runtime.linker.JavaAdapterFactory;
 
@@ -46,8 +49,8 @@ public class ReportsController implements Initializable{
 	@FXML private Label lblBranchNumber;
 	@FXML private Label lblEmployeeName;
 	@FXML private ComboBox<String> cbReports;
-	@FXML private TableView<String> table1;
-	@FXML private TableView<String> table2;
+	@FXML private TableView<IncomeReport> table1Income;
+	@FXML private TableView<IncomeReport> table2Income;
 	@FXML private ComboBox<String> cbYear;
 	@FXML
 	private ComboBox<String> cbQuarterly1;
@@ -75,6 +78,7 @@ public class ReportsController implements Initializable{
     private BarChart<String,Integer> barChart1;
 	private ArrayList<Branch> branchlist;
 	private ArrayList<Complain> complainList1,complainList2;
+	private ArrayList<IncomeReport> incomeReport1,incomeReport2;
 	//choice :saving manager choice of different branches/quarterlies
 	private int choice=0;
 	private Employee employee;
@@ -87,6 +91,34 @@ public class ReportsController implements Initializable{
 	{
 		super();
 		this.employee=useremployee;
+	}
+	
+	public void BuildPacketForReport(Packet packet,int year,int quartely,int brId,Command cmd)
+	{
+		packet.addCommand(cmd);
+		ArrayList<Object> info1 = new ArrayList<>();
+		info1.add(brId);
+		info1.add(year);
+		info1.add(quartely);
+		//building the second packet to get the first information
+		packet.setParametersForCommand(cmd, info1);
+	}
+	@SuppressWarnings("unchecked")
+	public void BuildTableView(TableView<IncomeReport> table ,IncomeReport incomeReport)
+	{
+		table.getColumns().clear();
+		ObservableList<IncomeReport> data = FXCollections.observableArrayList(incomeReport);
+		table.setItems(data);
+		//adding the data to the columns
+		TableColumn<IncomeReport, String> branchId=new TableColumn<>("Branch Number");
+		branchId.setCellValueFactory(new PropertyValueFactory<IncomeReport, String>("brId"));
+		TableColumn<IncomeReport, String> branchName=new TableColumn<>("Branch Name");
+		branchName.setCellValueFactory(new PropertyValueFactory<IncomeReport, String>("brName"));
+		TableColumn<IncomeReport, String> branchIncome=new TableColumn<>("Income");
+		branchIncome.setCellValueFactory(new PropertyValueFactory<IncomeReport, String>("amount"));
+
+		table.getColumns().addAll(branchId,branchName,branchIncome);
+		table.setVisible(true);
 	}
 	/**
 	 * 
@@ -151,59 +183,28 @@ public class ReportsController implements Initializable{
 				//compare with  same branches with 2 different quarterly
 				int quartely2=Integer.parseInt(cbQuarterly2.getSelectionModel().getSelectedItem());
 				//building the first packet to get the first information
-				packet.addCommand(Command.getComplainsForReport);
-				ArrayList<Object> info1 = new ArrayList<>();
-				info1.add(brId);
-				info1.add(year);
-				info1.add(quartely);
-				//building the second packet to get the first information
-				packet.setParametersForCommand(Command.getComplainsForReport, info1);
-				ArrayList<Object> info2 = new ArrayList<>();
-				packet2.addCommand(Command.getComplainsForReport);
-				info2.add(brId);
-				info2.add(year);
-				info2.add(quartely2);
-				//adding parameters for the command in the packet
-				packet2.setParametersForCommand(Command.getComplainsForReport, info2);
+				BuildPacketForReport(packet, year, quartely, brId,Command.getComplainsForReport);
+				//building the second packet to get the second information
+				BuildPacketForReport(packet2, year, quartely2, brId,Command.getComplainsForReport);
+
 				break;
 			case 2:
 				//compare with  same quarterly with 2 different branches
 				int secondBranchNumber=Integer.parseInt(cbBranchTwoNumber.getSelectionModel().getSelectedItem());
 				//building the first packet to get the first information
-				packet.addCommand(Command.getComplainsForReport);
-				ArrayList<Object> branchinfo1 = new ArrayList<>();
-				branchinfo1.add(brId);
-				branchinfo1.add(year);
-				branchinfo1.add(quartely);
-				packet.setParametersForCommand(Command.getComplainsForReport, branchinfo1);
-				//building the second packet to get the first information
-				ArrayList<Object> branchinfo2 = new ArrayList<>();
-				packet2.addCommand(Command.getComplainsForReport);
-				branchinfo2.add(secondBranchNumber);
-				branchinfo2.add(year);
-				branchinfo2.add(quartely);
-				//adding parameters for the command in the packet
-				packet2.setParametersForCommand(Command.getComplainsForReport, branchinfo2);
+				BuildPacketForReport(packet, year, quartely, brId,Command.getComplainsForReport);
+				//building the second packet to get the second information
+				BuildPacketForReport(packet2, year, quartely, secondBranchNumber,Command.getComplainsForReport);
 				break;
 			case 3:
 				//compare with  different quarterly with 2 different branches
 				int secondBranchNumber2=Integer.parseInt(cbBranchTwoNumber.getSelectionModel().getSelectedItem());
 				int secondquartely=Integer.parseInt(cbQuarterly2.getSelectionModel().getSelectedItem());
 				//building the first packet to get the first information
-				packet.addCommand(Command.getComplainsForReport);
-				ArrayList<Object> branchQuartinfo1 = new ArrayList<>();
-				branchQuartinfo1.add(brId);
-				branchQuartinfo1.add(year);
-				branchQuartinfo1.add(quartely);
-				packet.setParametersForCommand(Command.getComplainsForReport, branchQuartinfo1);
-				//building the second packet to get the first information
-				ArrayList<Object> branchQuartinfo2 = new ArrayList<>();
-				packet2.addCommand(Command.getComplainsForReport);
-				branchQuartinfo2.add(secondBranchNumber2);
-				branchQuartinfo2.add(year);
-				branchQuartinfo2.add(secondquartely);
-				//adding parameters for the command in the packet
-				packet2.setParametersForCommand(Command.getComplainsForReport, branchQuartinfo2);
+				BuildPacketForReport(packet, year, quartely, brId,Command.getComplainsForReport);
+				//building the second packet to get the second information
+				BuildPacketForReport(packet2, year, secondquartely, secondBranchNumber2,Command.getComplainsForReport);
+				
 				break;
 
 			}
@@ -300,6 +301,109 @@ public class ReportsController implements Initializable{
 			send2.start();
 			
 		}
+		else
+			if(report.equals("Income"))
+			{
+				Packet packet = new Packet();
+				Packet packet2 = new Packet();
+				//building the query by the  choice ,and adding the relative command
+				switch (choice)
+				{
+				case 0:
+					//regular report , without compare , sending also the branch id 
+					generateReportForBranchManager(brId,report,year,quartely);
+					return;
+		
+				case 1:
+					//compare with  same branches with 2 different quarterly
+					int quartely2=Integer.parseInt(cbQuarterly2.getSelectionModel().getSelectedItem());
+					//building the first packet to get the first information
+					BuildPacketForReport(packet, year, quartely, brId,Command.getIncomeReport);
+					//building the second packet to get the second information
+					BuildPacketForReport(packet2, year, quartely2, brId,Command.getIncomeReport);
+
+					break;
+				case 2:
+					//compare with  same quarterly with 2 different branches
+					int secondBranchNumber=Integer.parseInt(cbBranchTwoNumber.getSelectionModel().getSelectedItem());
+					//building the first packet to get the first information
+					BuildPacketForReport(packet, year, quartely, brId,Command.getIncomeReport);
+					//building the second packet to get the second information
+					BuildPacketForReport(packet2, year, quartely, secondBranchNumber,Command.getIncomeReport);
+					break;
+				case 3:
+					//compare with  different quarterly with 2 different branches
+					int secondBranchNumber2=Integer.parseInt(cbBranchTwoNumber.getSelectionModel().getSelectedItem());
+					int secondquartely=Integer.parseInt(cbQuarterly2.getSelectionModel().getSelectedItem());
+					//building the first packet to get the first information
+					BuildPacketForReport(packet, year, quartely, brId,Command.getIncomeReport);
+					//building the second packet to get the second information
+					BuildPacketForReport(packet2, year, secondquartely, secondBranchNumber2,Command.getIncomeReport);
+					break;
+
+				}
+				//sending the packet
+				SystemSender send = new SystemSender(packet);
+				send.registerHandler(new IResultHandler() {
+					
+					@Override
+					public void onWaitingForResult() {
+						// TODO Auto-generated method stub		
+					}		
+					@Override
+					public void onReceivingResult(Packet p) {
+						// checking the result
+						if(p.getResultState()) 
+						{
+							
+							//filling the information in list
+							incomeReport1= p.<IncomeReport>convertedResultListForCommand(Command.getIncomeReport);
+							if(incomeReport1.isEmpty()==true)
+							{
+								showError("Error,Please Try Again Later");
+								return;
+							}
+							//building the incoming result 
+							IncomeReport newincomereport=new IncomeReport(incomeReport1.get(0).getBrId(), incomeReport1.get(0).getBrName(), incomeReport1.get(0).getAmount());
+							//sending the wanted table and the result to function that builds the tableview
+							BuildTableView(table1Income, newincomereport);
+						}
+						else
+							System.out.println("Fail: " + p.getExceptionMessage());		
+					}
+				});
+				send.start();
+				//sending the second packet
+				SystemSender send2 = new SystemSender(packet2);
+				send2.registerHandler(new IResultHandler() {
+					
+					@Override
+					public void onWaitingForResult() {
+						// TODO Auto-generated method stub		
+					}		
+					@Override
+					public void onReceivingResult(Packet p) {
+						// TODO Auto-generated method stub
+						if(p.getResultState()) 
+						{
+							//filling the information in the list
+							incomeReport2= p.<IncomeReport>convertedResultListForCommand(Command.getIncomeReport);
+							if(incomeReport2.isEmpty()==true)
+							{
+								showError("Error,Please Try Again Later");
+								return;
+							}
+							//building the incoming result 
+							IncomeReport newincomereport=new IncomeReport(incomeReport2.get(0).getBrId(), incomeReport2.get(0).getBrName(), incomeReport2.get(0).getAmount());
+							//sending the wanted table and the result to function that builds the tableview
+							BuildTableView(table2Income, newincomereport);
+						}
+						else
+							System.out.println("Fail: " + p.getExceptionMessage());	
+					}
+				});
+				send2.start();
+			}
 	}
 	/**
 	 * Generates Reports for Branch Manager
@@ -375,8 +479,57 @@ public class ReportsController implements Initializable{
 					
 				}
 			});
-			send.start();
-			
+			send.start();	
+		}
+		if(report.equals("Income"))
+		{
+			//opening packet
+			Packet packet = new Packet();
+			//adding command to packet
+			packet.addCommand(Command.getIncomeReport);
+			//adding parameters for the command
+			ArrayList<Object> info = new ArrayList<>();
+			info.add(brId);
+			info.add(year);
+			info.add(quartely);
+			packet.setParametersForCommand(Command.getIncomeReport, info);
+			//sending the packet
+			SystemSender send = new SystemSender(packet);
+			send.registerHandler(new IResultHandler() {
+				
+				@Override
+				public void onWaitingForResult() {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void onReceivingResult(Packet p) {
+					// TODO Auto-generated method stub
+					if(p.getResultState())
+					{
+						//getting the information from the returned packet
+						ArrayList<IncomeReport> IncomeList ;
+						
+						IncomeList= p.<IncomeReport>convertedResultListForCommand(Command.getIncomeReport);
+						//checking the list
+						if(IncomeList.isEmpty()==true)
+						{
+							showError("Error,There Is No Data For This Selection");
+							return;
+						}
+						//building the incoming result 
+						IncomeReport newincomereport=new IncomeReport(IncomeList.get(0).getBrId(), IncomeList.get(0).getBrName(), IncomeList.get(0).getAmount());
+						//sending the wanted table and the result to function that builds the tableview
+						BuildTableView(table1Income, newincomereport);
+						
+					}
+					else
+						System.out.println("Fail: " + p.getExceptionMessage());	
+				}
+			});
+			send.start();	
+
 		}
 	
 		
@@ -398,7 +551,12 @@ public class ReportsController implements Initializable{
 		barChart.setVisible(false);
 		barChart1.getData().clear();
 		barChart1.setVisible(false);
-		
+		table1Income.getColumns().clear();
+		table2Income.getColumns().clear();
+		table1Income.getItems().clear();
+		table2Income.getItems().clear();
+		table1Income.setVisible(false);
+		table2Income.setVisible(false);
 		//checking which user is using this screen and by its type , function will be called depended on his type 
 		if(employee.getRole().toString().equals((Role.BranchesManager).toString()))
 			generateReportForBranchesManager(report,year,quartely1);
@@ -547,8 +705,8 @@ public class ReportsController implements Initializable{
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// hiding the not wanted fields and options
-		table1.setVisible(false);
-		table2.setVisible(false);
+		table1Income.setVisible(false);
+		table2Income.setVisible(false);
 		rbcomp.setVisible(false);
 		cbQuarterly2.setVisible(false);
 		lbQuarterlycomp.setVisible(false);
