@@ -7,28 +7,21 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="441.0" prefWidth="431.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Login.CustomerMenuController">
+<AnchorPane prefHeight="259.0" prefWidth="431.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Login.ServiceMenuController">
    <children>
       <Label layoutX="153.0" layoutY="22.0" text="Zer-Li System" underline="true">
          <font>
             <Font size="28.0" />
          </font>
       </Label>
-      <Button fx:id="btnMyOrders" layoutX="80.0" layoutY="157.0" mnemonicParsing="false" onAction="#onClickingMyOrders" prefHeight="40.0" prefWidth="107.0" text="My Orders" />
       <Hyperlink fx:id="linkLogout" focusTraversable="false" layoutX="193.0" layoutY="78.0" onAction="#performLoggedOutHandler" text="Logout" underline="true">
          <font>
             <Font name="System Italic" size="15.0" />
          </font>
       </Hyperlink>
-      <Separator layoutX="35.0" layoutY="110.0" prefHeight="3.0" prefWidth="377.0" />
-      <Button fx:id="btnComplains" layoutX="248.0" layoutY="157.0" mnemonicParsing="false" onAction="#onClickingMyComplains" prefHeight="40.0" prefWidth="107.0" text="My Complains" />
-      <Separator layoutX="32.0" layoutY="337.0" prefHeight="3.0" prefWidth="377.0" />
-      <Label layoutX="35.0" layoutY="340.0" text="Personal Options">
-         <font>
-            <Font size="13.0" />
-         </font>
-      </Label>
-      <Label layoutX="40.0" layoutY="113.0" text="Survey Options">
+      <Separator layoutX="32.0" layoutY="133.0" prefHeight="3.0" prefWidth="377.0" />
+      <Button fx:id="btnComplains" layoutX="153.0" layoutY="170.0" mnemonicParsing="false" onAction="#onClickingSurveyManagment" prefHeight="51.0" prefWidth="135.0" text="Survey Management" />
+      <Label layoutX="37.0" layoutY="136.0" text="Survey Options">
          <font>
             <Font size="13.0" />
          </font>

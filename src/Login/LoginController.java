@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.ResourceBundle;
 
 import Branches.Employee;
+import Branches.Role;
 import Customers.Customer;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
@@ -149,7 +150,9 @@ public class LoginController implements Initializable {
 				{
 					Customer customer = customerList.get(0);
 					userLogged = new Customer(user, customer.getId(), customer.getMembershipId());
+					
 					// <?---- open a menu of customers >
+					
 					try
 					{
 						performLoggedIn(user);
@@ -170,7 +173,24 @@ public class LoginController implements Initializable {
 				{
 					Employee employee = employeeList.get(0);
 					userLogged = new Employee(user, employee.geteId(), employee.getRole(), employee.getBranchId());
+					
 					// <?---- open a menu of employee by it's role >
+					
+					Role roleEmp = employee.getRole();
+					if (roleEmp == Role.CustomerService || roleEmp == Role.ServiceExpert)
+					{
+						try
+						{
+							ServiceMenuController menu = new ServiceMenuController();
+							menu.setLoginController(currentLogin);
+							menu.start(new Stage());
+						}
+						catch (Exception e)
+						{
+							performLoggedOut(user);
+							displayAlert(AlertType.ERROR, "Error", "Exception Error", e.getMessage());
+						}
+					}
 				}
 			}
 			else
