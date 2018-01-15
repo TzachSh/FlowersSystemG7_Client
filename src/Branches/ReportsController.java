@@ -120,7 +120,7 @@ public class ReportsController implements Initializable{
 		table.getColumns().addAll(branchId,branchName,branchIncome);
 		table.setVisible(true);
 	}
-	public void BuildTableViewForOrder(TableView<IncomeReport> table ,ArrayList<OrderReport> orderReportList)
+	/*public void BuildTableViewForOrder(TableView<IncomeReport> table ,ArrayList<OrderReport> orderReportList)
 	{
 		table.getColumns().clear();
 		ObservableList<OrderReport> data = FXCollections.observableArrayList(orderReportList);
@@ -134,8 +134,8 @@ public class ReportsController implements Initializable{
 		branchIncome.setCellValueFactory(new PropertyValueFactory<IncomeReport, String>("amount"));
 
 		table.getColumns().addAll(branchId,branchName,branchIncome);
-		table.setVisible(true);*/
-	}
+		table.setVisible(true);
+	}*/
 	public void BuildBarChartForComplain(BarChart<String,Integer> barch, int active ,int notactive)
 	{
 		barch.setVisible(true);
@@ -606,7 +606,7 @@ public class ReportsController implements Initializable{
 						}
 						
 						//sending the wanted table and the result to function that builds the tableview
-						BuildTableViewForOrder(table1Income, IncomeList);
+						//BuildTableViewForOrder(table1Income, IncomeList);
 						
 					}
 					else

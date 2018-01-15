@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="571.0" prefWidth="738.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+   <children>
+      <TitledPane animated="false" collapsible="false" layoutX="18.0" layoutY="64.0" prefHeight="419.0" prefWidth="702.0" text="Users">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="381.0" prefWidth="700.0">
+               <children>
+                  <TableView fx:id="tblUsers" layoutX="14.0" layoutY="14.0" prefHeight="437.0" prefWidth="700.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <columns>
+                      <TableColumn fx:id="colUser" prefWidth="129.0" text="UserName" />
+                        <TableColumn fx:id="colPass" prefWidth="128.0" text="Password" />                       
+                        <TableColumn fx:id="colPerm" prefWidth="184.99996948242188" text="Permission" />
+                    </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
+        </content>
+      </TitledPane>
+      <Label layoutX="275.0" layoutY="14.0" text="Users Management" underline="true">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Button layoutX="642.0" layoutY="506.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="80.0" text="Save" />
+   </children>
+</AnchorPane>
