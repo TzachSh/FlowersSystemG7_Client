@@ -120,6 +120,22 @@ public class ReportsController implements Initializable{
 		table.getColumns().addAll(branchId,branchName,branchIncome);
 		table.setVisible(true);
 	}
+	public void BuildTableViewForOrder(TableView<IncomeReport> table ,ArrayList<OrderReport> orderReportList)
+	{
+		table.getColumns().clear();
+		ObservableList<OrderReport> data = FXCollections.observableArrayList(orderReportList);
+		table.setItems(data);
+		//adding the data to the columns
+		TableColumn<IncomeReport, String> branchId=new TableColumn<>("Branch Number");
+		branchId.setCellValueFactory(new PropertyValueFactory<IncomeReport, String>("brId"));
+		TableColumn<IncomeReport, String> branchName=new TableColumn<>("Branch Name");
+		branchName.setCellValueFactory(new PropertyValueFactory<IncomeReport, String>("brName"));
+		TableColumn<IncomeReport, String> branchIncome=new TableColumn<>("Income");
+		branchIncome.setCellValueFactory(new PropertyValueFactory<IncomeReport, String>("amount"));
+
+		table.getColumns().addAll(branchId,branchName,branchIncome);
+		table.setVisible(true);*/
+	}
 	public void BuildBarChartForComplain(BarChart<String,Integer> barch, int active ,int notactive)
 	{
 		barch.setVisible(true);
@@ -551,6 +567,56 @@ public class ReportsController implements Initializable{
 			send.start();	
 
 		}
+		if(report.equals("Orders"))
+		{
+			//opening packet
+			Packet packet = new Packet();
+			//adding command to packet
+			packet.addCommand(Command.getOrderReport);
+			//adding parameters for the command
+			ArrayList<Object> info = new ArrayList<>();
+			info.add(brId);
+			info.add(year);
+			info.add(quartely);
+			packet.setParametersForCommand(Command.getOrderReport, info);
+			//sending the packet
+			SystemSender send = new SystemSender(packet);
+			send.registerHandler(new IResultHandler() {
+				
+				@Override
+				public void onWaitingForResult() {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void onReceivingResult(Packet p) {
+					// TODO Auto-generated method stub
+					if(p.getResultState())
+					{
+						//getting the information from the returned packet
+						ArrayList<OrderReport> IncomeList ;
+						
+						IncomeList= p.<OrderReport>convertedResultListForCommand(Command.getOrderReport);
+						//checking the list
+						if(IncomeList.isEmpty()==true)
+						{
+							showError("Error,There Is No Data For This Selection");
+							return;
+						}
+						
+						//sending the wanted table and the result to function that builds the tableview
+						BuildTableViewForOrder(table1Income, IncomeList);
+						
+					}
+					else
+						System.out.println("Fail: " + p.getExceptionMessage());	
+				}
+			});
+			send.start();	
+
+		}
+		
 	
 		
 	}
