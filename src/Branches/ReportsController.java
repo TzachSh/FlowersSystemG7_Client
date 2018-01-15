@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 import javax.swing.JOptionPane;
 
 import com.sun.org.apache.bcel.internal.generic.NEW;
+import com.sun.org.apache.xpath.internal.operations.Or;
 import com.sun.xml.internal.bind.v2.runtime.reflect.Lister.Pack;
 
 import Customers.Complain;
@@ -51,6 +52,8 @@ public class ReportsController implements Initializable{
 	@FXML private ComboBox<String> cbReports;
 	@FXML private TableView<IncomeReport> table1Income;
 	@FXML private TableView<IncomeReport> table2Income;
+	@FXML private TableView<OrderReport> tblViewOrder1;
+	@FXML private TableView<OrderReport> tblViewOrder2;
 	@FXML private ComboBox<String> cbYear;
 	@FXML
 	private ComboBox<String> cbQuarterly1;
@@ -79,6 +82,7 @@ public class ReportsController implements Initializable{
 	private ArrayList<Branch> branchlist;
 	private ArrayList<Complain> complainList1,complainList2;
 	private ArrayList<IncomeReport> incomeReport1,incomeReport2;
+	private ArrayList<OrderReport> orderReport1,orderReport2;
 	//choice :saving manager choice of different branches/quarterlies
 	private int choice=0;
 	private Employee employee;
@@ -120,22 +124,83 @@ public class ReportsController implements Initializable{
 		table.getColumns().addAll(branchId,branchName,branchIncome);
 		table.setVisible(true);
 	}
-	/*public void BuildTableViewForOrder(TableView<IncomeReport> table ,ArrayList<OrderReport> orderReportList)
+	@SuppressWarnings({ "unchecked", "deprecation" })
+	public void BuildTableViewForOrder(TableView<OrderReport> table ,ArrayList<OrderReport> orderReportList)
 	{
+		int i,j=-1;
+		for(i=1;i<orderReportList.size();i++)
+		{
+			if(j==-1) {
+				if(orderReportList.get(i).getProductCategory().equals(orderReportList.get(i-1).getProductCategory()))
+				{
+					j=i-1;
+					orderReportList.get(i).setProductCategory("");
+				}
+			}
+			else 
+				if(orderReportList.get(i).getProductCategory().equals(orderReportList.get(j).getProductCategory()))
+					orderReportList.get(i).setProductCategory("");
+				else j=-1;
+							
+		}
 		table.getColumns().clear();
+		table.setEditable(false);
+		
 		ObservableList<OrderReport> data = FXCollections.observableArrayList(orderReportList);
 		table.setItems(data);
 		//adding the data to the columns
-		TableColumn<IncomeReport, String> branchId=new TableColumn<>("Branch Number");
-		branchId.setCellValueFactory(new PropertyValueFactory<IncomeReport, String>("brId"));
-		TableColumn<IncomeReport, String> branchName=new TableColumn<>("Branch Name");
-		branchName.setCellValueFactory(new PropertyValueFactory<IncomeReport, String>("brName"));
-		TableColumn<IncomeReport, String> branchIncome=new TableColumn<>("Income");
-		branchIncome.setCellValueFactory(new PropertyValueFactory<IncomeReport, String>("amount"));
-
-		table.getColumns().addAll(branchId,branchName,branchIncome);
+		TableColumn<OrderReport, String> productCategory=new TableColumn<>("Product Category");
+		productCategory.setCellValueFactory(new PropertyValueFactory<OrderReport, String>("productCategory"));
+		productCategory.setSortable(false);
+		productCategory.impl_setReorderable(false);
+		TableColumn<OrderReport, String> orderId=new TableColumn<>("Order Number");
+		orderId.setCellValueFactory(new PropertyValueFactory<OrderReport, String>("orderId"));
+		orderId.setSortable(false);
+		orderId.impl_setReorderable(false);
+		TableColumn<OrderReport, String> creationDate=new TableColumn<>("Creation Date");
+		creationDate.setCellValueFactory(new PropertyValueFactory<OrderReport, String>("creationDate"));
+		creationDate.setSortable(false);
+		creationDate.impl_setReorderable(false);
+		TableColumn<OrderReport, String> productId=new TableColumn<>("Product Number");
+		productId.setCellValueFactory(new PropertyValueFactory<OrderReport, String>("productId"));
+		productId.setSortable(false);
+		productId.impl_setReorderable(false);
+		TableColumn<OrderReport, String> productName=new TableColumn<>("Product Name");
+		productName.setCellValueFactory(new PropertyValueFactory<OrderReport, String>("productName"));
+		productName.setSortable(false);
+		productName.impl_setReorderable(false);
+		TableColumn<OrderReport, String> price=new TableColumn<>("Price");
+		price.setCellValueFactory(new PropertyValueFactory<OrderReport, String>("price"));
+		price.setSortable(false);
+		price.impl_setReorderable(false);
+		TableColumn<OrderReport, String> paymentMethod=new TableColumn<>("Payment Method");
+		paymentMethod.setCellValueFactory(new PropertyValueFactory<OrderReport, String>("paymentMethod"));
+		paymentMethod.setSortable(false);
+		paymentMethod.impl_setReorderable(false);
+		TableColumn<OrderReport, String> deliveryNumber=new TableColumn<>("Delivery Number");
+		deliveryNumber.setCellValueFactory(new PropertyValueFactory<OrderReport, String>("deliveryNumber"));
+		deliveryNumber.setSortable(false);
+		deliveryNumber.impl_setReorderable(false);
+		TableColumn<OrderReport, String> address=new TableColumn<>("Address");
+		address.setCellValueFactory(new PropertyValueFactory<OrderReport, String>("address"));
+		address.setSortable(false);
+		address.impl_setReorderable(false);
+		TableColumn<OrderReport, String> phone=new TableColumn<>("Phone");
+		phone.setCellValueFactory(new PropertyValueFactory<OrderReport, String>("phone"));
+		phone.setSortable(false);
+		phone.impl_setReorderable(false);
+		TableColumn<OrderReport, String> receiver=new TableColumn<>("Receiver");
+		receiver.setCellValueFactory(new PropertyValueFactory<OrderReport, String>("receiver"));
+		receiver.setSortable(false);
+		receiver.impl_setReorderable(false);
+		
+		for(TableColumn<OrderReport, ?> col :table.getColumns())
+		{
+			col.setSortable(false);
+		}
+		table.getColumns().addAll(productCategory,orderId,creationDate,productId,productName,price,paymentMethod,deliveryNumber,address,phone,receiver);
 		table.setVisible(true);
-	}*/
+	}
 	public void BuildBarChartForComplain(BarChart<String,Integer> barch, int active ,int notactive)
 	{
 		barch.setVisible(true);
@@ -438,6 +503,107 @@ public class ReportsController implements Initializable{
 				});
 				send2.start();
 			}
+		if(report.equals("Orders"))
+		{
+			Packet packet = new Packet();
+			Packet packet2 = new Packet();
+			//building the query by the  choice ,and adding the relative command
+			switch (choice)
+			{
+			case 0:
+				//regular report , without compare , sending also the branch id 
+				generateReportForBranchManager(brId,report,year,quartely);
+				return;
+	
+			case 1:
+				//compare with  same branches with 2 different quarterly
+				int quartely2=Integer.parseInt(cbQuarterly2.getSelectionModel().getSelectedItem());
+				//building the first packet to get the first information
+				BuildPacketForReport(packet, year, quartely, brId,Command.getOrderReport);
+				//building the second packet to get the second information
+				BuildPacketForReport(packet2, year, quartely2, brId,Command.getOrderReport);
+
+				break;
+			case 2:
+				//compare with  same quarterly with 2 different branches
+				int secondBranchNumber=Integer.parseInt(cbBranchTwoNumber.getSelectionModel().getSelectedItem());
+				//building the first packet to get the first information
+				BuildPacketForReport(packet, year, quartely, brId,Command.getOrderReport);
+				//building the second packet to get the second information
+				BuildPacketForReport(packet2, year, quartely, secondBranchNumber,Command.getOrderReport);
+				break;
+			case 3:
+				//compare with  different quarterly with 2 different branches
+				int secondBranchNumber2=Integer.parseInt(cbBranchTwoNumber.getSelectionModel().getSelectedItem());
+				int secondquartely=Integer.parseInt(cbQuarterly2.getSelectionModel().getSelectedItem());
+				//building the first packet to get the first information
+				BuildPacketForReport(packet, year, quartely, brId,Command.getOrderReport);
+				//building the second packet to get the second information
+				BuildPacketForReport(packet2, year, secondquartely, secondBranchNumber2,Command.getOrderReport);
+				break;
+
+			}
+			//sending the packet
+			SystemSender send = new SystemSender(packet);
+			send.registerHandler(new IResultHandler() {
+				
+				@Override
+				public void onWaitingForResult() {
+					// TODO Auto-generated method stub		
+				}		
+				@Override
+				public void onReceivingResult(Packet p) {
+					// checking the result
+					if(p.getResultState()) 
+					{
+						
+						//filling the information in list
+						orderReport1= p.<OrderReport>convertedResultListForCommand(Command.getOrderReport);
+						if(orderReport1.isEmpty()==true)
+						{
+							showError("Error,Please Try Again Later");
+							return;
+						}
+						//building the incoming result 
+						BuildTableViewForOrder(tblViewOrder1, orderReport1);
+
+						
+					}
+					else
+						System.out.println("Fail: " + p.getExceptionMessage());		
+				}
+			});
+			send.start();
+			//sending the second packet
+			SystemSender send2 = new SystemSender(packet2);
+			send2.registerHandler(new IResultHandler() {
+				
+				@Override
+				public void onWaitingForResult() {
+					// TODO Auto-generated method stub		
+				}		
+				@Override
+				public void onReceivingResult(Packet p) {
+					// TODO Auto-generated method stub
+					if(p.getResultState()) 
+					{
+						//filling the information in list
+						orderReport2= p.<OrderReport>convertedResultListForCommand(Command.getOrderReport);
+						if(orderReport2.isEmpty()==true)
+						{
+							showError("Error,Please Try Again Later");
+							return;
+						}
+						//building the incoming result 
+						BuildTableViewForOrder(tblViewOrder2, orderReport2);
+
+					}
+					else
+						System.out.println("Fail: " + p.getExceptionMessage());	
+				}
+			});
+			send2.start();
+		}
 	}
 	/**
 	 * Generates Reports for Branch Manager
@@ -606,7 +772,7 @@ public class ReportsController implements Initializable{
 						}
 						
 						//sending the wanted table and the result to function that builds the tableview
-						//BuildTableViewForOrder(table1Income, IncomeList);
+						BuildTableViewForOrder(tblViewOrder1, IncomeList);
 						
 					}
 					else
@@ -639,10 +805,14 @@ public class ReportsController implements Initializable{
 		barChart1.setVisible(false);
 		table1Income.getColumns().clear();
 		table2Income.getColumns().clear();
+		tblViewOrder1.getColumns().clear();
+		tblViewOrder2.getColumns().clear();
 		table1Income.getItems().clear();
 		table2Income.getItems().clear();
 		table1Income.setVisible(false);
 		table2Income.setVisible(false);
+		tblViewOrder1.setVisible(false);
+		tblViewOrder2.setVisible(false);
 		//checking which user is using this screen and by its type , function will be called depended on his type 
 		if(employee.getRole().toString().equals((Role.BranchesManager).toString()))
 			generateReportForBranchesManager(report,year,quartely1);
@@ -803,7 +973,8 @@ public class ReportsController implements Initializable{
 		rbcompbranch.setVisible(false);
 		barChart.setVisible(false);
 		barChart1.setVisible(false);
-
+		tblViewOrder1.setVisible(false);
+		tblViewOrder2.setVisible(false);
 		//building new packet
 		Packet packet = new Packet();
 		//adding command
