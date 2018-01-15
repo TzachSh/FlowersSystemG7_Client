@@ -93,7 +93,7 @@ public class SurveyManagementController implements Initializable {
 	public void start(Stage primaryStage) {
 		
 		String title = "Survey Creator";
-		String srcFXML = "/Survey/CreateSurveyUI.fxml";
+		String srcFXML = "/Survey/SurveyManagementUI.fxml";
 		
 		try {
 			FXMLLoader loader = new FXMLLoader();
@@ -409,13 +409,17 @@ public class SurveyManagementController implements Initializable {
 						detailsElement = new VBox(titleElement,statusElement,conclusionElement);
 					}
 					
-		
 					VBox operationElement=null;
-					if(employee.getRole() == Role.CustomerService)
+					if(employee.getRole() == Role.CustomerService && surveyConclusion == null)
 						operationElement = new VBox(createActivityButtonHandler(survey,activeStatus,closedDateElement,closedDate,activatedDateElement,activatedDate,detailsElement));
+					else if(employee.getRole() == Role.ServiceExpert && surveyConclusion == null && survey.getClosedDate() == null)
+					{
+						String textActiveStatus = "Never Activated";
+						operationElement = new VBox(new Label(textActiveStatus));
+					}
 					else if(employee.getRole() == Role.ServiceExpert && !survey.isActive() && surveyConclusion == null)
 						operationElement = new VBox(createAddConclusionButton(survey));
-					else if(employee.getRole() == Role.ServiceExpert && surveyConclusion != null)
+					else if(employee.getRole() == Role.ServiceExpert || employee.getRole() == Role.CustomerService  && surveyConclusion != null)
 					{
 						String textConclusedState = "Already Conclused";
 						operationElement = new VBox(new Label(textConclusedState));
@@ -536,6 +540,7 @@ public class SurveyManagementController implements Initializable {
 									closedDateElement.getChildren().remove(0 , closedDateElement.getChildren().size());
 									closedDateElement.getChildren().addAll(new Label("Closed Date: "), closedDate);
 									closedDateElement.setPadding(new Insets(5, 10, 5, 20));
+									detailsElement.getChildren().remove(closedDateElement);
 									detailsElement.getChildren().add(closedDateElement);
 								}
 								detailsElement.getChildren().remove(activatedDateElement);
@@ -560,6 +565,7 @@ public class SurveyManagementController implements Initializable {
 										activatedDateElement.getChildren().remove(0 , activatedDateElement.getChildren().size());
 										activatedDateElement.getChildren().addAll(new Label("Activated Date: "), activatedDate);
 										activatedDateElement.setPadding(new Insets(5, 10, 5, 20));
+										detailsElement.getChildren().remove(activatedDateElement);
 										detailsElement.getChildren().add(activatedDateElement);
 									}
 									detailsElement.getChildren().remove(closedDateElement);

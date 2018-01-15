@@ -140,37 +140,37 @@ public class ServiceExpertController implements Initializable {
 	}
 	
 	
-	private void setSliderValue(Slider slider , int value)
+	private void setSliderValue(Slider slider , double value)
 	{
 		slider.setValue(value);
 	}
 	
-	private void initLabelsAverageAnswer(Label label , int value)
+	private void initLabelsAverageAnswer(Label label , double value)
 	{
-		label.setText(String.format("%d",value));
+		label.setText(String.format("%.2f",value));
 	}
 	
 	private void initAnswerLabels(ArrayList<AnswerSurvey> averageAnswerSurveyList)
 	{
 		if (averageAnswerSurveyList.size() > 0) {
-			initLabelsAverageAnswer(lblA1, averageAnswerSurveyList.get(0).getAnswer());
-			initLabelsAverageAnswer(lblA2, averageAnswerSurveyList.get(1).getAnswer());
-			initLabelsAverageAnswer(lblA3, averageAnswerSurveyList.get(2).getAnswer());
-			initLabelsAverageAnswer(lblA4, averageAnswerSurveyList.get(3).getAnswer());
-			initLabelsAverageAnswer(lblA5, averageAnswerSurveyList.get(4).getAnswer());
-			initLabelsAverageAnswer(lblA6, averageAnswerSurveyList.get(5).getAnswer());
+			initLabelsAverageAnswer(lblA1, averageAnswerSurveyList.get(0).getAvgaAnswerForQuestion());
+			initLabelsAverageAnswer(lblA2, averageAnswerSurveyList.get(1).getAvgaAnswerForQuestion());
+			initLabelsAverageAnswer(lblA3, averageAnswerSurveyList.get(2).getAvgaAnswerForQuestion());
+			initLabelsAverageAnswer(lblA4, averageAnswerSurveyList.get(3).getAvgaAnswerForQuestion());
+			initLabelsAverageAnswer(lblA5, averageAnswerSurveyList.get(4).getAvgaAnswerForQuestion());
+			initLabelsAverageAnswer(lblA6, averageAnswerSurveyList.get(5).getAvgaAnswerForQuestion());
 		}
 	}
 	
 	private void initSliders(ArrayList<AnswerSurvey> averageAnswerSurveyList)
 	{
 		if(averageAnswerSurveyList.size() > 0) {
-			setSliderValue(sliderA1, averageAnswerSurveyList.get(0).getAnswer());
-			setSliderValue(sliderA2, averageAnswerSurveyList.get(1).getAnswer());
-			setSliderValue(sliderA3, averageAnswerSurveyList.get(2).getAnswer());
-			setSliderValue(sliderA4, averageAnswerSurveyList.get(3).getAnswer());
-			setSliderValue(sliderA5, averageAnswerSurveyList.get(4).getAnswer());
-			setSliderValue(sliderA6, averageAnswerSurveyList.get(5).getAnswer());
+			setSliderValue(sliderA1, averageAnswerSurveyList.get(0).getAvgaAnswerForQuestion());
+			setSliderValue(sliderA2, averageAnswerSurveyList.get(1).getAvgaAnswerForQuestion());
+			setSliderValue(sliderA3, averageAnswerSurveyList.get(2).getAvgaAnswerForQuestion());
+			setSliderValue(sliderA4, averageAnswerSurveyList.get(3).getAvgaAnswerForQuestion());
+			setSliderValue(sliderA5, averageAnswerSurveyList.get(4).getAvgaAnswerForQuestion());
+			setSliderValue(sliderA6, averageAnswerSurveyList.get(5).getAvgaAnswerForQuestion());
 		}
 		
 	}
@@ -208,8 +208,10 @@ public class ServiceExpertController implements Initializable {
 	
 	private void displayDates(Survey survey)
 	{
-		lblStart.setText(survey.getActivatedDate().toString());
-		lblStart.setText(survey.getClosedDate().toString());
+		if (lblStart != null && lblEnd != null) {
+			lblStart.setText(survey.getActivatedDate().toString());
+			lblEnd.setText(survey.getClosedDate().toString());
+		}
 	}
 	
 	private void attachQuestionToSurvey(Survey survey)
