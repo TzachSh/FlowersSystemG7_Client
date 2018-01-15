@@ -930,12 +930,12 @@ public class SelectProductController implements Initializable
 	        			// call to controller of order to open order window
 	        			CartController cartController = new CartController();
 	        			cartController.setComesFromCatalog(true);
-	        			cartController.addProductsToCartMap(productsSelected);
+	        			//cartController.addProductsToCartMap(productsSelected);
 	        			cartController.start(primaryStage);
 	        		}
 	        		catch (Exception e) 
 	        		{
-	        			displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Add Catalog Window", e.getMessage());
+	        			displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Add To Cart Window", e.getMessage());
 	        		}
 	            }
 	        });

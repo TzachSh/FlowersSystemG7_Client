@@ -23,6 +23,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -143,7 +144,21 @@ public class CustomerMenuController implements Initializable {
 	 */
 	public void onClickingShoppingCart()
 	{
-		
+		try 
+		{
+			menuStage.hide(); //hiding primary window
+			Stage primaryStage = new Stage();
+
+			// call to controller of order to open order window
+			CartController cartController = new CartController();
+			cartController.setComesFromCatalog(false);
+			//cartController.addProductsToCartMap(productsSelected);
+			cartController.start(primaryStage);
+		}
+		catch (Exception e) 
+		{
+			displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Add To Cart Window", e.getMessage());
+		}
 	}
 	
 	/**
@@ -294,6 +309,7 @@ public class CustomerMenuController implements Initializable {
 	private void clearBranchSelection()
 	{
 		SelectProductController.productsSelected.clear();
+    	CartController.cartProducts.clear();
     	
     	cmbBranch.getSelectionModel().select(-1);
 		cmbBranch.setDisable(false);
