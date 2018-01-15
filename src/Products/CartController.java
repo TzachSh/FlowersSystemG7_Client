@@ -187,7 +187,7 @@ public class CartController implements Initializable
 						}
 						else
 						{
-							img = new Image("/noImage.png");
+							img = new Image("/customProduct.png");
 						}
 						
 						imgView.setImage(img);
