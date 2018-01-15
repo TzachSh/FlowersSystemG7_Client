@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+
+import Login.CustomerMenuController;
 import Products.SelectProductController.CatalogProductDetails;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -36,6 +38,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 
 public class CartController implements Initializable
@@ -43,8 +46,6 @@ public class CartController implements Initializable
       @FXML
       private Button btnBackToCatalog;
     
-	
-
 	  @FXML
 	  private Button btnPurchase;
 
@@ -64,6 +65,7 @@ public class CartController implements Initializable
 	  
 	  private static boolean comesFromCatalog = false;
 	  
+	  private static Stage mainStage;
 	  
 	  /**
 	   * Initialize the state if the controller called from catalog, for back button
@@ -346,7 +348,7 @@ public class CartController implements Initializable
 		{
 			try 
     		{
-    			lstCart.getScene().getWindow().hide(); //hiding primary window
+    			mainStage.hide(); //hiding primary window
     			Stage primaryStage = new Stage();
     			SelectProductController catalogProductController = new SelectProductController();
     			catalogProductController.setForCart();
@@ -354,7 +356,7 @@ public class CartController implements Initializable
     		}
     		catch (Exception e) 
     		{
-    			displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Add Catalog Window", e.getMessage());
+    			displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Select Catalog Window", e.getMessage());
     		}
 		}
 	
@@ -371,8 +373,34 @@ public class CartController implements Initializable
 	        });
 		}
 		
+		/**
+		 * Event that occurs when closing the form
+		 */
+		public void onClosingForm()
+		{
+			try
+			{
+				
+				if (comesFromCatalog)
+				{
+					showSelectProductFrm();
+				}
+				else
+				{
+					mainStage.hide();
+					CustomerMenuController menu = new CustomerMenuController();
+					menu.start(new Stage());
+				}
+				
+			}
+			catch (Exception e) 
+			{
+				displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
+			}
+		}
+		
 	  public void start(Stage primaryStage) throws Exception {	
-			
+		  	mainStage = primaryStage;
 			String srcFXML = "/Products/CartUI.fxml";
 			String srcCSS = "/Products/application.css";
 			
@@ -383,6 +411,12 @@ public class CartController implements Initializable
 			primaryStage.setTitle("Cart Shopping");
 			primaryStage.setScene(scene);		
 			primaryStage.show();
+			
+			primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+		          public void handle(WindowEvent we) {
+		            onClosingForm();
+		          }
+		         });
 		}
 	
 	@Override

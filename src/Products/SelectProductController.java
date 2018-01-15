@@ -53,6 +53,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 
 public class SelectProductController implements Initializable
@@ -328,6 +329,7 @@ public class SelectProductController implements Initializable
 					}
 					
 					initFormByUses();
+					setDiscountsForSelectedBranch();
 					fillCatalogItems();
 				}
 				else
@@ -353,6 +355,12 @@ public class SelectProductController implements Initializable
 		primaryStage.setTitle("Catalog Product");
 		primaryStage.setScene(scene);		
 		primaryStage.show();
+		
+		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+	          public void handle(WindowEvent we) {
+	            onClosingForm();
+	          }
+	         });
 	}
 	
 	/**
@@ -864,6 +872,23 @@ public class SelectProductController implements Initializable
 	}
 	
 	/**
+	 * Event that occurs when closing the form
+	 */
+	public void onClosingForm()
+	{
+		try
+		{
+			mainStage.hide();
+			CustomerMenuController menu = new CustomerMenuController();
+			menu.start(new Stage());
+		}
+		catch (Exception e) 
+		{
+			displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
+		}
+	}
+	
+	/**
 	 * Add an event to the Add Catalog Button
 	 */
 	public void registerAddCatalogButtonHandle()
@@ -973,7 +998,6 @@ public class SelectProductController implements Initializable
 		lblTitle.setText(title);
 		initializeCollections();
 		controllerInstance = this;
-		setDiscountsForSelectedBranch();
 	}
 
 	/**

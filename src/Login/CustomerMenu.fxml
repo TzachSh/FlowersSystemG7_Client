@@ -49,6 +49,6 @@
             <Font size="13.0" />
          </font>
       </Label>
-      <AnchorPane layoutY="-29.0" opacity="0.08" prefHeight="102.0" prefWidth="431.0" style="-fx-background-color: red;" />
+      <AnchorPane layoutY="-29.0" opacity="0.08" prefHeight="102.0" prefWidth="431.0" style="-fx-background-color: red;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
    </children>
 </AnchorPane>

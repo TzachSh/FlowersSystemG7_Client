@@ -72,6 +72,8 @@ public class CustomerMenuController implements Initializable {
     
     private static LoginController loginController;
     
+    private static Stage menuStage;
+    
     public void setLoginController(LoginController login)
     {
     	loginController = login;
@@ -117,6 +119,7 @@ public class CustomerMenuController implements Initializable {
 	{
 		try
 		{
+			menuStage.hide();
 			SelectProductController selectController = new SelectProductController();
 			selectController.setForViewingCatalog();
 			selectController.start(new Stage());
@@ -172,6 +175,25 @@ public class CustomerMenuController implements Initializable {
 		ObservableList<String> observeBranchesList = FXCollections.observableArrayList(branches);
 		
 		cmbBranch.setItems(observeBranchesList);
+		
+		if (currentBranch != null)
+			cmbBranch.getSelectionModel().select(getIndexByBranchId(currentBranch.getbId()));
+	}
+	
+	/**
+	 * Get the index in the collection by the branch id
+	 * @param branchId The branch id to search for
+	 * @return index if found, -1 if not found
+	 */
+	private int getIndexByBranchId(int branchId)
+	{
+		for (int i = 0; i < branchesList.size(); i++)
+		{
+			if (branchesList.get(i).getbId() == branchId)
+				return i;
+		}
+		
+		return -1;
 	}
 	
 	/**
@@ -339,6 +361,8 @@ public class CustomerMenuController implements Initializable {
 	}
 	
 	public void start(Stage primaryStage) throws Exception {
+		menuStage = primaryStage;
+		
 		String title = "Main Menu";
 		String srcFXML = "/Login/CustomerMenu.fxml";
 		
