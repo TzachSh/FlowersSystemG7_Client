@@ -94,8 +94,6 @@ public class CustomProductController implements Initializable {
 	@FXML
 	private TextArea txtBlessing;
 
-	private ArrayList<ColorProduct> cList;//storing colors from db
-	private ArrayList<ProductType> typeList;//storing type of products
 	private ObservableList<Flower> data;//storing flowers in observable list to get option to update it when app is run
 	private ArrayList<Flower> flowerList;//all flowers from db
 	private double cashLeft;
@@ -112,8 +110,8 @@ public class CustomProductController implements Initializable {
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		getData();
-		
+		cmbProductType.getItems().addAll(ConstantData.productTypeList);
+		cmbColor.getItems().addAll(ConstantData.productColorList);
 		//init controls
 		paneFlowers.setVisible(false);
 		setSettingBtn();
@@ -282,8 +280,6 @@ public class CustomProductController implements Initializable {
 	{
 		Packet packet = new Packet();//create packet to send
 		packet.addCommand(Command.getFlowers);//add command
-		packet.addCommand(Command.getColors);//add command
-		packet.addCommand(Command.getProductTypes);//add command
 		
 		// create the thread for send to server the message
 		SystemSender send = new SystemSender(packet);
@@ -299,14 +295,7 @@ public class CustomProductController implements Initializable {
 			public void onReceivingResult(Packet p)//set combobox values
 			{
 				if (p.getResultState())
-				{
-					flowerList= p.<Flower>convertedResultListForCommand(Command.getFlowers);
-					cList = p.<ColorProduct>convertedResultListForCommand(Command.getColors);
-					typeList = p.<ProductType>convertedResultListForCommand(Command.getProductTypes);
-					cmbProductType.getItems().addAll(typeList);
-					cmbColor.getItems().addAll(cList);
-					
-				}
+					flowerList= p.<Flower>convertedResultListForCommand(Command.getFlowers);								
 				else//if it was error in connection
 					JOptionPane.showMessageDialog(null,"Connection error","Error",JOptionPane.ERROR_MESSAGE);
 			}

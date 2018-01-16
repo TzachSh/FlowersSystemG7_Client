@@ -149,7 +149,6 @@ public class CatalogProductController implements Initializable
 		private static ArrayList<FlowerInProduct> flowersInTheProduct = new ArrayList<>();
 		/** set all active and not active catalog products from db */
 		private static ArrayList<CatalogProduct> catalogProductsList = new ArrayList<>();
-		private ArrayList<ProductType> productTypesList = new ArrayList<>();
 		private ArrayList<Flower> flowersList = new ArrayList<>();
 		private static Stage primaryStage;
 		//private static Stage prevStage;
@@ -192,13 +191,7 @@ public class CatalogProductController implements Initializable
 		title = "Insert New Catalog Product";
 	}
 	
-	/**
-	 * Get the Product Type object from the collection by his index
-	 */
-	public ProductType getProductTypeByIndex(int index)
-	{
-		return productTypesList.get(index);
-	}
+
 
 	/**
 	 * Set Product Details for product instance
@@ -209,16 +202,13 @@ public class CatalogProductController implements Initializable
 	public void updateProductDetails(String name, double price, int index)
 	{
 		// overwrite the new fields for CatalogProduct object
-		int typeId = getProductTypeByIndex(index).getId();
+		int typeId = ConstantData.productTypeList.get(index).getId();
 		catalogProduct.setName(name);
 		catalogProduct.setPrice(price);
 		catalogProduct.setProductTypeId(typeId);
 	}
 	
-	public void setProductsTypes(ArrayList<ProductType> productTypesList)
-	{
-		this.productTypesList = productTypesList;
-	}
+
 	
 	public void setFlowers(ArrayList<Flower> flowersList)
 	{
@@ -253,7 +243,6 @@ public class CatalogProductController implements Initializable
 	public void pushAllTypesAndFlowers()
 	{
 		Packet packet = new Packet();
-		packet.addCommand(Command.getProductTypes);
 		packet.addCommand(Command.getFlowers);
 		packet.addCommand(Command.getAllCatalogProducts);
 		
@@ -270,10 +259,9 @@ public class CatalogProductController implements Initializable
 			{
 				if (p.getResultState())
 				{
-					setProductsTypes(p.<ProductType>convertedResultListForCommand(Command.getProductTypes));
 					setFlowers(p.<Flower>convertedResultListForCommand(Command.getFlowers));
 					catalogProductsList = p.<CatalogProduct>convertedResultListForCommand(Command.getAllCatalogProducts);
-					setComboBoxTypesList(productTypesList);
+					setComboBoxTypesList(ConstantData.productTypeList);
 					setComboBoxFlowersList(flowersList);
 					
 					/* load all exists product info */
@@ -633,9 +621,9 @@ public class CatalogProductController implements Initializable
 	 */
 	public int getIndexOfTypeInTheCollectionByTypeId(int typeId)
 	{
-		for (int i = 0; i < productTypesList.size(); i++)
+		for (int i = 0; i < ConstantData.productTypeList.size(); i++)
 		{
-			if (productTypesList.get(i).getId() == typeId)
+			if (ConstantData.productTypeList.get(i).getId() == typeId)
 				return i;
 		}
 		

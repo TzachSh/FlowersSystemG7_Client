@@ -15,6 +15,7 @@ import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
 import Products.CartController;
+import Products.ConstantData;
 import Products.SelectProductController;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -425,6 +426,8 @@ public class CustomerMenuController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		if(!ConstantData.isInit)
+			ConstantData.initColorsAndTypes();
 		initializeCollections();
 	}
 }
