@@ -3,6 +3,7 @@ package Users;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javax.swing.CellRendererPane;
@@ -10,8 +11,10 @@ import javax.swing.CellRendererPane;
 import com.sun.xml.internal.org.jvnet.staxex.NamespaceContextEx.Binding;
 
 import Customers.Complain;
+import Customers.ComplainsController;
 import Customers.Customer;
 import Customers.ReplyController;
+import Login.LoginController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
@@ -21,6 +24,7 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -28,7 +32,11 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -55,6 +63,9 @@ import sun.security.util.Password;
 public class UsersManagementController implements Initializable{
 
 	@FXML private ListView<User> uListView;
+	@FXML private Button btnSearch;
+	@FXML private TextField txtUid;
+	
 	private ArrayList<User> usersList;
 	private ObservableList<User> usersData;
 	
@@ -79,7 +90,7 @@ public class UsersManagementController implements Initializable{
 		}
 	}
 
-	private void initData()
+	private void displayUsers()
 	{
 		ArrayList<Object> paramListUsers = new ArrayList<>();
 		
@@ -124,6 +135,13 @@ public class UsersManagementController implements Initializable{
 				// TODO Auto-generated method stub
 				return new ListCell<User>() {
 					
+				private ComboBox<Permission> cmbPerms;
+				private TextField txtUser;
+				private TextField txtPassword;
+				private CheckBox cbLogged;
+				private Button btnDelete;
+				private Button btnSave;
+					
 				private ComboBox<Permission> createPermsComboBox()
 				{
 					ComboBox<Permission> cmbPerm = new ComboBox<>();
@@ -139,16 +157,16 @@ public class UsersManagementController implements Initializable{
 				{
 					String textUid = "User Id: ";
 					String textUserName = "Username ";
-					String textPassword = "Password ";
+					String textPassword = "Password  ";
 					String textPerm="Permission ";
 					String textLogged="Is Logged ";
 					
-					ComboBox<Permission> cmbPerms = createPermsComboBox();
-					TextField txtUser = new TextField(user.getUser());
-					TextField txtPassword = new TextField(user.getPassword());
-					CheckBox cbLogged = new CheckBox();
-					Button btnDelete = createDeleteButtonHandler(user);
-					Button btnSave = createSaveButtonHandler(user);
+				    cmbPerms = createPermsComboBox();
+					txtUser = new TextField(user.getUser());
+					txtPassword = new TextField(user.getPassword());
+					cbLogged = new CheckBox();
+					btnDelete = createDeleteButtonHandler(user);
+					btnSave = createUpdateButtonHandler(user);
 					
 					cbLogged.setSelected(user.isLogged());
 					setSelectedPermission(user, cmbPerms);
@@ -198,24 +216,79 @@ public class UsersManagementController implements Initializable{
 
 						btnDel = new Button(textDelete);
 						btnDel.setOnMouseClicked((event) -> {
-							// Handle delete user
+							// Handle user delete
+							 Alert alert = new Alert(Alert.AlertType.WARNING);
+					      		alert.setTitle("Delete User");
+					      		alert.setContentText("Are you Sure?");
+					      		ButtonType okButton = new ButtonType("Yes", ButtonData.YES);
+					      		ButtonType noButton = new ButtonType("No", ButtonData.NO);
+					      		
+					      		alert.getButtonTypes().setAll(okButton, noButton);
+					      		alert.showAndWait().ifPresent(type -> {
+					      		        if (type == okButton)
+					      		        {
+					      		        	deleteUser(user);
+					      		        } 
+					      		        else
+					      		        {
+					      		        	alert.close();
+					      		        }
+					      		});
 						});
 
 						return btnDel;
 				}
 				
-				private Button createSaveButtonHandler(User user)
+				private Button createUpdateButtonHandler(User user)
 				{
 					
-						String textSave = "Save";
-						Button btnSave;
+						String textUpdate = "Update";
+						Button btnUpdate;
 
-						btnSave = new Button(textSave);
-						btnSave.setOnMouseClicked((event) -> {
-							// Handle delete user
+						btnUpdate = new Button(textUpdate);
+						btnUpdate.setOnMouseClicked((event) -> {
+							// Handle update user
+							updateUser(user,txtUser.getText(),txtPassword.getText(),cbLogged.isSelected(),cmbPerms.getSelectionModel().getSelectedItem());
 						});
 
-						return btnSave;
+						return btnUpdate;
+				}
+				
+				private void updateUser(User user, String userName, String password, boolean isLogged, Permission permission)
+				{
+					int uId = user.getuId();
+					user = new User(uId, userName, password, isLogged, permission);
+					
+					Packet packet = new Packet();
+					
+					ArrayList<Object> paramList = new ArrayList<>();
+					paramList.add(user);
+					
+					packet.addCommand(Command.updateUserByuId);
+					packet.setParametersForCommand(Command.updateUserByuId, paramList);
+					
+					SystemSender sender = new SystemSender(packet);
+					sender.registerHandler(new IResultHandler() {
+						
+						@Override
+						public void onWaitingForResult() {
+							// TODO Auto-generated method stub
+							
+						}
+						
+						@Override
+						public void onReceivingResult(Packet p) {
+							// TODO Auto-generated method stub
+							if(p.getResultState())
+							{
+								Alert alert = new Alert(AlertType.INFORMATION,"User updated successfully");
+								alert.show();
+								displayUsers();
+							}
+						}
+					});
+					sender.start();
+
 				}
 				
 				private void deleteUser(User user)
@@ -225,12 +298,35 @@ public class UsersManagementController implements Initializable{
 					ArrayList<Object> paramList = new ArrayList<>();
 					paramList.add(user);
 					
-					//packet.addCommand(Command.dele);
+					packet.addCommand(Command.deleteUser);
+					packet.setParametersForCommand(Command.deleteUser, paramList);
+					
+					SystemSender sender = new SystemSender(packet);
+					sender.registerHandler(new IResultHandler() {
+						
+						@Override
+						public void onWaitingForResult() {
+							// TODO Auto-generated method stub
+							
+						}
+						
+						@Override
+						public void onReceivingResult(Packet p) {
+							// TODO Auto-generated method stub
+							if(p.getResultState())
+							{
+								Alert alert = new Alert(AlertType.INFORMATION,"User deleted successfully");
+								alert.show();
+								displayUsers();
+							}
+						}
+					});
+					sender.start();
 				}
 				
 				private void setSelectedPermission(User user,ComboBox<Permission> cmbPerms)
 				{
-						cmbPerms.getSelectionModel().select(user.getPermission());
+					cmbPerms.getSelectionModel().select(user.getPermission());
 				}
 
 				/**
@@ -245,18 +341,56 @@ public class UsersManagementController implements Initializable{
 					 if (item != null) {	
 						 	setCellHandler(item);
                         }
+					 else
+						 setGraphic(null);
 				}};
 			}
 		});
 	}
 
+	@FXML
+	private void handleSearchPressed(Event event) {
+
+		if (txtUid.getText().isEmpty()) {
+			System.out.println("Enter user ID!");
+			return;
+		}
+
+		int uId = Integer.parseInt(txtUid.getText());
+		
+		ArrayList<User> toLoad = new ArrayList<>();
+		toLoad.add(getUserByUid(uId));
+		usersData = FXCollections.observableArrayList(toLoad);
+		uListView.setItems(usersData);
+	}
+	
+	private User getUserByUid(int uId)
+	{
+		User retUser = null;
+		for(User user : usersList)
+			if(user.getuId() == uId)
+				retUser = user;
+		
+		return retUser;
+	}
+	
+	@FXML
+	private void setSearchOnTextChange()
+	{
+		txtUid.textProperty().addListener((observable, oldValue, newValue) -> {
+		   if(newValue.isEmpty())
+		   {
+			   usersData = FXCollections.observableArrayList(usersList);
+			   uListView.setItems(usersData);
+		   }
+		});
+	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub
 		setListCellFactory();
-		initData();
-	
+		displayUsers();
 	}
 	
 	

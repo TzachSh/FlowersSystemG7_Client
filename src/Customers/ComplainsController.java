@@ -414,6 +414,8 @@ public class ComplainsController implements Initializable {
 					 if (item != null) {	
 						 	setCellHandler(item);
                         }
+					 else
+						 setGraphic(null);
 				}};
 			}
 		});
