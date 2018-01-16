@@ -54,25 +54,28 @@ public class CartController implements Initializable
     
 	  @FXML
 	  private Button btnPurchase;
+	  @FXML
+	  private Button btnClearOrder;
 
 	  @FXML
 	  private Label lblPrice;
 
 	  @FXML
       private ListView<Product> lstCart;
-
+	  
 	   @FXML
 	   private Button btnAddCustomProduct;
 	
 	   /** Map for save all both catalog products and custom product and their quantity for the cart  */
 	  public static LinkedHashMap<Product, Integer> cartProducts = new LinkedHashMap<>();
-	  public static ArrayList<ProductType> typeList = new ArrayList<>();
 	
 	  private ObservableList<Product> data;
 	  
 	  private static boolean comesFromCatalog = false;
 	  
 	  private static Stage mainStage;
+	  
+	  private static ArrayList<Flower> flowerList = new ArrayList<>();
 	  
 	  /**
 	   * Initialize the state if the controller called from catalog, for back button
@@ -276,14 +279,30 @@ public class CartController implements Initializable
 						
 						VBox delBox = new VBox(delButton);
 						delBox.setAlignment(Pos.CENTER);
+						Text flowersTitle = new Text("Flowers Collection:");
+						flowersTitle.setUnderline(true);
+						flowersTitle.setFont(new Font(14));
+						flowersTitle.setStyle("-fx-font-weight: bold");
+						VBox flowers = new VBox(flowersTitle);
+					
+						for (FlowerInProduct fp : pro.getFlowerInProductList())
+						{
+							Flower flowerFound = flowerList.stream().filter(c->c.getId()==fp.getFlowerId()).findFirst().orElse(null);
+							if (flowerFound != null)
+							{
+								Text flower = new Text(String.format("%s, Qty: %d", flowerFound.getName(), fp.getQuantity()));
+								flower.setFont(new Font(13.5));
+								flowers.getChildren().add(flower);
+							}
+						}
 						
-					 	HBox hBox = new HBox(delBox, productImage, productDetails ,region1, qtyOptions);
+						flowers.setSpacing(2);
+					 	HBox hBox = new HBox(delBox, productImage, productDetails ,region1,flowers, qtyOptions);
 					 	hBox.setStyle("-fx-border-style: solid inside;"
 					 	        + "-fx-border-width: 1;" + "-fx-border-insets: 5;"
 					 	        + "-fx-border-radius: 5;");
 	                    hBox.setSpacing(10);
 	                    hBox.setPadding(new Insets(10));
-	                    
 	                    
 	                    
 	                    setGraphic(hBox);
@@ -355,11 +374,11 @@ public class CartController implements Initializable
 		{
 			try 
     		{
-    			mainStage.hide(); //hiding primary window
     			Stage primaryStage = new Stage();
     			SelectProductController catalogProductController = new SelectProductController();
     			catalogProductController.setForCart();
     			catalogProductController.start(primaryStage);
+    			mainStage.close();
     		}
     		catch (Exception e) 
     		{
@@ -394,7 +413,7 @@ public class CartController implements Initializable
 				}
 				else
 				{
-					mainStage.hide();
+					mainStage.close();
 					CustomerMenuController menu = new CustomerMenuController();
 					menu.start(new Stage());
 				}
@@ -428,11 +447,11 @@ public class CartController implements Initializable
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		getFlowers();
 		registerBackToCatalogButton();
+		registerCreateCustomProductBtn();
+		registerClearOrderButton();
 		addProductsToCartMap(SelectProductController.productsSelected);
-		if(typeList.isEmpty())//check if product types is loaded before
-			getProductTypes();
-		fillCatalogItems();
 		updateTotalPrice();
 		
 		if (comesFromCatalog)
@@ -440,16 +459,23 @@ public class CartController implements Initializable
 		else
 			btnBackToCatalog.setText("Add From Catalog");
 	}
-
-	public void addProductsToCartMap(Product product) {
-		if (!cartProducts.containsKey(product))
-			  cartProducts.put(product, 1);
+	private void registerClearOrderButton() {
+		btnClearOrder.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				cartProducts.clear();
+				SelectProductController.productsSelected.clear();
+				fillCatalogItems();
+				updateTotalPrice();
+			}
+		});
 	}
 
-	public void getProductTypes()
+	private void getFlowers()
 	{
 		Packet packet = new Packet();//create packet to send
-		packet.addCommand(Command.getProductTypes);//add command
+		packet.addCommand(Command.getFlowers);//add command
 		
 		// create the thread for send to server the message
 		SystemSender send = new SystemSender(packet);
@@ -464,9 +490,9 @@ public class CartController implements Initializable
 			@Override
 			public void onReceivingResult(Packet p)//set combobox values
 			{
-				if (p.getResultState())
-				{
-					typeList = p.<ProductType>convertedResultListForCommand(Command.getProductTypes);					
+				if (p.getResultState()) {
+					flowerList= p.<Flower>convertedResultListForCommand(Command.getFlowers);
+					fillCatalogItems();
 				}
 				else//if it was error in connection
 					JOptionPane.showMessageDialog(null,"Connection error","Error",JOptionPane.ERROR_MESSAGE);
@@ -474,4 +500,32 @@ public class CartController implements Initializable
 		});
 		send.start();
 	}
+	private void registerCreateCustomProductBtn() {
+		btnAddCustomProduct.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				try 
+	    		{
+	    			mainStage.close(); //hiding primary window
+	    			Stage primaryStage = new Stage();
+	    			CustomProductController catalogProductController = new CustomProductController();
+	    			catalogProductController.start(primaryStage);
+	    		}
+	    		catch (Exception e) 
+	    		{
+	    			displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Select Catalog Window", e.getMessage());
+	    		}
+				
+			}
+		});
+		
+	}
+
+	public void addProductsToCartMap(Product product) {
+		if (!cartProducts.containsKey(product))
+			  cartProducts.put(product, 1);
+	}
+
+	
 }

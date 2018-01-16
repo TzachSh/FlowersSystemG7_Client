@@ -755,11 +755,11 @@ public class SelectProductController implements Initializable
 						try
 						{
 						Stage stage = (Stage)button.getScene().getWindow();
-				    	stage.hide();
 						CatalogProductController catalogProductController = new CatalogProductController();
 						CatalogProductDetails proDetails = getProductById(pro.getId());
 						catalogProductController.setCatalogProductForUpdating(pro, proDetails.catalogImage, controllerInstance);
 						catalogProductController.start(new Stage());
+						stage.close();
 						}
 						catch (Exception e) 
 						{

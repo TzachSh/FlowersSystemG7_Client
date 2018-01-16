@@ -6,14 +6,14 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="629.0" prefWidth="582.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Products.CartController">
+<AnchorPane prefHeight="717.0" prefWidth="630.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Products.CartController">
    <children>
-      <Label layoutX="234.0" layoutY="27.0" text="Cart Shopping" underline="true" AnchorPane.topAnchor="27.0">
+      <Label layoutX="338.0" layoutY="35.0" text="Cart Shopping" underline="true" AnchorPane.topAnchor="35.0">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <TitledPane animated="false" collapsible="false" layoutX="34.0" layoutY="96.0" prefHeight="360.0" prefWidth="515.0" text="Cart Editor" AnchorPane.bottomAnchor="84.0" AnchorPane.leftAnchor="34.0" AnchorPane.rightAnchor="33.0" AnchorPane.topAnchor="96.0">
+      <TitledPane animated="false" collapsible="false" layoutX="8.0" layoutY="96.0" prefHeight="537.0" prefWidth="773.0" text="Cart Editor" AnchorPane.bottomAnchor="84.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="96.0">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="322.0" prefWidth="513.0">
                <children>
@@ -22,13 +22,14 @@
             </AnchorPane>
         </content>
       </TitledPane>
-      <Button fx:id="btnPurchase" layoutX="246.0" layoutY="492.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="90.0" text="Purchase" AnchorPane.bottomAnchor="15.0" />
+      <Button fx:id="btnPurchase" layoutX="338.0" layoutY="661.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="90.0" text="Purchase" AnchorPane.bottomAnchor="23.0" />
       <Label fx:id="lblPrice" contentDisplay="CENTER" layoutX="34.0" layoutY="464.0" prefHeight="17.0" prefWidth="515.0" text="Total Price: 0₪ , Total Items: 0" textFill="RED" AnchorPane.bottomAnchor="56.0">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Button fx:id="btnBackToCatalog" layoutX="48.0" layoutY="62.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="127.0" text="Back To Catalog" />
-      <Button fx:id="btnAddCustomProduct" layoutX="411.0" layoutY="62.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="127.0" text="Add Custom Product" />
+      <Button fx:id="btnBackToCatalog" layoutX="14.0" layoutY="62.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="127.0" text="Back To Catalog" />
+      <Button fx:id="btnAddCustomProduct" layoutX="486.0" layoutY="62.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="127.0" text="Add Custom Product" />
+      <Button fx:id="btnClearOrder" layoutX="210.0" layoutY="661.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="90.0" text="Clear Order" />
    </children>
 </AnchorPane>

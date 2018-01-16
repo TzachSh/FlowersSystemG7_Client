@@ -16,13 +16,17 @@ import java.util.stream.Collectors;
 
 import javax.swing.JOptionPane;
 
+import com.sun.media.jfxmediaimpl.platform.Platform;
 import com.sun.scenario.effect.impl.prism.PrImage;
 
 import Customers.Customer;
+import Login.CustomerMenuController;
+import Login.LoginController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
+import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -55,6 +59,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 
 public class CustomProductController implements Initializable {
@@ -93,6 +98,8 @@ public class CustomProductController implements Initializable {
 	private ComboBox<ProductType> cmbProductType;
 	@FXML
 	private TextArea txtBlessing;
+	@FXML
+	private Button btnBackToCart;
 
 	private ObservableList<Flower> data;//storing flowers in observable list to get option to update it when app is run
 	private ArrayList<Flower> flowerList;//all flowers from db
@@ -110,6 +117,8 @@ public class CustomProductController implements Initializable {
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		getFlowers();
+		registerBtnBack();
 		cmbProductType.getItems().addAll(ConstantData.productTypeList);
 		cmbColor.getItems().addAll(ConstantData.productColorList);
 		//init controls
@@ -134,6 +143,22 @@ public class CustomProductController implements Initializable {
 			}
 		});
 	
+	}
+	private void registerBtnBack() {
+		btnBackToCart.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				Stage cartStage = new Stage();
+				CartController cartController = new CartController();
+    			cartController.setComesFromCatalog(false);
+    			try {
+					cartController.start(cartStage);
+				} catch (Exception e) {
+					JOptionPane.showMessageDialog(null,"Failed to open Cart"+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+				}		
+			}
+		});
+		
 	}
 	/**
 	 * init addToOrder handle. if blessing is empty ask if customer want to add blessing
@@ -163,24 +188,27 @@ public class CustomProductController implements Initializable {
 			int productType = cmbProductType.getSelectionModel().getSelectedItem().getId();//get typeId from combobox
 			CustomProduct product = new CustomProduct(-1,productType , maxPrice-cashLeft, null, null, txtBlessing.getText());
 			ArrayList<Object> pList = new ArrayList<>(Arrays.asList(product));
+			ArrayList<Object> flowerInProductList = new ArrayList<>();
 			for(Entry<Flower, Integer> set : flowerInProduct.entrySet())
 			{
-				pList.add(new FlowerInProduct(set.getKey().getId(), set.getValue()));
+				flowerInProductList.add(new FlowerInProduct(set.getKey().getId(), set.getValue()));
 			}
-			createCustomProduct(pList);
+			createCustomProduct(pList,flowerInProductList);
 		//CartController.cartProducts.keySet();
 		
 	}
 	/**
-	 * @param pList custom product in first place in others only flowers in products and their quantity
+	 * @param pList contains custom product 
+	 * @param flowerInProductList contains all flowers in the product
 	 * sending to server product with flowers to insert to database and get the product back to display in the cart
 	 */
-	private void createCustomProduct(ArrayList<Object> pList) {
+	private void createCustomProduct(ArrayList<Object> pList, ArrayList<Object> flowerInProductList) {
 		Packet packet = new Packet();//create packet to send
 		packet.addCommand(Command.CreateCustomProduct);//add command
-		
+		packet.addCommand(Command.insertFlowersInProduct);//add command
 		
 		packet.setParametersForCommand(Command.CreateCustomProduct,pList);
+		packet.setParametersForCommand(Command.insertFlowersInProduct,flowerInProductList);
 		// create the thread for send to server the message
 		SystemSender send = new SystemSender(packet);
 
@@ -200,12 +228,13 @@ public class CustomProductController implements Initializable {
 					CartController cartController = new CartController();
         			cartController.setComesFromCatalog(false);
         			Product product= p.<Product>convertedResultListForCommand(Command.CreateCustomProduct).get(0);
-        			product.setFlowerInProductList(p.<FlowerInProduct>convertedResultListForCommand(Command.CreateCustomProduct));
+        			product.setFlowerInProductList(p.<FlowerInProduct>convertedResultListForCommand(Command.insertFlowersInProduct));
         			cartController.addProductsToCartMap(product);
         			try {
 						cartController.start(cartStage);
+						closeStage();	
 					} catch (Exception e) {
-						JOptionPane.showMessageDialog(null,"Failed to open Cart"+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(null,"Failed to open Cart "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
 					}
 				}
 				else//if it was error in connection
@@ -213,6 +242,11 @@ public class CustomProductController implements Initializable {
 			}
 		});
 		send.start();
+		
+	}
+	protected void closeStage() {
+		Stage stage = (Stage)btnAddToCart.getScene().getWindow();
+		stage.close();
 		
 	}
 	private void setResetBtn() {
@@ -275,8 +309,21 @@ public class CustomProductController implements Initializable {
 		primaryStage.setTitle("Custom product");
 		primaryStage.setScene(scene);		
 		primaryStage.show();
+		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+	          public void handle(WindowEvent we) {
+	        	//display notification
+	        	  CustomerMenuController menu = new CustomerMenuController();
+				  try {
+					menu.start(new Stage());
+					primaryStage.close();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	          }
+	         });
 	}
-	public void getData()
+	public void getFlowers()
 	{
 		Packet packet = new Packet();//create packet to send
 		packet.addCommand(Command.getFlowers);//add command

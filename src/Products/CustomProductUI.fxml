@@ -5,25 +5,25 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="536.0" prefWidth="517.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Products.CustomProductController">
+<AnchorPane prefHeight="585.0" prefWidth="513.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Products.CustomProductController">
    <children>
-      <TitledPane animated="false" collapsible="false" layoutX="20.0" layoutY="14.0" prefHeight="246.0" prefWidth="477.0" text="Settings">
+      <TitledPane animated="false" collapsible="false" layoutX="18.0" layoutY="72.0" prefHeight="246.0" prefWidth="477.0" text="Settings">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="218.0" prefWidth="475.0">
                <children>
                   <Button fx:id="btnFind" layoutX="198.0" layoutY="181.0" mnemonicParsing="false" text="Find flowers" />
                   <TextField fx:id="txtMaxCost" layoutX="163.0" layoutY="37.0" promptText="enter price range" />
                   <ComboBox fx:id="cmbColor" layoutX="163.0" layoutY="90.0" prefWidth="150.0" />
-                  <Label layoutX="69.0" layoutY="41.0" text="Price range:" />
-                  <Label layoutX="69.0" layoutY="94.0" text="Dominant color:" />
+                  <Label layoutX="82.0" layoutY="41.0" text="Price range:" />
+                  <Label layoutX="58.0" layoutY="94.0" text="Dominant color:" />
                   <Label fx:id="lblCashLeft" layoutX="172.0" layoutY="147.0" />
-                  <Label layoutX="77.0" layoutY="148.0" text="Product type:" />
+                  <Label layoutX="73.0" layoutY="148.0" text="Product type:" />
                   <ComboBox fx:id="cmbProductType" layoutX="163.0" layoutY="144.0" prefWidth="150.0" />
                </children>
             </AnchorPane>
         </content>
       </TitledPane>
-      <TabPane fx:id="paneFlowers" layoutX="20.0" layoutY="260.0" prefHeight="219.0" prefWidth="477.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane fx:id="paneFlowers" layoutX="18.0" layoutY="318.0" prefHeight="219.0" prefWidth="477.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="choose flowers">
             <content>
@@ -45,8 +45,10 @@
           </Tab>
         </tabs>
       </TabPane>
-      <Button fx:id="btnAddToCart" layoutX="412.0" layoutY="488.0" mnemonicParsing="false" text="Add to order" />
-      <Button fx:id="btnReset" layoutX="35.0" layoutY="488.0" mnemonicParsing="false" text="Reset" />
+      <Button fx:id="btnAddToCart" layoutX="410.0" layoutY="546.0" mnemonicParsing="false" text="Add to order" />
+      <Button fx:id="btnReset" layoutX="234.0" layoutY="546.0" mnemonicParsing="false" text="Reset" />
       <Label fx:id="lblTotalPrice" layoutX="315.0" layoutY="467.0" />
+      <Button fx:id="btnBackToCart" layoutX="25.0" layoutY="546.0" mnemonicParsing="false" text="Back to cart" />
+      <Label layoutX="166.0" layoutY="33.0" text="Create your own bouquet" />
    </children>
 </AnchorPane>

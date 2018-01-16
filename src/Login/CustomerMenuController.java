@@ -121,10 +121,10 @@ public class CustomerMenuController implements Initializable {
 	{
 		try
 		{
-			menuStage.hide();
 			SelectProductController selectController = new SelectProductController();
 			selectController.setForViewingCatalog();
 			selectController.start(new Stage());
+			menuStage.close();
 		}
 		catch (Exception e)
 		{
@@ -147,7 +147,7 @@ public class CustomerMenuController implements Initializable {
 	{
 		try 
 		{
-			menuStage.hide(); //hiding primary window
+			menuStage.close(); //hiding primary window
 			Stage primaryStage = new Stage();
 
 			// call to controller of order to open order window
