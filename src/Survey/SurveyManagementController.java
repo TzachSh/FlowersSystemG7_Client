@@ -326,8 +326,21 @@ public class SurveyManagementController implements Initializable {
 				{	
 					surveyConclusionList = p.<SurveyConclusion>convertedResultListForCommand(Command.getConclusions);
 					survyList = p.<Survey>convertedResultListForCommand(Command.getSurvey);
-					dataSurvey = FXCollections.observableArrayList(survyList);
-					sListView.setItems(dataSurvey);
+					if(employee.getRole() == Role.ServiceExpert)
+					{
+						ArrayList<Survey> closedSurveyList = new ArrayList<>();
+						
+						for(Survey survey : survyList)
+							if(survey.getClosedDate() != null)
+								closedSurveyList.add(survey);
+						
+						dataSurvey = FXCollections.observableArrayList(closedSurveyList);
+						sListView.setItems(dataSurvey);
+					}
+					else {
+						dataSurvey = FXCollections.observableArrayList(survyList);
+						sListView.setItems(dataSurvey);
+					}
 				}
 			}
 		});
