@@ -7,7 +7,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import javax.swing.JOptionPane;
+
 import Login.CustomerMenuController;
+import PacketSender.Command;
+import PacketSender.IResultHandler;
+import PacketSender.Packet;
+import PacketSender.SystemSender;
 import Products.SelectProductController.CatalogProductDetails;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -60,6 +66,7 @@ public class CartController implements Initializable
 	
 	   /** Map for save all both catalog products and custom product and their quantity for the cart  */
 	  public static LinkedHashMap<Product, Integer> cartProducts = new LinkedHashMap<>();
+	  public static ArrayList<ProductType> typeList = new ArrayList<>();
 	
 	  private ObservableList<Product> data;
 	  
@@ -423,6 +430,8 @@ public class CartController implements Initializable
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		registerBackToCatalogButton();
 		addProductsToCartMap(SelectProductController.productsSelected);
+		if(typeList.isEmpty())//check if product types is loaded before
+			getProductTypes();
 		fillCatalogItems();
 		updateTotalPrice();
 		
@@ -437,4 +446,32 @@ public class CartController implements Initializable
 			  cartProducts.put(product, 1);
 	}
 
+	public void getProductTypes()
+	{
+		Packet packet = new Packet();//create packet to send
+		packet.addCommand(Command.getProductTypes);//add command
+		
+		// create the thread for send to server the message
+		SystemSender send = new SystemSender(packet);
+
+		// register the handler that occurs when the data arrived from the server
+		send.registerHandler(new IResultHandler() {
+
+			@Override
+			public void onWaitingForResult() {//waiting when send
+			}
+
+			@Override
+			public void onReceivingResult(Packet p)//set combobox values
+			{
+				if (p.getResultState())
+				{
+					typeList = p.<ProductType>convertedResultListForCommand(Command.getProductTypes);					
+				}
+				else//if it was error in connection
+					JOptionPane.showMessageDialog(null,"Connection error","Error",JOptionPane.ERROR_MESSAGE);
+			}
+		});
+		send.start();
+	}
 }

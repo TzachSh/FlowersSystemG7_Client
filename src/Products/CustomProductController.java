@@ -101,7 +101,6 @@ public class CustomProductController implements Initializable {
 	private double cashLeft;
 	private double maxPrice;
 	private LinkedHashMap<Flower,Integer> flowerInProduct= new LinkedHashMap<>();
-	private Stage primaryStage;;
 	/**
 	 * to available run javafx
 	 */
@@ -166,27 +165,24 @@ public class CustomProductController implements Initializable {
 			int productType = cmbProductType.getSelectionModel().getSelectedItem().getId();//get typeId from combobox
 			CustomProduct product = new CustomProduct(-1,productType , maxPrice-cashLeft, null, null, txtBlessing.getText());
 			ArrayList<Object> pList = new ArrayList<>(Arrays.asList(product));
-			ArrayList<Object> fList = new ArrayList<>();
 			for(Entry<Flower, Integer> set : flowerInProduct.entrySet())
 			{
-				fList.add(new FlowerInProduct(set.getKey().getId(), set.getValue()));
+				pList.add(new FlowerInProduct(set.getKey().getId(), set.getValue()));
 			}
-			createCustomProduct(pList,fList);
+			createCustomProduct(pList);
 		//CartController.cartProducts.keySet();
 		
 	}
 	/**
-	 * @param pList custom product
-	 * @param fList flowers in product
+	 * @param pList custom product in first place in others only flowers in products and their quantity
 	 * sending to server product with flowers to insert to database and get the product back to display in the cart
 	 */
-	private void createCustomProduct(ArrayList<Object> pList, ArrayList<Object> fList ) {
+	private void createCustomProduct(ArrayList<Object> pList) {
 		Packet packet = new Packet();//create packet to send
 		packet.addCommand(Command.CreateCustomProduct);//add command
 		
 		
 		packet.setParametersForCommand(Command.CreateCustomProduct,pList);
-		packet.setParametersForCommand(Command.insertFlowersInProduct, fList);
 		// create the thread for send to server the message
 		SystemSender send = new SystemSender(packet);
 
@@ -273,7 +269,6 @@ public class CustomProductController implements Initializable {
 		
 	}
 	public void start(Stage primaryStage) throws IOException {
-		this.primaryStage=primaryStage;
 		String srcFXML = "/Products/CustomProductUI.fxml";
 		String srcCSS = "/Products/application.css";
 		Parent root = FXMLLoader.load(getClass().getResource(srcFXML));

@@ -11,7 +11,7 @@
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="218.0" prefWidth="475.0">
                <children>
-                  <Button fx:id="btnFind" layoutX="132.0" layoutY="181.0" mnemonicParsing="false" text="Find flowers" />
+                  <Button fx:id="btnFind" layoutX="198.0" layoutY="181.0" mnemonicParsing="false" text="Find flowers" />
                   <TextField fx:id="txtMaxCost" layoutX="163.0" layoutY="37.0" promptText="enter price range" />
                   <ComboBox fx:id="cmbColor" layoutX="163.0" layoutY="90.0" prefWidth="150.0" />
                   <Label layoutX="69.0" layoutY="41.0" text="Price range:" />
@@ -19,7 +19,6 @@
                   <Label fx:id="lblCashLeft" layoutX="172.0" layoutY="147.0" />
                   <Label layoutX="77.0" layoutY="148.0" text="Product type:" />
                   <ComboBox fx:id="cmbProductType" layoutX="163.0" layoutY="144.0" prefWidth="150.0" />
-                  <Button layoutX="261.0" layoutY="181.0" mnemonicParsing="false" text="Add Blessing" />
                </children>
             </AnchorPane>
         </content>
