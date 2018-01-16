@@ -5,44 +5,52 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Orders.OrderUI">
+<AnchorPane prefHeight="270.0" prefWidth="404.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Orders.OrderController">
    <children>
-      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
-         <children>
-            <TabPane layoutY="40.0" prefHeight="357.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
-              <tabs>
-                <Tab text="products">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                           <children>
-                              <TableView prefHeight="228.0" prefWidth="552.0">
-                                <columns>
-                                  <TableColumn fx:id="tblProductInList" prefWidth="176.0" text="product name" />
-                                    <TableColumn prefWidth="137.0" text="price" />
-                                  <TableColumn prefWidth="114.0" text="quantity" />
-                                    <TableColumn prefWidth="114.0" text="flowers" />
-                                </columns>
-                              </TableView>
-                              <Button fx:id="btnAddProduct" layoutX="430.0" layoutY="243.0" mnemonicParsing="false" text="add Product" />
-                           </children>
-                        </AnchorPane>
-                  </content>
-                </Tab>
-                <Tab text="delivery">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                  </content>
-                </Tab>
-                  <Tab text="payment">
-                     <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                     </content>
-                  </Tab>
-              </tabs>
-            </TabPane>
-            <Label layoutX="231.0" layoutY="7.0" text="Create new order" />
-         </children>
-      </Pane>
+      <TabPane fx:id="tabPane" prefHeight="219.0" prefWidth="400.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab fx:id="date" text="Order details">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="225.0" prefWidth="356.0">
+                     <children>
+                        <DatePicker fx:id="requestedDate" layoutX="125.0" layoutY="59.0" />
+                        <Label layoutX="32.0" layoutY="63.0" text="Requested date:" />
+                        <TextField fx:id="txtTimeRequested" layoutX="126.0" layoutY="102.0" />
+                        <Label layoutX="32.0" layoutY="106.0" text="Requested time:" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab fx:id="delivery" disable="true" text="Delivery">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="50.0" layoutY="40.0" text="Address:" />
+                        <Label layoutX="58.0" layoutY="71.0" text="Name:" />
+                        <Label layoutX="59.0" layoutY="108.0" text="Phone:" />
+                        <TextField fx:id="txtAddress" layoutX="126.0" layoutY="36.0" />
+                        <TextField fx:id="txtName" layoutX="126.0" layoutY="67.0" />
+                        <TextField fx:id="txtPhone" layoutX="126.0" layoutY="104.0" />
+                     </children></AnchorPane>
+            </content>
+          </Tab>
+            <Tab fx:id="payment" disable="true" text="Payment">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <RadioButton fx:id="radCash" layoutX="85.0" layoutY="78.0" mnemonicParsing="false" text="Cash" />
+                        <RadioButton fx:id="radAccount" layoutX="187.0" layoutY="78.0" mnemonicParsing="false" text="Account membership" />
+                        <Label layoutX="109.0" layoutY="33.0" text="Chose payment method" />
+                        <Button fx:id="btnConfirm" layoutX="132.0" layoutY="119.0" mnemonicParsing="false" text="Confirm" />
+                        <Label layoutX="71.0" layoutY="159.0" text="Total:" />
+                        <Label fx:id="lblTotal" layoutX="132.0" layoutY="159.0" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+      <Button fx:id="btnNext" layoutX="338.0" layoutY="219.0" mnemonicParsing="false" text="Next" />
+      <Button fx:id="btnPrev" layoutX="24.0" layoutY="219.0" mnemonicParsing="false" text="Prev" />
    </children>
 </AnchorPane>

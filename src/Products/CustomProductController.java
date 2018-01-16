@@ -37,6 +37,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -151,6 +152,9 @@ public class CustomProductController implements Initializable {
 				Stage cartStage = new Stage();
 				CartController cartController = new CartController();
     			cartController.setComesFromCatalog(false);
+    			Node source = (Node) event.getSource();
+			    Stage stage = (Stage) source.getScene().getWindow();
+			    stage.close();
     			try {
 					cartController.start(cartStage);
 				} catch (Exception e) {

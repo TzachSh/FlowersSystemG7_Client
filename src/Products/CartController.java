@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 import javax.swing.JOptionPane;
 
 import Login.CustomerMenuController;
+import Orders.OrderController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
@@ -450,6 +451,7 @@ public class CartController implements Initializable
 		getFlowers();
 		registerBackToCatalogButton();
 		registerCreateCustomProductBtn();
+		registerPurchaseBtn();
 		registerClearOrderButton();
 		addProductsToCartMap(SelectProductController.productsSelected);
 		updateTotalPrice();
@@ -459,6 +461,26 @@ public class CartController implements Initializable
 		else
 			btnBackToCatalog.setText("Add From Catalog");
 	}
+	private void registerPurchaseBtn() {
+		btnPurchase.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				mainStage.close(); //hiding primary window
+    			Stage primaryStage = new Stage();
+    			OrderController orderController = new OrderController();
+    			try {
+					orderController.start(primaryStage);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+		});
+		
+	}
+
 	private void registerClearOrderButton() {
 		btnClearOrder.setOnAction(new EventHandler<ActionEvent>() {
 			

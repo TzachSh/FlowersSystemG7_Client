@@ -1,0 +1,233 @@
+package Orders;
+
+import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ResourceBundle;
+
+import Products.CartController;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.DateCell;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import javafx.util.Callback;
+
+public class OrderController implements Initializable, ChangeListener<String>{
+
+	@FXML
+	private TextField txtTimeRequested;
+	@FXML
+	private Button btnNext;
+	@FXML
+	private Button btnPrev;
+	@FXML
+	private Button btnConfirm;
+	@FXML
+	private TextField txtAddress;
+	@FXML
+	private TextField txtName;
+	@FXML
+	private TextField txtPhone;
+	@FXML
+	private RadioButton radAccount;
+	@FXML
+	private RadioButton radCash;
+	@FXML
+	private DatePicker requestedDate;
+	@FXML
+	private TabPane tabPane;
+	@FXML
+	private Tab date;
+	@FXML
+	private Tab delivery;
+	@FXML
+	private Tab payment;
+	@FXML
+	private Label lblTotal;
+	private ToggleGroup toggleGroup = new ToggleGroup();
+	private int tabActive=0;
+	private int emptyLines=3;
+	public OrderController() {}
+	public void start(Stage arg0) throws Exception {
+		
+		String title = "Create new order";
+		String srcFXML = "/Orders/OrderApp.fxml";
+		String srcCSS = "/Orders/application.css";
+
+		
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(getClass().getResource(srcFXML));
+			Parent root = loader.load();
+			Scene scene = new Scene(root);
+			scene.getStylesheets().add(getClass().getResource(srcCSS).toExternalForm());
+			arg0.setTitle(title);
+			arg0.setScene(scene);
+			arg0.show();
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e);
+			e.printStackTrace();
+		}
+		
+		arg0.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			@Override
+			public void handle(WindowEvent event) {
+				displayCart();
+				arg0.close();
+			}
+		});
+	}
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		registerDateTimePicker();
+		registerTxtRequestedTime();
+		registerNextBtn();
+		registerBackBtn();
+		registerRadionBtn();
+		txtAddress.textProperty().addListener(this);
+		txtName.textProperty().addListener(this);
+		txtPhone.textProperty().addListener(this);
+		delivery.setDisable(true);
+		payment.setDisable(true);
+	}
+
+	private void registerRadionBtn() {
+		
+
+		radAccount.setToggleGroup(toggleGroup);
+		radCash.setToggleGroup(toggleGroup);
+		
+	}
+	private void registerBackBtn() {
+		btnPrev.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				switch(tabActive)
+				{
+				case 0:
+					Node source = (Node) event.getSource();
+				    Stage stage = (Stage) source.getScene().getWindow();
+				    stage.close();
+				    displayCart();
+				    break;
+				case 1:
+					tabPane.getSelectionModel().select(0);
+					date.setDisable(false);
+					delivery.setDisable(true);
+					break;
+				case 2:
+					tabPane.getSelectionModel().select(1);
+					delivery.setDisable(false);
+					payment.setDisable(true);
+					btnNext.setVisible(true);
+					break;
+				    default:;
+				}
+				tabActive--;
+				
+			}
+		});
+		
+	}
+	protected void displayCart() {
+		 Stage cartStage = new Stage();
+			CartController cartController = new CartController();
+			cartController.setComesFromCatalog(false);
+			try {
+				cartController.start(cartStage);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	}
+	private void registerTxtRequestedTime() {
+		txtTimeRequested.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue,String newValue) {
+					if(txtTimeRequested.getText().matches("([01]?[0-9]|2[0-3]):[0-5][0-9]"))
+					{
+						btnNext.setDisable(false);
+					}
+					else
+						btnNext.setDisable(true);
+			}
+		});
+		
+	}
+	private void registerNextBtn() {
+		btnNext.setDisable(true);
+		btnNext.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				switch(tabActive)
+				{
+				case 0:
+					tabPane.getSelectionModel().select(1);
+					delivery.setDisable(false);
+					date.setDisable(true);
+					break;
+				case 1:
+					tabPane.getSelectionModel().select(2);
+					delivery.setDisable(true);
+					payment.setDisable(false);
+					btnNext.setVisible(false);				
+					break;
+				default:;
+				}
+				tabActive++;
+			}
+				
+		});		
+	}
+	private void registerDateTimePicker() {
+		DatePicker minDate = new DatePicker(); // DatePicker, used to define max date available
+		minDate.setValue(LocalDate.now()); // Max date available will be one year
+		final Callback<DatePicker, DateCell> dayCellFactory;
+
+		dayCellFactory = (final DatePicker datePicker) -> new DateCell() {
+		    @Override
+		    public void updateItem(LocalDate item, boolean empty) {
+		        super.updateItem(item, empty);
+		        if (item.isBefore(minDate.getValue())) { //Disable all dates after required date
+		            setDisable(true);
+		            setStyle("-fx-background-color: #ffc0cb;"); //To set background on different color
+		        }
+		    }
+		};
+		//update  DatePicker cell factory
+		requestedDate.setDayCellFactory(dayCellFactory);
+		
+	}
+	@Override
+	public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+		if(oldValue.length()==0)
+			emptyLines--;
+		else if(newValue.length()==0)
+			emptyLines++;
+		btnNext.setDisable(emptyLines!=3 && emptyLines!=0);
+	}
+
+}
