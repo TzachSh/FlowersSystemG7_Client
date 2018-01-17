@@ -19,6 +19,7 @@ import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
+import Survey.AnswerSurvey;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -54,6 +55,9 @@ public class ReportsController implements Initializable{
 	@FXML private TableView<IncomeReport> table2Income;
 	@FXML private TableView<OrderReport> tblViewOrder1;
 	@FXML private TableView<OrderReport> tblViewOrder2;
+	@FXML private TableView<SatisfactionReport> tblViewSatisfaction1;
+	@FXML private TableView<SatisfactionReport> tblViewSatisfaction2;
+	
 	@FXML private ComboBox<String> cbYear;
 	@FXML
 	private ComboBox<String> cbQuarterly1;
@@ -122,6 +126,22 @@ public class ReportsController implements Initializable{
 		branchIncome.setCellValueFactory(new PropertyValueFactory<IncomeReport, String>("amount"));
 
 		table.getColumns().addAll(branchId,branchName,branchIncome);
+		table.setVisible(true);
+	}
+	@SuppressWarnings("unchecked")
+	public void BuildTableViewForSatisfaction(TableView<SatisfactionReport> table ,ArrayList<SatisfactionReport> surveyReport)
+	{
+		table.getColumns().clear();
+		ObservableList<SatisfactionReport> data = FXCollections.observableArrayList(surveyReport);
+		table.setItems(data);
+		//adding the data to the columns
+		TableColumn<SatisfactionReport, String> Question=new TableColumn<>("Question");
+		Question.setCellValueFactory(new PropertyValueFactory<SatisfactionReport, String>("question"));
+		TableColumn<SatisfactionReport, String> avg=new TableColumn<>("Avg Answer");
+		avg.setCellValueFactory(new PropertyValueFactory<SatisfactionReport, String>("avg"));
+
+
+		table.getColumns().addAll(Question,avg);
 		table.setVisible(true);
 	}
 	@SuppressWarnings({ "unchecked", "deprecation" })
@@ -610,6 +630,118 @@ public class ReportsController implements Initializable{
 			});
 			send2.start();
 		}
+		if(report.equals("Satisfaction"))
+		{
+			Packet packet = new Packet();
+			Packet packet2 = new Packet();
+			//building the query by the  choice ,and adding the relative command
+			switch (choice)
+			{
+			case 0:
+				//regular report , without compare , sending also the branch id 
+				generateReportForBranchManager(brId,report,year,quartely);
+				return;
+	
+			case 1:
+				//compare with  same branches with 2 different quarterly
+				int quartely2=Integer.parseInt(cbQuarterly2.getSelectionModel().getSelectedItem());
+				//building the first packet to get the first information
+				BuildPacketForReport(packet, year, quartely, brId,Command.getSatisfactionReport);
+				//building the second packet to get the second information
+				BuildPacketForReport(packet2, year, quartely2, brId,Command.getSatisfactionReport);
+
+				break;
+			case 2:
+				//compare with  same quarterly with 2 different branches
+				int secondBranchNumber=Integer.parseInt(cbBranchTwoNumber.getSelectionModel().getSelectedItem());
+				//building the first packet to get the first information
+				BuildPacketForReport(packet, year, quartely, brId,Command.getSatisfactionReport);
+				//building the second packet to get the second information
+				BuildPacketForReport(packet2, year, quartely, secondBranchNumber,Command.getSatisfactionReport);
+				break;
+			case 3:
+				//compare with  different quarterly with 2 different branches
+				int secondBranchNumber2=Integer.parseInt(cbBranchTwoNumber.getSelectionModel().getSelectedItem());
+				int secondquartely=Integer.parseInt(cbQuarterly2.getSelectionModel().getSelectedItem());
+				//building the first packet to get the first information
+				BuildPacketForReport(packet, year, quartely, brId,Command.getSatisfactionReport);
+				//building the second packet to get the second information
+				BuildPacketForReport(packet2, year, secondquartely, secondBranchNumber2,Command.getSatisfactionReport);
+				break;
+
+			}
+			//sending the packet
+			SystemSender send = new SystemSender(packet);
+			send.registerHandler(new IResultHandler() {
+				
+				@Override
+				public void onWaitingForResult() {
+					// TODO Auto-generated method stub		
+				}		
+				@Override
+				public void onReceivingResult(Packet p) {
+					// checking the result
+					if(p.getResultState()) 
+					{
+						
+						//getting the information from the returned packet
+						ArrayList<SatisfactionReport> surveyReport ;
+						
+						surveyReport= p.<SatisfactionReport>convertedResultListForCommand(Command.getSatisfactionReport);
+						//checking the list
+						if(surveyReport.isEmpty()==true)
+						{
+							showError("Error,There Is No Data For This Selection");
+							return;
+						}
+						
+						//sending the wanted table and the result to function that builds the tableview
+						//BuildTableViewForSatisfaction(tblViewSatisfaction1,surveyReport);
+						BuildTableViewForSatisfaction(tblViewSatisfaction1, surveyReport);
+						
+					}
+					else
+						System.out.println("Fail: " + p.getExceptionMessage());		
+				}
+			});
+			send.start();
+			//sending the second packet
+			SystemSender send2 = new SystemSender(packet2);
+			send2.registerHandler(new IResultHandler() {
+				
+				@Override
+				public void onWaitingForResult() {
+					// TODO Auto-generated method stub		
+				}		
+				@Override
+				public void onReceivingResult(Packet p) {
+					// TODO Auto-generated method stub
+					if(p.getResultState()) 
+					{
+						//getting the information from the returned packet
+						ArrayList<SatisfactionReport> surveyReport ;
+						
+						surveyReport= p.<SatisfactionReport>convertedResultListForCommand(Command.getSatisfactionReport);
+						//checking the list
+						if(surveyReport.isEmpty()==true)
+						{
+							showError("Error,There Is No Data For This Selection");
+							return;
+						}
+						
+						//sending the wanted table and the result to function that builds the tableview
+						//BuildTableViewForSatisfaction(tblViewSatisfaction1,surveyReport);
+						BuildTableViewForSatisfaction(tblViewSatisfaction2, surveyReport);
+					}
+					else
+						System.out.println("Fail: " + p.getExceptionMessage());	
+				}
+			});
+			send2.start();
+		}
+	
+		
+	
 	}
 	/**
 	 * Generates Reports for Branch Manager
@@ -786,9 +918,56 @@ public class ReportsController implements Initializable{
 				}
 			});
 			send.start();	
-
 		}
-		
+		if(report.equals("Satisfaction"))
+		{
+			//opening packet
+			Packet packet = new Packet();
+			//adding command to packet
+			packet.addCommand(Command.getSatisfactionReport);
+			//adding parameters for the command
+			ArrayList<Object> info = new ArrayList<>();
+			info.add(brId);
+			info.add(year);
+			info.add(quartely);
+			packet.setParametersForCommand(Command.getSatisfactionReport, info);
+			//sending the packet
+			SystemSender send = new SystemSender(packet);
+			send.registerHandler(new IResultHandler() {
+				
+				@Override
+				public void onWaitingForResult() {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void onReceivingResult(Packet p) {
+					// TODO Auto-generated method stub
+					if(p.getResultState())
+					{
+						//getting the information from the returned packet
+						ArrayList<SatisfactionReport> surveyReport ;
+						
+						surveyReport= p.<SatisfactionReport>convertedResultListForCommand(Command.getSatisfactionReport);
+						//checking the list
+						if(surveyReport.isEmpty()==true)
+						{
+							showError("Error,There Is No Data For This Selection");
+							return;
+						}
+						
+						//sending the wanted table and the result to function that builds the tableview
+						//BuildTableViewForSatisfaction(tblViewSatisfaction1,surveyReport);
+						BuildTableViewForSatisfaction(tblViewSatisfaction1, surveyReport);
+					
+					}
+					else
+						System.out.println("Fail: " + p.getExceptionMessage());	
+				}
+			});
+			send.start();	
+		}
 	
 		
 	}
@@ -813,12 +992,16 @@ public class ReportsController implements Initializable{
 		table2Income.getColumns().clear();
 		tblViewOrder1.getColumns().clear();
 		tblViewOrder2.getColumns().clear();
+		tblViewSatisfaction1.getColumns().clear();
+		tblViewSatisfaction2.getColumns().clear();
 		table1Income.getItems().clear();
 		table2Income.getItems().clear();
 		table1Income.setVisible(false);
 		table2Income.setVisible(false);
 		tblViewOrder1.setVisible(false);
 		tblViewOrder2.setVisible(false);
+		tblViewSatisfaction1.setVisible(false);
+		tblViewSatisfaction2.setVisible(false);
 		//checking which user is using this screen and by its type , function will be called depended on his type 
 		if(employee.getRole().toString().equals((Role.BranchesManager).toString()))
 			generateReportForBranchesManager(report,year,quartely1);
@@ -912,7 +1095,7 @@ public class ReportsController implements Initializable{
 		report.add("Orders");
 		report.add("Complains");
 		report.add("Income");
-		report.add("Statisfaction");
+		report.add("Satisfaction");
 		observelistReport = FXCollections.observableArrayList(report);
 		cbReports.setItems(observelistReport);
 		cbReports.getSelectionModel().selectFirst();
@@ -981,6 +1164,8 @@ public class ReportsController implements Initializable{
 		barChart1.setVisible(false);
 		tblViewOrder1.setVisible(false);
 		tblViewOrder2.setVisible(false);
+		tblViewSatisfaction1.setVisible(false);
+		tblViewSatisfaction2.setVisible(false);
 		//building new packet
 		Packet packet = new Packet();
 		//adding command
