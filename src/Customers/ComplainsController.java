@@ -52,6 +52,7 @@ import javafx.util.StringConverter;
  * Complains controller which performs adding new complains and follow them 
  *
  */
+
 public class ComplainsController implements Initializable {
 
 	//FXML components
