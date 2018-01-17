@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="270.0" prefWidth="404.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Orders.OrderController">
+<AnchorPane prefHeight="346.0" prefWidth="408.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Orders.OrderController">
    <children>
-      <TabPane fx:id="tabPane" prefHeight="219.0" prefWidth="400.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane fx:id="tabPane" prefHeight="280.0" prefWidth="408.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab fx:id="date" text="Order details">
             <content>
@@ -17,6 +18,7 @@
                         <Label layoutX="32.0" layoutY="63.0" text="Requested date:" />
                         <TextField fx:id="txtTimeRequested" layoutX="126.0" layoutY="102.0" />
                         <Label layoutX="32.0" layoutY="106.0" text="Requested time:" />
+                        <CheckBox fx:id="chkExpressDelivery" layoutX="139.0" layoutY="144.0" mnemonicParsing="false" text="express delivery" />
                      </children>
                   </AnchorPane>
             </content>
@@ -28,29 +30,40 @@
                         <Label layoutX="50.0" layoutY="40.0" text="Address:" />
                         <Label layoutX="58.0" layoutY="71.0" text="Name:" />
                         <Label layoutX="59.0" layoutY="108.0" text="Phone:" />
-                        <TextField fx:id="txtAddress" layoutX="126.0" layoutY="36.0" />
-                        <TextField fx:id="txtName" layoutX="126.0" layoutY="67.0" />
-                        <TextField fx:id="txtPhone" layoutX="126.0" layoutY="104.0" />
+                        <TextField fx:id="txtAddress" disable="true" layoutX="126.0" layoutY="36.0" />
+                        <TextField fx:id="txtName" disable="true" layoutX="126.0" layoutY="67.0" />
+                        <TextField fx:id="txtPhone" disable="true" layoutX="126.0" layoutY="104.0" />
+                        <CheckBox fx:id="chkDelivery" layoutX="143.0" layoutY="14.0" mnemonicParsing="false" text="Set delivery option" />
                      </children></AnchorPane>
             </content>
           </Tab>
             <Tab fx:id="payment" disable="true" text="Payment">
                <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="257.0" prefWidth="400.0">
                      <children>
-                        <RadioButton fx:id="radCash" layoutX="85.0" layoutY="78.0" mnemonicParsing="false" text="Cash" />
-                        <RadioButton fx:id="radAccount" layoutX="187.0" layoutY="78.0" mnemonicParsing="false" text="Account membership" />
-                        <Label layoutX="109.0" layoutY="33.0" text="Chose payment method" />
-                        <Button fx:id="btnConfirm" layoutX="132.0" layoutY="119.0" mnemonicParsing="false" text="Confirm" />
-                        <Label layoutX="71.0" layoutY="159.0" text="Total:" />
-                        <Label fx:id="lblTotal" layoutX="132.0" layoutY="159.0" />
+                        <RadioButton fx:id="radCash" layoutX="77.0" layoutY="43.0" mnemonicParsing="false" text="Cash" />
+                        <RadioButton fx:id="radAccount" layoutX="228.0" layoutY="43.0" mnemonicParsing="false" text="Credit card" />
+                        <Label layoutX="117.0" layoutY="14.0" text="Choose payment method" />
+                        <Label layoutX="87.0" layoutY="220.0" text="Left to pay:" AnchorPane.rightAnchor="280.0" />
+                        <Label fx:id="lblTotal" layoutX="154.0" layoutY="126.0" prefHeight="17.0" prefWidth="62.0" />
+                        <TextField fx:id="txtBlncePay" layoutX="139.0" layoutY="182.0" prefHeight="25.0" prefWidth="91.0" />
+                        <Label layoutX="30.0" layoutY="159.0" text="Available amount:" AnchorPane.rightAnchor="280.0" />
+                        <Label layoutX="14.0" layoutY="186.0" text="Use account balance" AnchorPane.rightAnchor="280.0" />
+                        <Label layoutX="10.0" layoutY="73.0" text="Total before Discount:" AnchorPane.rightAnchor="280.0" />
+                        <Label layoutX="76.0" layoutY="100.0" text="Discount:" AnchorPane.rightAnchor="280.0" />
+                        <Label layoutX="96.0" layoutY="126.0" text="Total: " AnchorPane.rightAnchor="280.0" />
+                        <Label fx:id="lblTotalBeforeDiscount" layoutX="171.0" layoutY="73.0" />
+                        <Label fx:id="lblDiscount" layoutX="171.0" layoutY="100.0" />
+                        <Label layoutX="171.0" layoutY="126.0" />
+                        <Label fx:id="lblAvailableBalance" layoutX="171.0" layoutY="159.0" />
+                        <Label fx:id="lblLeftToPay" layoutX="171.0" layoutY="220.0" />
                      </children>
                   </AnchorPane>
                </content>
             </Tab>
         </tabs>
       </TabPane>
-      <Button fx:id="btnNext" layoutX="338.0" layoutY="219.0" mnemonicParsing="false" text="Next" />
-      <Button fx:id="btnPrev" layoutX="24.0" layoutY="219.0" mnemonicParsing="false" text="Prev" />
+      <Button fx:id="btnNext" layoutX="340.0" layoutY="295.0" mnemonicParsing="false" text="Next" />
+      <Button fx:id="btnPrev" layoutX="26.0" layoutY="295.0" mnemonicParsing="false" text="Prev" />
    </children>
 </AnchorPane>

@@ -19,6 +19,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -30,6 +31,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
+import javafx.util.converter.LocalDateStringConverter;
 
 public class OrderController implements Initializable, ChangeListener<String>{
 
@@ -40,17 +42,12 @@ public class OrderController implements Initializable, ChangeListener<String>{
 	@FXML
 	private Button btnPrev;
 	@FXML
-	private Button btnConfirm;
-	@FXML
 	private TextField txtAddress;
 	@FXML
 	private TextField txtName;
 	@FXML
 	private TextField txtPhone;
-	@FXML
-	private RadioButton radAccount;
-	@FXML
-	private RadioButton radCash;
+
 	@FXML
 	private DatePicker requestedDate;
 	@FXML
@@ -61,8 +58,29 @@ public class OrderController implements Initializable, ChangeListener<String>{
 	private Tab delivery;
 	@FXML
 	private Tab payment;
+	
+	
+	@FXML
+	private RadioButton radAccount;
+	@FXML
+	private RadioButton radCash;
+	@FXML
+	private Label lblTotalBeforeDiscount;
+	@FXML 
+	private Label lblDiscount;
 	@FXML
 	private Label lblTotal;
+	@FXML
+	private Label lblLeftToPay;
+	@FXML
+	private Label lblAvailableBalance;
+	@FXML
+	private TextField txtBlncePay;
+	
+	@FXML
+	private CheckBox chkExpressDelivery;
+	@FXML
+	private CheckBox chkDelivery;
 	private ToggleGroup toggleGroup = new ToggleGroup();
 	private int tabActive=0;
 	private int emptyLines=3;
@@ -105,6 +123,8 @@ public class OrderController implements Initializable, ChangeListener<String>{
 		registerNextBtn();
 		registerBackBtn();
 		registerRadionBtn();
+		registerChkExpressDelivery();
+		registerChkDelivery();
 		txtAddress.textProperty().addListener(this);
 		txtName.textProperty().addListener(this);
 		txtPhone.textProperty().addListener(this);
@@ -112,6 +132,51 @@ public class OrderController implements Initializable, ChangeListener<String>{
 		payment.setDisable(true);
 	}
 
+	private void registerChkDelivery() {
+		chkDelivery.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				if(chkDelivery.isSelected())
+				{
+					txtAddress.setDisable(false);
+					txtName.setDisable(false);
+					txtPhone.setDisable(false);
+				}
+				else
+				{
+					txtAddress.setDisable(true);
+					txtName.setDisable(true);
+					txtPhone.setDisable(true);
+				}
+				
+			}
+		});
+	}
+	private void registerChkExpressDelivery() {
+		chkExpressDelivery.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				if(chkExpressDelivery.isSelected())
+				{
+					requestedDate.setDisable(true);
+					txtTimeRequested.setDisable(true);
+					requestedDate.setValue(LocalDate.now());
+					LocalDateTime dt = LocalDateTime.now().plusHours(3);
+					txtTimeRequested.setText(dt.getHour() +":"+dt.getMinute());
+				}
+				else
+				{
+					requestedDate.setDisable(false);
+					txtTimeRequested.setDisable(false);
+					txtTimeRequested.setText("");
+				}
+				
+			}
+		});
+		
+	}
 	private void registerRadionBtn() {
 		
 

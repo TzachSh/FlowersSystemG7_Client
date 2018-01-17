@@ -78,6 +78,8 @@ public class CartController implements Initializable
 	  
 	  private static ArrayList<Flower> flowerList = new ArrayList<>();
 	  
+	  private static double totalPrice = 0.0;
+	  
 	  /**
 	   * Initialize the state if the controller called from catalog, for back button
 	   * @param comesFromCatalog True - if called from Catalog Viewer, False - else
@@ -354,14 +356,14 @@ public class CartController implements Initializable
 		 */
 		private void updateTotalPrice()
 		{
-			double totalPrice = 0.0;
+			totalPrice=0;
 			int totalItems = 0;
 			for (Map.Entry<Product, Integer> entry : cartProducts.entrySet())
 			{
 				if(entry.getKey() instanceof CatalogProduct)
 					totalPrice += getFinalPrice((CatalogProduct)entry.getKey()) * entry.getValue();
 				else
-					totalPrice+=((CustomProduct)entry.getKey()).getPrice();
+					totalPrice+=((CustomProduct)entry.getKey()).getPrice()*entry.getValue();
 				totalItems += entry.getValue();
 			}
 			
