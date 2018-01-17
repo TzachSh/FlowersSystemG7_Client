@@ -161,6 +161,12 @@ public class ReportsController implements Initializable{
 		creationDate.setCellValueFactory(new PropertyValueFactory<OrderReport, String>("creationDate"));
 		creationDate.setSortable(false);
 		creationDate.impl_setReorderable(false);
+		
+		TableColumn<OrderReport, String> status=new TableColumn<>("Status");
+		status.setCellValueFactory(new PropertyValueFactory<OrderReport, String>("status"));
+		status.setSortable(false);
+		status.impl_setReorderable(false);
+		
 		TableColumn<OrderReport, String> productId=new TableColumn<>("Product Number");
 		productId.setCellValueFactory(new PropertyValueFactory<OrderReport, String>("productId"));
 		productId.setSortable(false);
@@ -198,7 +204,7 @@ public class ReportsController implements Initializable{
 		{
 			col.setSortable(false);
 		}
-		table.getColumns().addAll(productCategory,orderId,creationDate,productId,productName,price,paymentMethod,deliveryNumber,address,phone,receiver);
+		table.getColumns().addAll(productCategory,orderId,creationDate,status,productId,productName,price,paymentMethod,deliveryNumber,address,phone,receiver);
 		table.setVisible(true);
 	}
 	public void BuildBarChartForComplain(BarChart<String,Integer> barch, int active ,int notactive)
