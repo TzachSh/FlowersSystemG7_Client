@@ -7,12 +7,16 @@ import java.util.ResourceBundle;
 
 import Branches.Branch;
 import Commons.Refund;
+import Login.CustomerMenuController;
+import Login.LoginController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
+import Products.ConstantData;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -20,15 +24,20 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 
 public class MyComplainsController implements Initializable{
@@ -39,11 +48,10 @@ public class MyComplainsController implements Initializable{
 	private ArrayList<Refund> refundsList;
 	private ArrayList<Reply> replyList;
 	private ObservableList<Complain> complainsData;
-	
-	public static Customer customer;
-	
+	private Customer customer = (Customer)LoginController.userLogged;
+	private Stage primaryStage;
 	public void start(Stage primaryStage) {
-		
+		this.primaryStage = primaryStage;
 		String title = "Follow Complains";
 		String srcFXML = "/Customers/MyComplainsUI.fxml";
 		
@@ -56,12 +64,29 @@ public class MyComplainsController implements Initializable{
 			primaryStage.setTitle(title);
 			primaryStage.setScene(scene);
 			primaryStage.show();
+			
+			primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+		          public void handle(WindowEvent we) {
+		        	  
+		        	  primaryStage.close();
+					  CustomerMenuController menu = new CustomerMenuController();
+					  try {
+						menu.start(new Stage());
+					} catch (Exception e) {
+						ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
+					}
+
+		          }
+		      }); 
+			
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println(e);
 			e.printStackTrace();
 		}
 	}
+	
+
 	
 	private void displayComplains()
 	{

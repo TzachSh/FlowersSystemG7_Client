@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import Branches.Branch;
 import Customers.Account;
 import Customers.Customer;
+import Customers.MyComplainsController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
@@ -181,7 +182,9 @@ public class CustomerMenuController implements Initializable {
 	 */
 	public void onClickingMyComplains()
 	{
-		
+		menuStage.close(); //hiding primary window
+		MyComplainsController mc = new MyComplainsController();
+		mc.start(new Stage());
 	}
 	/**
 	 * Initialize the ComboBox of Branches with List of branches

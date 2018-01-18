@@ -7,10 +7,14 @@ import java.util.ResourceBundle;
 import Branches.Employee;
 import Branches.Role;
 import Customers.Complain;
+import Login.CustomerMenuController;
+import Login.LoginController;
+import Login.ServiceMenuController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
+import Products.ConstantData;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -35,6 +39,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 
 public class SurveyManagementController implements Initializable {
@@ -82,7 +87,7 @@ public class SurveyManagementController implements Initializable {
 	
 	private ArrayList<SurveyConclusion> surveyConclusionList;
 	private ArrayList<Survey> survyList;
-	public static Employee employee;
+	public static Employee employee=(Employee)LoginController.userLogged;
 	
 	private int curStep = 1;
 	/**
@@ -109,6 +114,19 @@ public class SurveyManagementController implements Initializable {
 			System.out.println(e);
 			e.printStackTrace();
 		}
+		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+	          public void handle(WindowEvent we) {
+	        	  
+	        	  primaryStage.close();
+				  ServiceMenuController menu = new ServiceMenuController();
+				  try {
+					menu.start(new Stage());
+				} catch (Exception e) {
+					ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
+				}
+
+	          }
+	      }); 
 	}
 	
 	private void performNextStep()

@@ -97,21 +97,6 @@ public class CustomerController implements Initializable {
 		String srcFXML = "/Customers/addCustomerUI.fxml";
 		String srcCSS = "/Customers/application.css";
 		
-		//initial text fields and buttons 
-		/*btnRegister=new Button();
-		btnCancel=new Button();
-		btnFinish=new Button();
-		btnAddCreditCard=new Button();
-		btnAddCreditCard=new Button();
-		txtDiscount=new TextField();
-		txtUser=new TextField();
-		txtPassword=new TextField();
-		txtConfirmPassword=new TextField();
-		txtCreditCard=new TextField();
-		anchorpane1=new AnchorPane();
-		anchorpane2=new AnchorPane();*/
-		
-		
 
 	
 		try {

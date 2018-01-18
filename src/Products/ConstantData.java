@@ -9,6 +9,8 @@ import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 public class ConstantData {
 	public static ArrayList<ProductType> productTypeList = new ArrayList<>();
@@ -45,5 +47,16 @@ public class ConstantData {
 			}
 		});
 		send.start();
+	}
+	/**
+	 * Show an Alert dialog with custom info
+	 */
+	public static void displayAlert(AlertType type , String title , String header , String content)
+	{
+		Alert alert = new Alert(type);
+		alert.setTitle(title);
+		alert.setHeaderText(header);
+		alert.setContentText(content);
+		alert.showAndWait();
 	}
 }

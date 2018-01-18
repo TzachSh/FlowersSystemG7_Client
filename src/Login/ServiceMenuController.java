@@ -1,5 +1,10 @@
 package Login;
 
+import Branches.CustomerService;
+import Branches.Employee;
+import Branches.Role;
+import Survey.SurveyManagementController;
+import Users.Permission;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,6 +18,7 @@ import javafx.stage.WindowEvent;
 public class ServiceMenuController 
 {
 
+	private static Stage primaryStage;
 	private static LoginController loginController;
 	    
 	    
@@ -23,6 +29,9 @@ public class ServiceMenuController
 	    
 	public void onClickingSurveyManagment()
 	{
+		primaryStage.close();
+		SurveyManagementController sc = new SurveyManagementController();
+		sc.start(new Stage());
 		
 	}
 	
@@ -46,7 +55,7 @@ public class ServiceMenuController
 		});
 	}
 	
-	public void start(Stage primaryStage) throws Exception {
+	public void start(Stage mainStage) throws Exception {
 		String title = "Main Menu";
 		String srcFXML = "/Login/ServiceMenu.fxml";
 		
@@ -56,11 +65,11 @@ public class ServiceMenuController
 			loader.setLocation(getClass().getResource(srcFXML));
 			Parent root = loader.load();
 			Scene scene = new Scene(root);
-			primaryStage.setTitle(title);
-			primaryStage.setScene(scene);
-			primaryStage.setResizable(false);
-			primaryStage.show();
-			
+			mainStage.setTitle(title);
+			mainStage.setScene(scene);
+			mainStage.setResizable(false);
+			mainStage.show();
+			primaryStage=mainStage;
 			primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 		          public void handle(WindowEvent we) {
 

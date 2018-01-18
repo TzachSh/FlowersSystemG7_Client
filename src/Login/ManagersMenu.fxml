@@ -7,28 +7,28 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="467.0" prefWidth="431.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Login.CustomerMenuController">
+<AnchorPane prefHeight="469.0" prefWidth="471.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Login.ManagersMenuController">
    <children>
       <Label layoutX="153.0" layoutY="22.0" text="Zer-Li System" underline="true">
          <font>
             <Font size="28.0" />
          </font>
       </Label>
-      <Button fx:id="btnCatalog" layoutX="82.0" layoutY="181.0" mnemonicParsing="false" onAction="#onClickingCatalogViewer" prefHeight="46.0" prefWidth="122.0" text="Update Sales on Catalog" textAlignment="CENTER" wrapText="true" />
-      <Button fx:id="btnSurvey" disable="true" layoutX="82.0" layoutY="295.0" mnemonicParsing="false" onAction="#onClickingShoppingCart" prefHeight="46.0" prefWidth="122.0" text="Watch Survey" />
-      <Button fx:id="btnReports" layoutX="163.0" layoutY="394.0" mnemonicParsing="false" onAction="#onClickingMyOrders" prefHeight="46.0" prefWidth="122.0" text="Reports Generate" />
+      <Button fx:id="btnCatalog" layoutX="163.0" layoutY="182.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="122.0" text="Update Sales on Catalog" textAlignment="CENTER" wrapText="true" />
+      <Button fx:id="btnSurvey" layoutX="21.0" layoutY="297.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="122.0" text="Insert Survey Results" textAlignment="CENTER" wrapText="true" />
+      <Button fx:id="btnReports" layoutX="163.0" layoutY="394.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="122.0" text="Reports Generate" />
       <Label layoutX="35.0" layoutY="124.0" text="Current Branch:" underline="true">
          <font>
             <Font size="13.0" />
          </font>
       </Label>
-      <ComboBox fx:id="cmbBranch" layoutX="143.0" layoutY="122.0" onAction="#onClickingBranchComboBox" prefHeight="25.0" prefWidth="161.0" style="-fx-opacity: 1;" />
-      <Hyperlink fx:id="linkChangeBranch" layoutX="323.0" layoutY="120.0" onAction="#onClickingChangeBranchLink" text="Change">
+      <ComboBox fx:id="cmbBranch" layoutX="143.0" layoutY="122.0" prefHeight="25.0" prefWidth="161.0" style="-fx-opacity: 1;" />
+      <Hyperlink fx:id="linkChangeBranch" layoutX="323.0" layoutY="120.0" text="Change">
          <font>
             <Font size="13.0" />
          </font>
       </Hyperlink>
-      <Hyperlink fx:id="linkLogout" focusTraversable="false" layoutX="193.0" layoutY="78.0" onAction="#performLoggedOutHandler" text="Logout" underline="true">
+      <Hyperlink fx:id="linkLogout" focusTraversable="false" layoutX="193.0" layoutY="78.0" text="Logout" underline="true">
          <font>
             <Font name="System Italic" size="15.0" />
          </font>
@@ -47,7 +47,9 @@
          </font>
       </Label>
       <AnchorPane layoutY="-29.0" opacity="0.08" prefHeight="102.0" prefWidth="431.0" style="-fx-background-color: red;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-      <Button fx:id="btnClient" disable="true" layoutX="243.0" layoutY="295.0" mnemonicParsing="false" onAction="#onClickingShoppingCart" prefHeight="46.0" prefWidth="122.0" text="Open Client Account" textAlignment="CENTER" wrapText="true" />
-      <Button fx:id="btnFlower" disable="true" layoutX="243.0" layoutY="181.0" mnemonicParsing="false" onAction="#onClickingCatalogViewer" prefHeight="46.0" prefWidth="122.0" text="Add Flowers" textAlignment="CENTER" wrapText="true" />
+      <Button fx:id="btnAccount" disable="true" layoutX="163.0" layoutY="297.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="122.0" text="Open Client Account" textAlignment="CENTER" wrapText="true" />
+      <Button fx:id="btnFlower" layoutX="316.0" layoutY="181.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="122.0" text="Add Flowers" textAlignment="CENTER" wrapText="true" />
+      <Button fx:id="btnUpdateCatalog" layoutX="19.0" layoutY="182.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="122.0" text="Update Catalog" />
+      <Button fx:id="btnCreateClient" layoutX="316.0" layoutY="297.0" mnemonicParsing="false" onAction="#onClickCreateCustomer" prefHeight="46.0" prefWidth="122.0" text="Create Client" />
    </children>
 </AnchorPane>

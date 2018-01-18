@@ -182,9 +182,25 @@ public class LoginController implements Initializable {
 					{
 						try
 						{
+							mainStage.close();
 							ServiceMenuController menu = new ServiceMenuController();
-							menu.setLoginController(currentLogin);
-							menu.start(new Stage());
+							menu.setLoginController(currentLogin);							
+							menu.start(new Stage());							
+						}
+						catch (Exception e)
+						{
+							performLoggedOut(user);
+							displayAlert(AlertType.ERROR, "Error", "Exception Error", e.getMessage());
+						}
+					}
+					else
+					{
+						try
+						{
+							mainStage.close();
+							ManagersMenuController menu = new ManagersMenuController();
+							menu.setLoginController(currentLogin);							
+							menu.start(new Stage());							
 						}
 						catch (Exception e)
 						{

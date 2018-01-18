@@ -436,9 +436,9 @@ public class ComplainsController implements Initializable {
 	private void initBranchesCmb()
 	{
 		Packet packet = new Packet();
-		packet.addCommand(Command.getBranches);
+		packet.addCommand(Command.getBranchesIncludeService);
 		ArrayList<Object> paramListBranches = new ArrayList<>();
-		packet.setParametersForCommand(Command.getBranches, paramListBranches);
+		packet.setParametersForCommand(Command.getBranchesIncludeService, paramListBranches);
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
 			
@@ -458,7 +458,7 @@ public class ComplainsController implements Initializable {
 				// TODO Auto-generated method stub
 				if(p.getResultState())
 				{
-					branchList = p.<Branch>convertedResultListForCommand(Command.getBranches);
+					branchList = p.<Branch>convertedResultListForCommand(Command.getBranchesIncludeService);
 					initCmb();
 				}
 			}
