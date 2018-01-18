@@ -34,6 +34,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
+import sun.util.logging.resources.logging;
 
 public class OrderController implements Initializable, ChangeListener<String>{
 
@@ -218,7 +219,7 @@ public class OrderController implements Initializable, ChangeListener<String>{
 					txtTimeRequested.setDisable(true);
 					requestedDate.setValue(LocalDate.now());
 					LocalDateTime dt = LocalDateTime.now().plusHours(3);
-					txtTimeRequested.setText(dt.getHour() +":"+dt.getMinute());
+					txtTimeRequested.setText(dt.getHour() +":"+(dt.getMinute()<10?"0"+dt.getMinute():dt.getMinute()));
 				}
 				else
 				{
@@ -309,6 +310,7 @@ public class OrderController implements Initializable, ChangeListener<String>{
 					break;
 				case 1:
 					tabPane.getSelectionModel().select(2);
+					checkDisplayMode();
 					delivery.setDisable(true);
 					payment.setDisable(false);
 					btnNext.setVisible(false);				
@@ -319,6 +321,9 @@ public class OrderController implements Initializable, ChangeListener<String>{
 			}
 				
 		});		
+	}
+	protected void checkDisplayMode() {
+				
 	}
 	private void registerDateTimePicker() {
 		DatePicker minDate = new DatePicker(); // DatePicker, used to define max date available
