@@ -69,6 +69,7 @@ public class ComplainsController implements Initializable {
 	
 	
 	//List to be updated
+	private ArrayList<Reply> replyList;
 	private ObservableList<Complain> data;
 	private ArrayList<Branch> branchList;
 	private ObservableList<Branch> branchData;
@@ -155,6 +156,17 @@ public class ComplainsController implements Initializable {
 		}
 	}
 	
+	private Reply getReplyByComplain(Complain complain)
+	{
+		Reply retReply = null;
+
+		for (Reply reply : replyList)
+			if (reply.getComplainId() == complain.getId())
+				retReply = reply;
+
+		return retReply;
+	}
+	
 	public ComplainsController(Employee employee)
 	{
 		this.customerService = employee;
@@ -168,6 +180,7 @@ public class ComplainsController implements Initializable {
 	{
 		Packet packet = new Packet();
 		packet.addCommand(Command.getComplains);
+		packet.addCommand(Command.getReplies);
 		SystemSender sender = new SystemSender(packet);
 		
 		sender.registerHandler(new IResultHandler() {
@@ -189,6 +202,7 @@ public class ComplainsController implements Initializable {
 				if(p.getResultState())
 				{
 					allComplainsList = p.<Complain>convertedResultListForCommand(Command.getComplains);
+					replyList = p.<Reply>convertedResultListForCommand(Command.getReplies);
 					currentServiceEmployeeComplains = new ArrayList<>();
 					
 					for(Complain complain : allComplainsList)
@@ -326,21 +340,29 @@ public class ComplainsController implements Initializable {
 				 * @param complain - show the complain's details in the fields such as date , subject and content
 				 */
 				private void setCellHandler(Complain complain)
-				{
+				{	
+					Reply reply = getReplyByComplain(complain);
 					String textDate = "Date: ";
 					String textTitle = "Subject: ";
 					String textContent = "Content: ";
+					String textReply = "Replyment: ";
 					String textDone = "Done";
 					
 					HBox dateElement = new HBox(new Label(textDate), new Text(String.format("%s", complain.getCreationDate().toString())));
 					HBox titleElement = new HBox (new Label(textTitle) , new Text(String.format("%s", complain.getTitle())));
 					HBox infoElement = new HBox (new Label(textContent) , new Text(String.format("%s", complain.getDetails())));
 					VBox detialsElements = new VBox(dateElement,titleElement,infoElement);
-					VBox operationElement;
+					VBox operationElement = null;
 					if(complain.isActive())
 						operationElement = new VBox(createReplyButtonHandler(complain));
-					else
-						operationElement = new VBox(new Label(textDone));
+					else {
+							if (reply != null) {
+								HBox replyElement = new HBox(new Label(textReply), new Text(reply.getReplyment()));
+								replyElement.setPadding(new Insets(5,10,5,20));
+								detialsElements = new VBox(dateElement, titleElement, infoElement, replyElement);
+							}
+							operationElement = new VBox(new Label(textDone));
+					}
 				 	HBox hBox = new HBox(operationElement,detialsElements);
 				 	dateElement.setPadding(new Insets(5,10,5,20));
 				 	titleElement.setPadding(new Insets(5,10,5,20));
