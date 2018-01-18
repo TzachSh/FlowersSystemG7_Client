@@ -15,7 +15,7 @@
          </font>
       </Label>
       <Button fx:id="btnCatalog" layoutX="163.0" layoutY="182.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="122.0" text="Update Sales on Catalog" textAlignment="CENTER" wrapText="true" />
-      <Button fx:id="btnSurvey" layoutX="21.0" layoutY="297.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="122.0" text="Insert Survey Results" textAlignment="CENTER" wrapText="true" />
+      <Button fx:id="btnSurvey" onAction="#onClickInsertSurveyResults" layoutX="21.0" layoutY="297.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="122.0" text="Insert Survey Results" textAlignment="CENTER" wrapText="true" />
       <Button fx:id="btnReports" layoutX="163.0" layoutY="394.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="122.0" text="Reports Generate" />
       <Label layoutX="35.0" layoutY="124.0" text="Current Branch:" underline="true">
          <font>

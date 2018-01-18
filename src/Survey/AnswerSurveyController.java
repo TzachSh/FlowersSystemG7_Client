@@ -6,6 +6,8 @@ import java.util.ResourceBundle;
 
 import Branches.Employee;
 import Customers.ComplainsController;
+import Login.LoginController;
+import Login.ManagersMenuController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
@@ -59,7 +61,7 @@ public class AnswerSurveyController implements Initializable{
 	private ArrayList<Question> questionList;
 	
 	private Stage stage;
-	public static Employee branchEmployee;
+	public static Employee branchEmployee = (Employee)LoginController.userLogged;
 
 	/**
 	 * Show the scene view of complains management
@@ -196,6 +198,13 @@ public class AnswerSurveyController implements Initializable{
 					Alert alert = new Alert(AlertType.INFORMATION,"The answers have been submited!");
 					alert.showAndWait();
 					((Node) event.getSource()).getScene().getWindow().hide();
+					ManagersMenuController mc = new ManagersMenuController();
+					try {
+						mc.start(new Stage());
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 		});
@@ -247,6 +256,13 @@ public class AnswerSurveyController implements Initializable{
 	    	Alert alert = new Alert(AlertType.INFORMATION,"The is no active surevy!");
 			alert.showAndWait();
 			stage.close();
+			ManagersMenuController mc = new ManagersMenuController();
+			try {
+				mc.start(new Stage());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	    }
 	    else {	
 		attachQuestionToSurvey(activeSurvey);

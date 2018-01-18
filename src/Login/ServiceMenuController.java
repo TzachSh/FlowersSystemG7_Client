@@ -3,6 +3,7 @@ package Login;
 import Branches.CustomerService;
 import Branches.Employee;
 import Branches.Role;
+import Customers.ComplainsController;
 import Survey.SurveyManagementController;
 import Users.Permission;
 import javafx.event.EventHandler;
@@ -33,6 +34,13 @@ public class ServiceMenuController
 		SurveyManagementController sc = new SurveyManagementController();
 		sc.start(new Stage());
 		
+	}
+	
+	public void onClickComplainsManagement()
+	{
+		primaryStage.close();
+		ComplainsController cc = new ComplainsController();
+		cc.start(new Stage());
 	}
 	
 	/**

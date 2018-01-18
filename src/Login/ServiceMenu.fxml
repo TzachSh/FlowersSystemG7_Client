@@ -20,12 +20,18 @@
          </font>
       </Hyperlink>
       <Separator layoutX="32.0" layoutY="133.0" prefHeight="3.0" prefWidth="377.0" />
-      <Button fx:id="btnComplains" layoutX="153.0" layoutY="170.0" mnemonicParsing="false" onAction="#onClickingSurveyManagment" prefHeight="51.0" prefWidth="135.0" text="Survey Management" />
-      <Label layoutX="37.0" layoutY="136.0" text="Survey Options">
+      <Button fx:id="btnSurvey" layoutX="254.0" layoutY="171.0" mnemonicParsing="false" onAction="#onClickingSurveyManagment" prefHeight="72.0" prefWidth="135.0" text="Survey Management" textAlignment="CENTER" wrapText="true" />
+      <Label layoutX="263.0" layoutY="144.0" text="Survey Options">
          <font>
             <Font size="13.0" />
          </font>
       </Label>
       <AnchorPane layoutY="-29.0" opacity="0.08" prefHeight="102.0" prefWidth="431.0" style="-fx-background-color: red;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      <Label layoutX="71.0" layoutY="144.0" text="Complains Options">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Label>
+      <Button fx:id="btnComplains" layoutX="58.0" layoutY="171.0" mnemonicParsing="false" onAction="#onClickComplainsManagement" prefHeight="72.0" prefWidth="135.0" text="Complains Management" textAlignment="CENTER" wrapText="true" />
    </children>
 </AnchorPane>

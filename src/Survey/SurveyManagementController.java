@@ -262,7 +262,7 @@ public class SurveyManagementController implements Initializable {
 		}
 		
 		//int creatorId = User.getuId();
-		int creatorId = employee.getuId();
+		int creatorId = employee.geteId();
 		
 		//Parameter list for addSurvey
 		ArrayList<Object> paramListSurvey = new ArrayList<>();
@@ -627,6 +627,8 @@ public class SurveyManagementController implements Initializable {
 					 if (item != null) {	
 						 	setCellHandler(item);
                         }
+					 else
+						 setGraphic(null);
 				}};
 			}
 		});

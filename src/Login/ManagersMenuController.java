@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import Customers.CustomerController;
+import Survey.AnswerSurveyController;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -95,6 +96,13 @@ public class ManagersMenuController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void onClickInsertSurveyResults()
+	{
+		AnswerSurveyController sc = new AnswerSurveyController();
+		primaryStage.close();
+		sc.start(new Stage());
 	}
 	
 	public void onClickCreateCustomer()

@@ -190,9 +190,12 @@ public class MyComplainsController implements Initializable{
 						if(complain.isActive())
 							detialsElements = new VBox(statusElement,dateElement,titleElement,infoElement);
 						else {
-							HBox replyElement = new HBox(new Label(textReply), new Text(reply.getReplyment()));
-							replyElement.setPadding(new Insets(5, 10, 5, 20));
-							detialsElements = new VBox(statusElement,dateElement,titleElement,infoElement,replyElement);
+								if (reply != null) {
+									HBox replyElement = new HBox(new Label(textReply), new Text(reply.getReplyment()));
+									replyElement.setPadding(new Insets(5, 10, 5, 20));
+									detialsElements = new VBox(statusElement, dateElement, titleElement, infoElement,
+											replyElement);
+								}
 						}
 					}
 				

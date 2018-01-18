@@ -9,10 +9,13 @@ import java.util.ResourceBundle;
 import Branches.Branch;
 import Branches.CustomerService;
 import Branches.Employee;
+import Login.LoginController;
+import Login.ServiceMenuController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
+import Products.ConstantData;
 import Users.User;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -45,6 +48,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 /**
@@ -78,7 +82,7 @@ public class ComplainsController implements Initializable {
 	private ArrayList<Account> customerAccList;
 	
 	//Save current user accessed
-	public static Employee customerService;
+	public static Employee customerService = (Employee)LoginController.userLogged;
 	
 	/**
 	 * Initializing a Combo Box component with the relevant branches which the customer is registered to 
@@ -119,14 +123,6 @@ public class ComplainsController implements Initializable {
 		});
 	}
 	
-	
-	public Employee getCustomerService() {
-		return customerService;
-	}
-
-	public void setCustomerService(Employee customerService) {
-		ComplainsController.customerService = customerService;
-	}
 
 	/**
 	 * Show the scene view of complains management
@@ -154,6 +150,19 @@ public class ComplainsController implements Initializable {
 			System.out.println(e);
 			e.printStackTrace();
 		}
+		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+	          public void handle(WindowEvent we) {
+	        	  
+	        	  primaryStage.close();
+				  ServiceMenuController menu = new ServiceMenuController();
+				  try {
+					menu.start(new Stage());
+				} catch (Exception e) {
+					ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
+				}
+
+	          }
+	      }); 
 	}
 	
 	private Reply getReplyByComplain(Complain complain)
@@ -167,10 +176,6 @@ public class ComplainsController implements Initializable {
 		return retReply;
 	}
 	
-	public ComplainsController(Employee employee)
-	{
-		this.customerService = employee;
-	}
 	/**
 	 * Display the relevant complains of current service employee which is connected to the system
 	 * and add them to the list view component
@@ -206,7 +211,7 @@ public class ComplainsController implements Initializable {
 					currentServiceEmployeeComplains = new ArrayList<>();
 					
 					for(Complain complain : allComplainsList)
-						if (complain.getCustomerServiceId() == customerService.getuId())
+						if (complain.getCustomerServiceId() == customerService.geteId())
 							currentServiceEmployeeComplains.add(complain);
 
 					data = FXCollections.observableArrayList(currentServiceEmployeeComplains);
@@ -226,7 +231,7 @@ public class ComplainsController implements Initializable {
 		int customerId = Integer.parseInt(txtAddCustId.getText());
 		String title = txtAddTitle.getText();
 		String details = txtAddDesc.getText();
-		int customerServiceId = customerService.getuId();
+		int customerServiceId = customerService.geteId();
 		java.sql.Date sqlDate = new java.sql.Date(new java.util.Date().getTime());
 		int branchId = cmbBranch.getSelectionModel().getSelectedItem().getbId();
 		Complain complain = new Complain(sqlDate, title, details, customerId, customerServiceId,true,branchId); // Update to customerServiceId 
