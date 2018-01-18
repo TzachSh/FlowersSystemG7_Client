@@ -20,7 +20,6 @@
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
                         <ListView fx:id="sListView" layoutX="14.0" layoutY="14.0" prefHeight="468.0" prefWidth="651.0" />
-                        <Label layoutX="14.0" layoutY="485.0" text="*While there is an activated survey, you can't activate another one." />
                      </children></AnchorPane>
             </content>
           </Tab>
