@@ -63,8 +63,14 @@ public class CustomerMenuController implements Initializable {
 	
     @FXML
     private Button btnAccount;
+    
+    private static Account account;
 	
-    public static ArrayList<Branch> branchesList = new ArrayList<>();
+    public static Account getAccount() {
+		return account;
+	}
+
+	public static ArrayList<Branch> branchesList = new ArrayList<>();
 	
     public static Branch currentBranch;
     
@@ -253,7 +259,7 @@ public class CustomerMenuController implements Initializable {
 			currentBranch = branch;
 			// alert if the user has no account for this branch
 			// if there is no account, disable the option for select products, or add to cart
-			Account account = getAccountByBranchId(branch.getbId());
+			account = getAccountByBranchId(branch.getbId());
 			if (account != null)
 			{
 				enableComponentsWhenThereIsAccount();

@@ -5,9 +5,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
+import Customers.Customer;
+import Customers.Membership;
+import Login.CustomerMenuController;
+import Login.LoginController;
 import Products.CartController;
-import javafx.application.Application;
-import javafx.application.Platform;
+import Products.ConstantData;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -31,7 +34,6 @@ import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
-import javafx.util.converter.LocalDateStringConverter;
 
 public class OrderController implements Initializable, ChangeListener<String>{
 
@@ -81,6 +83,8 @@ public class OrderController implements Initializable, ChangeListener<String>{
 	private CheckBox chkExpressDelivery;
 	@FXML
 	private CheckBox chkDelivery;
+	private double totalAfter;
+	private double blncePay;
 	private ToggleGroup toggleGroup = new ToggleGroup();
 	private int tabActive=0;
 	private int emptyLines=3;
@@ -117,7 +121,7 @@ public class OrderController implements Initializable, ChangeListener<String>{
 		});
 	}
 	@Override
-	public void initialize(URL location, ResourceBundle resources) {
+	public void initialize(URL location, ResourceBundle resources) {		
 		registerDateTimePicker();
 		registerTxtRequestedTime();
 		registerNextBtn();
@@ -125,6 +129,8 @@ public class OrderController implements Initializable, ChangeListener<String>{
 		registerRadionBtn();
 		registerChkExpressDelivery();
 		registerChkDelivery();
+		getPriceDetails();
+		registerLblLeftToPayListener();
 		txtAddress.textProperty().addListener(this);
 		txtName.textProperty().addListener(this);
 		txtPhone.textProperty().addListener(this);
@@ -132,6 +138,54 @@ public class OrderController implements Initializable, ChangeListener<String>{
 		payment.setDisable(true);
 	}
 
+	private void registerLblLeftToPayListener() {
+		double left = totalAfter-blncePay;
+		lblLeftToPay.setText(String.format("%.2f¤", left));
+		txtBlncePay.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				try {
+				blncePay=Double.parseDouble(newValue);
+				}
+				catch(Exception e){
+					blncePay=0;
+				}
+				double left = totalAfter-blncePay;
+				lblLeftToPay.setText(String.format("%.2f¤", left));
+			}
+		});
+		
+	}
+	private void getPriceDetails() {
+		lblTotalBeforeDiscount.setText(""+CartController.getTotalPrice());
+		Customer curCustomer =  (Customer)LoginController.userLogged;
+		Membership membership=ConstantData.memberShipList.stream().filter(c->c.getNum()==curCustomer.getMembershipId()).findFirst().orElse(null); 
+		if(membership != null)
+		{
+			radAccount.setVisible(false);
+			radCash.setVisible(false);
+			double discount = CartController.getTotalPrice()*membership.getDiscount()/100;
+			lblDiscount.setText(String.format("%.2f¤",discount));
+			totalAfter=CartController.getTotalPrice()*(1-membership.getDiscount()/100);
+			lblTotal.setText(String.format("%.2f¤",totalAfter));
+		}
+		else
+		{
+			lblDiscount.setText("0¤");
+			lblTotal.setText(String.format("%.2f¤",CartController.getTotalPrice()));
+		}
+		double blnce = CustomerMenuController.getAccount().getBalance();
+		if(blnce<=0)
+		{
+			blncePay=0;
+			txtBlncePay.setDisable(true);
+			txtBlncePay.setText("0¤");
+		}
+		lblAvailableBalance.setText(String.format("%2f¤",blnce));
+		
+		
+	}
 	private void registerChkDelivery() {
 		chkDelivery.setOnAction(new EventHandler<ActionEvent>() {
 			
@@ -240,7 +294,6 @@ public class OrderController implements Initializable, ChangeListener<String>{
 						btnNext.setDisable(true);
 			}
 		});
-		
 	}
 	private void registerNextBtn() {
 		btnNext.setDisable(true);

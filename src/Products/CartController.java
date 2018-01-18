@@ -482,7 +482,10 @@ public class CartController implements Initializable
 		});
 		
 	}
-
+	public static double getTotalPrice()
+	{
+		return totalPrice;
+	}
 	private void registerClearOrderButton() {
 		btnClearOrder.setOnAction(new EventHandler<ActionEvent>() {
 			
