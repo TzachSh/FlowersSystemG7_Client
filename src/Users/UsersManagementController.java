@@ -389,6 +389,7 @@ public class UsersManagementController implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub
+		setSearchOnTextChange();
 		setListCellFactory();
 		displayUsers();
 	}

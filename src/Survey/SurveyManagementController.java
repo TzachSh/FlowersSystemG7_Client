@@ -625,10 +625,17 @@ public class SurveyManagementController implements Initializable {
 		return retVal;
 	}
 	
+	private void isCreatAble()
+	{
+		if(employee.getRole() == Role.ServiceExpert)
+			tabOptions.getTabs().get(1).setDisable(true);
+	}
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub
 		setListCellFactory();
 		displaySurvey();
+		isCreatAble();
 	}
 }

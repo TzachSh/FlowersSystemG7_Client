@@ -155,16 +155,6 @@ public class ComplainsController implements Initializable {
 		}
 	}
 	
-	private Account getCustomerAccountInBranch(int bId)
-	{
-		Account retAcc = null;
-		for(Account account : customerAccList)
-			if(account.getBranchId() == bId)
-				retAcc = account;
-		
-		return retAcc;		
-	}
-	
 	public ComplainsController(Employee employee)
 	{
 		this.customerService = employee;
@@ -399,7 +389,6 @@ public class ComplainsController implements Initializable {
 							}
 
 						});
-
 						return btnReply;
 					}
 
