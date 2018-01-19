@@ -19,7 +19,7 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="422.0" prefWidth="521.0">
                      <children>
-                        <TitledPane collapsible="false" layoutX="6.0" layoutY="10.0" prefHeight="243.0" prefWidth="560.0" text="Active Complains">
+                        <TitledPane collapsible="false" layoutX="6.0" layoutY="10.0" prefHeight="243.0" prefWidth="560.0" text="Complains List">
                            <content>
                               <ListView fx:id="cListView" prefHeight="211.0" prefWidth="505.0" />
                            </content>

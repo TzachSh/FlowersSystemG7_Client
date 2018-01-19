@@ -236,8 +236,12 @@ public class ComplainsController implements Initializable {
 						
 					}
 					else if(customerService.getRole() == Role.ServiceExpert) {
+						currentServiceEmployeeComplains = new ArrayList<>();
+						for(Complain complain : allComplainsList)
+							if(complain.isActive())
+								currentServiceEmployeeComplains.add(complain);
 						
-						data = FXCollections.observableArrayList(allComplainsList);
+						data = FXCollections.observableArrayList(currentServiceEmployeeComplains);
 						cListView.setItems(data);
 						
 					}			
@@ -377,27 +381,53 @@ public class ComplainsController implements Initializable {
 					String textContent = "Content: ";
 					String textReply = "Replyment: ";
 					String textDone = "Done";
+					String textCreatorId = "Creator Employee Id:";
 					
 					HBox dateElement = new HBox(new Label(textDate), new Text(String.format("%s", complain.getCreationDate().toString())));
 					HBox titleElement = new HBox (new Label(textTitle) , new Text(String.format("%s", complain.getTitle())));
 					HBox infoElement = new HBox (new Label(textContent) , new Text(String.format("%s", complain.getDetails())));
 					VBox detialsElements = new VBox(dateElement,titleElement,infoElement);
 					VBox operationElement = null;
-					if(complain.isActive())
-						operationElement = new VBox(createReplyButtonHandler(complain));
-					else {
-							if (reply != null) {
-								HBox replyElement = new HBox(new Label(textReply), new Text(reply.getReplyment()));
-								replyElement.setPadding(new Insets(5,10,5,20));
-								detialsElements = new VBox(dateElement, titleElement, infoElement, replyElement);
-							}
+					HBox hBox = null;
+					if(customerService.getRole() == Role.CustomerService) {
+						if(complain.isActive()) {
+							operationElement = new VBox(createReplyButtonHandler(complain));
+							operationElement.setPadding(new Insets(5,10,5,0));
+						}
+						else {
+								if (reply != null) {
+									HBox replyElement = new HBox(new Label(textReply), new Text(reply.getReplyment()));
+									replyElement.setPadding(new Insets(5,10,5,20));
+									detialsElements = new VBox(dateElement, titleElement, infoElement, replyElement);
+								}
 							operationElement = new VBox(new Label(textDone));
+							operationElement.setPadding(new Insets(5,10,5,0));
+						}
+						hBox = new HBox(operationElement,detialsElements);
 					}
-				 	HBox hBox = new HBox(operationElement,detialsElements);
+					else if(customerService.getRole() == Role.ServiceExpert)
+					{
+						if(complain.isActive()) {
+							HBox creatorElement = new HBox(new Label(textCreatorId), new Text(String.format("%d",complain.getCustomerId())));
+							creatorElement.setPadding(new Insets(5,10,5,20));
+							detialsElements = new VBox(dateElement, titleElement, infoElement,creatorElement);
+							hBox = new HBox(detialsElements);
+						}
+						else {
+								if (reply != null) {
+									HBox replyElement = new HBox(new Label(textReply), new Text(reply.getReplyment()));
+									replyElement.setPadding(new Insets(5,10,5,20));
+									detialsElements = new VBox(dateElement, titleElement, infoElement, replyElement);
+								}
+							operationElement = new VBox(new Label(textDone));
+							operationElement.setPadding(new Insets(5,10,5,0));
+							hBox = new HBox(operationElement,detialsElements);
+						}
+					}
+						
 				 	dateElement.setPadding(new Insets(5,10,5,20));
 				 	titleElement.setPadding(new Insets(5,10,5,20));
 				 	infoElement.setPadding(new Insets(5,10,5,20));
-				 	operationElement.setPadding(new Insets(5,10,5,0));
                     hBox.setStyle("-fx-border-style:solid inside;"+
                     			  "-fx-border-width:1;"+
                     			  "-fx-border-insets:5;"+
