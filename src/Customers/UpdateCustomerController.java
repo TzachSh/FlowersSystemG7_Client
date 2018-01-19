@@ -40,6 +40,7 @@ public class UpdateCustomerController implements Initializable {
 	private ArrayList<Account> accList ;
 	private ArrayList<User> uList;
 	private ArrayList<Membership> memshipList ;
+	private ArrayList<MemberShipAccount> memshipAccount ;
 	private ArrayList<Customer> cList ;
 	@FXML
 	private Label lbStatus;
@@ -395,6 +396,42 @@ public class UpdateCustomerController implements Initializable {
 							txtCreditCard5.setText(accList.get(0).getCreditCard().substring(16, 20));
 							}
 						}
+						//opening packet
+						Packet packet = new Packet();
+						//adding commands to the packet
+						packet.addCommand(Command.getMemberShipAccountByAcNum);
+						ArrayList<Object> info=new ArrayList<>();
+						info.add(accList.get(0).getNum());
+						packet.setParametersForCommand(Command.getMemberShipAccountByAcNum, info);
+						//sending the packet
+						SystemSender send = new SystemSender(packet);
+						send.registerHandler(new IResultHandler() {
+							
+							@Override
+							public void onWaitingForResult() {
+								
+							}
+							
+							@Override
+							public void onReceivingResult(Packet p) {
+								memshipAccount=p.<MemberShipAccount>convertedResultListForCommand(Command.getMemberShipAccountByAcNum);
+								if(p.getResultState())
+								{
+									for(Membership mem:memshipList)
+									{
+										if(mem.getNum()==memshipAccount.get(0).getmId())
+										{
+											cbMemberShip.getSelectionModel().select(mem.getNum());
+										}
+									}
+								}
+								else
+									showError("Error Loading Information , Please Try Again Later");
+									
+							}
+						});
+						send.start();
+						
 				}
 				});				
 				send.start();
@@ -482,7 +519,7 @@ public class UpdateCustomerController implements Initializable {
 		
 		ArrayList<Object> accl=new ArrayList<>();
 		ArrayList<Object> userl=new ArrayList<>();
-		ArrayList<Object> cusl=new ArrayList<>();
+		ArrayList<Object> memshipacc=new ArrayList<>();
 		//updating user first
 		packet.addCommand(Command.updateUserByuId);
 		if(newpassword.isEmpty())//the user changed his password
@@ -505,9 +542,10 @@ public class UpdateCustomerController implements Initializable {
 			if(newmembership.equals(orginalmemship)==false)//he changed the membership
 			{
 				//adding the command and the array list for the query to use the informaiton
-				packet.addCommand(Command.updateCustomerByuId);
-				cusl.add(new Customer(uList.get(0).getuId(),choosedmemid));
-				packet.setParametersForCommand(Command.updateCustomerByuId, cusl);
+				packet.addCommand(Command.updateMemberShipAccountByAcNum);
+				java.sql.Date sqlDate = new java.sql.Date(new java.util.Date().getTime());
+				memshipacc.add(new MemberShipAccount(accList.get(0).getNum(), choosedmemid, sqlDate));
+				packet.setParametersForCommand(Command.updateMemberShipAccountByAcNum, memshipacc);
 			}
 		
 		//updating Account if there is account for the user , ther user filled the information
@@ -535,10 +573,10 @@ public class UpdateCustomerController implements Initializable {
 				else
 					accstatusvar=AccountStatus.Closed;
 				//checking what changed so we can add only what changed
-				/*switch(accountinfochanged)
+				switch(accountinfochanged)
 				{
 				case 1://only creditcard changed
-					accl.add(new Account(accList.get(0).getCustomerId(), accList.get(0).getBranchId(), accList.get(0).getBalance(), accList.get(0).getAccountStatus(), newcreditcard));
+					accl.add(new Account(accList.get(0).getBranchId(),accList.get(0).getCustomerId(), accList.get(0).getBalance(), accList.get(0).getAccountStatus(), newcreditcard));
 					break;
 				case 2://only status changed
 					accl.add(new Account(accList.get(0).getCustomerId(), accList.get(0).getBranchId(), accList.get(0).getBalance(),accstatusvar, accList.get(0).getCreditCard()));
@@ -546,8 +584,10 @@ public class UpdateCustomerController implements Initializable {
 				case 3://only status changed
 					accl.add(new Account(accList.get(0).getCustomerId(), accList.get(0).getBranchId(), accList.get(0).getBalance(),accstatusvar, newcreditcard));
 					break;
-				}*/
+				}
 				packet.setParametersForCommand(Command.updateAccountsBycId, accl);
+				
+				
 			}
 		}
 		//sending the packet
