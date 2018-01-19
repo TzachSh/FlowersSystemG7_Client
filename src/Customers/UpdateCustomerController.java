@@ -8,6 +8,8 @@ import javax.swing.JOptionPane;
 
 import com.sun.scenario.effect.impl.state.LinearConvolveRenderState.PassType;
 
+import Branches.Employee;
+import Login.LoginController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
@@ -83,7 +85,8 @@ public class UpdateCustomerController implements Initializable {
 	private AnchorPane appassword;
 	@FXML
 	private Button btnchangePassword;
-	
+	private Employee currentuser;
+	private Customer currentcustomer;
 	 public UpdateCustomerController() {
 		// TODO Auto-generated constructor stub
 	}
@@ -100,6 +103,13 @@ public class UpdateCustomerController implements Initializable {
 		// TODO Auto-generated method stub
 		apnextinfo.setVisible(false);
 		appassword.setVisible(false);
+		if(LoginController.userLogged instanceof Employee) {
+			currentuser=(Employee)LoginController.userLogged;
+		}	
+		else
+			if(LoginController.userLogged instanceof Customer) {
+				currentcustomer=(Customer) LoginController.userLogged;
+			}
 		
 		//validate customer text field input 
 		txtCustomerID.textProperty().addListener(new ChangeListener<String>() {
@@ -335,13 +345,14 @@ public class UpdateCustomerController implements Initializable {
 				//opening packet
 				Packet packet = new Packet();
 				//adding commands to the packet
-				packet.addCommand(Command.getAccountbycID);
+				packet.addCommand(Command.getAccountbycIDandBranch);
 				packet.addCommand(Command.getUserByuId);
 				packet.addCommand(Command.getMemberShip);
 				//adding array list to the packet's command so the Query can get information for statement .	
 				ArrayList<Object> accl=new ArrayList<>();
 				accl.add(cList.get(0).getId());
-				packet.setParametersForCommand(Command.getAccountbycID, accl);
+				accl.add(currentuser.getBranchId());
+				packet.setParametersForCommand(Command.getAccountbycIDandBranch, accl);
 				//adding array list to the packet's command so the Query can get information for statement .	
 				ArrayList<Object> cusl=new ArrayList<>();
 				cusl.add(Integer.parseInt(txtCustomerID.getText()));
@@ -360,7 +371,7 @@ public class UpdateCustomerController implements Initializable {
 					@Override
 					public void onReceivingResult(Packet p) {
 						//getting the result from the Query
-						accList=p.<Account>convertedResultListForCommand(Command.getAccountbycID);
+						accList=p.<Account>convertedResultListForCommand(Command.getAccountbycIDandBranch);
 						uList=p.<User>convertedResultListForCommand(Command.getUserByuId);
 						memshipList=p.<Membership>convertedResultListForCommand(Command.getMemberShip);
 						

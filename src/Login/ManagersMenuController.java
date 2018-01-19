@@ -5,6 +5,7 @@ import java.util.ResourceBundle;
 
 import Customers.AccountController;
 import Customers.CustomerController;
+import Customers.UpdateCustomerController;
 import Survey.AnswerSurveyController;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -51,7 +52,8 @@ public class ManagersMenuController implements Initializable {
 
     @FXML
     private Button btnCreateClient;
-
+    @FXML
+    private Button btnUpdateClient;
 	private static Stage primaryStage;
 	
 	
@@ -98,7 +100,17 @@ public class ManagersMenuController implements Initializable {
 		// TODO Auto-generated method stub
 		
 	}
-	
+	public void onClickUpdateClient()
+	{
+		UpdateCustomerController updateClient = new UpdateCustomerController();
+		try {
+			primaryStage.close();
+			updateClient.start(new Stage());
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	public void onClickInsertSurveyResults()
 	{
 		AnswerSurveyController sc = new AnswerSurveyController();
