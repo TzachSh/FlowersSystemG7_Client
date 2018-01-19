@@ -865,6 +865,11 @@ public class CatalogProductController implements Initializable
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
 			{
+				if(newValue.length() > 50)
+				{
+					txtName.setText(oldValue);
+				}
+				
 				int selectedTypeIndex = cmbType.getSelectionModel().getSelectedIndex();
 				productDetailsValidation(newValue, txtPrice.getText(), selectedTypeIndex);
 			}
