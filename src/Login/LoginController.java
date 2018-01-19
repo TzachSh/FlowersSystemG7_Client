@@ -150,7 +150,7 @@ public class LoginController implements Initializable {
 				if (customerList.size() > 0)
 				{
 					Customer customer = customerList.get(0);
-					userLogged = new Customer(user, customer.getId(), customer.getMembershipId());
+					userLogged = new Customer(user, customer.getId());
 					
 					// <?---- open a menu of customers >
 					

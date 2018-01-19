@@ -249,12 +249,12 @@ public class UpdateCustomerController implements Initializable {
 		for(Membership mem: memshipList) 
 		{
 			//if the ids are the same , we select it 
-			if(mem.getNum()==cList.get(0).getMembershipId())
+			/*if(mem.getNum()==cList.get(0).getMembershipId())
 			{
 				cbMemberShip.getSelectionModel().select(i);
 				break;
 			}
-			i++;
+			i++;*/
 		}
 		//if there is no account for the customer we should not set visible the account fields , else we show them.
 		if(accList.isEmpty()==false)
@@ -485,8 +485,8 @@ public class UpdateCustomerController implements Initializable {
 		//updating Customer
 		for(Membership mem:memshipList)//getting the orginal membership name (we got only membership id)
 		{
-			if(mem.getNum()==cList.get(0).getMembershipId())
-				orginalmemship=mem.getMembershipType().toString();//getting original member ship
+			//if(mem.getNum()==cList.get(0).getMembershipId())
+				//orginalmemship=mem.getMembershipType().toString();//getting original member ship
 			if(mem.getMembershipType().toString().equals(newmembership))
 				choosedmemid=mem.getNum();//getting the choosed membership id
 		}
@@ -524,7 +524,7 @@ public class UpdateCustomerController implements Initializable {
 				else
 					accstatusvar=AccountStatus.Closed;
 				//checking what changed so we can add only what changed
-				switch(accountinfochanged)
+				/*switch(accountinfochanged)
 				{
 				case 1://only creditcard changed
 					accl.add(new Account(accList.get(0).getCustomerId(), accList.get(0).getBranchId(), accList.get(0).getBalance(), accList.get(0).getAccountStatus(), newcreditcard));
@@ -535,7 +535,7 @@ public class UpdateCustomerController implements Initializable {
 				case 3://only status changed
 					accl.add(new Account(accList.get(0).getCustomerId(), accList.get(0).getBranchId(), accList.get(0).getBalance(),accstatusvar, newcreditcard));
 					break;
-				}
+				}*/
 				packet.setParametersForCommand(Command.updateAccountsBycId, accl);
 			}
 		}

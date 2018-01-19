@@ -159,7 +159,7 @@ public class OrderController implements Initializable, ChangeListener<String>{
 		
 	}
 	private void getPriceDetails() {
-		lblTotalBeforeDiscount.setText(""+CartController.getTotalPrice());
+		/*lblTotalBeforeDiscount.setText(""+CartController.getTotalPrice());
 		Customer curCustomer =  (Customer)LoginController.userLogged;
 		Membership membership=ConstantData.memberShipList.stream().filter(c->c.getNum()==curCustomer.getMembershipId()).findFirst().orElse(null); 
 		if(membership != null)
@@ -184,7 +184,7 @@ public class OrderController implements Initializable, ChangeListener<String>{
 			txtBlncePay.setText("0¤");
 		}
 		lblAvailableBalance.setText(String.format("%2f¤",blnce));
-		
+		*/
 		
 	}
 	private void registerChkDelivery() {

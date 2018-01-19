@@ -11,11 +11,13 @@ import javax.swing.JOptionPane;
 
 import com.sun.org.apache.bcel.internal.generic.NEW;
 
+import Login.ManagersMenuController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
 import Products.CatalogProduct;
+import Products.ConstantData;
 import Products.FlowerInProduct;
 import javafx.application.Platform;
 import javafx.beans.Observable;
@@ -33,6 +35,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -40,10 +43,9 @@ import sun.invoke.util.BytecodeName;
 
 public class CustomerController implements Initializable {
 	
-	private String cusid,user,password,confirmpassword,creditcard,status,membership,discount,permission;
+	private String cusid,user,password,confirmpassword,creditcard,status,permission;
 	private ArrayList<Account> accList ;
 	private ArrayList<User> uList;
-	private ArrayList<Membership> memshipList ;
 	private ArrayList<Customer> cList ;
 	
 	@FXML
@@ -88,15 +90,14 @@ public class CustomerController implements Initializable {
 	
 	@FXML
 	private ComboBox<String> cbPermission;
+	private static Stage myStage;
 	
-	@FXML
-	private ComboBox<String> cbMemberShip;
 	public void start(Stage primaryStage) throws Exception {
 
 		String title = "Add Customer UI";
 		String srcFXML = "/Customers/addCustomerUI.fxml";
 		String srcCSS = "/Customers/application.css";
-		
+		myStage=primaryStage;
 
 	
 		try {
@@ -120,25 +121,18 @@ public class CustomerController implements Initializable {
 			@Override
 			public void handle(WindowEvent event) {
 				// TODO Auto-generated method stub
-				Platform.exit();
+				 primaryStage.close();
+				  ManagersMenuController menu = new ManagersMenuController();
+				  try {
+					menu.start(new Stage());
+				} catch (Exception e) {
+					ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
+				}
 			}
 		});
 		
 	}
-	private void initComboBox()
-	{
-		ObservableList<String> observelistMembership;
-		
-		ArrayList<String> membership = new ArrayList<>();
-		membership.add(MembershipType.Normal.toString());
-		membership.add(MembershipType.Monthly.toString());
-		membership.add(MembershipType.Yearly.toString());
-		observelistMembership = FXCollections.observableArrayList(membership);
-		cbMemberShip.setItems(observelistMembership);
-		
-		
-	}
-	
+
 	public void emptyCreditCardText()
 	{
 		if(txtCreditCard.getText().isEmpty())
@@ -175,27 +169,26 @@ public class CustomerController implements Initializable {
                 JOptionPane.ERROR_MESSAGE);
 	}
 	
-	//getting the discount and the membership type once clicked on combo box
-	public void getMemberShipTypeDiscount()
-	{
-		int index,i;
-		index=cbMemberShip.getSelectionModel().getSelectedIndex();
-		membership=MembershipType.values()[index].toString();
-		
-		for(i=0;i<memshipList.size();i++)
-		{
-			if(memshipList.get(i).getMembershipType().toString().equals(membership)) {
-				txtDiscount.setText(""+memshipList.get(i).getDiscount());
-				
-			}
-		}
-	
-		
-		
-	}
+
 	public void registerNextInformation()
 	{
 		
+		
+		
+		
+		//disapling old information
+		txtUser.setDisable(true);
+		txtConfirmPassword.setDisable(true);
+		txtPassword.setDisable(true);
+		btnRegister.setDisable(true	);
+		//show additional information
+		anchorpane2.setVisible(true);
+		
+	}
+	
+	public void registerNow()
+	{
+		//int membershipid=1;
 		if(txtID.getText().toString().isEmpty()||txtPassword.getText().isEmpty()||txtUser.getText().isEmpty()||txtConfirmPassword.getText().isEmpty()) {
 			showError("Please Fill All Information");
 			
@@ -218,80 +211,63 @@ public class CustomerController implements Initializable {
 			txtID.setText("");
 			return;
 		}
-		//disapling old information
-		txtUser.setDisable(true);
-		txtConfirmPassword.setDisable(true);
-		txtPassword.setDisable(true);
-		btnRegister.setDisable(true	);
-		//show additional information
-		anchorpane2.setVisible(true);
+		Packet packet = new Packet();
+		//adding user
+		packet.addCommand(Command.addUsers);
+		ArrayList<Object>userlist;
+		userlist=new ArrayList<>();
+		userlist.add(new User(Integer.parseInt(cusid),user, password,false, Permission.Limited));
+		packet.setParametersForCommand(Command.addUsers, userlist);
+		//adding customer
+		packet.addCommand(Command.addCustomers);
+		ArrayList<Object>cuslist;
+		cuslist=new ArrayList<>();
 		
-	}
+		
 	
-	public void registerNow()
-	{
-		int membershipid=1;
-		if(checkInput(3))
-		{
-			Packet packet = new Packet();
-			//adding user
-			packet.addCommand(Command.addUsers);
-			ArrayList<Object>userlist;
-			userlist=new ArrayList<>();
-			userlist.add(new User(Integer.parseInt(cusid),user, password,false, Permission.Limited));
-			packet.setParametersForCommand(Command.addUsers, userlist);
-			//adding customer
-			packet.addCommand(Command.addCustomers);
-			ArrayList<Object>cuslist;
-			cuslist=new ArrayList<>();
-			for(Membership mem:memshipList)
-				if(mem.getMembershipType().toString().equals(membership))
-					membershipid=mem.getNum();
-			cuslist.add(new Customer(Integer.parseInt(cusid),membershipid ));
-			packet.setParametersForCommand(Command.addCustomers,cuslist);
+		cuslist.add(new Customer(Integer.parseInt(cusid)));
+		packet.setParametersForCommand(Command.addCustomers,cuslist);
 
+		
+		
+		SystemSender send = new SystemSender(packet);
+		
+		// register the handler that occurs when the data arrived from the server
+		send.registerHandler(new IResultHandler() {
 			
+		@Override
+		public void onWaitingForResult() {
+			// TODO Auto-generated method stub
 			
-			SystemSender send = new SystemSender(packet);
-			
-			// register the handler that occurs when the data arrived from the server
-			send.registerHandler(new IResultHandler() {
-				
-			@Override
-			public void onWaitingForResult() {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onReceivingResult(Packet p) {
-				// TODO Auto-generated method stub
-	
-				if (p.getResultState())
-				{
-					JOptionPane.showMessageDialog(null, 
-							"The Client : "+user+"  : Has Been Added", 
-			                "Success", 
-			                JOptionPane.CLOSED_OPTION);
+		}
+		
+		@Override
+		public void onReceivingResult(Packet p) {
+			// TODO Auto-generated method stub
 
-
+			if (p.getResultState())
+			{
+				JOptionPane.showMessageDialog(null, 
+						"The Client : "+user+"  : Has Been Added", 
+		                "Success", 
+		                JOptionPane.CLOSED_OPTION);
+				myStage.close();
+				 ManagersMenuController menu = new ManagersMenuController();
+				  try {
+					menu.start(new Stage());
+				} catch (Exception e) {
+					ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
 				}
-				else
-					System.out.println("Fail: " + p.getExceptionMessage());
-				
-			}
-			});
-			send.start();
 
+			}
+			else
+				System.out.println("Fail: " + p.getExceptionMessage());
 			
 		}
-		else
-		{
-			txtCreditCard.setText("");
-			creditcard="";
-			return;
-		}
+		});
+		send.start();
 
+			
 		
 
 	}
@@ -329,14 +305,6 @@ public class CustomerController implements Initializable {
 					
 			break;
 			
-			case 3://check Membership choosed card 
-				if(membership.isEmpty())
-				{
-					showError("Please Pick MemberShip");
-					res=false;
-					break;
-				}
-				break;
 				
 			
 		}
@@ -395,11 +363,9 @@ public class CustomerController implements Initializable {
 		});
 		
 		Packet packet = new Packet();
-		initComboBox();
+		
 		//fill the required commands to the packet
 		packet.addCommand(Command.getUsers);
-		packet.addCommand(Command.getMemberShip);
-		//packet.addCommand(Command.getCustomers);
 		// create the thread for send to server the message
 		SystemSender send = new SystemSender(packet);
 		
@@ -419,7 +385,6 @@ public class CustomerController implements Initializable {
 				{
 					//getting the information from database 
 					uList = p.<User>convertedResultListForCommand(Command.getUsers);
-					 memshipList = p.<Membership>convertedResultListForCommand(Command.getMemberShip);
 					//cList = p.<Customer>convertedResultListForCommand(Command.getCustomers);
 
 

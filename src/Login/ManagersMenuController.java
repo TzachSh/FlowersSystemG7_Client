@@ -3,6 +3,7 @@ package Login;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import Customers.AccountController;
 import Customers.CustomerController;
 import Survey.AnswerSurveyController;
 import javafx.application.Platform;
@@ -111,6 +112,18 @@ public class ManagersMenuController implements Initializable {
 		try {
 			primaryStage.close();
 			customerController.start(new Stage());
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public void onClickCreateAccount()
+	{
+		AccountController accountController = new AccountController();
+
+		try {
+			primaryStage.close();
+			accountController.start(new Stage());
 			
 		} catch (Exception e) {
 			e.printStackTrace();
