@@ -15,6 +15,7 @@ import Customers.Account;
 import Customers.Customer;
 import Login.CustomerMenuController;
 import Login.LoginController;
+import Login.ManagersMenuController;
 import PacketSender.Command;
 import PacketSender.FileSystem;
 import PacketSender.IResultHandler;
@@ -92,6 +93,7 @@ public class SelectProductController implements Initializable
 	private ObservableList<Product> data;
 	public static Stage mainStage;
 	private static SelectProductController controllerInstance;
+	public static Branch currentBranch;
 	/**
 	 * Show an Alert dialog with custom info
 	 */
@@ -155,10 +157,10 @@ public class SelectProductController implements Initializable
 	 */
 	public void setDiscountsForSelectedBranch()
 	{
-		if (CustomerMenuController.currentBranch == null)
+		if (currentBranch == null)
 			return;
 		
-		int branchId = CustomerMenuController.currentBranch.getbId();
+		int branchId = currentBranch.getbId();
 		Packet packet = new Packet();
 		packet.addCommand(Command.getBranchSales);
 		
@@ -647,7 +649,7 @@ public class SelectProductController implements Initializable
 							setAddOrderStyles(add);
 						}
 						
-						if (CustomerMenuController.currentBranch == null || !CustomerMenuController.hasAccountForCurrentBranch || productsSelected.contains(pro))
+						if (currentBranch == null || !CustomerMenuController.hasAccountForCurrentBranch || productsSelected.contains(pro))
 						{
 							add.setDisable(true);
 						}
@@ -878,9 +880,17 @@ public class SelectProductController implements Initializable
 	{
 		try
 		{
-			mainStage.hide();
-			CustomerMenuController menu = new CustomerMenuController();
-			menu.start(new Stage());
+			mainStage.close();
+			if (catalogUse == CatalogUse.updateCatalog || catalogUse == CatalogUse.updateSale)
+			{
+				ManagersMenuController menu = new ManagersMenuController();
+				menu.start(new Stage());
+			}
+			else
+			{
+				CustomerMenuController menu = new CustomerMenuController();
+				menu.start(new Stage());
+			}
 		}
 		catch (Exception e) 
 		{
@@ -998,6 +1008,15 @@ public class SelectProductController implements Initializable
 		lblTitle.setText(title);
 		initializeCollections();
 		controllerInstance = this;
+		
+		if (LoginController.userLogged instanceof Employee)
+		{
+			currentBranch = ManagersMenuController.currentBranch;
+		}
+		else
+		{
+			currentBranch = CustomerMenuController.currentBranch;
+		}
 	}
 
 	/**

@@ -274,6 +274,8 @@ public class LoginController implements Initializable {
 						// determine if it's customer or employee and initialize it's fields
 						user.setLogged(true);
 						determineEmployeeOrCustomer(user);
+						// initialize all static collections data for system
+						ConstantData.initColorsAndTypes();
 					}
 					else
 					{

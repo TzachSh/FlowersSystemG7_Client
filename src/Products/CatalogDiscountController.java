@@ -85,7 +85,7 @@ public class CatalogDiscountController implements Initializable {
 	public void onPressedSaveButton()
 	{
 		int discountConverted = Integer.valueOf(txtDiscount.getText());
-		int branchId = CustomerMenuController.currentBranch.getbId();
+		int branchId = SelectProductController.currentBranch.getbId();
 		int catPId = catalogProduct.getCatalogProductId();
 		
 		CatalogInBranch catInBranch = new CatalogInBranch(branchId, catPId, discountConverted);
@@ -198,8 +198,8 @@ public class CatalogDiscountController implements Initializable {
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		if (CustomerMenuController.currentBranch != null)
-			txtBranch.setText(CustomerMenuController.currentBranch.getName());
+		if (SelectProductController.currentBranch != null)
+			txtBranch.setText(SelectProductController.currentBranch.getName());
 		
 		txtProduct.setText(catalogProduct.getName());
 		
