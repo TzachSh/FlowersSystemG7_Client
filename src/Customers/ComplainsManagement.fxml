@@ -6,25 +6,25 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="504.0" prefWidth="520.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="504.0" prefWidth="571.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label layoutX="147.0" layoutY="14.0" text="Complains Management" underline="true">
          <font>
             <Font size="21.0" />
          </font>
       </Label>
-      <TabPane fx:id="complainsTabedPane" layoutY="60.0" prefHeight="438.0" prefWidth="520.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane fx:id="complainsTabedPane" layoutY="60.0" prefHeight="438.0" prefWidth="571.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="Complains View">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="422.0" prefWidth="521.0">
                      <children>
-                        <TitledPane collapsible="false" layoutX="6.0" layoutY="10.0" prefHeight="243.0" prefWidth="507.0" text="Active Complains">
+                        <TitledPane collapsible="false" layoutX="6.0" layoutY="10.0" prefHeight="243.0" prefWidth="560.0" text="Active Complains">
                            <content>
                               <ListView fx:id="cListView" prefHeight="211.0" prefWidth="505.0" />
                            </content>
                         </TitledPane>
-                        <TitledPane animated="true" layoutX="6.0" layoutY="257.0" prefHeight="136.0" prefWidth="509.0" text="Search">
+                        <TitledPane animated="true" layoutX="6.0" layoutY="257.0" prefHeight="136.0" prefWidth="561.0" text="Search">
                           <content>
                             <AnchorPane prefHeight="130.0" prefWidth="507.0">
                                  <children>

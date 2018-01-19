@@ -219,9 +219,8 @@ public class MyComplainsController implements Initializable{
 				protected void updateItem(Complain item, boolean empty) {
 					// TODO Auto-generated method stub
 					super.updateItem(item, empty);
-					 if (item != null) {	
-						 	setCellHandler(item);
-                        }
+					 if (item != null) 	
+						 setCellHandler(item);                        
 					 else
 						 setGraphic(null);
 				}};
