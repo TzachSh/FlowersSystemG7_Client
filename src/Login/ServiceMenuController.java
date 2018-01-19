@@ -23,9 +23,8 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-public class ServiceMenuController implements Initializable
+public class ServiceMenuController
 {
-	@FXML private Button btnComplains;
 	
 	private static Stage primaryStage;
 	private static LoginController loginController;
@@ -69,17 +68,6 @@ public class ServiceMenuController implements Initializable
 		        	loginController.performLoggedOut(LoginController.userLogged);
 		        } 
 		});
-	}
-	
-	private void setComplainsButtonVisibility(boolean state)
-	{
-		btnComplains.setDisable(state);
-	}
-	
-	private void initComplainsButton()
-	{
-		if(((Employee)LoginController.userLogged).getRole() == Role.ServiceExpert)
-			setComplainsButtonVisibility(true);
 	}
 	
 	public void start(Stage mainStage) throws Exception {
@@ -127,9 +115,4 @@ public class ServiceMenuController implements Initializable
 		}
 	}
 
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		// TODO Auto-generated method stub
-		initComplainsButton();
-	}
 }

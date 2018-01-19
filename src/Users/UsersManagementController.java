@@ -60,15 +60,29 @@ import javafx.util.Callback;
 import javafx.util.converter.DefaultStringConverter;
 import sun.security.util.Password;
 
+/***
+ * 
+ * Controller class to handle the users management logic
+ *
+ */
 public class UsersManagementController implements Initializable{
-
+	/***
+	 * FXML components to be shown and handled during runtime
+	 */
 	@FXML private ListView<User> uListView;
 	@FXML private Button btnSearch;
 	@FXML private TextField txtUid;
 	
+	/***
+	 * Lists to be updated during runtime
+	 */
 	private ArrayList<User> usersList;
 	private ObservableList<User> usersData;
 	
+	/**
+	 * 
+	 * @param primaryStage - stage to be initialized and showed
+	 */
 	public void start(Stage primaryStage) {
 		
 		String title = "Users Management";
@@ -90,6 +104,9 @@ public class UsersManagementController implements Initializable{
 		}
 	}
 
+	/***
+	 * Get all the users from the server and show all of them in the list view
+	 */
 	private void displayUsers()
 	{
 		ArrayList<Object> paramListUsers = new ArrayList<>();
@@ -101,13 +118,17 @@ public class UsersManagementController implements Initializable{
 		SystemSender sender = new SystemSender(packet);
 		
 		sender.registerHandler(new IResultHandler() {
-			
+			/**
+			 * While waiting for a result
+			 */
 			@Override
 			public void onWaitingForResult() {
 				// TODO Auto-generated method stub
 				
 			}
-			
+			/**
+			 * While getting a result from the server
+			 */
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub
@@ -117,12 +138,18 @@ public class UsersManagementController implements Initializable{
 					usersData = FXCollections.observableArrayList(usersList);
 					uListView.setItems(usersData);
 				}
+				else {
+					Alert alert = new Alert(AlertType.ERROR,p.getExceptionMessage());
+					alert.show();
+				}
 			}
 		});
 		sender.start();
 	}
 	
-	
+	/***
+	 * Set a cell handler for every cell in the list view
+	 */
 	private void setListCellFactory()
 	{
 		uListView.setCellFactory(new Callback<ListView<User>, ListCell<User>>() {
@@ -134,14 +161,21 @@ public class UsersManagementController implements Initializable{
 			public ListCell<User> call(ListView<User> param) {
 				// TODO Auto-generated method stub
 				return new ListCell<User>() {
-					
+				
+				/***
+				 * Components to be updated
+				 */
 				private ComboBox<Permission> cmbPerms;
 				private TextField txtUser;
 				private TextField txtPassword;
 				private CheckBox cbLogged;
 				private Button btnDelete;
 				private Button btnSave;
-					
+				
+				/***
+				 * 
+				 * @return ComboBox with all of the permissions
+				 */
 				private ComboBox<Permission> createPermsComboBox()
 				{
 					ComboBox<Permission> cmbPerm = new ComboBox<>();
@@ -149,9 +183,10 @@ public class UsersManagementController implements Initializable{
 					return cmbPerm;
 				}
 					
-				/**
-				 * 	Set handler for each row, is a corresponding to the status of the complain, if it's active will show a "Reply" button near to it, else will be shown "Done"
-				 * @param complain - show the complain's details in the fields such as date , subject and content
+				/***
+				 * 
+				 * @param user to show his information in the components, such as user id, username, password, permission and his logged in state.
+				 * Then create a button to handle each user deletion or update
 				 */
 				private void setCellHandler(User user)
 				{
@@ -203,10 +238,11 @@ public class UsersManagementController implements Initializable{
 					vBox.setPadding(new Insets(10));
                     setGraphic(vBox);
 				}
-				/**
-				 * Creating a button handler which is navigates to the relevant reply view for each complain
-				 * @param complain - Create a new handler for this complain
-				 * @return Button which handled to open a matching view of a specific complain
+			
+				/***
+				 * Creating a button to handle user deletion
+				 * @param user to be deleted 
+				 * @return Button which can delete the relevant user
 				 */
 				private Button createDeleteButtonHandler(User user)
 				{
@@ -239,6 +275,11 @@ public class UsersManagementController implements Initializable{
 						return btnDel;
 				}
 				
+				/***
+				 * Create a button that handles an update of a user
+				 * @param user to be updated
+				 * @return Button which can update the specific user's information
+				 */
 				private Button createUpdateButtonHandler(User user)
 				{
 					
@@ -253,7 +294,16 @@ public class UsersManagementController implements Initializable{
 
 						return btnUpdate;
 				}
-				
+				/***
+				 * Update a specific user with the inserted details in the FXML components.
+				 * 
+				 * @param user to be updated
+				 * @param userName
+				 * @param password
+				 * @param isLogged
+				 * @param permission
+				 * Then updates the user and save the data in the server's database
+				 */
 				private void updateUser(User user, String userName, String password, boolean isLogged, Permission permission)
 				{
 					int uId = user.getuId();
@@ -269,13 +319,17 @@ public class UsersManagementController implements Initializable{
 					
 					SystemSender sender = new SystemSender(packet);
 					sender.registerHandler(new IResultHandler() {
-						
+						/***
+						 * While waiting for result from the server
+						 */
 						@Override
 						public void onWaitingForResult() {
 							// TODO Auto-generated method stub
 							
 						}
-						
+						/***
+						 * While getting a result from the server
+						 */
 						@Override
 						public void onReceivingResult(Packet p) {
 							// TODO Auto-generated method stub
@@ -285,12 +339,21 @@ public class UsersManagementController implements Initializable{
 								alert.show();
 								displayUsers();
 							}
+							else
+							{
+								Alert alert = new Alert(AlertType.ERROR,p.getExceptionMessage());
+								alert.show();
+							}
 						}
 					});
 					sender.start();
 
 				}
-				
+				/***
+				 * 
+				 * @param user to be deleted.
+				 * Delete the specific user from the server's database
+				 */
 				private void deleteUser(User user)
 				{
 					Packet packet = new Packet();
@@ -303,27 +366,39 @@ public class UsersManagementController implements Initializable{
 					
 					SystemSender sender = new SystemSender(packet);
 					sender.registerHandler(new IResultHandler() {
-						
+						/***
+						 * While waiting for result from the server
+						 */
 						@Override
 						public void onWaitingForResult() {
 							// TODO Auto-generated method stub
 							
 						}
-						
+						/***
+						 * While getting a result from the server
+						 */
 						@Override
 						public void onReceivingResult(Packet p) {
 							// TODO Auto-generated method stub
-							if(p.getResultState())
-							{
-								Alert alert = new Alert(AlertType.INFORMATION,"User deleted successfully");
-								alert.show();
-								displayUsers();
+								if (p.getResultState()) {
+									Alert alert = new Alert(AlertType.INFORMATION, "User deleted successfully");
+									alert.show();
+									displayUsers();
+								}
+								else {
+									Alert alert = new Alert(AlertType.ERROR, p.getExceptionMessage());
+									alert.show();
+								}
 							}
-						}
 					});
 					sender.start();
 				}
-				
+				/***
+				 * 
+				 * @param user to set his permission by default
+				 * @param cmbPerms to find the permission to set in
+				 * Sets the relevant permission of every user
+				 */
 				private void setSelectedPermission(User user,ComboBox<Permission> cmbPerms)
 				{
 					cmbPerms.getSelectionModel().select(user.getPermission());
@@ -331,7 +406,7 @@ public class UsersManagementController implements Initializable{
 
 				/**
 				 * Update each row of the list view by the received item
-				 * @param item - the complain to show it's details
+				 * @param item - the user to show it's details
 				 * @param empty - to check if the item is null or not
 				 */
 					@Override
@@ -347,12 +422,19 @@ public class UsersManagementController implements Initializable{
 			}
 		});
 	}
-
+	
+	/***
+	 * 
+	 * @param event of action
+	 * Handle a search of a user by hid id the show him on the list by result
+	 * 
+	 */
 	@FXML
 	private void handleSearchPressed(Event event) {
 
 		if (txtUid.getText().isEmpty()) {
-			System.out.println("Enter user ID!");
+			Alert alert = new Alert(AlertType.ERROR,"Insert User Id!");
+			alert.show();
 			return;
 		}
 
@@ -364,6 +446,11 @@ public class UsersManagementController implements Initializable{
 		uListView.setItems(usersData);
 	}
 	
+	/***
+	 * 
+	 * @param uId to find 
+	 * @return User with the specific uId
+	 */
 	private User getUserByUid(int uId)
 	{
 		User retUser = null;
@@ -373,7 +460,10 @@ public class UsersManagementController implements Initializable{
 		
 		return retUser;
 	}
-	
+	/***
+	 * Reset the list view when the search text is empty.
+	 * Then shows all the users 
+	 */
 	@FXML
 	private void setSearchOnTextChange()
 	{
@@ -385,7 +475,9 @@ public class UsersManagementController implements Initializable{
 		   }
 		});
 	}
-
+	/***
+	 * Initialization of the data at the scene creation.
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub
