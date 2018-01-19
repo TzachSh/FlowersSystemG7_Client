@@ -26,8 +26,16 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+/***
+ * 
+ * Controller Class to define the functionality of Service Expert Survey Conclusion
+ *
+ */
 public class ServiceExpertController implements Initializable {
 	
+	/***
+	 * FXML components to define the slider to show the answers average facility
+	 */
 	@FXML private Slider sliderA1;
 	@FXML private Slider sliderA2;
 	@FXML private Slider sliderA3;
@@ -35,6 +43,9 @@ public class ServiceExpertController implements Initializable {
 	@FXML private Slider sliderA5;
 	@FXML private Slider sliderA6;
 	
+	/***
+	 * FXML components to define the labels for showing the numerical answers average
+	 */
 	@FXML private Label lblA1;
 	@FXML private Label lblA2;
 	@FXML private Label lblA3;
@@ -42,6 +53,9 @@ public class ServiceExpertController implements Initializable {
 	@FXML private Label lblA5;
 	@FXML private Label lblA6;
 	
+	/***
+	 * FXML components to define the labels for showing the questions
+	 */
 	@FXML private Label lblQ1;
 	@FXML private Label lblQ2;
 	@FXML private Label lblQ3;
@@ -49,19 +63,38 @@ public class ServiceExpertController implements Initializable {
 	@FXML private Label lblQ5;
 	@FXML private Label lblQ6;
 	
+	/***
+	 * Labels to define the duration of the survey
+	 */
 	@FXML private Label lblStart;
 	@FXML private Label lblEnd;
 	
+	/***
+	 * FXML component to define the conclusion text area field
+	 */
 	@FXML private TextArea txtConclusion;
+	/***
+	 * FXML component to define the submit button
+	 */
 	@FXML Button btnSubmit;
 	
+	/***
+	 * The relevant survey to conclude 
+	 */
 	private Survey survey;
+	/***
+	 * List to handle the data
+	 */
 	private ArrayList<SurveyQuestion> surveyQuestionList;
 	private ArrayList<Question> questionList;
 	private ArrayList<AnswerSurvey> averageAnswerSurveyList;
-	private ArrayList<SurveyConclusion> surveyConclusionList;
 	public static Employee serviceExpert;
 	
+	/***
+	 * 
+	 * @param primaryStage to set the scene properties
+	 * Perform the stage initialization and show the scene window
+	 */
 	public void start(Stage primaryStage) {
 		
 		String title = "Survey Analyze";
@@ -84,11 +117,17 @@ public class ServiceExpertController implements Initializable {
 		}
 	}
 	
+	/***
+	 * 
+	 * @param survey to be set as the relevant survey for the conclusion
+	 */
 	public void setSurvey(Survey survey)
 	{
 		this.survey = survey;
 	}
-	
+	/***
+	 * Initialization of the lists to handle the data
+	 */
 	private void initData()
 	{
 		ArrayList<Object> paramListSurvey = new ArrayList<>();
@@ -113,19 +152,22 @@ public class ServiceExpertController implements Initializable {
 		
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
-			
+			/***
+			 * While waiting for results from the server
+			 */
 			@Override
 			public void onWaitingForResult() {
 				// TODO Auto-generated method stub
 				
 			}
-			
+			/***
+			 * On receiving the results
+			 */
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub
 				if(p.getResultState())
 				{
-					surveyConclusionList = p.<SurveyConclusion>convertedResultListForCommand(Command.getConclusions);
 					questionList = p.<Question>convertedResultListForCommand(Command.getQuestions);
 					surveyQuestionList = p.<SurveyQuestion>convertedResultListForCommand(Command.getSurveyQuestions);
 					averageAnswerSurveyList = p.<AnswerSurvey>convertedResultListForCommand(Command.getAverageAnswersBySurveyId);
@@ -139,17 +181,32 @@ public class ServiceExpertController implements Initializable {
 		sender.start();
 	}
 	
-	
+	/***
+	 * 
+	 * @param slider
+	 * @param value
+	 * Set the value of the slider by the relevant average answers 
+	 */
 	private void setSliderValue(Slider slider , double value)
 	{
 		slider.setValue(value);
 	}
-	
+	/***
+	 * 
+	 * @param label
+	 * @param value
+	 * Show the numeric number in the label of the slider
+	 */
 	private void initLabelsAverageAnswer(Label label , double value)
 	{
 		label.setText(String.format("%.2f",value));
 	}
 	
+	/***
+	 *  
+	 * @param averageAnswerSurveyList
+	 * Initialization of the labels of each answer results to show the average for each question
+	 */
 	private void initAnswerLabels(ArrayList<AnswerSurvey> averageAnswerSurveyList)
 	{
 		if (averageAnswerSurveyList.size() > 0) {
@@ -162,6 +219,11 @@ public class ServiceExpertController implements Initializable {
 		}
 	}
 	
+	/***
+	 * 
+	 * @param averageAnswerSurveyList to set the sliders values
+	 * Set the slider values with the average value of each question in correspondence  
+	 */
 	private void initSliders(ArrayList<AnswerSurvey> averageAnswerSurveyList)
 	{
 		if(averageAnswerSurveyList.size() > 0) {
@@ -175,6 +237,11 @@ public class ServiceExpertController implements Initializable {
 		
 	}
 	
+	/***
+	 * 
+	 * @param survey to get its questions
+	 * @return array list with the specific survey questions
+	 */
 	private ArrayList<Question> getQuestionsOfSurvey(Survey survey)
 	{
 		ArrayList<Question> questionsOfSurvey = new ArrayList<>();
@@ -185,12 +252,21 @@ public class ServiceExpertController implements Initializable {
 					questionsOfSurvey.add(question);
 		return questionsOfSurvey;
 	}
-	
+	/***
+	 * 
+	 * @param question to set
+	 * @param label to be set with the question
+	 * 
+	 * Set the label with the value of the question to be shown
+	 */
 	private void setLabelQuestion(Question question , Label label)
 	{
 		label.setText(question.getQuesiton());
 	}
 	
+	/***
+	 * Display all of the question in the relevant labels
+	 */
 	private void displayQuestion()
 	{
 		attachQuestionToSurvey(survey);
@@ -206,6 +282,11 @@ public class ServiceExpertController implements Initializable {
 		}
 	}
 	
+	/***
+	 * 
+	 * @param survey to show his dates
+	 * Display the survey's duratios in the labels
+	 */
 	private void displayDates(Survey survey)
 	{
 		if (lblStart != null && lblEnd != null) {
@@ -213,7 +294,11 @@ public class ServiceExpertController implements Initializable {
 			lblEnd.setText(survey.getClosedDate().toString());
 		}
 	}
-	
+	/***
+	 * 
+	 * @param survey to get his questions attached in the list
+	 * Aattch the questions of the survey to this survey
+	 */
 	private void attachQuestionToSurvey(Survey survey)
 	{
 		ArrayList<SurveyQuestion> setSurveyQuestionList = new ArrayList<>();
@@ -225,6 +310,12 @@ public class ServiceExpertController implements Initializable {
 		survey.setSurveyQuestionList(setSurveyQuestionList);
 	}
 	
+	/***
+	 * 
+	 * @param event of the action
+	 * Submit the conclusion form with the Expert Service conclusion,
+	 * Then save it in the server's database
+	 */
 	@FXML
 	private void onSubmitPressedHandle(Event event)
 	{
@@ -241,12 +332,17 @@ public class ServiceExpertController implements Initializable {
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
 			
+			/***
+			 * While waiting for result from the server
+			 */
 			@Override
 			public void onWaitingForResult() {
 				// TODO Auto-generated method stub
 				
 			}
-			
+			/***
+			 * While getting the result from the server
+			 */
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub
@@ -263,12 +359,20 @@ public class ServiceExpertController implements Initializable {
 		});
 		sender.start();
 	}
-	
+	/***
+	 * 
+	 * @param event of the action
+	 * Close off the window of the form after submitting
+	 */
 	private void closeWindow(Event event)
 	{
 		((Node) event.getSource()).getScene().getWindow().hide();
 	}
-	
+	/***
+	 * 
+	 * @param stage to handle it's close
+	 * Set handle when the stage is closed to open the main survey management menu
+	 */
 	private void setOnCloseListener(Stage stage)
 	{
 		 stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -279,7 +383,9 @@ public class ServiceExpertController implements Initializable {
 	          }
 	      });        
 	}
-
+	/***
+	 * Initialize the data at the first program level
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub

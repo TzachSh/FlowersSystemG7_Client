@@ -29,8 +29,16 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
+/***
+ * 
+ * Controller class to define the logic of Survey Answering
+ *
+ */
 public class AnswerSurveyController implements Initializable{
 	
+	/***
+	 * FXML Components to define the slider of each answer
+	 */
 	@FXML private Slider sliderA1;
 	@FXML private Slider sliderA2;
 	@FXML private Slider sliderA3;
@@ -38,29 +46,47 @@ public class AnswerSurveyController implements Initializable{
 	@FXML private Slider sliderA5;
 	@FXML private Slider sliderA6;
 	
+	/***
+	 * FXML components to define the labels value to be changed in correspondence to the sliders movement
+	 */
 	@FXML private Label lblA1;
 	@FXML private Label lblA2;
 	@FXML private Label lblA3;
 	@FXML private Label lblA4;
 	@FXML private Label lblA5;
 	@FXML private Label lblA6;
-	
+	/***
+	 * FXML components to define the label of the answers
+	 */
 	@FXML private Label lblQ1;
 	@FXML private Label lblQ2;
 	@FXML private Label lblQ3;
 	@FXML private Label lblQ4;
 	@FXML private Label lblQ5;
 	@FXML private Label lblQ6;
-	
+	/***
+	 * Button to submit the answers
+	 */
 	@FXML Button btnSubmit;
 	
+	/***
+	 * Save the survey which is being answered
+	 */
 	private Survey activeSurvey;
 	
+	/***
+	 * List to handle the data 
+	 */
 	private ArrayList<Survey> surveyList;
 	private ArrayList<SurveyQuestion> surveyQuestionList;
 	private ArrayList<Question> questionList;
-	
+	/***
+	 * Save the stage to be handled during runtime
+	 */
 	private Stage stage;
+	/***
+	 * Save the logged in employee
+	 */
 	public static Employee branchEmployee = (Employee)LoginController.userLogged;
 
 	/**
@@ -90,12 +116,21 @@ public class AnswerSurveyController implements Initializable{
 		}
 	}
 	
+	/***
+	 * 
+	 * @param slider
+	 * @param label
+	 * Set the handler of a slider on change behavior to set his label which the correspondence value
+	 */
 	private void setSliderChangeListener(Slider slider , Label label)
 	{
 		slider.valueProperty().addListener((obs, oldval, newVal) -> 
 	    label.setText(String.format("%d",newVal.intValue())));
 	}
 	
+	/***
+	 * Initialize all the sliders with a default value
+	 */
 	private void initSliders()
 	{
 		setSliderChangeListener(sliderA1,lblA1);
@@ -106,6 +141,9 @@ public class AnswerSurveyController implements Initializable{
 		setSliderChangeListener(sliderA6,lblA6);
 	}
 	
+	/***
+	 * Initializing all the data to be stored in the lists
+	 */
 	private void initData()
 	{
 		ArrayList<Object> paramListSurvey = new ArrayList<>();
@@ -146,6 +184,10 @@ public class AnswerSurveyController implements Initializable{
 		sender.start();
 	}
 	
+	/***
+	 * Get all the answers in a list
+	 * @return
+	 */
 	private ArrayList<Integer> getAllAnswers()
 	{
 		ArrayList<Integer> answersList = new ArrayList<>();
@@ -159,12 +201,23 @@ public class AnswerSurveyController implements Initializable{
 		
 		return answersList;
 	}
+	/***
+	 * 
+	 * @param label
+	 * @return the Integer value of the number in the label
+	 */
 	
 	private Integer getAnswer(Label label)
 	{
 		return Integer.parseInt(label.getText());
 	}
 	
+	/***
+	 * 
+	 * @param event
+	 * Action to be performed on submitting 
+	 * Save the inserted results of the survey
+	 */
 	@FXML
 	private void onSubmitPressedHandler(Event event)
 	{ 
@@ -184,12 +237,17 @@ public class AnswerSurveyController implements Initializable{
 		
 		sender.registerHandler(new IResultHandler() {
 			
+			/***
+			 * While waiting to the results from the server
+			 */
 			@Override
 			public void onWaitingForResult() {
 				// TODO Auto-generated method stub
 				
 			}
-			
+			/***
+			 * When getting the result from the server
+			 */
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub
@@ -210,7 +268,10 @@ public class AnswerSurveyController implements Initializable{
 		});
 		sender.start();
 	}
-	
+	/***
+	 * 
+	 * @return the current activated survey
+	 */
 	private Survey getActiveSurvey()
 	{
 		Survey retSurvey = null;
@@ -220,7 +281,11 @@ public class AnswerSurveyController implements Initializable{
 		
 		return retSurvey;
 	}
-	
+	/***
+	 * 
+	 * @param survey
+	 * attach the answers to the relevant survey
+	 */
 	private void attachQuestionToSurvey(Survey survey)
 	{
 		ArrayList<SurveyQuestion> setSurveyQuestionList = new ArrayList<>();
@@ -231,7 +296,11 @@ public class AnswerSurveyController implements Initializable{
 		
 		survey.setSurveyQuestionList(setSurveyQuestionList);
 	}
-	
+	/***
+	 * 
+	 * @param survey
+	 * @return the questions of the relevant survey
+	 */
 	private ArrayList<Question> getQuestionsOfSurvey(Survey survey)
 	{
 		ArrayList<Question> questionsOfSurvey = new ArrayList<>();
@@ -244,11 +313,20 @@ public class AnswerSurveyController implements Initializable{
 		return questionsOfSurvey;
 	}
 	
+	/***
+	 * 
+	 * @param question
+	 * @param label
+	 * Set the question in to it's label
+	 */
 	private void setLabelQuestion(Question question , Label label)
 	{
 		label.setText(question.getQuesiton());
 	}
 	
+	/***
+	 * Display the questions of the survey
+	 */
 	private void displayQuestion()
 	{
 	    activeSurvey = getActiveSurvey();
@@ -277,6 +355,9 @@ public class AnswerSurveyController implements Initializable{
 	    }
 	}
 
+	/***
+	 * Initialize the data the the beginning
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub

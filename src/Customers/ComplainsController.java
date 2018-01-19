@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 import Branches.Branch;
 import Branches.CustomerService;
 import Branches.Employee;
+import Branches.Role;
 import Login.LoginController;
 import Login.ServiceMenuController;
 import PacketSender.Command;
@@ -59,7 +60,9 @@ import javafx.util.StringConverter;
 
 public class ComplainsController implements Initializable {
 
-	//FXML components
+	/***
+	 * FXML components to be used during runtime
+	 */
 	@FXML private TextField txtCustId;
 	@FXML private Button btnSearch;
 	@FXML private Button btnAdd;
@@ -72,7 +75,9 @@ public class ComplainsController implements Initializable {
 	@FXML private ComboBox<Branch> cmbBranch;
 	
 	
-	//List to be updated
+	/***
+	 * Lists to handle the data
+	 */
 	private ArrayList<Reply> replyList;
 	private ObservableList<Complain> data;
 	private ArrayList<Branch> branchList;
@@ -81,7 +86,9 @@ public class ComplainsController implements Initializable {
 	private ArrayList<Complain> currentServiceEmployeeComplains;
 	private ArrayList<Account> customerAccList;
 	
-	//Save current user accessed
+	/**
+	 * get the current logged in employee
+	 */
 	public static Employee customerService = (Employee)LoginController.userLogged;
 	
 	/**
@@ -96,6 +103,9 @@ public class ComplainsController implements Initializable {
 		cmbBranch.getSelectionModel().selectFirst();
 	}
 	
+	/***
+	 * Convert the value of the Branch ComboBox from string to Branch object or the opposite
+	 */
 	private void cmbSetConverter()
 	{
 		cmbBranch.setConverter(new StringConverter<Branch>() {
@@ -165,6 +175,11 @@ public class ComplainsController implements Initializable {
 	      }); 
 	}
 	
+	/**
+	 * 
+	 * @param complain
+	 * @return the reply reiles to this complain
+	 */
 	private Reply getReplyByComplain(Complain complain)
 	{
 		Reply retReply = null;
@@ -208,14 +223,24 @@ public class ComplainsController implements Initializable {
 				{
 					allComplainsList = p.<Complain>convertedResultListForCommand(Command.getComplains);
 					replyList = p.<Reply>convertedResultListForCommand(Command.getReplies);
-					currentServiceEmployeeComplains = new ArrayList<>();
 					
-					for(Complain complain : allComplainsList)
-						if (complain.getCustomerServiceId() == customerService.geteId())
-							currentServiceEmployeeComplains.add(complain);
+					if (customerService.getRole() == Role.CustomerService) {
+						
+						currentServiceEmployeeComplains = new ArrayList<>();
+						for (Complain complain : allComplainsList)
+							if (complain.getCustomerServiceId() == customerService.geteId())
+								currentServiceEmployeeComplains.add(complain);
 
-					data = FXCollections.observableArrayList(currentServiceEmployeeComplains);
-					cListView.setItems(data);
+						data = FXCollections.observableArrayList(currentServiceEmployeeComplains);
+						cListView.setItems(data);
+						
+					}
+					else if(customerService.getRole() == Role.ServiceExpert) {
+						
+						data = FXCollections.observableArrayList(allComplainsList);
+						cListView.setItems(data);
+						
+					}			
 				}	
 			}
 		});
@@ -438,6 +463,9 @@ public class ComplainsController implements Initializable {
 		});
 	}
 	
+	/***
+	 * Initialization of the Branches ComboBox with all the branches
+	 */
 	private void initBranchesCmb()
 	{
 		Packet packet = new Packet();

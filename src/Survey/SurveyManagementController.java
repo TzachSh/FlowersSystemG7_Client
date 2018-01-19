@@ -41,8 +41,15 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
-
+/***
+ * 
+ * Controller class to handle Survey Mangaement logic
+ *
+ */
 public class SurveyManagementController implements Initializable {
+	/***
+	 * FXML components to be changed during runtime
+	 */
 	@FXML
 	private TabPane tabOptions;
 	@FXML 
@@ -80,15 +87,27 @@ public class SurveyManagementController implements Initializable {
 	@FXML
 	private TextField txtSubject;
 	@FXML
+	/***
+	 * FXML list view component to be loaded with the surveys
+	 */
 	private ListView<Survey> sListView;
-	@FXML
+	/***
+	 * Observable list to handle the surveys data
+	 */
 	private ObservableList<Survey> dataSurvey;
 	
-	
+	/***
+	 * Lists for data handle during runtime 
+	 */
 	private ArrayList<SurveyConclusion> surveyConclusionList;
 	private ArrayList<Survey> survyList;
+	/***
+	 * Current logged in employee 
+	 */
 	public static Employee employee=(Employee)LoginController.userLogged;
-	
+	/***
+	 * The first step of adding a survey starts in stage 1 by default
+	 */
 	private int curStep = 1;
 	/**
 	 * Show the scene view of complains management
@@ -129,6 +148,9 @@ public class SurveyManagementController implements Initializable {
 	      }); 
 	}
 	
+	/***
+	 * Handle press on the next step button to go in to the next stage
+	 */
 	private void performNextStep()
 	{
 		int currentSelected = tabSteps.getSelectionModel().getSelectedIndex();
@@ -139,7 +161,9 @@ public class SurveyManagementController implements Initializable {
 			tabSteps.getSelectionModel().getSelectedItem().setDisable(false);
 		}
 	}
-	
+	/***
+	 * Handle press on the previous button to go in the back stage
+	 */
 	private void performPrevStep()
 	{
 		int currentSelected = tabSteps.getSelectionModel().getSelectedIndex();
@@ -150,23 +174,41 @@ public class SurveyManagementController implements Initializable {
 			tabSteps.getSelectionModel().getSelectedItem().setDisable(false);
 		}
 	}
-	
+	/***
+	 * 
+	 * @param curStep - current step
+	 * @param txtField - of the inserted question
+	 * @return the validation state of the inserted question
+	 */
 	private boolean stepValidation(int curStep , TextField txtField)
 	{
-		return (curStep == tabSteps.getSelectionModel().getSelectedIndex()+1) && (!txtField.getText().isEmpty());		
+		return (curStep == tabSteps.getSelectionModel().getSelectedIndex()+1) && (!txtField.getText().isEmpty() && txtField.getText().matches(".*[a-z].*"));		
 	}
-	
+	/***
+	 * 
+	 * @param txtField to be set
+	 * @param text to be shown 
+	 * Showing the inserted questions at the confirmation stage
+	 */
 	private void setConfirmationQuestionTextField(TextField txtField , String text)
 	{
 		txtField.setText(text);
 	}
-	
+	/***
+	 * 
+	 * @param isVisible - to set the visibility of the the previous and next buttons 
+	 */
 	private void setButtonsVisiblity(boolean isVisible)
 	{
 		btnNext.setVisible(isVisible);
 		btnPrev.setVisible(isVisible);
 	}
-	
+	/***
+	 * 
+	 * @param event of action
+	 * Handle press on the next button by validating the question info,
+	 * then go to the next step if validate
+	 */
 	@FXML
 	private void nextPressedHandler(Event event)
 	{
@@ -203,15 +245,17 @@ public class SurveyManagementController implements Initializable {
 		}
 		else if(curStep == 7)
 		{
-			// Nothing to handle
+			// Nothing to handle, just no more step next
 		}
 		else
 		{
-			Alert alert = new Alert(AlertType.INFORMATION,"Please Enter a question to finish this step");
+			Alert alert = new Alert(AlertType.INFORMATION,"Please Enter a valid question - characters only - to finish this step");
 			alert.show();
 		}
 	}
-	
+	/***
+	 * Reset the stage of all the FXML components
+	 */
 	private void resertComponents()
 	{
 		txtQ1.clear();
@@ -236,27 +280,40 @@ public class SurveyManagementController implements Initializable {
 		
 		setButtonsVisiblity(true);
 	}
-	
+	/***
+	 * 
+	 * @param event of action
+	 * Handle cancel button pressed to clear all of the components
+	 */
 	@FXML
 	private void cancelPressedHandler(Event event)
 	{
 		resertComponents();
 	}
-	
+	/***
+	 * 
+	 * @param event of action
+	 * Handle previous button click to perform back step operation  
+	 */
 	@FXML
 	private void prevPressedHandler(Event event)
 	{
 		if(curStep > 0)
 			performPrevStep();
 	}
-	
+	/***
+	 * 
+	 * @param event of action
+	 * Handle save button to save the survey in the database.
+	 * Survey created inactive mode by default
+	 */
 	@FXML
 	private void savePressedHandler(Event event)
 	{
 		String subject = txtSubject.getText();
-		if(subject.isEmpty())
+		if(subject.isEmpty() || !subject.matches(".*[a-z].*"))
 		{
-			Alert alert = new Alert(AlertType.INFORMATION,"Please enter a subject");
+			Alert alert = new Alert(AlertType.INFORMATION,"Please enter a valid - with characters only - subject");
 			alert.show();
 			return;
 		}
@@ -291,13 +348,17 @@ public class SurveyManagementController implements Initializable {
 		packet.setParametersForCommand(Command.addQuestionsToServey, paramListSurvyQuestion);
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
-				
+			/***
+			 * While waiting for a result from the server	
+			 */
 			@Override
 			public void onWaitingForResult() {
 				// TODO Auto-generated method stub
 				
 			}
-			
+			/***
+			 * When getting a result
+			 */
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub
@@ -313,7 +374,9 @@ public class SurveyManagementController implements Initializable {
 		});
 		sender.start();
 	}
-	
+	/***
+	 * Display the surveys in the list view
+	 */
 	@FXML
 	private void displaySurvey()
 	{
@@ -331,12 +394,17 @@ public class SurveyManagementController implements Initializable {
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
 			
+			/***
+			 * While waiting for a result from the server
+			 */
 			@Override
 			public void onWaitingForResult() {
 				// TODO Auto-generated method stub
 				
 			}
-			
+			/***
+			 * When getting a result from the server
+			 */
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub
@@ -360,11 +428,22 @@ public class SurveyManagementController implements Initializable {
 						sListView.setItems(dataSurvey);
 					}
 				}
+				else
+				{
+					Alert alert = new Alert(AlertType.ERROR,p.getExceptionMessage());
+					alert.show();
+				}
 			}
 		});
 		sender.start();
 	}
 	
+	/***
+	 * 
+	 * @param surveyConclusionList with all the conclusion of all survey
+	 * @param survey to find his conclusion
+	 * @return the conclusion of the specific survey, if exists
+	 */
 	private SurveyConclusion getConclusionBySurvey(ArrayList<SurveyConclusion> surveyConclusionList , Survey survey)
 	{
 		SurveyConclusion surveyConclusion = null;
@@ -375,7 +454,9 @@ public class SurveyManagementController implements Initializable {
 		return surveyConclusion;
 		
 	}
-	
+	/***
+	 * Set the cell handler of each cell in the list view
+	 */
 	private void setListCellFactory()
 	{
 		sListView.setCellFactory(new Callback<ListView<Survey>, ListCell<Survey>>() {
@@ -395,8 +476,8 @@ public class SurveyManagementController implements Initializable {
 					VBox detailsElement;
 					
 				/**
-				 * 	Set handler for each row, is a corresponding to the status of the complain, if it's active will show a "Reply" button near to it, else will be shown "Done"
-				 * @param complain - show the complain's details in the fields such as date , subject and content
+				 * 	Set handler for each row, is a corresponding to the status of the survey, if it's active will show "Active" status, else will be shown "Inactive"
+				 * @param survey - show the survey's details in the fields such as date , subject and content , status and conclusion
 				 */
 				private void setCellHandler(Survey survey)
 				{
@@ -486,7 +567,12 @@ public class SurveyManagementController implements Initializable {
 					return text;
 						
 				}
-				
+				/***
+				 * 
+				 * @param survey to be set
+				 * @param state of the survey to set
+				 * Then if the survey is activated then set it to inactive, else set it as active
+				 */
 				private void performOperation(Survey survey , boolean state)
 				{
 					Packet packet = new Packet();
@@ -499,28 +585,46 @@ public class SurveyManagementController implements Initializable {
 					SystemSender sender = new SystemSender(packet);
 					sender.registerHandler(new IResultHandler() {
 						
+						/***
+						 * While waiting or result from server
+						 */
 						@Override
 						public void onWaitingForResult() {
 							// TODO Auto-generated method stub
 							
 						}
-						
+						/***
+						 * While getting a result from server
+						 */
 						@Override
 						public void onReceivingResult(Packet p) {
 							// TODO Auto-generated method stub
 								if (p.getResultState()) {
 								
 								}
+								else
+								{
+									Alert alert = new Alert(AlertType.ERROR,p.getExceptionMessage());
+									alert.show();
+								}
 						}
 					});
 					sender.start();
 				}
-		
+				/***
+				 * 
+				 * @param event of action
+				 * Handle window close
+				 */
 				private void closeWindow(Event event)
 				{
 					((Node) event.getSource()).getScene().getWindow().hide();
 				}
-				
+				/***
+				 * 
+				 * @param survey to be handled with conclusion adding button
+				 * @return Button which is handle add conclusion to a specific survey by opening a new survey analyze setup window
+				 */
 				private Button createAddConclusionButton(Survey survey) {
 					
 					String btnText = "Add Conclusion";
@@ -541,13 +645,19 @@ public class SurveyManagementController implements Initializable {
 					
 					return btnAddConclusion;
 				}
-				/**
-				 * Creating a button handler which is navigates to the relevant reply view for each complain
-				 * @param activatedDateElement 
-				 * @param closedDateElement 
-				 * @param detailsElement 
-				 * @param complain - Create a new handler for this complain
-				 * @return Button which handled to open a matching view of a specific complain
+			
+				/***
+				 * 
+				 * @param survey to handle its operation
+				 * @param activeStatus to have the activated status
+				 * @param closedDateElement closed date element to be shown in the cell
+				 * @param closedDate to be saved
+				 * @param activatedDateElement activated date element to be shown in the cell
+				 * @param activatedDate to be save
+				 * @param detailsElement to be shown in the cell view with all of the survey details
+				 * @return a button which is changing the state of the survey
+				 * Performs the opposite operation of the current operation of the survey status.
+				 * If the survey is activated then deactivate it and show and save his closed date, else do the opposite and active the survey
 				 */
 				private Button createActivityButtonHandler(Survey survey , Text activeStatus , HBox closedDateElement, Text closedDate , HBox activatedDateElement, Text activatedDate, VBox detailsElement)
 				{
@@ -555,6 +665,9 @@ public class SurveyManagementController implements Initializable {
 						String textAction = (survey.isActive() == true ) ? "Inactivate" : "Activate";
 						Button btnAction = new Button(textAction);
 						
+						/***
+						 * Set button handle on click to show closed date or activated date by the status
+						 */
 						btnAction.setOnMouseClicked((event) -> {
 							if(survey.isActive()) {
 								btnAction.setText("Activate");
@@ -616,7 +729,7 @@ public class SurveyManagementController implements Initializable {
 				
 				/**
 				 * Update each row of the list view by the received item
-				 * @param item - the complain to show it's details
+				 * @param item - the survey to show it's details
 				 * @param empty - to check if the item is null or not
 				 */
 					@Override
@@ -633,7 +746,11 @@ public class SurveyManagementController implements Initializable {
 			}
 		});
 	}
-	
+	/***
+	 * 
+	 * @param surveyList to check if there is an activated survey in it
+	 * @return true if there is an activated survey, else - false
+	 */
 	private boolean isActivatedSurvey(ObservableList<Survey> surveyList)
 	{
 		boolean retVal = false;
@@ -644,13 +761,17 @@ public class SurveyManagementController implements Initializable {
 			}
 		return retVal;
 	}
-	
+	/***
+	 * Define that only a customer service can create a new survey
+	 */
 	private void isCreatAble()
 	{
 		if(employee.getRole() == Role.ServiceExpert)
 			tabOptions.getTabs().get(1).setDisable(true);
 	}
-	
+	/***
+	 * Initialize all of the data and components for the first time
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub

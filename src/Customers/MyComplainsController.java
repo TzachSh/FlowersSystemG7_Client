@@ -40,16 +40,40 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 
+/***
+ * 
+ * Class to define MyComplains Controller functionality
+ *
+ */
+
 public class MyComplainsController implements Initializable{
 
+	/**
+	 * Define list to initialize the data
+	 */
 	@FXML private ListView<Complain> cListView;
 	private ArrayList<Complain> complainsList;
 	private ArrayList<Branch> branchesList;
 	private ArrayList<Refund> refundsList;
 	private ArrayList<Reply> replyList;
+	/**
+	 * Observable collection to be set in to the views
+	 */
 	private ObservableList<Complain> complainsData;
+	
+	/**
+	 * Customer to be initalized after login
+	 */
 	private Customer customer = (Customer)LoginController.userLogged;
+	/**
+	 * Save the stage to be changed during runtime
+	 */
 	private Stage primaryStage;
+	
+	/**
+	 * 
+	 * @param primaryStage - main stage to be opened
+	 */
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 		String title = "Follow Complains";
@@ -65,6 +89,9 @@ public class MyComplainsController implements Initializable{
 			primaryStage.setScene(scene);
 			primaryStage.show();
 			
+			/**
+			 * Set on close to back to the previous menu
+			 */
 			primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 		          public void handle(WindowEvent we) {
 		        	  
@@ -87,7 +114,9 @@ public class MyComplainsController implements Initializable{
 	}
 	
 
-	
+	/**
+	 * Gather data of the customer's complains and display them in the list view
+	 */
 	private void displayComplains()
 	{
 		ArrayList<Complain> customerComplainsList = new ArrayList<>();
@@ -101,6 +130,11 @@ public class MyComplainsController implements Initializable{
 		cListView.setItems(complainsData);
 	}
 	
+	/***
+	 * 
+	 * @param complain 
+	 * @return the branch which this complain relies to 
+	 */
 	private Branch getBranchByComplain(Complain complain)
 	{
 		Branch retBranch = null;
@@ -111,6 +145,11 @@ public class MyComplainsController implements Initializable{
 		return retBranch;
 	}
 	
+	/**
+	 * 
+	 * @param complain
+	 * @return the refund, if exists, for this complain
+	 */
 	private Refund getRefundByComplain(Complain complain)
 	{
 		Refund retRefund = null;
@@ -123,6 +162,11 @@ public class MyComplainsController implements Initializable{
 		
 	}
 	
+	/**
+	 * 
+	 * @param complain
+	 * @return the reply, if exists, for this complain
+	 */
 	private Reply getReplyByComplain(Complain complain)
 	{
 		Reply retReply = null;
@@ -134,6 +178,9 @@ public class MyComplainsController implements Initializable{
 		return retReply;
 	}
 	
+	/**
+	 * Set the handle to be defined of each cell in the list view
+	 */
 	private void setListCellFactory()
 	{
 		cListView.setCellFactory(new Callback<ListView<Complain>, ListCell<Complain>>() {
@@ -228,6 +275,9 @@ public class MyComplainsController implements Initializable{
 		});
 	}
 	
+	/***
+	 * Initialization of the relevant lists: branches, complains, refunds and replies
+	 */
 	private void initData()
 	{
 		ArrayList<Object> paramListBranches = new ArrayList<>();
@@ -248,13 +298,17 @@ public class MyComplainsController implements Initializable{
 		
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
-			
+			/**
+			 * While waiting for results from the server
+			 */
 			@Override
 			public void onWaitingForResult() {
 				// TODO Auto-generated method stub
 				
 			}
-			
+			/**
+			 * When the results arrived
+			 */
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub
@@ -271,6 +325,9 @@ public class MyComplainsController implements Initializable{
 		sender.start();
 	}
 
+	/**
+	 * Called at the stage creation level to initialize to data and the list view cells handler 
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// TODO Auto-generated method stub

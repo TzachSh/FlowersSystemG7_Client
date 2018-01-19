@@ -39,7 +39,9 @@ import javafx.util.StringConverter;
  *
  */
 public class ReplyController {
-	//FXML components
+	/***
+	 * FXML components which be changed during runtime
+	 */
 	@FXML
 	private Button btnSend;
 	@FXML
@@ -55,13 +57,19 @@ public class ReplyController {
 	@FXML 
 	private ComboBox<Branch> cmbBranch;
 	
-	//List to be updated during runtime
+	/***
+	 * List to be updated during runtime
+	 */
 	private ArrayList<Branch> branchList;
 	private ObservableList<Branch> data;
 	
-	//Complain to show its details
+	/***
+	 * Complain to show its details
+	 */
 	private Complain complain;
-	//List to save the accounts for the specific customer
+	/***
+	 * List to save the accounts for the specific customer
+	 */
 	private ArrayList<Account> customerAccList;
 	
 	/**
