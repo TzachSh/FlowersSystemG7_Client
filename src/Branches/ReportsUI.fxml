@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
@@ -12,19 +16,13 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="718.0" prefWidth="616.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="670.0" prefWidth="619.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label fx:id="lblBranchName" layoutX="14.0" layoutY="14.0" text="branch name" />
       <Label fx:id="lblBranchNumber" layoutX="207.0" layoutY="14.0" text="branch number" />
       <Label fx:id="lblEmployeeName" layoutX="392.0" layoutY="14.0" text="Manager " />
       <Separator layoutY="39.0" prefHeight="4.0" prefWidth="619.0" />
-      <TableView fx:id="table1Income" layoutX="2.0" layoutY="290.0" prefHeight="200.0" prefWidth="615.0">
-        <columns>
-          <TableColumn prefWidth="75.0" text="C1" />
-          <TableColumn prefWidth="75.0" text="C2" />
-        </columns>
-      </TableView>
-      <TableView fx:id="table2Income" layoutX="2.0" layoutY="490.0" prefHeight="200.0" prefWidth="615.0">
+      <TableView fx:id="table2Income" layoutX="2.0" layoutY="468.0" prefHeight="200.0" prefWidth="615.0">
         <columns>
           <TableColumn prefWidth="75.0" text="C1" />
           <TableColumn prefWidth="75.0" text="C2" />
@@ -63,25 +61,31 @@
             <NumberAxis side="LEFT" />
          </yAxis>
       </BarChart>
-      <TableView fx:id="tblViewOrder1" layoutX="2.0" layoutY="290.0" prefHeight="200.0" prefWidth="615.0">
+      <TableView fx:id="tblViewOrder1" layoutX="2.0" layoutY="268.0" prefHeight="200.0" prefWidth="615.0">
         <columns>
           <TableColumn prefWidth="75.0" text="C1" />
           <TableColumn prefWidth="75.0" text="C2" />
         </columns>
       </TableView>
-      <TableView fx:id="tblViewOrder2" layoutX="3.0" layoutY="490.0" prefHeight="200.0" prefWidth="615.0">
+      <TableView fx:id="tblViewOrder2" layoutX="3.0" layoutY="468.0" prefHeight="200.0" prefWidth="615.0">
          <columns>
             <TableColumn prefWidth="75.0" text="C1" />
             <TableColumn prefWidth="75.0" text="C2" />
          </columns>
       </TableView>
-      <TableView fx:id="tblViewSatisfaction1" layoutX="2.0" layoutY="290.0" prefHeight="200.0" prefWidth="615.0">
+      <TableView fx:id="tblViewSatisfaction1" layoutX="2.0" layoutY="268.0" prefHeight="200.0" prefWidth="615.0">
         <columns>
           <TableColumn prefWidth="75.0" text="C1" />
           <TableColumn prefWidth="75.0" text="C2" />
         </columns>
       </TableView>
-      <TableView fx:id="tblViewSatisfaction2" layoutX="2.0" layoutY="490.0" prefHeight="200.0" prefWidth="615.0">
+      <TableView fx:id="tblViewSatisfaction2" layoutX="2.0" layoutY="468.0" prefHeight="200.0" prefWidth="615.0">
+        <columns>
+          <TableColumn prefWidth="75.0" text="C1" />
+          <TableColumn prefWidth="75.0" text="C2" />
+        </columns>
+      </TableView>
+      <TableView fx:id="table1Income" layoutX="2.0" layoutY="268.0" prefHeight="200.0" prefWidth="615.0">
         <columns>
           <TableColumn prefWidth="75.0" text="C1" />
           <TableColumn prefWidth="75.0" text="C2" />
