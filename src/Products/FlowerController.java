@@ -95,7 +95,7 @@ public class FlowerController extends Application implements Initializable {
 		send.start();
 	}
 	/**
-	 * 	when user click on create checking validationand sending it to the server
+	 * 	when user click on create checking validation and sending it to the server
 	 */
 	public void onCreateClicked(ActionEvent event)
 	{

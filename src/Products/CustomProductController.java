@@ -104,6 +104,7 @@ public class CustomProductController implements Initializable {
 
 	private ObservableList<Flower> data;//storing flowers in observable list to get option to update it when app is run
 	private ArrayList<Flower> flowerList;//all flowers from db
+	private Stage primaryStage;
 	private double cashLeft;
 	private double maxPrice;
 	private LinkedHashMap<Flower,Integer> flowerInProduct= new LinkedHashMap<>();
@@ -119,14 +120,10 @@ public class CustomProductController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		getFlowers();
-		registerBtnBack();
 		cmbProductType.getItems().addAll(ConstantData.productTypeList);
 		cmbColor.getItems().addAll(ConstantData.productColorList);
 		//init controls
 		paneFlowers.setVisible(false);
-		setSettingBtn();
-		setResetBtn();
-		setAddToOrderBtn();
 		//validate price by using regex
 		txtMaxCost.textProperty().addListener(new ChangeListener<String>() {
 
@@ -145,45 +142,29 @@ public class CustomProductController implements Initializable {
 		});
 	
 	}
-	private void registerBtnBack() {
-		btnBackToCart.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				Stage cartStage = new Stage();
-				CartController cartController = new CartController();
-    			cartController.setComesFromCatalog(false);
-    			Node source = (Node) event.getSource();
-			    Stage stage = (Stage) source.getScene().getWindow();
-			    stage.close();
-    			try {
-					cartController.start(cartStage);
-				} catch (Exception e) {
-					JOptionPane.showMessageDialog(null,"Failed to open Cart"+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-				}		
-			}
-		});
-		
+	public void onClickRegisterBtnBack() {
+		Stage cartStage = new Stage();
+		CartController cartController = new CartController();
+		cartController.setComesFromCatalog(false);
+		primaryStage.close();
+		try {
+			cartController.start(cartStage);
+		} catch (Exception e) {
+		}
 	}
 	/**
 	 * init addToOrder handle. if blessing is empty ask if customer want to add blessing
 	 */
-	private void setAddToOrderBtn() {
-		btnAddToCart.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event)
-			{
+	public void onClickAddToOrderBtn() 
+	{
 				//display notification
-				if (txtBlessing.getText().length()==0 && JOptionPane.showConfirmDialog(null, "Do you want to add blessing?", "Notification",
-				        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-					paneFlowers.getSelectionModel().select(1);
+		if (txtBlessing.getText().length()==0 && JOptionPane.showConfirmDialog(null, "Do you want to add blessing?", "Notification",
+		        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+			paneFlowers.getSelectionModel().select(1);
 
-				} else {
-				   addToCartCloseWindow();//continue to cart
-				}
-				
-			}
-		});		
-		
+		} else {
+		   addToCartCloseWindow();//continue to cart
+		}		
 	}
 	/**
 	 * getParameters for new custom product and send to create
@@ -253,56 +234,47 @@ public class CustomProductController implements Initializable {
 		stage.close();
 		
 	}
-	private void setResetBtn() {
-		btnReset.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				txtMaxCost.setText("");
-				cmbColor.getSelectionModel().clearSelection();
-				paneFlowers.setVisible(false);
-				txtMaxCost.setDisable(false);
-				cmbColor.setDisable(false);
-				btnFind.setDisable(false);
-				lblCashLeft.setText("");
-				flowerInProduct.clear();
-				lblTotalPrice.setText("");
-			}
-		});		
-	}
-	private void setSettingBtn() {
-		btnFind.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				try {
-					isValid();
-					btnFind.setDisable(true);
-					paneFlowers.setVisible(true);
-					txtMaxCost.setDisable(true);
-					cmbColor.setDisable(true);
-					maxPrice=cashLeft=Double.parseDouble(txtMaxCost.getText());
-					initList();
-					lblCashLeft.setText("Cash left:"+cashLeft);
-					lblTotalPrice.setText("Total: "+(maxPrice-cashLeft));
-				}
-				catch(Exception e)
-				{
-					JOptionPane.showMessageDialog(null,e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-				}
-			}
 
-			private void isValid() throws Exception {
-				String msg= new String();
-				if(txtMaxCost.getText().length()==0)
-					msg = "Invalid cost";
-				if(cmbColor.getValue()== null)
-					msg= msg+"\r\nChoose dominant color";
-				if(cmbProductType.getValue()== null)
-					msg= msg+"\r\nChoose product type";
-				if(msg.length()>0)
-					throw new Exception(msg);
-			}
-		});
-		
+	public void onClickResetButton()
+	{
+		txtMaxCost.setText("");
+		cmbColor.getSelectionModel().clearSelection();
+		paneFlowers.setVisible(false);
+		txtMaxCost.setDisable(false);
+		cmbColor.setDisable(false);
+		btnFind.setDisable(false);
+		lblCashLeft.setText("");
+		flowerInProduct.clear();
+		lblTotalPrice.setText("");
+	}
+	public void onClickSetSetting()
+	{
+		try {
+			isValid();
+			btnFind.setDisable(true);
+			paneFlowers.setVisible(true);
+			txtMaxCost.setDisable(true);
+			cmbColor.setDisable(true);
+			maxPrice=cashLeft=Double.parseDouble(txtMaxCost.getText());
+			initList();
+			lblCashLeft.setText("Cash left:"+cashLeft);
+			lblTotalPrice.setText("Total: "+(maxPrice-cashLeft));
+		}
+		catch(Exception e)
+		{
+			JOptionPane.showMessageDialog(null,e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	private void isValid() throws Exception {
+		String msg= new String();
+		if(txtMaxCost.getText().length()==0)
+			msg = "Invalid cost";
+		if(cmbColor.getValue()== null)
+			msg= msg+"\r\nChoose dominant color";
+		if(cmbProductType.getValue()== null)
+			msg= msg+"\r\nChoose product type";
+		if(msg.length()>0)
+			throw new Exception(msg);
 	}
 	public void start(Stage primaryStage) throws IOException {
 		String srcFXML = "/Products/CustomProductUI.fxml";

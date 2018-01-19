@@ -11,7 +11,7 @@
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="218.0" prefWidth="475.0">
                <children>
-                  <Button fx:id="btnFind" layoutX="198.0" layoutY="181.0" mnemonicParsing="false" text="Find flowers" />
+                  <Button fx:id="btnFind" layoutX="198.0" layoutY="181.0" mnemonicParsing="false" onAction="#onClickSetSetting" text="Find flowers" />
                   <TextField fx:id="txtMaxCost" layoutX="163.0" layoutY="37.0" promptText="enter price range" />
                   <ComboBox fx:id="cmbColor" layoutX="163.0" layoutY="90.0" prefWidth="150.0" />
                   <Label layoutX="82.0" layoutY="41.0" text="Price range:" />
@@ -45,10 +45,10 @@
           </Tab>
         </tabs>
       </TabPane>
-      <Button fx:id="btnAddToCart" layoutX="410.0" layoutY="546.0" mnemonicParsing="false" text="Add to order" />
-      <Button fx:id="btnReset" layoutX="234.0" layoutY="546.0" mnemonicParsing="false" text="Reset" />
+      <Button fx:id="btnAddToCart" layoutX="410.0" layoutY="546.0" mnemonicParsing="false" onAction="#onClickAddToOrderBtn" text="Add to order" />
+      <Button fx:id="btnReset" layoutX="234.0" layoutY="546.0" mnemonicParsing="false" onAction="#onClickResetButton" text="Reset" />
       <Label fx:id="lblTotalPrice" layoutX="311.0" layoutY="550.0" prefHeight="17.0" prefWidth="45.0" />
-      <Button fx:id="btnBackToCart" layoutX="25.0" layoutY="546.0" mnemonicParsing="false" text="Back to cart" />
+      <Button fx:id="btnBackToCart" layoutX="25.0" layoutY="546.0" mnemonicParsing="false" onAction="#onClickRegisterBtnBack" text="Back to cart" />
       <Label layoutX="166.0" layoutY="33.0" text="Create your own bouquet" />
    </children>
 </AnchorPane>
