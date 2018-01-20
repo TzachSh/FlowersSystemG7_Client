@@ -9,20 +9,15 @@ import java.util.Calendar;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
 
-import javax.rmi.CORBA.UtilDelegate;
-
-import com.sun.corba.se.impl.javax.rmi.CORBA.Util;
-import com.sun.javafx.binding.Logging;
-
 import Commons.ProductInOrder;
 import Customers.Account;
-import Customers.Customer;
 import Customers.MemberShipAccount;
-import Customers.Membership;
 import Login.CustomerMenuController;
-import Login.LoginController;
+import PacketSender.Command;
+import PacketSender.IResultHandler;
+import PacketSender.Packet;
+import PacketSender.SystemSender;
 import Products.CartController;
-import Products.ConstantData;
 import Products.Product;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -31,7 +26,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -44,10 +38,10 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
-import sun.util.logging.resources.logging;
 
 public class OrderController implements Initializable, ChangeListener<String>{
 
@@ -104,10 +98,9 @@ public class OrderController implements Initializable, ChangeListener<String>{
 	private int emptyLines=3;
 	private static Stage primaryStage;
 	private double blnce;
-	private Customer curCustomer;
 	private Account account;
 	private MemberShipAccount memberAc;
-	private Membership membership;
+
 	public OrderController() {}
 	public void start(Stage arg0) throws Exception {
 		primaryStage=arg0;
@@ -183,18 +176,14 @@ public class OrderController implements Initializable, ChangeListener<String>{
 	}
 	private void getPriceDetails() {
 		lblTotalBeforeDiscount.setText(""+CartController.getTotalPrice());
-		curCustomer =  (Customer)LoginController.userLogged;
-		account = CustomerMenuController.userAccountsList.stream().filter(c->c.getCustomerId()==curCustomer.getId() && c.getBranchId()==CustomerMenuController.currentBranch.getbId()).findFirst().orElse(null);
-		memberAc = (MemberShipAccount)CustomerMenuController.memberShipsByAccount.stream().filter(c->c.getAcNum()==account.getNum()).findFirst().orElse(null);
-		
-		if(memberAc != null)
-		{
-			membership=ConstantData.memberShipList.stream().filter(c->c.getNum()==memberAc.getmId()).findFirst().orElse(null); 
+		account = CustomerMenuController.currentAcc;		
+		if(account.getMemberShip() != null)
+		{ 
 			radAccount.setVisible(false);
 			radCash.setVisible(false);
-			double discount = CartController.getTotalPrice()*membership.getDiscount()/100;
+			double discount = CartController.getTotalPrice()*account.getMemberShip().getDiscount()/100;
 			lblDiscount.setText(String.format("%.2f¤",discount));
-			totalAfter=CartController.getTotalPrice()*(1-membership.getDiscount()/100);
+			totalAfter=CartController.getTotalPrice()*(1-account.getMemberShip().getDiscount()/100);
 			lblTotal.setText(String.format("%.2f¤",totalAfter));
 		}
 		else
@@ -203,7 +192,7 @@ public class OrderController implements Initializable, ChangeListener<String>{
 			lblDiscount.setText("0¤");
 			lblTotal.setText(String.format("%.2f¤",totalAfter));
 		}
-		blnce = CustomerMenuController.getAccount().getBalance();
+		blnce = account.getBalance();
 		if(blnce<=0)
 		{
 			blncePay=0;
@@ -241,7 +230,12 @@ public class OrderController implements Initializable, ChangeListener<String>{
 			public void handle(ActionEvent event) {
 				if(chkExpressDelivery.isSelected())
 				{
+					chkDelivery.setSelected(true);
+					chkDelivery.setDisable(true);
 					requestedDate.setDisable(true);
+					txtAddress.setDisable(false);
+					txtName.setDisable(false);
+					txtPhone.setDisable(false);
 					txtTimeRequested.setDisable(true);
 					requestedDate.setValue(LocalDate.now());
 					LocalDateTime dt = LocalDateTime.now().plusHours(3);
@@ -249,9 +243,11 @@ public class OrderController implements Initializable, ChangeListener<String>{
 				}
 				else
 				{
+					chkDelivery.setDisable(false);
 					requestedDate.setDisable(false);
 					txtTimeRequested.setDisable(false);
 					txtTimeRequested.setText("");
+
 				}
 				
 			}
@@ -319,7 +315,9 @@ public class OrderController implements Initializable, ChangeListener<String>{
 		case 0:
 			tabPane.getSelectionModel().select(1);
 			delivery.setDisable(false);
-			date.setDisable(true);
+			date.setDisable(true);			
+			if(chkDelivery.isSelected() && emptyLines!=0)
+				btnNext.setDisable(true);
 			break;
 		case 1:
 			tabPane.getSelectionModel().select(2);
@@ -360,28 +358,89 @@ public class OrderController implements Initializable, ChangeListener<String>{
 			emptyLines--;
 		else if(newValue.length()==0)
 			emptyLines++;
-		btnNext.setDisable(emptyLines!=3 && emptyLines!=0);
+		if(!chkDelivery.isSelected())
+			btnNext.setDisable(false);
+		else
+			btnNext.setDisable(emptyLines!=0);
+	}
+	private boolean isAvailableToPay() {
+		
+			return true;
+		
 	}
 	private void insertOrder()
 	{
 		Date dateNow = new Date(Calendar.getInstance().getTime().getTime());
-		Order order = new Order(0,dateNow,Date.valueOf(requestedDate.getValue()),CustomerMenuController.getAccount().getCustomerId(),2,CustomerMenuController.currentBranch.getbId(),totalAfter);
+		//create order
+		ArrayList<Order> order = new ArrayList<>();
+		order.add(new Order(0,dateNow,Date.valueOf(requestedDate.getValue()),account.getCustomerId(),2,account.getBranchId(),totalAfter));
 		ArrayList<ProductInOrder> prodInOrder = new ArrayList<ProductInOrder>();
+		//set all products in order
 		for(Entry<Product,Integer> prod : CartController.cartProducts.entrySet())
 		{
 			prodInOrder.add(new ProductInOrder(0, prod.getKey().getId(), prod.getValue()));
 		}
+		//set payment in order
+		String paymentMethodString=toggleGroup.getSelectedToggle().getUserData().toString();
+		PaymentMethod payment;
+		if(paymentMethodString.equals(PaymentMethod.Cash))//check the payment option
+			 payment = PaymentMethod.Cash;
+		else
+			payment = PaymentMethod.CreditCard;
+		double amount=totalAfter;
+		ArrayList<OrderPayment> orderPayment = new ArrayList<>();
+		//if exists membership customer will pay all in the end of the membership
+		//because of it there is no payment date
+		if(account.getMemberShip()!=null)
+			orderPayment.add(new OrderPayment(payment, amount));
+		//otherwise payment date is now
+		else
+			orderPayment.add(new OrderPayment(payment, amount,Date.valueOf(LocalDate.now())));
+		//if customer uses his balance to pay
+		ArrayList<Account> acList = new ArrayList<>();
+		if(blncePay>0)
+		{
+			orderPayment.add(new OrderPayment(PaymentMethod.BalancePayment, blncePay,Date.valueOf(LocalDate.now())));
+			account.setBalance(blnce-blncePay);
+			acList.add(account);
+		}
+		
 		
 	}
-	private void insertPayment()
+	private void insertPayment(ArrayList<Object> order,ArrayList<Object> productInOrder,ArrayList<Object> payments,ArrayList<Object> account)
 	{
-		if(memberAc!= null)
-		{
-			//update balance
-		}
-		else
-		{
-			//create payments
-		}
+		Packet packet = new Packet();
+		packet.addCommand(Command.createOrder);
+		packet.addCommand(Command.createProductsInOrder);
+		packet.addCommand(Command.createOrderPayments);
+		packet.addCommand(Command.updateAccountBalance);
+
+		
+		
+		
+		// create the thread for send to server the message
+		SystemSender send = new SystemSender(packet);
+
+		// register the handler that occurs when the data arrived from the server
+		send.registerHandler(new IResultHandler() {
+
+			@Override
+			public void onReceivingResult(Packet p) {
+				if (p.getResultState())
+				{
+					
+				}
+				else
+				{
+					
+				}
+			}
+
+			@Override
+			public void onWaitingForResult() { }
+					
+		});
+				
+		send.start();
 	}
 }

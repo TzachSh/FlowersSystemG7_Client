@@ -5,12 +5,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
-import javax.swing.JOptionPane;
-
 import Branches.Branch;
 import Customers.Account;
 import Customers.Customer;
 import Customers.MemberShipAccount;
+import Customers.Membership;
 import Customers.MyComplainsController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
@@ -19,14 +18,12 @@ import PacketSender.SystemSender;
 import Products.CartController;
 import Products.ConstantData;
 import Products.SelectProductController;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -66,17 +63,14 @@ public class CustomerMenuController implements Initializable {
     @FXML
     private Button btnAccount;
     
-    private static Account account;
-	
-    public static Account getAccount() {
-		return account;
-	}
 
 	public static ArrayList<Branch> branchesList = new ArrayList<>();
 	
     public static Branch currentBranch;
     
-    public static ArrayList<Account> userAccountsList = new ArrayList<>();
+    private static ArrayList<Account> userAccountsList = new ArrayList<>();
+    
+    public static Account currentAcc;
 
     public static boolean hasAccountForCurrentBranch = false;
     
@@ -263,12 +257,19 @@ public class CustomerMenuController implements Initializable {
 		{
 			Branch branch = branchesList.get(index);
 			currentBranch = branch;
+			currentAcc=userAccountsList.stream().filter(c->c.getBranchId()==currentBranch.getbId()).findFirst().orElse(null);
 			// alert if the user has no account for this branch
 			// if there is no account, disable the option for select products, or add to cart
-			account = getAccountByBranchId(branch.getbId());
-			if (account != null)
+			if (currentAcc != null)
 			{
 				enableComponentsWhenThereIsAccount();
+				MemberShipAccount memberByAc = memberShipsByAccount.stream().filter(c->c.getAcNum()==currentAcc.getNum()).findFirst().orElse(null);
+				if(memberByAc !=null)
+				{
+					Membership memberShip = ConstantData.memberShipList.stream().filter(c->c.getNum()==memberByAc.getmId()).findFirst().orElse(null);
+					currentAcc.setMemberShip(memberShip);
+				}
+
 			}
 			else 
 			{
@@ -331,23 +332,6 @@ public class CustomerMenuController implements Initializable {
 		btnCart.setDisable(true);
 		
 		currentBranch = null;
-	}
-	
-	/**
-	 * Get the instance of account by branch Id
-	 * @param branchId The branch Id for searching account
-	 */
-	public Account getAccountByBranchId(int branchId)
-	{
-		try {
-		for (Account account : userAccountsList)
-		{
-			if (account.getBranchId() == branchId)
-				return account;
-		}
-		}
-		catch(Exception e) {e.printStackTrace();}
-		return null;
 	}
 	
     /**
