@@ -113,14 +113,14 @@ public class UpdateCustomerController implements Initializable {
 		 if(loginUser==1)
 		 {
 			 	btnSearch.setVisible(true);
-				txtUser.setDisable(false);
-				cbStatus.setDisable(false);
-				cbMemberShip.setDisable(false);
-				txtCreditCard1.setDisable(false);
-				txtCreditCard2.setDisable(false);
-				txtCreditCard3.setDisable(false);
-				txtCreditCard4.setDisable(false);
-				txtCreditCard5.setDisable(false);
+				txtUser.setEditable(false);
+				cbStatus.setEditable(false);
+				cbMemberShip.setEditable(false);
+				txtCreditCard1.setEditable(false);
+				txtCreditCard2.setEditable(false);
+				txtCreditCard3.setEditable(false);
+				txtCreditCard4.setEditable(false);
+				txtCreditCard5.setEditable(false);
 				btnSave.setVisible(true);
 				btnchangePassword.setVisible(true); 
 				lbHeader.setText("Update Client Information");
@@ -128,14 +128,14 @@ public class UpdateCustomerController implements Initializable {
 		 else
 		 {
 				btnSearch.setVisible(false);
-				txtUser.setDisable(true);
-				cbStatus.setDisable(true);
-				cbMemberShip.setDisable(true);
-				txtCreditCard1.setDisable(true);
-				txtCreditCard2.setDisable(true);
-				txtCreditCard3.setDisable(true);
-				txtCreditCard4.setDisable(true);
-				txtCreditCard5.setDisable(true);
+				txtUser.setEditable(true);
+				cbStatus.setEditable(true);
+				cbMemberShip.setEditable(true);
+				txtCreditCard1.setEditable(true);
+				txtCreditCard2.setEditable(true);
+				txtCreditCard3.setEditable(true);
+				txtCreditCard4.setEditable(true);
+				txtCreditCard5.setEditable(true);
 				btnSave.setVisible(false);
 				btnchangePassword.setVisible(false);
 				lbHeader.setText("Client Information");
