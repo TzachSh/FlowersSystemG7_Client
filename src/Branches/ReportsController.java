@@ -15,13 +15,18 @@ import com.sun.xml.internal.bind.v2.runtime.reflect.Lister.Pack;
 
 import Customers.Complain;
 import Customers.Membership;
+import Login.CustomerMenuController;
+import Login.LoginController;
+import Login.ManagersMenuController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
+import Products.ConstantData;
 import Survey.AnswerSurvey;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -41,8 +46,10 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import jdk.nashorn.internal.runtime.linker.JavaAdapterFactory;
 
 public class ReportsController implements Initializable{
@@ -89,18 +96,18 @@ public class ReportsController implements Initializable{
 	private ArrayList<OrderReport> orderReport1,orderReport2;
 	//choice :saving manager choice of different branches/quarterlies
 	private int choice=0;
-	private Employee employee;
+	private Employee employee=(Employee)LoginController.userLogged;
 	
 	/**
 	 * 
 	 * @param useremployee the manager / branch manager
 	 */
-	public ReportsController(Employee useremployee)
+	/*public ReportsController(Employee useremployee)
 	{
 		super();
 		this.employee=useremployee;
 	}
-	
+	*/
 	public void BuildPacketForReport(Packet packet,int year,int quartely,int brId,Command cmd)
 	{
 		packet.addCommand(cmd);
@@ -265,6 +272,24 @@ public class ReportsController implements Initializable{
 			System.out.println(e);
 			e.printStackTrace();
 		}
+		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			
+			@Override
+			public void handle(WindowEvent event) {
+				  primaryStage.close();
+				  
+				  try {
+					  ManagersMenuController menumanager=new ManagersMenuController();
+					  menumanager.start(new Stage());
+					} catch (Exception e) {
+						ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
+					}
+				
+		
+			
+				
+			}
+		});
 	}
 	/**
 	 * Generates Reports for Branches Manager 

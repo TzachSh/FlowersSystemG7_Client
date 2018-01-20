@@ -12,12 +12,11 @@ public class ReportsUI extends Application {
 		launch(args);
 	}
 
-	@Override
+	@Override	
 	public void start(Stage arg0) throws Exception {
 		// TODO Auto-generated method stub
 		//ReportsController reportsController = new ReportsController(new Employee(2, "user2", "1", true, Permission.Administrator, 1, Role.BranchManager, 1));
-		ReportsController reportsController = new ReportsController(new Employee(2, "user2", "1", true, Permission.Administrator, 1, Role.BranchesManager, 1));
+		ReportsController reportsController = new ReportsController();
 		reportsController.start(arg0);
 	}
-
 }

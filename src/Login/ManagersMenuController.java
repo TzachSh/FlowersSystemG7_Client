@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 
 import Branches.Branch;
 import Branches.Employee;
+import Branches.ReportsController;
 import Branches.Role;
 import Customers.Account;
 import Customers.AccountController;
@@ -260,6 +261,11 @@ public class ManagersMenuController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		initializeCollections();
+		Employee employee=(Employee)LoginController.userLogged;
+		if(employee.getRole().toString().equals((Role.Branch).toString()))
+		{
+			btnReports.setDisable(true);
+		}
 	}
 	
 	public void onClickUpdateClient()
@@ -285,7 +291,16 @@ public class ManagersMenuController implements Initializable {
 			displayAlert(AlertType.ERROR, "Error", "Exception Error:", e.getMessage());
 		}
 	}
-	
+	public void onClickFetchReport()
+	{
+		ReportsController reportController = new ReportsController();
+		try {
+			primaryStage.close();
+			reportController.start(new Stage());
+		} catch (Exception e) {
+			displayAlert(AlertType.ERROR, "Error", "Exception Error:", e.getMessage());
+		}
+	}
 	public void onClickUpdateSaleCatalog()
 	{
 		primaryStage.close();

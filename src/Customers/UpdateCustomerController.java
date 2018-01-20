@@ -9,11 +9,14 @@ import javax.swing.JOptionPane;
 import com.sun.scenario.effect.impl.state.LinearConvolveRenderState.PassType;
 
 import Branches.Employee;
+import Login.CustomerMenuController;
 import Login.LoginController;
+import Login.ManagersMenuController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
+import Products.ConstantData;
 import Users.User;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -30,6 +33,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -42,6 +46,8 @@ public class UpdateCustomerController implements Initializable {
 	private ArrayList<Membership> memshipList ;
 	private ArrayList<MemberShipAccount> memshipAccount ;
 	private ArrayList<Customer> cList ;
+	@FXML
+	private Label lbHeader;
 	@FXML
 	private Label lbStatus;
 	@FXML
@@ -86,8 +92,11 @@ public class UpdateCustomerController implements Initializable {
 	private AnchorPane appassword;
 	@FXML
 	private Button btnchangePassword;
-	private Employee currentuser;
-	private Customer currentcustomer;
+	private static Employee currentuser;
+	private static Customer currentcustomer;
+	private Account currentCustomerAccount;
+	private static Stage myStage;
+
 	 public UpdateCustomerController() {
 		// TODO Auto-generated constructor stub
 	}
@@ -95,7 +104,44 @@ public class UpdateCustomerController implements Initializable {
 			// TODO Auto-generated constructor stub
 		 this.user=user;
 		}
-	 
+	 /**
+	  * This function hide and show relevant fields for client / manager
+	  * @param loginUser 1 for manager 0 for client
+	  */
+	 public void HandleUIFields(int loginUser)
+	 {
+		 if(loginUser==1)
+		 {
+			 	btnSearch.setVisible(true);
+				txtUser.setDisable(false);
+				cbStatus.setDisable(false);
+				cbMemberShip.setDisable(false);
+				txtCreditCard1.setDisable(false);
+				txtCreditCard2.setDisable(false);
+				txtCreditCard3.setDisable(false);
+				txtCreditCard4.setDisable(false);
+				txtCreditCard5.setDisable(false);
+				btnSave.setVisible(true);
+				btnchangePassword.setVisible(true); 
+				lbHeader.setText("Update Client Information");
+		 }
+		 else
+		 {
+				btnSearch.setVisible(false);
+				txtUser.setDisable(true);
+				cbStatus.setDisable(true);
+				cbMemberShip.setDisable(true);
+				txtCreditCard1.setDisable(true);
+				txtCreditCard2.setDisable(true);
+				txtCreditCard3.setDisable(true);
+				txtCreditCard4.setDisable(true);
+				txtCreditCard5.setDisable(true);
+				btnSave.setVisible(false);
+				btnchangePassword.setVisible(false);
+				lbHeader.setText("Client Information");
+
+		 }
+	 }
 	 /**
 	  * This function inistialize the settings
 	  */
@@ -104,13 +150,7 @@ public class UpdateCustomerController implements Initializable {
 		// TODO Auto-generated method stub
 		apnextinfo.setVisible(false);
 		appassword.setVisible(false);
-		if(LoginController.userLogged instanceof Employee) {
-			currentuser=(Employee)LoginController.userLogged;
-		}	
-		else
-			if(LoginController.userLogged instanceof Customer) {
-				currentcustomer=(Customer) LoginController.userLogged;
-			}
+		
 		
 		//validate customer text field input 
 		txtCustomerID.textProperty().addListener(new ChangeListener<String>() {
@@ -229,6 +269,49 @@ public class UpdateCustomerController implements Initializable {
 					txtNewPassword.setText(oldValue);
 			}
 		});
+		if(LoginController.userLogged instanceof Employee) {
+			currentuser=(Employee)LoginController.userLogged;
+			HandleUIFields(1);
+		}	
+		else
+			if(LoginController.userLogged instanceof Customer) {
+			 	currentcustomer=(Customer) LoginController.userLogged;
+			 	HandleUIFields(0);
+			 	txtCustomerID.setText(currentcustomer.getuId()+"");
+			 	
+			 	//opening packet
+				Packet packet = new Packet();
+				//adding command to the packet
+				packet.addCommand(Command.getAccountByuId);
+				
+				//adding array list to the packet's command so the Query can get information for statement .	
+				ArrayList<Object> userl=new ArrayList<>();
+				userl.add(currentcustomer.getuId());
+				packet.setParametersForCommand(Command.getAccountByuId, userl);
+				//sending the packet
+				SystemSender send = new SystemSender(packet);
+				send.registerHandler(new IResultHandler() {
+					
+					@Override
+					public void onWaitingForResult() {
+						
+					}
+					
+					@Override
+					public void onReceivingResult(Packet p) {
+						if(p.getResultState())
+						{
+							ArrayList<Account> acco=new ArrayList<>();
+							acco=p.<Account>convertedResultListForCommand(Command.getAccountByuId);
+							currentCustomerAccount=acco.get(0);
+						 	searchForCustomerByID();
+						}
+						else
+							showError("Error Loading Information , Please Try Again Later");
+					}
+				});
+				send.start();
+			}
 	}
 	/**
 	 * 
@@ -352,7 +435,10 @@ public class UpdateCustomerController implements Initializable {
 				//adding array list to the packet's command so the Query can get information for statement .	
 				ArrayList<Object> accl=new ArrayList<>();
 				accl.add(cList.get(0).getId());
-				accl.add(currentuser.getBranchId());
+				if(currentuser!=null)
+					accl.add(currentuser.getBranchId());
+				else
+					accl.add(currentCustomerAccount.getBranchId());
 				packet.setParametersForCommand(Command.getAccountbycIDandBranch, accl);
 				//adding array list to the packet's command so the Query can get information for statement .	
 				ArrayList<Object> cusl=new ArrayList<>();
@@ -421,7 +507,8 @@ public class UpdateCustomerController implements Initializable {
 									{
 										if(mem.getNum()==memshipAccount.get(0).getmId())
 										{
-											cbMemberShip.getSelectionModel().select(mem.getNum());
+											cbMemberShip.getSelectionModel().select(mem.getNum()-1);
+											break;
 										}
 									}
 								}
@@ -533,8 +620,8 @@ public class UpdateCustomerController implements Initializable {
 		//updating Customer
 		for(Membership mem:memshipList)//getting the orginal membership name (we got only membership id)
 		{
-			//if(mem.getNum()==cList.get(0).getMembershipId())
-				//orginalmemship=mem.getMembershipType().toString();//getting original member ship
+			if(mem.getNum()==memshipAccount.get(0).getmId())
+				orginalmemship=mem.getMembershipType().toString();//getting original member ship
 			if(mem.getMembershipType().toString().equals(newmembership))
 				choosedmemid=mem.getNum();//getting the choosed membership id
 		}
@@ -587,7 +674,6 @@ public class UpdateCustomerController implements Initializable {
 				}
 				packet.setParametersForCommand(Command.updateAccountsBycId, accl);
 				
-				
 			}
 		}
 		//sending the packet
@@ -609,7 +695,13 @@ public class UpdateCustomerController implements Initializable {
 							"Update Success", 
 			                "Success", 
 			                JOptionPane.CLOSED_OPTION);
-
+						myStage.close();
+					  ManagersMenuController menu = new ManagersMenuController();
+					  try {
+						menu.start(new Stage());
+					} catch (Exception e) {
+						ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
+					}
 				}
 				else
 					System.out.println("Fail: " + p.getExceptionMessage());
@@ -649,6 +741,8 @@ public class UpdateCustomerController implements Initializable {
 		String title = "Add Account UI";
 		String srcFXML = "/Customers/updateCustomerUI.fxml";
 		String srcCSS = "/Customers/application.css";
+		myStage=primaryStage;
+
 		//tyrying to init the window
 		try {
 			FXMLLoader loader = new FXMLLoader();
@@ -670,8 +764,28 @@ public class UpdateCustomerController implements Initializable {
 			
 			@Override
 			public void handle(WindowEvent event) {
-				// TODO Auto-generated method stub
-				Platform.exit();
+				  primaryStage.close();
+				   ManagersMenuController menumanager;
+				   CustomerMenuController menuclient;
+				if(currentuser!=null) {
+					menumanager = new ManagersMenuController();
+					  try {
+						  menumanager.start(new Stage());
+						} catch (Exception e) {
+							ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
+						}
+				}
+				else {
+					menuclient=new CustomerMenuController();
+					  try {
+						  menuclient.start(new Stage());
+						} catch (Exception e) {
+							ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
+						}
+					
+				}
+			
+				
 			}
 		});
 	}

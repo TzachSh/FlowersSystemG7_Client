@@ -9,7 +9,7 @@
 
 <AnchorPane prefHeight="486.0" prefWidth="431.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Customers.UpdateCustomerController">
    <children>
-      <Label layoutX="13.0" layoutY="24.0" text="Update Customer Information">
+      <Label fx:id="lbHeader" layoutX="13.0" layoutY="24.0" text="Update Customer Information">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>

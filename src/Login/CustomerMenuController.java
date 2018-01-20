@@ -11,6 +11,7 @@ import Customers.Customer;
 import Customers.MemberShipAccount;
 import Customers.Membership;
 import Customers.MyComplainsController;
+import Customers.UpdateCustomerController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
@@ -142,6 +143,14 @@ public class CustomerMenuController implements Initializable {
 	public void onClickingMyAccount()
 	{
 		
+		UpdateCustomerController updateClient = new UpdateCustomerController();
+		try {
+			menuStage.close();
+			updateClient.start(new Stage());
+			
+		} catch (Exception e) {
+			displayAlert(AlertType.ERROR, "Error", "Exception Error:", e.getMessage());
+		}
 	}
 	
 	/**
