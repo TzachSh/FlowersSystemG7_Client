@@ -97,13 +97,11 @@ public class UpdateCustomerController implements Initializable {
 	private Account currentCustomerAccount;
 	private static Stage myStage;
 
-	 public UpdateCustomerController() {
-		// TODO Auto-generated constructor stub
-	}
-	 public UpdateCustomerController(User user) {
+	
+	 /*public UpdateCustomerController(User user) {
 			// TODO Auto-generated constructor stub
 		 this.user=user;
-		}
+		}*/
 	 /**
 	  * This function hide and show relevant fields for client / manager
 	  * @param loginUser 1 for manager 0 for client
@@ -112,6 +110,7 @@ public class UpdateCustomerController implements Initializable {
 	 {
 		 if(loginUser==1)
 		 {
+			 	//handling fields and buttons for the manager
 			 	btnSearch.setVisible(true);
 				txtUser.setEditable(false);
 				cbStatus.setEditable(false);
@@ -127,6 +126,7 @@ public class UpdateCustomerController implements Initializable {
 		 }
 		 else
 		 {
+			 //handling fields and buttons for the client
 				btnSearch.setVisible(false);
 				txtUser.setEditable(true);
 				cbStatus.setEditable(true);
@@ -139,7 +139,6 @@ public class UpdateCustomerController implements Initializable {
 				btnSave.setVisible(false);
 				btnchangePassword.setVisible(false);
 				lbHeader.setText("Client Information");
-
 		 }
 	 }
 	 /**
@@ -147,22 +146,17 @@ public class UpdateCustomerController implements Initializable {
 	  */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		// TODO Auto-generated method stub
 		apnextinfo.setVisible(false);
 		appassword.setVisible(false);
-		
-		
 		//validate customer text field input 
 		txtCustomerID.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				// TODO Auto-generated method stub
-			
+			//checking the length
 				if(newValue.length()>9)
 					txtCustomerID.setText(oldValue);
 				if(!newValue.equals("") && (newValue.charAt(newValue.length()-1)<'0'||newValue.charAt(newValue.length()-1)>'9'))
 					txtCustomerID.setText(oldValue);
-			
 			}
 		});
 		//validate customer user field input
@@ -182,7 +176,9 @@ public class UpdateCustomerController implements Initializable {
 		});
 		//validate text for credit card
 		txtCreditCard1.textProperty().addListener(new ChangeListener<String>() {
-
+			/**
+			 * if the text changed
+			 */
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				// TODO Auto-generated method stub
@@ -194,7 +190,9 @@ public class UpdateCustomerController implements Initializable {
 			
 		});
 		txtCreditCard2.textProperty().addListener(new ChangeListener<String>() {
-
+			/**
+			 * if the text changed
+			 */
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				// TODO Auto-generated method stub
@@ -206,10 +204,12 @@ public class UpdateCustomerController implements Initializable {
 			
 		});
 		txtCreditCard3.textProperty().addListener(new ChangeListener<String>() {
-
+			/**
+			 * if the text changed
+			 */
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				// TODO Auto-generated method stub
+				// TODO checking the length
 				if(newValue.length()>4)
 					txtCreditCard3.setText(oldValue);
 				if(!newValue.equals("") &&(newValue.charAt(newValue.length()-1)<'0'||newValue.charAt(newValue.length()-1)>'9'))
@@ -218,10 +218,12 @@ public class UpdateCustomerController implements Initializable {
 			
 		});
 		txtCreditCard4.textProperty().addListener(new ChangeListener<String>() {
-
+			/**
+			 * if the text changed
+			 */
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				// TODO Auto-generated method stub
+				// checking the length
 				if(newValue.length()>4)
 					txtCreditCard4.setText(oldValue);
 				if(!newValue.equals("") &&(newValue.charAt(newValue.length()-1)<'0'||newValue.charAt(newValue.length()-1)>'9'))
@@ -230,45 +232,53 @@ public class UpdateCustomerController implements Initializable {
 			
 		});
 		txtCreditCard5.textProperty().addListener(new ChangeListener<String>() {
-
+			/**
+			 * if the text changed
+			 */
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				// TODO Auto-generated method stub
+				//checking the lenght
 				if(newValue.length()>4)
 					txtCreditCard5.setText(oldValue);
 				if(!newValue.equals("") &&(newValue.charAt(newValue.length()-1)<'0'||newValue.charAt(newValue.length()-1)>'9'))
 					txtCreditCard5.setText(oldValue);
 			}
-			
 		});		
 		//password validation
 		txtPassword.textProperty().addListener(new ChangeListener<String>() {
-
+			/**
+			 * if the text changed
+			 */
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				// TODO Auto-generated method stub
+				//checking the length
 				if(newValue.length()>50)
 					txtPassword.setText(oldValue);
 			}
 		});
 		txtConfirmPassword.textProperty().addListener(new ChangeListener<String>() {
-
+			/**
+			 * if the text changed
+			 */
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				// TODO Auto-generated method stub
+				// checking the length
 				if(newValue.length()>50)
 					txtConfirmPassword.setText(oldValue);
 			}
 		});
 		txtNewPassword.textProperty().addListener(new ChangeListener<String>() {
-
+			/**
+			 * if the text changed
+			 */
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				// TODO Auto-generated method stub
+				// checking the length
 				if(newValue.length()>50)
 					txtNewPassword.setText(oldValue);
 			}
 		});
+		//checking which type of user is logged
 		if(LoginController.userLogged instanceof Employee) {
 			currentuser=(Employee)LoginController.userLogged;
 			HandleUIFields(1);
@@ -291,16 +301,21 @@ public class UpdateCustomerController implements Initializable {
 				//sending the packet
 				SystemSender send = new SystemSender(packet);
 				send.registerHandler(new IResultHandler() {
-					
+					/**
+					 * waiting for result from the server
+					 */
 					@Override
 					public void onWaitingForResult() {
 						
 					}
-					
+					/**
+					 * getting result p from the server
+					 */
 					@Override
 					public void onReceivingResult(Packet p) {
 						if(p.getResultState())
 						{
+							//getting information from the returned result
 							ArrayList<Account> acco=new ArrayList<>();
 							acco=p.<Account>convertedResultListForCommand(Command.getAccountByuId);
 							currentCustomerAccount=acco.get(0);
@@ -310,6 +325,7 @@ public class UpdateCustomerController implements Initializable {
 							showError("Error Loading Information , Please Try Again Later");
 					}
 				});
+				//sending the packet
 				send.start();
 			}
 	}
@@ -405,16 +421,18 @@ public class UpdateCustomerController implements Initializable {
 		//sending the packet
 		SystemSender send = new SystemSender(packet);
 		send.registerHandler(new IResultHandler() {
-			
+			/**
+			 * waiting for result from the server
+			 */
 			@Override
 			public void onWaitingForResult() {
-				// TODO Auto-generated method stub
 				
 			}
-			
+			/**
+			 * getting the result p from the server
+			 */
 			@Override
 			public void onReceivingResult(Packet p) {
-				// TODO Auto-generated method stub
 				//getting the result from the Query
 				cList=p.<Customer>convertedResultListForCommand(Command.getCustomersKeyByuId);
 				
@@ -448,13 +466,15 @@ public class UpdateCustomerController implements Initializable {
 				//sending the packet
 				SystemSender send = new SystemSender(packet);
 				send.registerHandler(new IResultHandler() {
-					
+					/**
+					 * waiting for result from the server
+					 */
 					@Override
-					public void onWaitingForResult() {
-						// TODO Auto-generated method stub
-						
+					public void onWaitingForResult() {						
 					}
-					
+					/**
+					 * getting the result p from the server
+					 */
 					@Override
 					public void onReceivingResult(Packet p) {
 						//getting the result from the Query
@@ -492,19 +512,26 @@ public class UpdateCustomerController implements Initializable {
 						//sending the packet
 						SystemSender send = new SystemSender(packet);
 						send.registerHandler(new IResultHandler() {
-							
+							/**
+							 * waiting for result from the server
+							 */
 							@Override
 							public void onWaitingForResult() {
 								
 							}
-							
+							/**
+							 * getting the result p from the server
+							 */
 							@Override
 							public void onReceivingResult(Packet p) {
+								//getting the information from the packet
 								memshipAccount=p.<MemberShipAccount>convertedResultListForCommand(Command.getMemberShipAccountByAcNum);
 								if(p.getResultState())
 								{
+									// if the result status is true , we can get the  membership from the returned information .
 									for(Membership mem:memshipList)
 									{
+										//if the memberhsip number are the same 
 										if(mem.getNum()==memshipAccount.get(0).getmId())
 										{
 											cbMemberShip.getSelectionModel().select(mem.getNum()-1);
@@ -513,18 +540,18 @@ public class UpdateCustomerController implements Initializable {
 									}
 								}
 								else
-									showError("Error Loading Information , Please Try Again Later");
-									
+									showError("Error Loading Information , Please Try Again Later");			
 							}
 						});
-						send.start();
-						
+						//sending the package
+						send.start();				
 				}
-				});				
+				});		
+				//sending the package
 				send.start();
 				}
-	
 		});
+		//sending the package
 		send.start();
 	}
 	/**
@@ -679,25 +706,29 @@ public class UpdateCustomerController implements Initializable {
 		//sending the packet
 		SystemSender send = new SystemSender(packet);
 		send.registerHandler(new IResultHandler() {
-			
+			/**
+			 * waiting for result from the server
+			 */
 			@Override
-			public void onWaitingForResult() {
-				// TODO Auto-generated method stub
-				
+			public void onWaitingForResult() {				
 			}
-			
+			/**
+			 * getting the result p from he server 
+			 */
 			@Override
 			public void onReceivingResult(Packet p) {
-				// TODO Auto-generated method stub
+				//checking the result
 				if (p.getResultState())
 				{
 					JOptionPane.showMessageDialog(null, 
 							"Update Success", 
 			                "Success", 
 			                JOptionPane.CLOSED_OPTION);
+					//closing this window
 						myStage.close();
 					  ManagersMenuController menu = new ManagersMenuController();
 					  try {
+						  //returning the menu window
 						menu.start(new Stage());
 					} catch (Exception e) {
 						ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
@@ -707,6 +738,7 @@ public class UpdateCustomerController implements Initializable {
 					System.out.println("Fail: " + p.getExceptionMessage());
 			}
 		});
+		//sending the package
 		send.start();
 	
 	}
@@ -761,13 +793,17 @@ public class UpdateCustomerController implements Initializable {
 		}
 		
 		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			
+			/**
+			 * handling closing the window event
+			 */
 			@Override
 			public void handle(WindowEvent event) {
 				  primaryStage.close();
+				  //checking if the user is manager/branch worker / client
 				   ManagersMenuController menumanager;
 				   CustomerMenuController menuclient;
 				if(currentuser!=null) {
+					//its manager / branch manager /branch worker
 					menumanager = new ManagersMenuController();
 					  try {
 						  menumanager.start(new Stage());
@@ -776,16 +812,14 @@ public class UpdateCustomerController implements Initializable {
 						}
 				}
 				else {
+					//its the client
 					menuclient=new CustomerMenuController();
 					  try {
 						  menuclient.start(new Stage());
 						} catch (Exception e) {
 							ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
-						}
-					
-				}
-			
-				
+						}		
+				}				
 			}
 		});
 	}
