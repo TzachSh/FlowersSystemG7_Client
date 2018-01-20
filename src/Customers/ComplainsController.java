@@ -408,6 +408,8 @@ public class ComplainsController implements Initializable {
 					else if(customerService.getRole() == Role.ServiceExpert)
 					{
 						if(complain.isActive()) {
+							operationElement = new VBox(createReplyButtonHandler(complain));
+							operationElement.setPadding(new Insets(5,10,5,0));
 							HBox creatorElement = new HBox(new Label(textCreatorId), new Text(String.format("%d",complain.getCustomerId())));
 							creatorElement.setPadding(new Insets(5,10,5,20));
 							detialsElements = new VBox(dateElement, titleElement, infoElement,creatorElement);

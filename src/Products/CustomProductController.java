@@ -104,7 +104,7 @@ public class CustomProductController implements Initializable {
 
 	private ObservableList<Flower> data;//storing flowers in observable list to get option to update it when app is run
 	private ArrayList<Flower> flowerList;//all flowers from db
-	private Stage primaryStage;
+	private static Stage stage;
 	private double cashLeft;
 	private double maxPrice;
 	private LinkedHashMap<Flower,Integer> flowerInProduct= new LinkedHashMap<>();
@@ -146,7 +146,7 @@ public class CustomProductController implements Initializable {
 		Stage cartStage = new Stage();
 		CartController cartController = new CartController();
 		cartController.setComesFromCatalog(false);
-		primaryStage.close();
+		stage.close();
 		try {
 			cartController.start(cartStage);
 		} catch (Exception e) {
@@ -281,6 +281,7 @@ public class CustomProductController implements Initializable {
 		String srcCSS = "/Products/application.css";
 		Parent root = FXMLLoader.load(getClass().getResource(srcFXML));
 		Scene scene = new Scene(root);
+		stage = primaryStage;
 		scene.getStylesheets().add(getClass().getResource(srcCSS).toExternalForm());
 		primaryStage.setTitle("Custom product");
 		primaryStage.setScene(scene);		
@@ -297,7 +298,7 @@ public class CustomProductController implements Initializable {
 					e.printStackTrace();
 				}
 	          }
-	         });
+	       });
 	}
 	public void getFlowers()
 	{
