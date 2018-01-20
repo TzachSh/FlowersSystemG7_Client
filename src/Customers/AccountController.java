@@ -38,7 +38,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 public class AccountController implements Initializable{
-	////
+	
 	@FXML
 	private TextField txtID;
 	@FXML
@@ -67,11 +67,13 @@ public class AccountController implements Initializable{
 	private Employee currentEmployee=(Employee)LoginController.userLogged;
 	private Customer currentCustomer;
 	private static Stage myStage;
-
+	/**
+	 * Initialize the combo box information
+	 */
 	private void initComboBox()
 	{
 		ObservableList<String> observelistMembership;
-		
+		//adding the membership types
 		ArrayList<String> membership = new ArrayList<>();
 		membership.add(MembershipType.Monthly.toString());
 		membership.add(MembershipType.Yearly.toString());
@@ -81,7 +83,6 @@ public class AccountController implements Initializable{
 		
 		
 	}
-	
 	/**
 	 * This function initialize the settings
 	 */
@@ -213,16 +214,16 @@ public class AccountController implements Initializable{
 		//sending the packet
 		SystemSender send = new SystemSender(packet);
 		send.registerHandler(new IResultHandler() {
-			
-			
-			
-		
+			/**
+			 * on waiting for results from server
+			 */
 			@Override
-			public void onWaitingForResult() {
-				// TODO Auto-generated method stub
-				
+			public void onWaitingForResult() {				
 			}
-			
+			/**
+			 * 
+			 * @param p the result from the server 
+			 */
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub
@@ -241,22 +242,26 @@ public class AccountController implements Initializable{
 					//sending the packet
 					SystemSender send = new SystemSender(packet);
 					send.registerHandler(new IResultHandler() {
-						
+						/**
+						 * on waiting for results from server
+						 */
 						@Override
 						public void onWaitingForResult() {
-							// TODO Auto-generated method stub
 							
 						}
-						
+						/**
+						 * 
+						 * @param p the result from the server 
+						 */
 						@Override
 						public void onReceivingResult(Packet p) {
-							// TODO Auto-generated method stub
 							if (p.getResultState())
 							{
 								JOptionPane.showMessageDialog(null, 
 										"The Account Has Been Added", 
 						                "Success", 
 						                JOptionPane.CLOSED_OPTION);
+								//closing the window and returning to menu
 								myStage.close();
 								 ManagersMenuController menu = new ManagersMenuController();
 								  try {
@@ -269,13 +274,14 @@ public class AccountController implements Initializable{
 								System.out.println("Fail: " + p.getExceptionMessage());
 						}
 					});	
+					//sending the packet
 					send.start();
-
 				}
 				else
 					System.out.println("Fail: " + p.getExceptionMessage());
 			}
 		});
+		//sending the packet
 		send.start();
 	}
 	/**
@@ -303,13 +309,17 @@ public class AccountController implements Initializable{
 		//sending the packet
 		SystemSender send = new SystemSender(packet);
 		send.registerHandler(new IResultHandler() {
-			
+		/**
+		 * on waiting for result from the server
+		 */
 		@Override
-		public void onWaitingForResult() {
-			// TODO Auto-generated method stub
-			
+		public void onWaitingForResult() {	
 		}
 		
+		/**
+		 * 
+		 * @param p the result from the server 
+		 */
 		@Override
 		public void onReceivingResult(Packet p) {
 			// TODO Auto-generated method stub
@@ -317,6 +327,7 @@ public class AccountController implements Initializable{
 			ArrayList<Customer> cList = new ArrayList<>();
 			if (p.getResultState())
 			{
+				//filling the list from the result that server returned
 				cList = p.<Customer>convertedResultListForCommand(Command.getCustomersKeyByuId);
 				memshipList= p.<Membership>convertedResultListForCommand(Command.getMemberShip);
 				if(cList.isEmpty())//checking that there is customer with this id
@@ -339,16 +350,19 @@ public class AccountController implements Initializable{
 				//sending the packet
 				SystemSender send = new SystemSender(packet);
 				send.registerHandler(new IResultHandler() {
-					
+					/**
+					 * on waiting for result from the server
+					 */
 					@Override
 					public void onWaitingForResult() {
-						// TODO Auto-generated method stub
 						
 					}
-					
+					/**
+					 * 
+					 * @param p the result from the server 
+					 */
 					@Override
 					public void onReceivingResult(Packet p) {
-						// TODO Auto-generated method stub
 						ArrayList<Account> accList = new ArrayList<>();
 						if (p.getResultState())
 						{
@@ -363,25 +377,21 @@ public class AccountController implements Initializable{
 								return;
 							}
 							//there is no account for the user , so we set visible for the adding account 
-							apAddAccount.setVisible(true);
-							
+							apAddAccount.setVisible(true);					
 						}
 						else
-							System.out.println("Fail: " + p.getExceptionMessage());
-					
-
+							System.out.println("Fail: " + p.getExceptionMessage());			
 					}
 				});
-				send.start();
-						
+				//sending the packet
+				send.start();			
 			}
 			else
-				System.out.println("Fail: " + p.getExceptionMessage());
-			
+				System.out.println("Fail: " + p.getExceptionMessage());	
 		}
 		});
+		//sending the packet
 		send.start();
-
 	}
 	/**
 	 * This function show error message 
@@ -394,23 +404,24 @@ public class AccountController implements Initializable{
                 "Error", 
                 JOptionPane.ERROR_MESSAGE);
 	}
-	//getting the discount and the membership type once clicked on combo box
+	/**
+	 * getting the discount and the membership type once clicked on combo box
+	 */
 	public void getMemberShipTypeDiscount()
 	{
 		int index,i;
+		//getting the selected membership index
 		index=cbMemberShip.getSelectionModel().getSelectedIndex();
 		membership=MembershipType.values()[index].toString();
-		
+		//finding the membership in the membership list
 		for(i=0;i<memshipList.size();i++)
 		{
 			if(memshipList.get(i).getMembershipType().toString().equals(membership)) {
+				//setting the discount value to the text field
 				txtDiscount.setText(""+memshipList.get(i).getDiscount()+"%");
 				mId=memshipList.get(i).getNum();
 			}
-		}
-	
-		
-		
+		}	
 	}
 	/**
 	 * This function  initialize the window
@@ -420,11 +431,9 @@ public class AccountController implements Initializable{
 	public void start(Stage primaryStage)  throws Exception{
 		// TODO Auto-generated method stub
 		myStage=primaryStage;
-
 		String title = "Add Account UI";
 		String srcFXML = "/Customers/addAccountUI.fxml";
 		String srcCSS = "/Customers/application.css";
-
 		//setting the window settings
 		try {
 			FXMLLoader loader = new FXMLLoader();
@@ -440,14 +449,15 @@ public class AccountController implements Initializable{
 			// TODO: handle exception
 			System.out.println(e);
 			e.printStackTrace();
-		}
-		
+		}		
 		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			
+			/**
+			 * handling windows once this window closed
+			 */
 			@Override
 			public void handle(WindowEvent event) {
-				// TODO Auto-generated method stub
-				  primaryStage.close();
+				//lunching managers menu 
+				primaryStage.close();
 				  ManagersMenuController menu = new ManagersMenuController();
 				  try {
 					menu.start(new Stage());
