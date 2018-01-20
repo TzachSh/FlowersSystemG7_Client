@@ -5,7 +5,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
+import Customers.Account;
 import Customers.Customer;
+import Customers.MemberShipAccount;
 import Customers.Membership;
 import Login.CustomerMenuController;
 import Login.LoginController;
@@ -159,11 +161,14 @@ public class OrderController implements Initializable, ChangeListener<String>{
 		
 	}
 	private void getPriceDetails() {
-		/*lblTotalBeforeDiscount.setText(""+CartController.getTotalPrice());
+		lblTotalBeforeDiscount.setText(""+CartController.getTotalPrice());
 		Customer curCustomer =  (Customer)LoginController.userLogged;
-		Membership membership=ConstantData.memberShipList.stream().filter(c->c.getNum()==curCustomer.getMembershipId()).findFirst().orElse(null); 
-		if(membership != null)
+		Account ac = CustomerMenuController.userAccountsList.stream().filter(c->c.getCustomerId()==curCustomer.getId() && c.getBranchId()==CustomerMenuController.currentBranch.getbId()).findFirst().orElse(null);
+		MemberShipAccount memAc = (MemberShipAccount)CustomerMenuController.memberShipsByAccount.stream().filter(c->c.getAcNum()==ac.getNum()).findFirst().orElse(null);
+		
+		if(memAc != null)
 		{
+			Membership membership=ConstantData.memberShipList.stream().filter(c->c.getNum()==memAc.getmId()).findFirst().orElse(null); 
 			radAccount.setVisible(false);
 			radCash.setVisible(false);
 			double discount = CartController.getTotalPrice()*membership.getDiscount()/100;
@@ -184,7 +189,6 @@ public class OrderController implements Initializable, ChangeListener<String>{
 			txtBlncePay.setText("0¤");
 		}
 		lblAvailableBalance.setText(String.format("%2f¤",blnce));
-		*/
 		
 	}
 	private void registerChkDelivery() {

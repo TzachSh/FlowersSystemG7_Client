@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import Branches.Branch;
 import Customers.Account;
 import Customers.Customer;
+import Customers.MemberShipAccount;
 import Customers.MyComplainsController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
@@ -80,6 +81,8 @@ public class CustomerMenuController implements Initializable {
     public static boolean hasAccountForCurrentBranch = false;
     
     private static LoginController loginController;
+    
+    public static ArrayList<MemberShipAccount> memberShipsByAccount;
     
     private static Stage menuStage;
     
@@ -336,11 +339,14 @@ public class CustomerMenuController implements Initializable {
 	 */
 	public Account getAccountByBranchId(int branchId)
 	{
+		try {
 		for (Account account : userAccountsList)
 		{
 			if (account.getBranchId() == branchId)
 				return account;
 		}
+		}
+		catch(Exception e) {e.printStackTrace();}
 		return null;
 	}
 	
@@ -352,17 +358,21 @@ public class CustomerMenuController implements Initializable {
 		Packet packet = new Packet();
 		packet.addCommand(Command.getBranches);
 		packet.addCommand(Command.getAccountbycID);
+		packet.addCommand(Command.getMemberShipAccount);
 		
 		int cid = ((Customer)LoginController.userLogged).getId();
 		ArrayList<Object> accountParam = new ArrayList<>(Arrays.asList(cid));
 		
 		packet.setParametersForCommand(Command.getAccountbycID, accountParam);
+		packet.setParametersForCommand(Command.getMemberShipAccount, accountParam);
 		
 		// create the thread for send to server the message
 		SystemSender send = new SystemSender(packet);
 
 		// register the handler that occurs when the data arrived from the server
 		send.registerHandler(new IResultHandler() {
+			
+
 			@Override
 			public void onWaitingForResult() { }
 
@@ -375,6 +385,8 @@ public class CustomerMenuController implements Initializable {
 					setComboBoxBrancesList(branchesList);
 					
 					userAccountsList = p.<Account>convertedResultListForCommand(Command.getAccountbycID);
+					
+					memberShipsByAccount =p.<MemberShipAccount>convertedResultListForCommand(Command.getMemberShipAccount); 
 				}
 				else
 				{
