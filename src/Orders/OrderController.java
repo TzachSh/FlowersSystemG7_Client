@@ -1,10 +1,20 @@
 package Orders;
 
 import java.net.URL;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
 
+import javax.rmi.CORBA.UtilDelegate;
+
+import com.sun.corba.se.impl.javax.rmi.CORBA.Util;
+import com.sun.javafx.binding.Logging;
+
+import Commons.ProductInOrder;
 import Customers.Account;
 import Customers.Customer;
 import Customers.MemberShipAccount;
@@ -13,6 +23,7 @@ import Login.CustomerMenuController;
 import Login.LoginController;
 import Products.CartController;
 import Products.ConstantData;
+import Products.Product;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -91,9 +102,15 @@ public class OrderController implements Initializable, ChangeListener<String>{
 	private ToggleGroup toggleGroup = new ToggleGroup();
 	private int tabActive=0;
 	private int emptyLines=3;
+	private static Stage primaryStage;
+	private double blnce;
+	private Customer curCustomer;
+	private Account account;
+	private MemberShipAccount memberAc;
+	private Membership membership;
 	public OrderController() {}
 	public void start(Stage arg0) throws Exception {
-		
+		primaryStage=arg0;
 		String title = "Create new order";
 		String srcFXML = "/Orders/OrderApp.fxml";
 		String srcCSS = "/Orders/application.css";
@@ -127,13 +144,13 @@ public class OrderController implements Initializable, ChangeListener<String>{
 	public void initialize(URL location, ResourceBundle resources) {		
 		registerDateTimePicker();
 		registerTxtRequestedTime();
-		registerNextBtn();
-		registerBackBtn();
+		btnNext.setDisable(true);
 		registerRadionBtn();
 		registerChkExpressDelivery();
 		registerChkDelivery();
 		getPriceDetails();
 		registerLblLeftToPayListener();
+		lblLeftToPay.setText(String.format("%.2f¤", totalAfter-blncePay));
 		txtAddress.textProperty().addListener(this);
 		txtName.textProperty().addListener(this);
 		txtPhone.textProperty().addListener(this);
@@ -142,33 +159,37 @@ public class OrderController implements Initializable, ChangeListener<String>{
 	}
 
 	private void registerLblLeftToPayListener() {
-		double left = totalAfter-blncePay;
-		lblLeftToPay.setText(String.format("%.2f¤", left));
 		txtBlncePay.textProperty().addListener(new ChangeListener<String>() {
-
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				try {
-				blncePay=Double.parseDouble(newValue);
+				if( !newValue.matches("[0-9]*\\.?[0-9]?[0-9]?"))//check if number
+								
+				{
+					txtBlncePay.setText(oldValue);
 				}
-				catch(Exception e){
-					blncePay=0;
+				else {
+					try {
+					blncePay=Double.parseDouble(txtBlncePay.getText());
+					}catch(Exception e) {};
+					double left = totalAfter-blncePay;
+					if(left < 0 || blncePay>blnce)
+						txtBlncePay.setText(oldValue);
+					else
+						lblLeftToPay.setText(String.format("%.2f¤", left));
 				}
-				double left = totalAfter-blncePay;
-				lblLeftToPay.setText(String.format("%.2f¤", left));
 			}
 		});
 		
 	}
 	private void getPriceDetails() {
 		lblTotalBeforeDiscount.setText(""+CartController.getTotalPrice());
-		Customer curCustomer =  (Customer)LoginController.userLogged;
-		Account ac = CustomerMenuController.userAccountsList.stream().filter(c->c.getCustomerId()==curCustomer.getId() && c.getBranchId()==CustomerMenuController.currentBranch.getbId()).findFirst().orElse(null);
-		MemberShipAccount memAc = (MemberShipAccount)CustomerMenuController.memberShipsByAccount.stream().filter(c->c.getAcNum()==ac.getNum()).findFirst().orElse(null);
+		curCustomer =  (Customer)LoginController.userLogged;
+		account = CustomerMenuController.userAccountsList.stream().filter(c->c.getCustomerId()==curCustomer.getId() && c.getBranchId()==CustomerMenuController.currentBranch.getbId()).findFirst().orElse(null);
+		memberAc = (MemberShipAccount)CustomerMenuController.memberShipsByAccount.stream().filter(c->c.getAcNum()==account.getNum()).findFirst().orElse(null);
 		
-		if(memAc != null)
+		if(memberAc != null)
 		{
-			Membership membership=ConstantData.memberShipList.stream().filter(c->c.getNum()==memAc.getmId()).findFirst().orElse(null); 
+			membership=ConstantData.memberShipList.stream().filter(c->c.getNum()==memberAc.getmId()).findFirst().orElse(null); 
 			radAccount.setVisible(false);
 			radCash.setVisible(false);
 			double discount = CartController.getTotalPrice()*membership.getDiscount()/100;
@@ -178,17 +199,18 @@ public class OrderController implements Initializable, ChangeListener<String>{
 		}
 		else
 		{
+			totalAfter=CartController.getTotalPrice();
 			lblDiscount.setText("0¤");
-			lblTotal.setText(String.format("%.2f¤",CartController.getTotalPrice()));
+			lblTotal.setText(String.format("%.2f¤",totalAfter));
 		}
-		double blnce = CustomerMenuController.getAccount().getBalance();
+		blnce = CustomerMenuController.getAccount().getBalance();
 		if(blnce<=0)
 		{
 			blncePay=0;
 			txtBlncePay.setDisable(true);
 			txtBlncePay.setText("0¤");
 		}
-		lblAvailableBalance.setText(String.format("%2f¤",blnce));
+		lblAvailableBalance.setText(String.format("%.2f¤",blnce));
 		
 	}
 	private void registerChkDelivery() {
@@ -243,36 +265,27 @@ public class OrderController implements Initializable, ChangeListener<String>{
 		radCash.setToggleGroup(toggleGroup);
 		
 	}
-	private void registerBackBtn() {
-		btnPrev.setOnAction(new EventHandler<ActionEvent>() {
-			
-			@Override
-			public void handle(ActionEvent event) {
-				switch(tabActive)
-				{
-				case 0:
-					Node source = (Node) event.getSource();
-				    Stage stage = (Stage) source.getScene().getWindow();
-				    stage.close();
-				    displayCart();
-				    break;
-				case 1:
-					tabPane.getSelectionModel().select(0);
-					date.setDisable(false);
-					delivery.setDisable(true);
-					break;
-				case 2:
-					tabPane.getSelectionModel().select(1);
-					delivery.setDisable(false);
-					payment.setDisable(true);
-					btnNext.setVisible(true);
-					break;
-				    default:;
-				}
-				tabActive--;
-				
-			}
-		});
+	public void onClickBackBtn() {
+		switch(tabActive)
+		{
+		case 0:
+			primaryStage.close();
+		    displayCart();
+		    break;
+		case 1:
+			tabPane.getSelectionModel().select(0);
+			date.setDisable(false);
+			delivery.setDisable(true);
+			break;
+		case 2:
+			tabPane.getSelectionModel().select(1);
+			delivery.setDisable(false);
+			payment.setDisable(true);
+			btnNext.setVisible(true);
+			break;
+		    default:;
+		}
+		tabActive--;
 		
 	}
 	protected void displayCart() {
@@ -300,31 +313,24 @@ public class OrderController implements Initializable, ChangeListener<String>{
 			}
 		});
 	}
-	private void registerNextBtn() {
-		btnNext.setDisable(true);
-		btnNext.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				switch(tabActive)
-				{
-				case 0:
-					tabPane.getSelectionModel().select(1);
-					delivery.setDisable(false);
-					date.setDisable(true);
-					break;
-				case 1:
-					tabPane.getSelectionModel().select(2);
-					checkDisplayMode();
-					delivery.setDisable(true);
-					payment.setDisable(false);
-					btnNext.setVisible(false);				
-					break;
-				default:;
-				}
-				tabActive++;
-			}
-				
-		});		
+	public void onClickNextBtn() {
+		switch(tabActive)
+		{
+		case 0:
+			tabPane.getSelectionModel().select(1);
+			delivery.setDisable(false);
+			date.setDisable(true);
+			break;
+		case 1:
+			tabPane.getSelectionModel().select(2);
+			checkDisplayMode();
+			delivery.setDisable(true);
+			payment.setDisable(false);
+			btnNext.setVisible(false);				
+			break;
+		default:;
+		}
+		tabActive++;
 	}
 	protected void checkDisplayMode() {
 				
@@ -356,5 +362,26 @@ public class OrderController implements Initializable, ChangeListener<String>{
 			emptyLines++;
 		btnNext.setDisable(emptyLines!=3 && emptyLines!=0);
 	}
-
+	private void insertOrder()
+	{
+		Date dateNow = new Date(Calendar.getInstance().getTime().getTime());
+		Order order = new Order(0,dateNow,Date.valueOf(requestedDate.getValue()),CustomerMenuController.getAccount().getCustomerId(),2,CustomerMenuController.currentBranch.getbId(),totalAfter);
+		ArrayList<ProductInOrder> prodInOrder = new ArrayList<ProductInOrder>();
+		for(Entry<Product,Integer> prod : CartController.cartProducts.entrySet())
+		{
+			prodInOrder.add(new ProductInOrder(0, prod.getKey().getId(), prod.getValue()));
+		}
+		
+	}
+	private void insertPayment()
+	{
+		if(memberAc!= null)
+		{
+			//update balance
+		}
+		else
+		{
+			//create payments
+		}
+	}
 }

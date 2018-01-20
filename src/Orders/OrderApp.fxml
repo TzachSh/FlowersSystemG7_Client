@@ -63,7 +63,7 @@
             </Tab>
         </tabs>
       </TabPane>
-      <Button fx:id="btnNext" layoutX="340.0" layoutY="295.0" mnemonicParsing="false" text="Next" />
-      <Button fx:id="btnPrev" layoutX="26.0" layoutY="295.0" mnemonicParsing="false" text="Prev" />
+      <Button fx:id="btnNext" layoutX="340.0" layoutY="295.0" mnemonicParsing="false" onAction="#onClickNextBtn" text="Next" />
+      <Button fx:id="btnPrev" layoutX="26.0" layoutY="295.0" mnemonicParsing="false" onAction="#onClickBackBtn" text="Prev" />
    </children>
 </AnchorPane>

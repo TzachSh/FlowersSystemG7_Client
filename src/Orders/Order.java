@@ -19,7 +19,7 @@ public class Order implements Serializable {
 	private Delivery deliery;
 	private int brId;
 	private int stId;
-	
+	private double total;
 	
 	public int getoId() {
 		return id;
@@ -89,7 +89,7 @@ public class Order implements Serializable {
 		Refund = refund;
 		this.deliery = deliery;
 	}
-	public Order(int id,Date creationDate, Date requestedDate,int cId,int stId,int brId)
+	public Order(int id,Date creationDate, Date requestedDate,int cId,int stId,int brId,double total)
 	{
 		this.id=id;
 		this.creationDate=creationDate;
@@ -97,6 +97,7 @@ public class Order implements Serializable {
 		this.customerId=cId;
 		this.stId=stId;
 		this.brId=brId;
+		this.total=total;
 	}
 
 }
