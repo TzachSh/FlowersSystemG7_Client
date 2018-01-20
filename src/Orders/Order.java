@@ -99,5 +99,8 @@ public class Order implements Serializable {
 		this.brId=brId;
 		this.total=total;
 	}
+	public Order()
+	{
 
+	}
 }
