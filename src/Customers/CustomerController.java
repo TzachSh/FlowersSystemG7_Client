@@ -91,15 +91,17 @@ public class CustomerController implements Initializable {
 	@FXML
 	private ComboBox<String> cbPermission;
 	private static Stage myStage;
-	
+	/**
+	 * 
+	 * @param primaryStage current stage to build
+	 * @throws Exception if there is exception while lunching and working
+	 */
 	public void start(Stage primaryStage) throws Exception {
 
 		String title = "Add Customer UI";
 		String srcFXML = "/Customers/addCustomerUI.fxml";
 		String srcCSS = "/Customers/application.css";
 		myStage=primaryStage;
-
-	
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(getClass().getResource(srcFXML));
@@ -108,7 +110,6 @@ public class CustomerController implements Initializable {
 			scene.getStylesheets().add(getClass().getResource(srcCSS).toExternalForm());
 			primaryStage.setTitle(title);
 			primaryStage.setScene(scene);
-			
 			primaryStage.show();
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -117,23 +118,28 @@ public class CustomerController implements Initializable {
 		}
 		
 		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			
+			/**
+			 * on window closing handling
+			 */
 			@Override
 			public void handle(WindowEvent event) {
-				// TODO Auto-generated method stub
+				//closing the window
 				 primaryStage.close();
+				 //getting the menu object
 				  ManagersMenuController menu = new ManagersMenuController();
 				  try {
+					  //opening the menu window
 					menu.start(new Stage());
 				} catch (Exception e) {
 					ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
 				}
 			}
-		});
-		
+		});	
 	}
-
-	public void emptyCreditCardText()
+	/**
+	 * This function empty the credit card
+	 */
+	/*public void emptyCreditCardText()
 	{
 		if(txtCreditCard.getText().isEmpty())
 			return;
@@ -158,7 +164,7 @@ public class CustomerController implements Initializable {
 		txtCreditCard.setDisable(true);
 		btnAddCreditCard.setDisable(true);
 		
-	}
+	}*/
 
 	
 	public void showError(String str)
@@ -169,13 +175,11 @@ public class CustomerController implements Initializable {
                 JOptionPane.ERROR_MESSAGE);
 	}
 	
-
+	/**
+	 * getting the next information from the customer 
+	 */
 	public void registerNextInformation()
-	{
-		
-		
-		
-		
+	{	
 		//disapling old information
 		txtUser.setDisable(true);
 		txtConfirmPassword.setDisable(true);
@@ -185,15 +189,17 @@ public class CustomerController implements Initializable {
 		anchorpane2.setVisible(true);
 		
 	}
-	
+	/**
+	 * after the customer finishs giving his information , now we must open a new customer 
+	 */
 	public void registerNow()
 	{
-		//int membershipid=1;
 		if(txtID.getText().toString().isEmpty()||txtPassword.getText().isEmpty()||txtUser.getText().isEmpty()||txtConfirmPassword.getText().isEmpty()) {
 			showError("Please Fill All Information");
 			
 			return;
 		}
+		//getting the information
 		cusid=txtID.getText();
 		user=txtUser.getText();
 		password=txtPassword.getText();
@@ -222,25 +228,22 @@ public class CustomerController implements Initializable {
 		packet.addCommand(Command.addCustomers);
 		ArrayList<Object>cuslist;
 		cuslist=new ArrayList<>();
-		
-		
-	
+		//adding the information on the packet
 		cuslist.add(new Customer(Integer.parseInt(cusid)));
 		packet.setParametersForCommand(Command.addCustomers,cuslist);
-
-		
-		
 		SystemSender send = new SystemSender(packet);
-		
 		// register the handler that occurs when the data arrived from the server
 		send.registerHandler(new IResultHandler() {
-			
+		/**
+		 * waiting for the server result
+		 */
 		@Override
 		public void onWaitingForResult() {
-			// TODO Auto-generated method stub
 			
 		}
-		
+		/**
+		 * the server returns result p
+		 */
 		@Override
 		public void onReceivingResult(Packet p) {
 			// TODO Auto-generated method stub
@@ -251,27 +254,28 @@ public class CustomerController implements Initializable {
 						"The Client : "+user+"  : Has Been Added", 
 		                "Success", 
 		                JOptionPane.CLOSED_OPTION);
+				//after we finished adding the new customer we must close this window and returns to the menu
 				myStage.close();
 				 ManagersMenuController menu = new ManagersMenuController();
 				  try {
+					  //opening the menu
 					menu.start(new Stage());
 				} catch (Exception e) {
 					ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
 				}
-
 			}
 			else
 				System.out.println("Fail: " + p.getExceptionMessage());
-			
 		}
 		});
+		//sending the package
 		send.start();
-
-			
-		
-
 	}
-	
+	/**
+	 * 
+	 * @param choice check type
+	 * @return returns ther result true/false
+	 */
 	private boolean checkInput(int choice)
 	{
 		boolean res=true;
@@ -291,8 +295,7 @@ public class CustomerController implements Initializable {
 						showError("User Exist Please Pick Another User");
 						res=false;
 						break;
-					}
-					
+					}		
 				}
 				break;
 			case 2://check both passwords 
@@ -304,56 +307,63 @@ public class CustomerController implements Initializable {
 				}
 					
 			break;
-			
-				
-			
+	
 		}
-		
+		//returning the result
 		return res;
 	}
+	/**
+	 * initialize the window
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		//validate customer user field input
 		txtUser.textProperty().addListener(new ChangeListener<String>() {
-
+			/**
+			 * if the text changed , we must check it 
+			 */
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				// TODO Auto-generated method stub
+				//the text length must be below 51
 				if(newValue.length()>50)
 					txtUser.setText(oldValue);
 				/*if(!newValue.equals("") &&newValue.matches("^[a-zA-Z0-9._-]{0,50}$"))
 					txtUser.setText(newValue);
 				else
 					txtUser.setText(oldValue);*/
-
 			}
 		});
 		//validate id
 		txtID.textProperty().addListener(new ChangeListener<String>() {
+			/**
+			 * if the text changed , we must check it 
+			 */
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				// TODO Auto-generated method stub
-			
+				//the text length must be below 10
 				if(newValue.length()>9)
 					txtID.setText(oldValue);
 				if(!newValue.equals("") && (newValue.charAt(newValue.length()-1)<'0'||newValue.charAt(newValue.length()-1)>'9'))
 					txtID.setText(oldValue);
-			
 			}
 		});
 	
 		//validate the password
 		txtPassword.textProperty().addListener(new ChangeListener<String>() {
-
+			/**
+			 * if the text changed , we must check it 
+			 */
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				// TODO Auto-generated method stub
+				//the text length must be below 51
 				if(newValue.length()>50)
 					txtPassword.setText(oldValue);
 			}
 		});
 		txtConfirmPassword.textProperty().addListener(new ChangeListener<String>() {
-
+			/**
+			 * if the text changed , we must check it 
+			 */
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				// TODO Auto-generated method stub
@@ -361,39 +371,34 @@ public class CustomerController implements Initializable {
 					txtConfirmPassword.setText(oldValue);
 			}
 		});
-		
+		//packet
 		Packet packet = new Packet();
-		
 		//fill the required commands to the packet
 		packet.addCommand(Command.getUsers);
 		// create the thread for send to server the message
-		SystemSender send = new SystemSender(packet);
-		
+		SystemSender send = new SystemSender(packet);	
 		// register the handler that occurs when the data arrived from the server
 		send.registerHandler(new IResultHandler() {
 			
-			@Override
+			/**
+			 * waiting for result from the server
+			 */
 			public void onWaitingForResult() {
-				// TODO Auto-generated method stub
-
 			}
 			
 			@Override
 			public void onReceivingResult(Packet p) {
-				// TODO Auto-generated method stub
 				if (p.getResultState())
 				{
 					//getting the information from database 
 					uList = p.<User>convertedResultListForCommand(Command.getUsers);
-					//cList = p.<Customer>convertedResultListForCommand(Command.getCustomers);
-
-
 				}
 				else
 					System.out.println("Fail: " + p.getExceptionMessage());
 				
 			}
 		});
+		//sending the packet
 		send.start();
 	}
 	
