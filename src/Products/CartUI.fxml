@@ -8,7 +8,7 @@
 
 <AnchorPane prefHeight="717.0" prefWidth="630.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Products.CartController">
    <children>
-      <Label layoutX="338.0" layoutY="35.0" text="Cart Shopping" underline="true" AnchorPane.topAnchor="35.0">
+      <Label layoutX="256.0" layoutY="28.0" text="Cart Shopping" underline="true" AnchorPane.topAnchor="28.0">
          <font>
             <Font size="18.0" />
          </font>
@@ -22,7 +22,7 @@
             </AnchorPane>
         </content>
       </TitledPane>
-      <Button fx:id="btnPurchase" layoutX="338.0" layoutY="661.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="90.0" text="Purchase" AnchorPane.bottomAnchor="23.0" />
+      <Button fx:id="btnPurchase" layoutX="338.0" layoutY="674.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="90.0" text="Purchase" AnchorPane.bottomAnchor="10.0" />
       <Label fx:id="lblPrice" contentDisplay="CENTER" layoutX="34.0" layoutY="464.0" prefHeight="17.0" prefWidth="515.0" text="Total Price: 0₪ , Total Items: 0" textFill="RED" AnchorPane.bottomAnchor="56.0">
          <font>
             <Font size="14.0" />
@@ -30,6 +30,6 @@
       </Label>
       <Button fx:id="btnBackToCatalog" layoutX="14.0" layoutY="62.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="127.0" text="Back To Catalog" />
       <Button fx:id="btnAddCustomProduct" layoutX="486.0" layoutY="62.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="127.0" text="Add Custom Product" />
-      <Button fx:id="btnClearOrder" layoutX="210.0" layoutY="661.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="90.0" text="Clear Order" />
+      <Button fx:id="btnClearOrder" layoutX="210.0" layoutY="674.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="90.0" text="Clear Order" />
    </children>
 </AnchorPane>

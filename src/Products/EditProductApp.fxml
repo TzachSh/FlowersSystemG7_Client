@@ -8,9 +8,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="449.0" prefWidth="483.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Products.CatalogProductController">
+<AnchorPane prefHeight="485.0" prefWidth="483.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Products.CatalogProductController">
    <children>
-      <TabPane fx:id="tabPane" prefHeight="405.0" prefWidth="483.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <TabPane fx:id="tabPane" prefHeight="449.0" prefWidth="483.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
           <Tab fx:id="tabProduct" text="Product Details">
             <content>
@@ -18,8 +18,8 @@
                      <children>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="171.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <Button fx:id="btnCancel1" cancelButton="true" layoutX="94.0" layoutY="364.0" mnemonicParsing="false" onAction="#pressedCancelButton" prefHeight="39.0" prefWidth="88.0" text="Cancel" />
-                              <Button fx:id="btnNext1" disable="true" layoutX="310.0" layoutY="364.0" mnemonicParsing="false" onAction="#pressedNextOnProductDetails" prefHeight="39.0" prefWidth="88.0" text="Next &gt;&gt;" />
+                              <Button fx:id="btnCancel1" cancelButton="true" layoutX="94.0" layoutY="395.0" mnemonicParsing="false" onAction="#pressedCancelButton" prefHeight="39.0" prefWidth="88.0" text="Cancel" />
+                              <Button fx:id="btnNext1" disable="true" layoutX="310.0" layoutY="395.0" mnemonicParsing="false" onAction="#pressedNextOnProductDetails" prefHeight="39.0" prefWidth="88.0" text="Next &gt;&gt;" />
                               <Label alignment="CENTER" layoutX="85.0" layoutY="14.0" text="Step 1 - Fill Information about the Product" textAlignment="JUSTIFY" underline="true">
                                  <font>
                                     <Font size="18.0" />
@@ -71,43 +71,18 @@
                <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Button fx:id="btnNext2" disable="true" layoutX="310.0" layoutY="364.0" mnemonicParsing="false" onAction="#pressedNextOnFlowerDetails" prefHeight="39.0" prefWidth="88.0" text="Next &gt;&gt;" />
-                        <Button fx:id="btnPrev2" layoutX="94.0" layoutY="364.0" mnemonicParsing="false" onAction="#pressedPrevOnFlowerDetails" prefHeight="39.0" prefWidth="88.0" text="&lt;&lt; Prev" />
+                        <Button fx:id="btnNext2" disable="true" layoutX="310.0" layoutY="395.0" mnemonicParsing="false" onAction="#pressedNextOnFlowerDetails" prefHeight="39.0" prefWidth="88.0" text="Next &gt;&gt;" />
+                        <Button fx:id="btnPrev2" layoutX="94.0" layoutY="395.0" mnemonicParsing="false" onAction="#pressedPrevOnFlowerDetails" prefHeight="39.0" prefWidth="88.0" text="&lt;&lt; Prev" />
                         <Label alignment="CENTER" layoutX="102.0" layoutY="14.0" text="Step 2 - Fill Flowers for the Product" textAlignment="JUSTIFY" underline="true">
                            <font>
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <TitledPane animated="false" collapsible="false" contentDisplay="CENTER" graphicTextGap="2.0" layoutX="73.0" layoutY="54.0" prefHeight="126.0" prefWidth="347.0" text="Adding Flower">
-                           <content>
-                              <AnchorPane prefHeight="55.0" prefWidth="329.0">
-                                 <children>
-                                    <Label layoutX="21.0" layoutY="15.0" text="Flower:" />
-                                    <ComboBox fx:id="cmbFlower" layoutX="77.0" layoutY="7.0" onAction="#setFlowerChangeHandler" prefHeight="33.0" prefWidth="232.0" promptText="Select Flower" />
-                                    <Label layoutX="17.0" layoutY="57.0" text="Quantity:" />
-                                    <TextField fx:id="txtQty" disable="true" layoutX="78.0" layoutY="53.0" prefHeight="25.0" prefWidth="60.0" />
-                                    <Button fx:id="btnAdd" disable="true" layoutX="251.0" layoutY="52.0" mnemonicParsing="false" onAction="#pressedAddFlowerButton" prefHeight="27.0" prefWidth="58.0" text="Add" />
-                                    <Label fx:id="errFlowerQty" layoutX="145.0" layoutY="52.0" text="*" textFill="RED">
-                                       <font>
-                                          <Font size="18.0" />
-                                       </font>
-                                    </Label>
-                                    <Label fx:id="errFlowerName" layoutX="317.0" layoutY="10.0" text="*" textFill="RED">
-                                       <font>
-                                          <Font size="18.0" />
-                                       </font>
-                                    </Label>
-                                    <Label fx:id="errFlowerQtyNumber" layoutX="164.0" layoutY="57.0" text="Illegal number" textFill="RED" visible="false" />
-                                 </children>
-                              </AnchorPane>
-                           </content>
-                        </TitledPane>
-                        <TitledPane animated="false" collapsible="false" layoutX="61.0" layoutY="220.0" prefHeight="120.0" prefWidth="363.0" text="Flowers that Already in the Product">
+                        <TitledPane animated="false" collapsible="false" layoutX="24.0" layoutY="87.0" prefHeight="297.0" prefWidth="439.0" text="Flowers In Product">
                           <content>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <ListView fx:id="lstFlower" layoutX="14.0" layoutY="6.0" prefHeight="84.0" prefWidth="289.0" />
-                                    <Button fx:id="btnDel" disable="true" layoutX="313.0" layoutY="7.0" mnemonicParsing="false" onAction="#pressedDelFlowersButtonHandler" text="Del" />
+                                    <ListView fx:id="lstFlower" layoutX="14.0" layoutY="5.0" prefHeight="232.0" prefWidth="437.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                  </children>
                               </AnchorPane>
                           </content>
@@ -117,6 +92,9 @@
                               <Font size="13.0" />
                            </font>
                         </Label>
+                        <ComboBox fx:id="cmbFlower" layoutX="116.0" layoutY="50.0" onAction="#setFlowerChangeHandler" prefHeight="29.0" prefWidth="232.0" promptText="Select Flower" />
+                        <Label layoutX="70.0" layoutY="56.0" text="Flower:" />
+                        <Button fx:id="btnAdd" disable="true" layoutX="363.0" layoutY="51.0" mnemonicParsing="false" onAction="#pressedAddFlowerButton" prefHeight="27.0" prefWidth="58.0" text="Add" />
                      </children>
                   </AnchorPane>
                </content>
@@ -130,9 +108,9 @@
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <Button fx:id="btnSave" disable="true" layoutX="310.0" layoutY="364.0" mnemonicParsing="false" onAction="#pressedSaveButton" prefHeight="39.0" prefWidth="88.0" text="Save" />
-                        <Button fx:id="btnPrev3" layoutX="94.0" layoutY="364.0" mnemonicParsing="false" onAction="#pressedPrevOnImageDetails" prefHeight="39.0" prefWidth="88.0" text="&lt;&lt; Prev" />
-                        <Button fx:id="btnCancel3" cancelButton="true" layoutX="204.0" layoutY="364.0" mnemonicParsing="false" onAction="#pressedCancelButton" prefHeight="39.0" prefWidth="88.0" text="Cancel" />
+                        <Button fx:id="btnSave" disable="true" layoutX="310.0" layoutY="395.0" mnemonicParsing="false" onAction="#pressedSaveButton" prefHeight="39.0" prefWidth="88.0" text="Save" />
+                        <Button fx:id="btnPrev3" layoutX="94.0" layoutY="395.0" mnemonicParsing="false" onAction="#pressedPrevOnImageDetails" prefHeight="39.0" prefWidth="88.0" text="&lt;&lt; Prev" />
+                        <Button fx:id="btnCancel3" cancelButton="true" layoutX="204.0" layoutY="395.0" mnemonicParsing="false" onAction="#pressedCancelButton" prefHeight="39.0" prefWidth="88.0" text="Cancel" />
                         <TitledPane animated="false" collapsible="false" layoutX="90.0" layoutY="74.0" prefHeight="230.0" prefWidth="304.0" text="Image">
                           <content>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
