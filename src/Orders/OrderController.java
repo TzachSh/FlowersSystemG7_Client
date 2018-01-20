@@ -2,6 +2,8 @@ package Orders;
 
 import java.net.URL;
 import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
 import Products.CartController;
+import Products.ConstantData;
 import Products.Product;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -100,7 +103,7 @@ public class OrderController implements Initializable, ChangeListener<String>{
 	private double blnce;
 	private Account account;
 	private MemberShipAccount memberAc;
-
+	private final double deliveryPrice=10;
 	public OrderController() {}
 	public void start(Stage arg0) throws Exception {
 		primaryStage=arg0;
@@ -184,6 +187,8 @@ public class OrderController implements Initializable, ChangeListener<String>{
 			double discount = CartController.getTotalPrice()*account.getMemberShip().getDiscount()/100;
 			lblDiscount.setText(String.format("%.2f¤",discount));
 			totalAfter=CartController.getTotalPrice()*(1-account.getMemberShip().getDiscount()/100);
+			if(chkDelivery.isSelected())
+				totalAfter+=deliveryPrice;
 			lblTotal.setText(String.format("%.2f¤",totalAfter));
 		}
 		else
@@ -259,6 +264,7 @@ public class OrderController implements Initializable, ChangeListener<String>{
 
 		radAccount.setToggleGroup(toggleGroup);
 		radCash.setToggleGroup(toggleGroup);
+		toggleGroup.selectToggle(radCash);
 		
 	}
 	public void onClickBackBtn() {
@@ -277,7 +283,7 @@ public class OrderController implements Initializable, ChangeListener<String>{
 			tabPane.getSelectionModel().select(1);
 			delivery.setDisable(false);
 			payment.setDisable(true);
-			btnNext.setVisible(true);
+			btnNext.setText("Next");
 			break;
 		    default:;
 		}
@@ -324,7 +330,10 @@ public class OrderController implements Initializable, ChangeListener<String>{
 			checkDisplayMode();
 			delivery.setDisable(true);
 			payment.setDisable(false);
-			btnNext.setVisible(false);				
+			btnNext.setText("Create order");				
+			break;
+		case 2:
+			insertOrder();
 			break;
 		default:;
 		}
@@ -363,32 +372,34 @@ public class OrderController implements Initializable, ChangeListener<String>{
 		else
 			btnNext.setDisable(emptyLines!=0);
 	}
-	private boolean isAvailableToPay() {
-		
-			return true;
-		
-	}
 	private void insertOrder()
 	{
+		String[] time = txtTimeRequested.getText().split(":");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(Date.valueOf(requestedDate.getValue()));
+		cal.add(Calendar.HOUR_OF_DAY, Integer.parseInt(time[0]));
+		cal.add(Calendar.MINUTE, Integer.parseInt(time[1]));
+		Timestamp timestamp = new Timestamp(cal.getTimeInMillis());
 		Date dateNow = new Date(Calendar.getInstance().getTime().getTime());
+		
+		
 		//create order
-		ArrayList<Order> order = new ArrayList<>();
-		order.add(new Order(0,dateNow,Date.valueOf(requestedDate.getValue()),account.getCustomerId(),2,account.getBranchId(),totalAfter));
-		ArrayList<ProductInOrder> prodInOrder = new ArrayList<ProductInOrder>();
+		ArrayList<Object> order = new ArrayList<>();
+		order.add(new Order(0,dateNow,timestamp,account.getCustomerId(),2,account.getBranchId(),totalAfter));
+		ArrayList<Object> prodInOrder = new ArrayList<>();
 		//set all products in order
 		for(Entry<Product,Integer> prod : CartController.cartProducts.entrySet())
 		{
 			prodInOrder.add(new ProductInOrder(0, prod.getKey().getId(), prod.getValue()));
 		}
 		//set payment in order
-		String paymentMethodString=toggleGroup.getSelectedToggle().getUserData().toString();
 		PaymentMethod payment;
-		if(paymentMethodString.equals(PaymentMethod.Cash))//check the payment option
+		if(radCash.isSelected())//check the payment option
 			 payment = PaymentMethod.Cash;
 		else
 			payment = PaymentMethod.CreditCard;
-		double amount=totalAfter;
-		ArrayList<OrderPayment> orderPayment = new ArrayList<>();
+		double amount=totalAfter-blncePay;
+		ArrayList<Object> orderPayment = new ArrayList<>();
 		//if exists membership customer will pay all in the end of the membership
 		//because of it there is no payment date
 		if(account.getMemberShip()!=null)
@@ -397,25 +408,40 @@ public class OrderController implements Initializable, ChangeListener<String>{
 		else
 			orderPayment.add(new OrderPayment(payment, amount,Date.valueOf(LocalDate.now())));
 		//if customer uses his balance to pay
-		ArrayList<Account> acList = new ArrayList<>();
+		ArrayList<Object> acList = new ArrayList<>();
 		if(blncePay>0)
 		{
 			orderPayment.add(new OrderPayment(PaymentMethod.BalancePayment, blncePay,Date.valueOf(LocalDate.now())));
 			account.setBalance(blnce-blncePay);
 			acList.add(account);
 		}
-		
+		ArrayList<Object> delivery = new ArrayList<>();
+		if(chkDelivery.isSelected())
+		{
+			delivery.add(new Delivery(txtAddress.getText(),txtPhone.getText(),txtName.getText()));
+		}
+		saveOrder(order,prodInOrder,orderPayment,acList,delivery);		
 		
 	}
-	private void insertPayment(ArrayList<Object> order,ArrayList<Object> productInOrder,ArrayList<Object> payments,ArrayList<Object> account)
+	private void saveOrder(ArrayList<Object> order,ArrayList<Object> productInOrder,ArrayList<Object> payments,ArrayList<Object> acList,ArrayList<Object> delivery)
 	{
 		Packet packet = new Packet();
 		packet.addCommand(Command.createOrder);
 		packet.addCommand(Command.createProductsInOrder);
 		packet.addCommand(Command.createOrderPayments);
-		packet.addCommand(Command.updateAccountBalance);
-
-		
+		packet.setParametersForCommand(Command.createOrder, order);
+		packet.setParametersForCommand(Command.createProductsInOrder, productInOrder);
+		packet.setParametersForCommand(Command.createOrderPayments, payments);
+		if(blncePay>0)
+		{
+			packet.addCommand(Command.updateAccountBalance);
+			packet.setParametersForCommand(Command.updateAccountBalance, acList);
+		}
+		if(chkDelivery.isSelected())
+		{
+			packet.addCommand(Command.createDelivery);
+			packet.setParametersForCommand(Command.createDelivery, delivery);
+		}
 		
 		
 		// create the thread for send to server the message
@@ -428,11 +454,19 @@ public class OrderController implements Initializable, ChangeListener<String>{
 			public void onReceivingResult(Packet p) {
 				if (p.getResultState())
 				{
-					
+					ConstantData.displayAlert(AlertType.INFORMATION, "Order created", "Order confirmation", "Order has been created thanks for buying in our shop");
+					primaryStage.close();
+					CartController.cartProducts.clear();
+					CustomerMenuController custController = new CustomerMenuController();
+					try {
+						custController.start(new Stage());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 				else
 				{
-					
+					ConstantData.displayAlert(AlertType.ERROR, "Order creation failed", "Order failed", "Sorry the server error "+p.getExceptionMessage());
 				}
 			}
 

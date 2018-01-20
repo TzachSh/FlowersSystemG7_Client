@@ -47,7 +47,7 @@
       </TabPane>
       <Button fx:id="btnAddToCart" layoutX="410.0" layoutY="546.0" mnemonicParsing="false" onAction="#onClickAddToOrderBtn" text="Add to order" />
       <Button fx:id="btnReset" layoutX="234.0" layoutY="546.0" mnemonicParsing="false" onAction="#onClickResetButton" text="Reset" />
-      <Label fx:id="lblTotalPrice" layoutX="311.0" layoutY="550.0" prefHeight="17.0" prefWidth="45.0" />
+      <Label fx:id="lblTotalPrice" layoutX="288.0" layoutY="550.0" prefHeight="17.0" prefWidth="118.0" />
       <Button fx:id="btnBackToCart" layoutX="25.0" layoutY="546.0" mnemonicParsing="false" onAction="#onClickRegisterBtnBack" text="Back to cart" />
       <Label layoutX="166.0" layoutY="33.0" text="Create your own bouquet" />
    </children>

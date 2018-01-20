@@ -200,6 +200,7 @@ public class CartController implements Initializable
 						}
 						else
 						{
+							proName.setText("Custom product");
 							img = new Image("/customProduct.png");
 						}
 						
