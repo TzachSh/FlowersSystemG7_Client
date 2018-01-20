@@ -360,7 +360,9 @@ public class CustomerMenuController implements Initializable {
 		packet.addCommand(Command.getAccountbycID);
 		packet.addCommand(Command.getMemberShipAccount);
 		
-		int cid = ((Customer)LoginController.userLogged).getId();
+		Customer customer = (Customer)LoginController.userLogged;
+		int cid = customer.getId();
+		
 		ArrayList<Object> accountParam = new ArrayList<>(Arrays.asList(cid));
 		
 		packet.setParametersForCommand(Command.getAccountbycID, accountParam);
