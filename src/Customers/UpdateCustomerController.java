@@ -111,6 +111,7 @@ public class UpdateCustomerController implements Initializable {
 		 if(loginUser==1)
 		 {
 			 	//handling fields and buttons for the manager
+				txtCustomerID.setEditable(true);
 			 	btnSearch.setVisible(true);
 				txtUser.setEditable(true);
 				cbStatus.setEditable(true);
@@ -127,8 +128,8 @@ public class UpdateCustomerController implements Initializable {
 		 else
 		 {
 			 //handling fields and buttons for the client
-				btnSearch.setVisible(false);
 				txtCustomerID.setEditable(false);
+			 	btnSearch.setVisible(false);
 				txtBalance.setEditable(false);
 				txtBalance.setDisable(false);
 				txtUser.setEditable(false);
@@ -488,7 +489,6 @@ public class UpdateCustomerController implements Initializable {
 						memshipList=p.<Membership>convertedResultListForCommand(Command.getMemberShip);
 						
 						//handle fields after the result
-						txtCustomerID.setEditable(true);
 						btnSearch.setDisable(true);
 						apnextinfo.setVisible(true);
 						initComboBox();
