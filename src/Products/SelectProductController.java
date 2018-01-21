@@ -308,6 +308,7 @@ public class SelectProductController implements Initializable
 					flowersList = p.<Flower>convertedResultListForCommand(Command.getFlowers);
 					productsTypeList = p.<ProductType>convertedResultListForCommand(Command.getProductTypes);
 					
+					catalogProductWithAdditionalDetails.clear();
 					for (int i = 0; i < catalogProductsList.size(); i++)
 					{
 						CatalogProduct pro = catalogProductsList.get(i);
