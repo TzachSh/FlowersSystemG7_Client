@@ -160,12 +160,15 @@ public class OrderManagementController implements Initializable {
                     VBox requestedDateCol = new VBox(new Text(reqDate));
                     requestedDateCol.setMinWidth(120);
                     Button details=  new Button("Details");
-                    details.setOnAction(new EventHandler<ActionEvent>() {
-						@Override
-						public void handle(ActionEvent arg0) {
-							
-							
-						}
+                    details.setOnMouseClicked((event) ->  {
+							OrderDetailsController menu = new OrderDetailsController();
+							menu.setOrder(order);
+							try {
+								menu.start(new Stage());
+								primaryStage.close();
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 					});
                     VBox detailsCol = new VBox(details);
                     detailsCol.setMinWidth(50);

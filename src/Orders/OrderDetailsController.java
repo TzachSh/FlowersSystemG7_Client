@@ -2,15 +2,18 @@ package Orders;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.ResourceBundle;
 
 import javax.swing.JOptionPane;
 
+import Commons.ProductInOrder;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
 import Products.Flower;
+import Products.Product;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -21,21 +24,22 @@ import javafx.stage.WindowEvent;
 
 public class OrderDetailsController implements Initializable {
 	private static Stage primaryStage;
-	private Order order;
+	private static Order order;
+	private ArrayList<OrderPayment> payments = new ArrayList<>();
 	
+	public static LinkedHashMap<Product, Integer> cartProducts = new LinkedHashMap<>();
 	
 	public OrderDetailsController() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public OrderDetailsController(Order order) {
-		super();
+	public void setOrder(Order order) {
 		this.order=order;
 		// TODO Auto-generated constructor stub
 	}
 	public void start(Stage arg0) throws Exception {
 		primaryStage=arg0;
-		String title = "Orders";
+		String title = "Orders details";
 		String srcFXML = "/Orders/OrderDetailsUI.fxml";
 		String srcCSS = "/Orders/application.css";
 
@@ -76,11 +80,12 @@ public class OrderDetailsController implements Initializable {
 
 	private void getOrderDetails() {
 		Packet packet = new Packet();//create packet to send
-		packet.addCommand(Command.getOrderDetails);
+		packet.addCommand(Command.getOrderPaymentDetails);
+		packet.addCommand(Command.getOrderInProductsDetails);
 		ArrayList<Object> list = new ArrayList<>();
 		list.add(order.getoId());
-		packet.setParametersForCommand(Command.getOrderDetails,list);
-		
+		packet.setParametersForCommand(Command.getOrderPaymentDetails,list);
+		packet.setParametersForCommand(Command.getOrderInProductsDetails, list);
 		// create the thread for send to server the message
 		SystemSender send = new SystemSender(packet);
 
@@ -89,13 +94,17 @@ public class OrderDetailsController implements Initializable {
 
 			@Override
 			public void onWaitingForResult() {//waiting when send
+				
 			}
 
 			@Override
 			public void onReceivingResult(Packet p)//set combobox values
 			{
 				if (p.getResultState()) {
-					
+					@SuppressWarnings("unused")
+					ArrayList<OrderPayment> orderPayments = p.<OrderPayment>convertedResultListForCommand(Command.getOrderPaymentDetails);
+					ArrayList<ProductInOrder> productInOrder = p.<ProductInOrder>convertedResultListForCommand(Command.getOrderInProductsDetails);
+					ArrayList<Product> products = p.<Product>convertedResultListForCommand(Command.getAllProductsInOrder);
 				}
 				else//if it was error in connection
 					JOptionPane.showMessageDialog(null,"Connection error","Error",JOptionPane.ERROR_MESSAGE);
