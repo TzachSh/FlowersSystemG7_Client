@@ -112,22 +112,6 @@ public class UpdateCustomerController implements Initializable {
 		 {
 			 	//handling fields and buttons for the manager
 			 	btnSearch.setVisible(true);
-				txtUser.setEditable(false);
-				cbStatus.setEditable(false);
-				cbMemberShip.setEditable(false);
-				txtCreditCard1.setEditable(false);
-				txtCreditCard2.setEditable(false);
-				txtCreditCard3.setEditable(false);
-				txtCreditCard4.setEditable(false);
-				txtCreditCard5.setEditable(false);
-				btnSave.setVisible(true);
-				btnchangePassword.setVisible(true); 
-				lbHeader.setText("Update Client Information");
-		 }
-		 else
-		 {
-			 //handling fields and buttons for the client
-				btnSearch.setVisible(false);
 				txtUser.setEditable(true);
 				cbStatus.setEditable(true);
 				cbMemberShip.setEditable(true);
@@ -136,6 +120,27 @@ public class UpdateCustomerController implements Initializable {
 				txtCreditCard3.setEditable(true);
 				txtCreditCard4.setEditable(true);
 				txtCreditCard5.setEditable(true);
+				btnSave.setVisible(true);
+				btnchangePassword.setVisible(true); 
+				lbHeader.setText("Update Client Information");
+		 }
+		 else
+		 {
+			 //handling fields and buttons for the client
+				btnSearch.setVisible(false);
+				txtCustomerID.setEditable(false);
+				txtBalance.setEditable(false);
+				txtBalance.setDisable(false);
+				txtUser.setEditable(false);
+				cbStatus.setEditable(false);
+				cbStatus.setDisable(true);
+				cbMemberShip.setDisable(true);
+				cbMemberShip.setEditable(false);
+				txtCreditCard1.setEditable(false);
+				txtCreditCard2.setEditable(false);
+				txtCreditCard3.setEditable(false);
+				txtCreditCard4.setEditable(false);
+				txtCreditCard5.setEditable(false);
 				btnSave.setVisible(false);
 				btnchangePassword.setVisible(false);
 				lbHeader.setText("Client Information");
@@ -483,7 +488,7 @@ public class UpdateCustomerController implements Initializable {
 						memshipList=p.<Membership>convertedResultListForCommand(Command.getMemberShip);
 						
 						//handle fields after the result
-						txtCustomerID.setDisable(true);
+						txtCustomerID.setEditable(true);
 						btnSearch.setDisable(true);
 						apnextinfo.setVisible(true);
 						initComboBox();

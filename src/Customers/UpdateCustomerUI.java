@@ -11,8 +11,8 @@ public class UpdateCustomerUI extends Application {
 	public void start(Stage arg0) throws Exception {
 		// TODO Auto-generated method stub
 		//UpCustController updateCustomerController = new UpCustController(user);
-		UpdateCustomerController updateCustomerController = new UpdateCustomerController(user);
-		updateCustomerController.start(arg0);
+		//UpdateCustomerController updateCustomerController = new UpdateCustomerController(user);
+		//updateCustomerController.start(arg0);
 
 	}
 	
