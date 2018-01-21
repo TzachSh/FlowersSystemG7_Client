@@ -12,6 +12,7 @@ import Customers.MemberShipAccount;
 import Customers.Membership;
 import Customers.MyComplainsController;
 import Customers.UpdateCustomerController;
+import Orders.OrderManagementController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
@@ -180,7 +181,14 @@ public class CustomerMenuController implements Initializable {
 	 */
 	public void onClickingMyOrders()
 	{
-		
+		OrderManagementController orders = new OrderManagementController();
+		try {
+			menuStage.close();
+			orders.start(new Stage());
+			
+		} catch (Exception e) {
+			displayAlert(AlertType.ERROR, "Error", "Exception Error:", e.getMessage());
+		}
 	}
 	
 	/**

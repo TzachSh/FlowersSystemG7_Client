@@ -87,5 +87,7 @@ public enum Command implements Serializable
 	createOrderPayments,
 	updateAccountBalance,
 	getAccountByuId,
-	createDelivery
+	createDelivery,
+	getOrdersByCIdandBrId, 
+	getOrderDetails
 	}
