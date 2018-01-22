@@ -98,10 +98,6 @@ public class UpdateCustomerController implements Initializable {
 	private static Stage myStage;
 
 	
-	 /*public UpdateCustomerController(User user) {
-			// TODO Auto-generated constructor stub
-		 this.user=user;
-		}*/
 	 /**
 	  * This function hide and show relevant fields for client / manager
 	  * @param loginUser 1 for manager 0 for client

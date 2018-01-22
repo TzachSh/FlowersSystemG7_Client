@@ -94,22 +94,25 @@ public class ReportsController implements Initializable{
 	private ArrayList<Complain> complainList1,complainList2;
 	private ArrayList<IncomeReport> incomeReport1,incomeReport2;
 	private ArrayList<OrderReport> orderReport1,orderReport2;
-	//choice :saving manager choice of different branches/quarterlies
+	/**
+	 * choice :saving manager choice of different branches/quarterlies
+	 */
 	private int choice=0;
 	private Employee employee=(Employee)LoginController.userLogged;
 	
 	/**
-	 * 
-	 * @param useremployee the manager / branch manager
+	 * building packet for report
+	 * @param packet packet	
+	 * @param year the wanted year
+	 * @param quartely the wanted quarterly
+	 * @param brId	the wanted branch number
+	 * @param cmd	the wanted command
 	 */
-	/*public ReportsController(Employee useremployee)
-	{
-		super();
-		this.employee=useremployee;
-	}
-	*/
 	public void BuildPacketForReport(Packet packet,int year,int quartely,int brId,Command cmd)
 	{
+		/**
+		 * adding the information
+		 */
 		packet.addCommand(cmd);
 		ArrayList<Object> info1 = new ArrayList<>();
 		info1.add(brId);
@@ -118,39 +121,58 @@ public class ReportsController implements Initializable{
 		//building the second packet to get the first information
 		packet.setParametersForCommand(cmd, info1);
 	}
+	/**
+	 * building table for income report
+	 * @param table the table view
+	 * @param incomeReport the income report information
+	 */
 	@SuppressWarnings("unchecked")
 	public void BuildTableViewForIncome(TableView<IncomeReport> table ,IncomeReport incomeReport)
 	{
+		/**
+		 * adding the information to the table view
+		 */
 		table.getColumns().clear();
 		ObservableList<IncomeReport> data = FXCollections.observableArrayList(incomeReport);
 		table.setItems(data);
-		//adding the data to the columns
+		/**
+		 * adding the data to the columns
+		 */
 		TableColumn<IncomeReport, String> branchId=new TableColumn<>("Branch Number");
 		branchId.setCellValueFactory(new PropertyValueFactory<IncomeReport, String>("brId"));
 		TableColumn<IncomeReport, String> branchName=new TableColumn<>("Branch Name");
 		branchName.setCellValueFactory(new PropertyValueFactory<IncomeReport, String>("brName"));
 		TableColumn<IncomeReport, String> branchIncome=new TableColumn<>("Income");
 		branchIncome.setCellValueFactory(new PropertyValueFactory<IncomeReport, String>("amount"));
-
 		table.getColumns().addAll(branchId,branchName,branchIncome);
 		table.setVisible(true);
 	}
+	/**
+	 * building table for satisfaction report
+	 * @param table table view
+	 * @param surveyReport the satisfaction information
+	 */
 	@SuppressWarnings("unchecked")
 	public void BuildTableViewForSatisfaction(TableView<SatisfactionReport> table ,ArrayList<SatisfactionReport> surveyReport)
 	{
 		table.getColumns().clear();
 		ObservableList<SatisfactionReport> data = FXCollections.observableArrayList(surveyReport);
 		table.setItems(data);
-		//adding the data to the columns
+		/**
+		 * adding the data to the columns
+		 */
 		TableColumn<SatisfactionReport, String> Question=new TableColumn<>("Question");
 		Question.setCellValueFactory(new PropertyValueFactory<SatisfactionReport, String>("question"));
 		TableColumn<SatisfactionReport, String> avg=new TableColumn<>("Avg Answer");
 		avg.setCellValueFactory(new PropertyValueFactory<SatisfactionReport, String>("avg"));
-
-
 		table.getColumns().addAll(Question,avg);
 		table.setVisible(true);
 	}
+	/**
+	 * building report for order
+	 * @param table the table view
+	 * @param orderReportList the order information
+	 */
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public void BuildTableViewForOrder(TableView<OrderReport> table ,ArrayList<OrderReport> orderReportList)
 	{
