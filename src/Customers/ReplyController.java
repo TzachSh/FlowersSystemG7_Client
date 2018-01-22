@@ -56,6 +56,10 @@ public class ReplyController {
 	private TextField txtRefund;
 	@FXML 
 	private ComboBox<Branch> cmbBranch;
+	/***
+	 * Determine if choose to refund
+	 */
+	boolean isRefund;
 	
 	/***
 	 * List to be updated during runtime
@@ -140,18 +144,28 @@ public class ReplyController {
 	@FXML 
 	private void handleSendPressed(Event event)
 	{
-		String replyment = txtReply.getText();
+		String replyment = txtReply.getText().replaceAll("'", "\\'");
+		double amount = 0;
 
 		if (replyment.isEmpty()) {
-			System.out.println("Must fill replyment");
+			Alert alert = new Alert(AlertType.ERROR,"Must fill a replyment");
+			alert.show();
 			return;
 		}
 		
-		int complainId = complain.getId();
-	
-		final double amount = Double.parseDouble(txtRefund.getText());
-		boolean isRefund = true;
+		try {
+		amount = Double.parseDouble(txtRefund.getText());
+		isRefund = true;
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			Alert alert = new Alert(AlertType.ERROR,"Enter numbers only");
+			alert.show();
+			return;
+		}
 
+		int complainId = complain.getId();
+		
 		if (txtRefund.getText().equals("0.0"))
 			isRefund = false;
 
@@ -174,12 +188,13 @@ public class ReplyController {
 			ArrayList<Object> paramListUpdateAccount = new ArrayList<>();
 			paramListUpdateAccount.add(accountToUpdate);
 			packet.setParametersForCommand(Command.updateAccountsBycId, paramListUpdateAccount);
-			ArrayList<Object> paramListComplain = new ArrayList<>();
-			complain.setActive(false);
-			paramListComplain.add(complain);
-			packet.setParametersForCommand(Command.updateComplain, paramListComplain);
 		}
 
+		ArrayList<Object> paramListComplain = new ArrayList<>();
+		complain.setActive(false);
+		paramListComplain.add(complain);
+		packet.setParametersForCommand(Command.updateComplain, paramListComplain);
+		
 		Reply reply = new Reply(complainId, replyment);
 
 		packet.addCommand(Command.addReply);
@@ -202,9 +217,13 @@ public class ReplyController {
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub
-				Alert alert;
+				Alert alert = null;
 				if (p.getResultState()) {
-					alert = new Alert(AlertType.INFORMATION,"Refund has been sent");
+					
+					if(isRefund) 
+						alert = new Alert(AlertType.INFORMATION,"Refund has been sent");
+					else
+						alert = new Alert(AlertType.INFORMATION,"Replyment has been sent");
 					 Optional<ButtonType> result = alert.showAndWait();
 			            if (result.get() == ButtonType.OK){
 			            	alert.hide();
@@ -282,6 +301,7 @@ public class ReplyController {
 			}
 		});
 	}
+	
 	/**
 	 * Initializing customer details by getting his Accounts,
 	 * Then initializing the Combo Box to show branches which he has account in them.

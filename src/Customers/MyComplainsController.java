@@ -211,37 +211,60 @@ public class MyComplainsController implements Initializable{
 					String textRefund = "Refund: ";
 					String textBranch = "In branch: ";
 					
-					VBox detialsElements = null;
+					VBox detailsElements = null;
 					
 					HBox dateElement = new HBox(new Label(textDate), new Text(String.format("%s", complain.getCreationDate().toString())));
 					HBox titleElement = new HBox (new Label(textTitle) , new Text(complain.getTitle()));
 					HBox infoElement = new HBox (new Label(textContent) , new Text(complain.getDetails()));
 					HBox statusElement = new HBox(new Label(textStatus),new Text( complain.isActive() ? "Pending" : "Closed" ));
+					HBox branchElement = null;
 					if(!complain.isActive() && refund != null) {
 						HBox refundElement = new HBox(new Label(textRefund) , new Text( String.format("%.2f", refund.getAmount())));
 							if (branch != null) {
-								HBox branchElement = new HBox(new Label(textBranch), new Text(branch.getName()));
-								detialsElements = new VBox(statusElement, dateElement, titleElement, infoElement,
-										refundElement, branchElement);
-
-								if (reply != null) {
+								branchElement = new HBox(new Label(textBranch), new Text(branch.getName()));
+								branchElement.setPadding(new Insets(0, 10, 5, 20));
+								refundElement.getChildren().add(branchElement);
+								refundElement.setPadding(new Insets(5, 10, 5, 20));
+								detailsElements = new VBox(statusElement, dateElement, titleElement, infoElement,refundElement);
+							}
+								else if (reply != null) {
 									HBox replyElement = new HBox(new Label(textReply), new Text(reply.getReplyment()));
+									branchElement = new HBox(new Label(textBranch), new Text(branch.getName()));
+									branchElement.setPadding(new Insets(0, 10, 5, 20));
+									refundElement.getChildren().add(branchElement);
+									refundElement.setPadding(new Insets(5, 10, 5, 20));
 									replyElement.setPadding(new Insets(5, 10, 5, 20));
-									detialsElements = new VBox(statusElement, dateElement, titleElement, infoElement,
-											replyElement, refundElement, branchElement);
+									detailsElements = new VBox(statusElement, dateElement, titleElement, infoElement,
+											replyElement, refundElement);
 								}
 							}
-					}
 					else
 					{
-						if(complain.isActive())
-							detialsElements = new VBox(statusElement,dateElement,titleElement,infoElement);
+						if(complain.isActive()) {
+							detailsElements = new VBox(statusElement,dateElement,titleElement,infoElement);
+							if(branch != null)
+							{
+								branchElement = new HBox(new Label(textBranch), new Text(branch.getName()));
+								branchElement.setPadding(new Insets(5, 10, 5, 20));
+								detailsElements.getChildren().add(branchElement);
+							}
+						}
 						else {
 								if (reply != null) {
 									HBox replyElement = new HBox(new Label(textReply), new Text(reply.getReplyment()));
 									replyElement.setPadding(new Insets(5, 10, 5, 20));
-									detialsElements = new VBox(statusElement, dateElement, titleElement, infoElement,
+									detailsElements = new VBox(statusElement, dateElement, titleElement, infoElement,
 											replyElement);
+								}
+								else
+								{
+									detailsElements = new VBox(statusElement, dateElement, titleElement, infoElement);
+									if(branch != null)
+									{
+										branchElement = new HBox(new Label(textBranch), new Text(branch.getName()));
+										branchElement.setPadding(new Insets(5, 10, 5, 20));
+										detailsElements.getChildren().add(branchElement);
+									}
 								}
 						}
 					}
@@ -249,12 +272,12 @@ public class MyComplainsController implements Initializable{
 				 	dateElement.setPadding(new Insets(5,10,5,20));
 				 	titleElement.setPadding(new Insets(5,10,5,20));
 				 	infoElement.setPadding(new Insets(5,10,5,20));
-				 	detialsElements.setStyle("-fx-border-style:solid inside;"+
+				 	detailsElements.setStyle("-fx-border-style:solid inside;"+
                     			  "-fx-border-width:1;"+
                     			  "-fx-border-insets:5;"+
                     			  "-fx-border-radius:5;");
-				 	detialsElements.setPadding(new Insets(10));
-                    setGraphic(detialsElements);
+				 	detailsElements.setPadding(new Insets(10));
+                    setGraphic(detailsElements);
 				}
 
 				/**

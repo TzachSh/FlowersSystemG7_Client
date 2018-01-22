@@ -215,32 +215,32 @@ public class SurveyManagementController implements Initializable {
 		if(stepValidation(1, txtQ1))
 		{
 			performNextStep();
-			setConfirmationQuestionTextField(txtCfmQ1,txtQ1.getText());
+			setConfirmationQuestionTextField(txtCfmQ1,txtQ1.getText().replaceAll("'", "\\'"));
 		}
 		else if(stepValidation(2, txtQ2))
 		{
 			performNextStep();
-			setConfirmationQuestionTextField(txtCfmQ2,txtQ2.getText());
+			setConfirmationQuestionTextField(txtCfmQ2,txtQ2.getText().replaceAll("'", "\\'"));
 		}
 		else if(stepValidation(3, txtQ3))
 		{
 			performNextStep();
-			setConfirmationQuestionTextField(txtCfmQ3,txtQ3.getText());
+			setConfirmationQuestionTextField(txtCfmQ3,txtQ3.getText().replaceAll("'", "\\'"));
 		}
 		else if(stepValidation(4, txtQ4))
 		{
 			performNextStep();
-			setConfirmationQuestionTextField(txtCfmQ4,txtQ4.getText());
+			setConfirmationQuestionTextField(txtCfmQ4,txtQ4.getText().replaceAll("'", "\\'"));
 		}
 		else if(stepValidation(5, txtQ5))
 		{
 			performNextStep();
-			setConfirmationQuestionTextField(txtCfmQ5,txtQ5.getText());
+			setConfirmationQuestionTextField(txtCfmQ5,txtQ5.getText().replaceAll("'", "\\'"));
 		}
 		else if(stepValidation(6, txtQ6))
 		{
 			performNextStep();
-			setConfirmationQuestionTextField(txtCfmQ6,txtQ6.getText());
+			setConfirmationQuestionTextField(txtCfmQ6,txtQ6.getText().replaceAll("'", "\\'"));
 			setButtonsVisiblity(false);
 		}
 		else if(curStep == 7)
@@ -310,7 +310,7 @@ public class SurveyManagementController implements Initializable {
 	@FXML
 	private void savePressedHandler(Event event)
 	{
-		String subject = txtSubject.getText();
+		String subject = txtSubject.getText().replaceAll("'", "\\'");
 		if(subject.isEmpty() || !subject.matches(".*[a-z].*"))
 		{
 			Alert alert = new Alert(AlertType.INFORMATION,"Please enter a valid - with characters only - subject");
@@ -329,12 +329,12 @@ public class SurveyManagementController implements Initializable {
 		
 		//Parameter list for addQuestion
 		ArrayList<Object> paramListQuestion = new ArrayList<>();
-		paramListQuestion.add(new Question(txtCfmQ1.getText()));
-		paramListQuestion.add(new Question(txtCfmQ2.getText()));
-		paramListQuestion.add(new Question(txtCfmQ3.getText()));
-		paramListQuestion.add(new Question(txtCfmQ4.getText()));
-		paramListQuestion.add(new Question(txtCfmQ5.getText()));
-		paramListQuestion.add(new Question(txtCfmQ6.getText()));
+		paramListQuestion.add(new Question(txtCfmQ1.getText().replaceAll("'", "\\'")));
+		paramListQuestion.add(new Question(txtCfmQ2.getText().replaceAll("'", "\\'")));
+		paramListQuestion.add(new Question(txtCfmQ3.getText().replaceAll("'", "\\'")));
+		paramListQuestion.add(new Question(txtCfmQ4.getText().replaceAll("'", "\\'")));
+		paramListQuestion.add(new Question(txtCfmQ5.getText().replaceAll("'", "\\'")));
+		paramListQuestion.add(new Question(txtCfmQ6.getText().replaceAll("'", "\\'")));
 		
 		Packet packet = new Packet();
 		packet.addCommand(Command.addSurvey);

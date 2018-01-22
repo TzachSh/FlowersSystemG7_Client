@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
@@ -7,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="259.0" prefWidth="431.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Login.ServiceMenuController">
+<AnchorPane prefHeight="254.0" prefWidth="431.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Login.ServiceMenuController">
    <children>
       <Label layoutX="153.0" layoutY="22.0" text="Zer-Li System" underline="true">
          <font>
@@ -33,5 +34,12 @@
          </font>
       </Label>
       <Button fx:id="btnComplains" layoutX="58.0" layoutY="171.0" mnemonicParsing="false" onAction="#onClickComplainsManagement" prefHeight="72.0" prefWidth="135.0" text="Complains Management" textAlignment="CENTER" wrapText="true" />
+      <Label fx:id="lblNotification" layoutX="32.0" layoutY="155.0" textFill="RED">
+         <font>
+            <Font name="Lucida Sans Regular" size="27.0" />
+         </font>
+         <effect>
+            <Reflection />
+         </effect></Label>
    </children>
 </AnchorPane>

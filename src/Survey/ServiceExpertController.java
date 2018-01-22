@@ -9,6 +9,8 @@ import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -89,6 +91,8 @@ public class ServiceExpertController implements Initializable {
 	private ArrayList<Question> questionList;
 	private ArrayList<AnswerSurvey> averageAnswerSurveyList;
 	public static Employee serviceExpert;
+	
+	private final int TEXTLIMIT = 200;
 	
 	/***
 	 * 
@@ -250,6 +254,7 @@ public class ServiceExpertController implements Initializable {
 			for(Question question : questionList)
 				if(surveyQuestion.getQuestionId() == question.getId())
 					questionsOfSurvey.add(question);
+		
 		return questionsOfSurvey;
 	}
 	/***
@@ -285,7 +290,7 @@ public class ServiceExpertController implements Initializable {
 	/***
 	 * 
 	 * @param survey to show his dates
-	 * Display the survey's duratios in the labels
+	 * Display the survey's durations in the labels
 	 */
 	private void displayDates(Survey survey)
 	{
@@ -319,7 +324,15 @@ public class ServiceExpertController implements Initializable {
 	@FXML
 	private void onSubmitPressedHandle(Event event)
 	{
-		SurveyConclusion surveyConclusion = new SurveyConclusion(serviceExpert.geteId(), txtConclusion.getText(),survey.getId());
+		String conclusion  =txtConclusion.getText().replaceAll("'", "\\'");
+		
+		if(conclusion.isEmpty())
+		{
+			Alert alert = new Alert(AlertType.ERROR , "Fill in the conclusion");
+			alert.show();
+			return;
+		}
+		SurveyConclusion surveyConclusion = new SurveyConclusion(serviceExpert.geteId(), conclusion,survey.getId());
 		
 		ArrayList<Object> paramListAddConclusion = new ArrayList<>();
 		
@@ -383,12 +396,40 @@ public class ServiceExpertController implements Initializable {
 	          }
 	      });        
 	}
+	
+	/***
+	 * 
+	 * @param TextArea textArea - to set his text limit.
+	 *  Prevent writing more characters then the limited in database
+	 */
+	private void setTextAreaLengthProperty(TextArea textArea) {
+		textArea.lengthProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				// TODO Auto-generated method stub
+				if (newValue.intValue() > oldValue.intValue()) {
+					/**
+					 *  Check if the new character is greater than LIMIT
+					 */
+					if (textArea.getText().length() >= TEXTLIMIT) {
+
+						/**
+						*if it's the limited character then just setText to previous one
+						*/
+						textArea.setText(textArea.getText().substring(0, TEXTLIMIT));
+					}
+				}
+			}
+		});
+	}
 	/***
 	 * Initialize the data at the first program level
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub
+		setTextAreaLengthProperty(txtConclusion);
 		initData();
 	}
 }
