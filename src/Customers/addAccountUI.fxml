@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
@@ -29,11 +30,12 @@
             <TextField id="txtCreditCard4" fx:id="txtCreditCard4" layoutX="347.0" layoutY="48.0" prefHeight="25.0" prefWidth="45.0" />
             <TextField id="txtCreditCard5" fx:id="txtCreditCard5" layoutX="399.0" layoutY="48.0" prefHeight="25.0" prefWidth="45.0" />
             <Label layoutX="75.0" layoutY="52.0" text="CreditCard Number" />
-            <ComboBox id="cbMemberShip" fx:id="cbMemberShip" layoutX="192.0" layoutY="88.0" onAction="#getMemberShipTypeDiscount" prefWidth="150.0" />
-            <Label layoutX="75.0" layoutY="92.0" text="MemberShip" />
-            <Label layoutX="75.0" layoutY="137.0" text="Discount" />
+            <ComboBox id="cbMemberShip" fx:id="cbMemberShip" layoutX="192.0" layoutY="88.0" onAction="#getMemberShipTypeDiscount" prefWidth="150.0" visible="false" />
+            <Label id="lblMembership" fx:id="lblMembership" layoutX="75.0" layoutY="92.0" text="MemberShip" />
             <Button id="btnFinish" fx:id="btnFinish" layoutX="193.0" layoutY="180.0" mnemonicParsing="false" onAction="#addAccountNow" prefHeight="25.0" prefWidth="149.0" text="Finish" />
             <TextField id="txtDiscount" fx:id="txtDiscount" editable="false" layoutX="192.0" layoutY="133.0" prefHeight="25.0" prefWidth="47.0" />
+            <RadioButton fx:id="rbAddMemberShip" layoutX="349.0" layoutY="92.0" mnemonicParsing="false" onAction="#showMemberShipComboBox" text="Add MemberShip" />
+            <Label fx:id="lblDiscount" layoutX="75.0" layoutY="137.0" text="Discount" />
          </children>
       </AnchorPane>
    </children>

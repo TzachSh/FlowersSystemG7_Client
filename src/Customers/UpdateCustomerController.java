@@ -32,6 +32,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
@@ -50,6 +51,8 @@ public class UpdateCustomerController implements Initializable {
 	private Label lbHeader;
 	@FXML
 	private Label lbStatus;
+	@FXML
+	private Label lblmembership;
 	@FXML
 	private Label lbBalance;
 	@FXML
@@ -82,6 +85,8 @@ public class UpdateCustomerController implements Initializable {
 	private Button btnCancelUpdatingPassword;
 	@FXML
 	private Button btnSearch;
+	@FXML
+	private RadioButton rbMemberShip;
 	@FXML
 	private ComboBox<String> cbStatus;
 	@FXML
@@ -143,6 +148,23 @@ public class UpdateCustomerController implements Initializable {
 				lbHeader.setText("Client Information");
 		 }
 	 }
+	 /**
+	 * This function show membership combo box if the radio button was selected , else it will hide it .
+	 */
+	public void showMemberShipComboBox()
+	{
+		//checking the status
+		if(rbMemberShip.isSelected()==true) 
+		{
+			cbMemberShip.setVisible(true);
+			lblmembership.setVisible(true);
+		}
+		else
+		{
+			cbMemberShip.setVisible(false);
+			lblmembership.setVisible(false);
+		}
+	}
 	 /**
 	  * This function inistialize the settings
 	  */
@@ -357,6 +379,7 @@ public class UpdateCustomerController implements Initializable {
 		//adding the membership arraylist to the combobox
 		observelistMembership = FXCollections.observableArrayList(membership);
 		cbMemberShip.setItems(observelistMembership);
+		cbMemberShip.getSelectionModel().selectFirst();
 		//checking which membership the customer got to show him in combo box (the shown value).
 		for(Membership mem: memshipList) 
 		{
@@ -525,23 +548,37 @@ public class UpdateCustomerController implements Initializable {
 							 */
 							@Override
 							public void onReceivingResult(Packet p) {
-								//getting the information from the packet
-								memshipAccount=p.<MemberShipAccount>convertedResultListForCommand(Command.getMemberShipAccountByAcNum);
+								// if the result status is true , we can get the  membership from the returned information .
 								if(p.getResultState())
 								{
-									// if the result status is true , we can get the  membership from the returned information .
-									for(Membership mem:memshipList)
+									//getting the information from the packet
+									memshipAccount=p.<MemberShipAccount>convertedResultListForCommand(Command.getMemberShipAccountByAcNum);
+									if(memshipAccount.isEmpty()==false)
 									{
-										//if the memberhsip number are the same 
-										if(mem.getNum()==memshipAccount.get(0).getmId())
+										cbMemberShip.setVisible(true);
+										lblmembership.setVisible(true);
+										rbMemberShip.setVisible(false);
+										for(Membership mem:memshipList)
 										{
-											cbMemberShip.getSelectionModel().select(mem.getNum()-1);
-											break;
+											//if the memberhsip number are the same 
+											if(mem.getNum()==memshipAccount.get(0).getmId())
+											{
+												cbMemberShip.getSelectionModel().select(mem.getNum()-1);
+												break;
+											}
 										}
+										
 									}
+									else
+									{
+										cbMemberShip.setVisible(false);
+										lblmembership.setVisible(false);
+										rbMemberShip.setVisible(true);
+									}
+									
 								}
 								else
-									showError("Error Loading Information , Please Try Again Later");			
+									showError("Error Loading Information , Please Try Again Later");	
 							}
 						});
 						//sending the package

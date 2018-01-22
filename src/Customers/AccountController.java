@@ -31,6 +31,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
@@ -46,6 +48,10 @@ public class AccountController implements Initializable{
 	@FXML
 	private ComboBox<String> cbMemberShip;
 	@FXML
+	private Label lblMembership;
+	@FXML
+	private Label lblDiscount;
+	@FXML
 	private AnchorPane apAddAccount;
 	@FXML
 	private TextField txtDiscount;
@@ -59,6 +65,8 @@ public class AccountController implements Initializable{
 	private TextField txtCreditCard4;
 	@FXML
 	private TextField txtCreditCard5;
+	@FXML
+	private RadioButton rbAddMemberShip;
 	@FXML
 	private Button btnFinish;
 	private String membership,discount;
@@ -77,11 +85,32 @@ public class AccountController implements Initializable{
 		ArrayList<String> membership = new ArrayList<>();
 		membership.add(MembershipType.Monthly.toString());
 		membership.add(MembershipType.Yearly.toString());
-		membership.add(MembershipType.Normal.toString());
 		observelistMembership = FXCollections.observableArrayList(membership);
 		cbMemberShip.setItems(observelistMembership);
+		cbMemberShip.getSelectionModel().selectFirst();
+
 		
-		
+	}
+	/**
+	 * This function show membership combo box if the radio button was selected , else it will hide it .
+	 */
+	public void showMemberShipComboBox()
+	{
+		//checking the status
+		if(rbAddMemberShip.isSelected()==true) 
+		{
+			cbMemberShip.setVisible(true);
+			lblDiscount.setVisible(true);
+			lblMembership.setVisible(true);
+			txtDiscount.setVisible(true);
+		}
+		else
+		{
+			cbMemberShip.setVisible(false);
+			lblDiscount.setVisible(false);
+			lblMembership.setVisible(false);
+			txtDiscount.setVisible(false);
+		}
 	}
 	/**
 	 * This function initialize the settings
@@ -171,7 +200,9 @@ public class AccountController implements Initializable{
 		});		
 		//setting visible for the account section
 		apAddAccount.setVisible(false);
-		
+		lblDiscount.setVisible(false);
+		lblMembership.setVisible(false);
+		txtDiscount.setVisible(false);
 	}
 	
 
@@ -192,7 +223,7 @@ public class AccountController implements Initializable{
 			showError("Please Insert 4 Digits For Credit Card Section");
 			return;
 		}
-		if(txtDiscount.getText().isEmpty())
+		if(rbAddMemberShip.isSelected()==true&&txtDiscount.getText().isEmpty())
 		{
 			showError("Please Pick MemberShip");
 			return;
@@ -231,51 +262,70 @@ public class AccountController implements Initializable{
 				{
 					ArrayList<Account> accL=new ArrayList<>();
 					accL= p.<Account>convertedResultListForCommand(Command.getAccountbycIDandBranch);
-					//opening packet
-					Packet packet = new Packet();
-					//adding command and the information for the query to use them
-					packet.addCommand(Command.addMemberShipAccount);
-					ArrayList<Object> memacc=new ArrayList<>();
-					java.sql.Date sqlDate = new java.sql.Date(new java.util.Date().getTime());
-					memacc.add(new MemberShipAccount(accL.get(0).getNum(), mId,sqlDate));
-					packet.setParametersForCommand(Command.addMemberShipAccount, memacc);
-					//sending the packet
-					SystemSender send = new SystemSender(packet);
-					send.registerHandler(new IResultHandler() {
-						/**
-						 * on waiting for results from server
-						 */
-						@Override
-						public void onWaitingForResult() {
-							
-						}
-						/**
-						 * 
-						 * @param p the result from the server 
-						 */
-						@Override
-						public void onReceivingResult(Packet p) {
-							if (p.getResultState())
-							{
-								JOptionPane.showMessageDialog(null, 
-										"The Account Has Been Added", 
-						                "Success", 
-						                JOptionPane.CLOSED_OPTION);
-								//closing the window and returning to menu
-								myStage.close();
-								 ManagersMenuController menu = new ManagersMenuController();
-								  try {
-									menu.start(new Stage());
-								} catch (Exception e) {
-									ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
-								}
+					//if the user want to add membership and allready clicked on membership radio button
+					if(rbAddMemberShip.isSelected()==true)
+					{
+						//opening packet
+						Packet packet = new Packet();
+						//adding command and the information for the query to use them
+						packet.addCommand(Command.addMemberShipAccount);
+						ArrayList<Object> memacc=new ArrayList<>();
+						java.sql.Date sqlDate = new java.sql.Date(new java.util.Date().getTime());
+						memacc.add(new MemberShipAccount(accL.get(0).getNum(), mId,sqlDate));
+						packet.setParametersForCommand(Command.addMemberShipAccount, memacc);
+						//sending the packet
+						SystemSender send = new SystemSender(packet);
+						send.registerHandler(new IResultHandler() {
+							/**
+							 * on waiting for results from server
+							 */
+							@Override
+							public void onWaitingForResult() {
+								
 							}
-							else
-								System.out.println("Fail: " + p.getExceptionMessage());
+							/**
+							 * 
+							 * @param p the result from the server 
+							 */
+							@Override
+							public void onReceivingResult(Packet p) {
+								if (p.getResultState())
+								{
+									JOptionPane.showMessageDialog(null, 
+											"The Account Has Been Added With MemberShip", 
+							                "Success", 
+							                JOptionPane.CLOSED_OPTION);
+									//closing the window and returning to menu
+									myStage.close();
+									 ManagersMenuController menu = new ManagersMenuController();
+									  try {
+										menu.start(new Stage());
+									} catch (Exception e) {
+										ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
+									}
+								}
+								else
+									System.out.println("Fail: " + p.getExceptionMessage());
+							}
+						});	
+						//sending the packet
+						send.start();
+					}
+					else
+					{
+						JOptionPane.showMessageDialog(null, 
+								"The Account Has Been Added Without MemberShip", 
+				                "Success", 
+				                JOptionPane.CLOSED_OPTION);
+						//closing the window and returning to menu
+						myStage.close();
+						 ManagersMenuController menu = new ManagersMenuController();
+						  try {
+							menu.start(new Stage());
+						} catch (Exception e) {
+							ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
 						}
-					});	
-					//sending the packet
-					send.start();
+					}
 				}
 				else
 					System.out.println("Fail: " + p.getExceptionMessage());
