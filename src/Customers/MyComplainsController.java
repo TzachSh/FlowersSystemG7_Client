@@ -76,6 +76,7 @@ public class MyComplainsController implements Initializable{
 	 */
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
+		primaryStage.setResizable(false);
 		String title = "Follow Complains";
 		String srcFXML = "/Customers/MyComplainsUI.fxml";
 		

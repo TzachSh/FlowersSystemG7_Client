@@ -109,6 +109,11 @@ public class SurveyManagementController implements Initializable {
 	 * The first step of adding a survey starts in stage 1 by default
 	 */
 	private int curStep = 1;
+	
+	/**
+	 * Save the current stage
+	 */
+	private static Stage stage;
 	/**
 	 * Show the scene view of complains management
 	 * 
@@ -116,6 +121,8 @@ public class SurveyManagementController implements Initializable {
 	 */
 	public void start(Stage primaryStage) {
 		
+		stage = primaryStage;
+		stage.setResizable(false);
 		String title = "Survey Creator";
 		String srcFXML = "/Survey/SurveyManagementUI.fxml";
 		
@@ -125,18 +132,18 @@ public class SurveyManagementController implements Initializable {
 			loader.setController(this);
 			Parent root = loader.load();
 			Scene scene = new Scene(root);
-			primaryStage.setTitle(title);
-			primaryStage.setScene(scene);
-			primaryStage.show();
+			stage.setTitle(title);
+			stage.setScene(scene);
+			stage.show();
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println(e);
 			e.printStackTrace();
 		}
-		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 	          public void handle(WindowEvent we) {
 	        	  
-	        	  primaryStage.close();
+	        	  stage.close();
 				  ServiceMenuController menu = new ServiceMenuController();
 				  try {
 					menu.start(new Stage());

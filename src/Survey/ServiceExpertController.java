@@ -92,7 +92,15 @@ public class ServiceExpertController implements Initializable {
 	private ArrayList<AnswerSurvey> averageAnswerSurveyList;
 	public static Employee serviceExpert;
 	
+	/**
+	 * Limited characters to insert in to the TextArea
+	 */
 	private final int TEXTLIMIT = 200;
+	
+	/**
+	 * Save current stage
+	 */
+	private static Stage stage;
 	
 	/***
 	 * 
@@ -103,14 +111,15 @@ public class ServiceExpertController implements Initializable {
 		
 		String title = "Survey Analyze";
 		String srcFXML = "/Survey/ServiceExpertUI.fxml";
-		
+		stage = primaryStage;
+		stage.setResizable(false);
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(getClass().getResource(srcFXML));
 			loader.setController(this);
 			Parent root = loader.load();
 			Scene scene = new Scene(root);
-			setOnCloseListener(primaryStage);
+			setOnCloseListener(stage);
 			primaryStage.setTitle(title);
 			primaryStage.setScene(scene);
 			primaryStage.show();

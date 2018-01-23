@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
@@ -160,6 +161,7 @@ public class ComplainsController implements Initializable {
 			loader.setController(this);
 			Parent root = loader.load();
 			Scene scene = new Scene(root);
+			primaryStage.setResizable(false);
 			scene.getStylesheets().add(getClass().getResource(srcCSS).toExternalForm());
 			primaryStage.setTitle(title);
 			primaryStage.setScene(scene);
@@ -240,9 +242,19 @@ public class ComplainsController implements Initializable {
 							if (complain.getCustomerServiceId() == customerService.geteId())
 								currentServiceEmployeeComplains.add(complain);
 						
-						Collections.sort(currentServiceEmployeeComplains);
+						// sort by the latest creation date
+						Collections.sort(currentServiceEmployeeComplains); 
+						
+						// sort by the activation status
+						Collections.sort(currentServiceEmployeeComplains, new Comparator<Complain>() { 
+					        @Override
+					        public int compare(Complain complain1, Complain complain2) {
+					            return Boolean.compare(complain2.isActive(),complain1.isActive());
+					        }
+					    });
 
 						data = FXCollections.observableArrayList(currentServiceEmployeeComplains);
+						// binding the data
 						cListView.setItems(data);
 						
 					}
@@ -252,9 +264,11 @@ public class ComplainsController implements Initializable {
 							if(complain.isActive())
 								currentServiceEmployeeComplains.add(complain);
 						
+						// sort by date
 						Collections.sort(currentServiceEmployeeComplains);
 						
 						data = FXCollections.observableArrayList(currentServiceEmployeeComplains);
+						// binding the data
 						cListView.setItems(data);
 						
 					}			
@@ -460,24 +474,27 @@ public class ComplainsController implements Initializable {
 					HBox timeElement = new HBox(new Label(textTimePassed), txtPassedTime);
 					HBox titleElement = new HBox (new Label(textTitle) , new Text(String.format("%s", complain.getTitle())));
 					HBox infoElement = new HBox (new Label(textContent) , new Text(String.format("%s", complain.getDetails())));
-					VBox detialsElements = new VBox(timeElement,titleElement,infoElement);
+					
 					VBox operationElement = null;
+					VBox detailsElements = null;
 					HBox hBox = null;
+					
 					if(customerService.getRole() == Role.CustomerService) {
 						if(complain.isActive()) {
 							operationElement = new VBox(createReplyButtonHandler(complain));
 							operationElement.setPadding(new Insets(5,10,5,0));
+							detailsElements = new VBox(timeElement,titleElement,infoElement);
 						}
 						else {
 								if (reply != null) {
 									HBox replyElement = new HBox(new Label(textReply), new Text(reply.getReplyment()));
 									replyElement.setPadding(new Insets(5,10,5,20));
-									detialsElements = new VBox(timeElement, titleElement, infoElement, replyElement);
+									detailsElements = new VBox(titleElement, infoElement, replyElement);
 								}
 							operationElement = new VBox(new Label(textDone));
 							operationElement.setPadding(new Insets(5,10,5,0));
 						}
-						hBox = new HBox(operationElement,detialsElements);
+						hBox = new HBox(operationElement,detailsElements);
 					}
 					else if(customerService.getRole() == Role.ServiceExpert)
 					{
@@ -487,18 +504,18 @@ public class ComplainsController implements Initializable {
 							operationElement.setPadding(new Insets(5,10,5,0));
 							HBox creatorElement = new HBox(new Label(textCreatorId), new Text(String.format("%d",complain.getCustomerId())));
 							creatorElement.setPadding(new Insets(5,10,5,20));
-							detialsElements = new VBox(timeElement, titleElement, infoElement,creatorElement);
-							hBox = new HBox(operationElement,detialsElements);
+							detailsElements = new VBox(timeElement, titleElement, infoElement,creatorElement);
+							hBox = new HBox(operationElement,detailsElements);
 						}
 						else {
 								if (reply != null) {
 									HBox replyElement = new HBox(new Label(textReply), new Text(reply.getReplyment()));
 									replyElement.setPadding(new Insets(5,10,5,20));
-									detialsElements = new VBox(timeElement, titleElement, infoElement, replyElement);
+									detailsElements = new VBox(titleElement, infoElement, replyElement);
 								}
 							operationElement = new VBox(new Label(textDone));
 							operationElement.setPadding(new Insets(5,10,5,0));
-							hBox = new HBox(operationElement,detialsElements);
+							hBox = new HBox(operationElement,detailsElements);
 						}
 					}
 						
@@ -530,6 +547,7 @@ public class ComplainsController implements Initializable {
 
 							((Node) event.getSource()).getScene().getWindow().hide();
 							Stage primaryStage = new Stage();
+							primaryStage.setResizable(false);
 							FXMLLoader loader = new FXMLLoader();
 							Pane root;
 							try {
@@ -537,6 +555,21 @@ public class ComplainsController implements Initializable {
 								ReplyController replyController = loader.<ReplyController>getController();
 								replyController.setComponents(complain);
 
+								primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+							          public void handle(WindowEvent we) {
+							        	  
+							        	  primaryStage.close();
+										  ServiceMenuController menu = new ServiceMenuController();
+										  try {
+											menu.start(new Stage());
+										} catch (Exception e) {
+											ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
+										}
+
+							          }
+							      }); 
+
+								
 								Scene scene = new Scene(root);
 								primaryStage.setTitle(title);
 								primaryStage.setScene(scene);

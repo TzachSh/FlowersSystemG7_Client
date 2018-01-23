@@ -6,18 +6,18 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="parent" prefHeight="586.0" prefWidth="688.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="parent" prefHeight="500.0" prefWidth="688.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label layoutX="214.0" layoutY="7.0" text="Survey Management" underline="true">
          <font>
             <Font size="24.0" />
          </font>
       </Label>
-      <TabPane fx:id="tabOptions" layoutX="4.0" layoutY="49.0" prefHeight="570.0" prefWidth="679.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane fx:id="tabOptions" layoutX="4.0" layoutY="49.0" prefHeight="500.0" prefWidth="679.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="Survey List">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="496.0" prefWidth="679.0">
                      <children>
                         <ListView fx:id="sListView" layoutX="14.0" layoutY="14.0" prefHeight="468.0" prefWidth="651.0" />
                      </children></AnchorPane>

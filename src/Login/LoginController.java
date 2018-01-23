@@ -13,7 +13,9 @@ import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
 import Products.ConstantData;
+import Users.Permission;
 import Users.User;
+import Users.UsersManagementController;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -127,11 +129,13 @@ public class LoginController implements Initializable {
 		Packet packet = new Packet();
 		packet.addCommand(Command.getCustomersKeyByuId);
 		packet.addCommand(Command.getEmployeeByUid);
+		packet.addCommand(Command.getUserByuId);
 		
 		ArrayList<Object> param = new ArrayList<>(Arrays.asList(user.getuId()));
 
 		packet.setParametersForCommand(Command.getCustomersKeyByuId, param);
 		packet.setParametersForCommand(Command.getEmployeeByUid, param);
+		packet.setParametersForCommand(Command.getUserByuId, param);
 		
 		// create the thread for send to server the message
 		SystemSender send = new SystemSender(packet);
@@ -145,7 +149,8 @@ public class LoginController implements Initializable {
 			{
 				ArrayList<Customer> customerList = p.<Customer>convertedResultListForCommand(Command.getCustomersKeyByuId);
 				ArrayList<Employee> employeeList = p.<Employee>convertedResultListForCommand(Command.getEmployeeByUid);
-			
+				ArrayList<User> userList = p.<User>convertedResultListForCommand(Command.getUserByuId);
+				
 				// it's a customer, set user instance as customer object
 				if (customerList.size() > 0)
 				{
@@ -209,6 +214,30 @@ public class LoginController implements Initializable {
 						}
 					}
 				}
+				
+				// it's an administrator, set user instance as user object
+				else if (userList.size() > 0)
+				{
+					User administrator = userList.get(0);
+					userLogged = new User(administrator);
+					
+					// <?---- open a menu of customers >
+					
+					try
+					{
+						performLoggedIn(user);
+						mainStage.close();
+						UsersManagementController umController = new UsersManagementController();
+						umController.setLoginController(currentLogin);
+						umController.start(new Stage());
+					}
+					catch (Exception e)
+					{
+						performLoggedOut(user);
+						displayAlert(AlertType.ERROR, "Error", "Exception Error", e.getMessage());
+					}
+				}
+				
 			}
 			else
 			{

@@ -25,6 +25,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -42,6 +43,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -56,6 +58,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import javafx.util.converter.DefaultStringConverter;
 import sun.security.util.Password;
@@ -72,6 +75,15 @@ public class UsersManagementController implements Initializable{
 	@FXML private ListView<User> uListView;
 	@FXML private Button btnSearch;
 	@FXML private TextField txtUid;
+	/***
+	 * Get the current logged in user
+	 */
+	private static LoginController loginController;
+	
+	/***
+	 * Save the current stage
+	 */
+	private static Stage stage;
 	
 	/***
 	 * Lists to be updated during runtime
@@ -79,12 +91,22 @@ public class UsersManagementController implements Initializable{
 	private ArrayList<User> usersList;
 	private ObservableList<User> usersData;
 	
+	/***
+	 * 
+	 * @param login - current logged in user data
+	 */
+	public void setLoginController(LoginController login)
+	{
+	   loginController = login;
+	}
+	
 	/**
 	 * 
 	 * @param primaryStage - stage to be initialized and showed
 	 */
 	public void start(Stage primaryStage) {
-		
+		stage = primaryStage;
+		stage.setResizable(false);
 		String title = "Users Management";
 		String srcFXML = "/Users/UsersManagementUI.fxml";
 		
@@ -94,9 +116,33 @@ public class UsersManagementController implements Initializable{
 			loader.setController(this);
 			Parent root = loader.load();
 			Scene scene = new Scene(root);
-			primaryStage.setTitle(title);
-			primaryStage.setScene(scene);
-			primaryStage.show();
+			stage.setTitle(title);
+			stage.setScene(scene);
+			stage.show();
+			stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+		          public void handle(WindowEvent we) {
+
+		            Alert alert = new Alert(Alert.AlertType.WARNING);
+		      		alert.setTitle("Logged Out");
+		      		alert.setContentText("Are you Sure?");
+		      		ButtonType okButton = new ButtonType("Yes", ButtonData.YES);
+		      		ButtonType noButton = new ButtonType("No", ButtonData.NO);
+		      		
+		      		alert.getButtonTypes().setAll(okButton, noButton);
+		      		alert.showAndWait().ifPresent(type -> {
+		      		        if (type == okButton)
+		      		        {
+		      		        	loginController.performLoggedOut(LoginController.userLogged);
+		      		        	System.exit(0);
+		      		        } 
+		      		        else
+		      		        {
+		      		        	we.consume();
+		      		        }
+		      		});
+		          }
+		      }); 
+
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println(e);
@@ -124,7 +170,6 @@ public class UsersManagementController implements Initializable{
 			@Override
 			public void onWaitingForResult() {
 				// TODO Auto-generated method stub
-				
 			}
 			/**
 			 * While getting a result from the server

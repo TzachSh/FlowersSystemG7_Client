@@ -99,6 +99,7 @@ public class AnswerSurveyController implements Initializable{
 		String title = "Answer Survey";
 		String srcFXML = "/Survey/AnswerSurveyUI.fxml";
 		stage = primaryStage;
+		stage.setResizable(false);
 		
 		try {
 			FXMLLoader loader = new FXMLLoader();

@@ -56,6 +56,7 @@ public class ReplyController {
 	private TextField txtRefund;
 	@FXML 
 	private ComboBox<Branch> cmbBranch;
+	private static Stage stage;
 	/***
 	 * Determine if choose to refund
 	 */
@@ -86,29 +87,6 @@ public class ReplyController {
 	}
 	
 	/**
-	 * Setting up the scene view to show
-	 */
-	public void start() {
-		String title = "Replyment";
-		String srcFXML = "/Customers/ReplyToComplain.fxml";
-
-		try {
-			FXMLLoader fxmlLoader = new FXMLLoader();
-			fxmlLoader.setLocation(getClass().getResource(srcFXML));
-			fxmlLoader.setController(this);
-
-			Scene scene = new Scene(fxmlLoader.load());
-			Stage stage = new Stage();
-			stage.setTitle(title);
-			stage.setScene(scene);
-			stage.show();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}
-	/**
 	 * Handle cancel button pressed, back to the Complains view
 	 * @param event - event to be handled
 	 */
@@ -118,7 +96,6 @@ public class ReplyController {
 		((Node) event.getSource()).getScene().getWindow().hide();
 		ComplainsController complainsController = new ComplainsController();
 		complainsController.start(new Stage());
-		
 	}
 	
 	/**
