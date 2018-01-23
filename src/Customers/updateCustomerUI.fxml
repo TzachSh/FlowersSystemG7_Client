@@ -48,6 +48,7 @@
             <Button id="btnchangePassword" fx:id="btnchangePassword" layoutX="134.0" layoutY="161.0" mnemonicParsing="false" onAction="#changePasswordNow" text="Click To Change Password" />
             <Button fx:id="btnCancelUpdatingPassword" layoutX="126.0" layoutY="161.0" mnemonicParsing="false" onAction="#hidePasswordSection" prefHeight="25.0" prefWidth="163.0" text="Cancel Updating Password" visible="false" />
             <RadioButton fx:id="rbMemberShip" layoutX="266.0" layoutY="97.0" mnemonicParsing="false" onAction="#showMemberShipComboBox" text="AddMemberShip" visible="false" />
+            <RadioButton fx:id="rbdeleteMemberShip" layoutX="266.0" layoutY="97.0" mnemonicParsing="false" onAction="#deleteMemberShipFromAccount" text="Delete MemberShip" visible="false" />
          </children>
       </AnchorPane>
    </children>

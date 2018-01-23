@@ -2,6 +2,7 @@ package Customers;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javax.swing.JOptionPane;
@@ -30,10 +31,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -57,6 +60,8 @@ public class UpdateCustomerController implements Initializable {
 	private Label lbBalance;
 	@FXML
 	private Label lbCreditCard;
+	@FXML
+	private RadioButton rbdeleteMemberShip;
 	@FXML
 	private TextField txtCustomerID;
 	@FXML
@@ -148,6 +153,71 @@ public class UpdateCustomerController implements Initializable {
 				lbHeader.setText("Client Information");
 		 }
 	 }
+	 
+	public void deleteMemberShipFromAccount()
+	{
+		if(rbdeleteMemberShip.isVisible()&&rbdeleteMemberShip.isSelected())
+		{
+			cbMemberShip.setVisible(false);
+			lblmembership.setVisible(false);
+		}
+		if(rbdeleteMemberShip.isVisible()&&rbdeleteMemberShip.isSelected()==false) 
+		{
+			cbMemberShip.setVisible(true);
+			lblmembership.setVisible(true);
+		}
+		/*Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Delete MemberShip");
+		alert.setHeaderText("Delete Membership For  "+uList.get(0).getUser());
+		alert.setContentText("Are you ok with this?");
+		
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.OK)
+		{
+		    //user chose OK ,so we must Delete MemberShip and hide membership combobox and show add membership radio button 
+			//opening packet
+			Packet packet = new Packet();
+			//adding commands to the packet
+			packet.addCommand(Command.deleteMemberShipAccountByacNum);
+			ArrayList<Object> info=new ArrayList<>();
+			info.add(accList.get(0).getNum());
+			packet.setParametersForCommand(Command.getMemberShipAccountByAcNum, info);
+			//sending the packet
+			SystemSender send = new SystemSender(packet);
+			send.registerHandler(new IResultHandler() {
+				
+				@Override
+				public void onWaitingForResult() {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void onReceivingResult(Packet p) {
+					if(p.getResultState()) {
+					//lunching pop out message that the membership was deleted 
+					ConstantData.displayAlert(AlertType.INFORMATION, "", "MemberShip Was Deleted Successfully", "User name or Password are missing!");					
+					cbMemberShip.setVisible(false);
+					lblmembership.setVisible(false);
+					rbdeleteMemberShip.setVisible(false);
+					rbMemberShip.setVisible(true);
+					}
+					else {
+						ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to deletemembership","");
+						myStage.close();
+					}
+						
+				}
+			});
+			send.start();
+			
+		} else 
+		{
+		    // ... user chose CANCEL or closed the dialog
+			rbdeleteMemberShip.setSelected(false);
+			return;
+		}*/
+	}
 	 /**
 	 * This function show membership combo box if the radio button was selected , else it will hide it .
 	 */
@@ -558,6 +628,7 @@ public class UpdateCustomerController implements Initializable {
 										cbMemberShip.setVisible(true);
 										lblmembership.setVisible(true);
 										rbMemberShip.setVisible(false);
+										rbdeleteMemberShip.setVisible(true);
 										for(Membership mem:memshipList)
 										{
 											//if the memberhsip number are the same 
@@ -571,6 +642,7 @@ public class UpdateCustomerController implements Initializable {
 									}
 									else
 									{
+										rbdeleteMemberShip.setVisible(false);
 										cbMemberShip.setVisible(false);
 										lblmembership.setVisible(false);
 										rbMemberShip.setVisible(true);
@@ -683,10 +755,10 @@ public class UpdateCustomerController implements Initializable {
 		
 		
 		//updating Customer
-		for(Membership mem:memshipList)//getting the orginal membership name (we got only membership id)
+		/*for(Membership mem:memshipList)//getting the orginal membership name (we got only membership id)
 		{
 			if(mem.getNum()==memshipAccount.get(0).getmId())
-				orginalmemship=mem.getMembershipType().toString();//getting original member ship
+					orginalmemship=mem.getMembershipType().toString();//getting original member ship
 			if(mem.getMembershipType().toString().equals(newmembership))
 				choosedmemid=mem.getNum();//getting the choosed membership id
 		}
@@ -699,7 +771,41 @@ public class UpdateCustomerController implements Initializable {
 				memshipacc.add(new MemberShipAccount(accList.get(0).getNum(), choosedmemid, sqlDate));
 				packet.setParametersForCommand(Command.updateMemberShipAccountByAcNum, memshipacc);
 			}
-		
+		*/
+		//updating membership for this account 
+		if(cbMemberShip.isVisible()==true)
+		{
+			for(Membership mem:memshipList)//getting the orginal membership name (we got only membership id)
+			{
+				if(mem.getMembershipType().toString().equals(newmembership))
+					choosedmemid=mem.getNum();//getting the choosed membership id
+			}
+			//adding the command and the array list for the query to use the informaiton , if he got already membership , we just update it 
+			if(memshipAccount.isEmpty()==false)
+			{
+				packet.addCommand(Command.updateMemberShipAccountByAcNum);
+				java.sql.Date sqlDate = new java.sql.Date(new java.util.Date().getTime());
+				memshipacc.add(new MemberShipAccount(accList.get(0).getNum(), choosedmemid, sqlDate));
+				packet.setParametersForCommand(Command.updateMemberShipAccountByAcNum, memshipacc);
+			}
+			else
+			{
+				//he dont have membership account , we must insert new membership
+				packet.addCommand(Command.addMemberShipAccount);
+				java.sql.Date sqlDate = new java.sql.Date(new java.util.Date().getTime());
+				memshipacc.add(new MemberShipAccount(accList.get(0).getNum(), choosedmemid, sqlDate));
+				packet.setParametersForCommand(Command.addMemberShipAccount, memshipacc);
+			}
+				
+		}
+		if(rbdeleteMemberShip.isVisible()&&rbdeleteMemberShip.isSelected())
+		{
+			//adding commands to the packet
+			packet.addCommand(Command.deleteMemberShipAccountByacNum);
+			ArrayList<Object> info=new ArrayList<>();
+			info.add(accList.get(0).getNum());
+			packet.setParametersForCommand(Command.deleteMemberShipAccountByacNum, info);
+		}
 		//updating Account if there is account for the user , ther user filled the information
 		if(accList.isEmpty()==false) 
 		{
