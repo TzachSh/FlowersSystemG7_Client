@@ -803,7 +803,7 @@ public class UpdateCustomerController implements Initializable {
 			//adding commands to the packet
 			packet.addCommand(Command.deleteMemberShipAccountByacNum);
 			ArrayList<Object> info=new ArrayList<>();
-			info.add(accList.get(0).getNum());
+			info.add(new MemberShipAccount(accList.get(0).getNum()));
 			packet.setParametersForCommand(Command.deleteMemberShipAccountByacNum, info);
 		}
 		//updating Account if there is account for the user , ther user filled the information
