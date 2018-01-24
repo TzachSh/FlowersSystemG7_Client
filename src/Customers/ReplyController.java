@@ -131,8 +131,8 @@ public class ReplyController {
 		}
 		
 		try {
-		amount = Double.parseDouble(txtRefund.getText());
-		isRefund = true;
+			amount = Double.parseDouble(txtRefund.getText());
+			isRefund = true;
 		}
 		catch (Exception e) {
 			// TODO: handle exception
@@ -236,6 +236,10 @@ public class ReplyController {
 			data = FXCollections.observableArrayList(customerBranches);
 			cmbBranch.setItems(data);
 			cmbBranch.getSelectionModel().selectFirst();
+		}
+		else {
+			cmbBranch.setDisable(true);
+			txtRefund.setDisable(true);
 		}
 	}
 

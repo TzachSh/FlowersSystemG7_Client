@@ -91,13 +91,15 @@ public class ComplainsController implements Initializable {
 	private ObservableList<Branch> branchData;
 	private ArrayList<Complain> allComplainsList;
 	private ArrayList<Complain> currentServiceEmployeeComplains;
+	private ArrayList<User> usersList;
+	private ArrayList<Customer> customersList;
 	
 	/**
 	 * get the current logged in employee
 	 */
 	public static Employee customerService = (Employee)LoginController.userLogged;
 	/***
-	 * Customer id to attach his complain
+	 * Customer Id to show his complains by searching
 	 */
 	private int customerId;
 	
@@ -314,7 +316,7 @@ public class ComplainsController implements Initializable {
 	@FXML
 	public void handleAddNewComplain(Event event)
 	{
-		int customerId = 0;
+		int customerUid = 0;
 		String title = txtAddTitle.getText().replaceAll("'", "\\'");
 		String details = txtAddDesc.getText().replaceAll("'", "\\'");
 		
@@ -326,19 +328,20 @@ public class ComplainsController implements Initializable {
 		}
 		
 		try {
-		customerId = Integer.parseInt(txtAddCustId.getText());
+			customerUid = Integer.parseInt(txtAddCustId.getText());
 		}
 		catch(Exception e)
 		{
-			Alert alert = new Alert(AlertType.ERROR , "Invalid customer id");
+			Alert alert = new Alert(AlertType.ERROR , "Invalid customer ID");
 			alert.show();
 			return;
 		}
+		Customer customer = getCustomerByUid(customerUid);
 		int customerServiceId = customerService.geteId();
 		java.util.Date today = new java.util.Date();
 		java.sql.Timestamp sqlDate = new java.sql.Timestamp(today.getTime());
 		int branchId = cmbBranch.getSelectionModel().getSelectedItem().getbId();
-		Complain complain = new Complain(sqlDate, title, details, customerId, customerServiceId,true,branchId); // Update to customerServiceId 
+		Complain complain = new Complain(sqlDate, title, details, customer.getId(), customerServiceId,true,branchId);
 		
 		Packet packet = new Packet();
 		packet.addCommand(Command.addComplain);
@@ -374,8 +377,10 @@ public class ComplainsController implements Initializable {
 				}
 				else
 				{
-					alert = new Alert(AlertType.ERROR,p.getExceptionMessage());
-					alert.show();
+					if(p.getExceptionMessage().contains("foreign")) {
+						alert = new Alert(AlertType.ERROR,"Customer doesn't exists");
+						alert.show();
+					}
 				}
 			}
 		});
@@ -398,6 +403,7 @@ public class ComplainsController implements Initializable {
 	
 	@FXML
 	private void handleSearchPressed(Event event) {
+		int searchId = 0;
 		
 		if (txtCustId.getText().isEmpty()) {
 			Alert alert = new Alert(AlertType.ERROR,"Invalid customer ID");
@@ -407,7 +413,9 @@ public class ComplainsController implements Initializable {
 		}
 		
 		try {
-			customerId = Integer.parseInt(txtCustId.getText());
+			searchId = Integer.parseInt(txtCustId.getText());
+			Customer customer = getCustomerByUid(searchId);
+			customerId = customer.getId();
 		}
 		catch (Exception e) {
 			// TODO: handle exception
@@ -421,6 +429,20 @@ public class ComplainsController implements Initializable {
 		{
 			return complain.getCustomerId()!= customerId;	
 		});
+	
+		// sort by the activation status
+		Collections.sort(data, new Comparator<Complain>() { 
+	        @Override
+	        public int compare(Complain complain1, Complain complain2) {
+	            return Boolean.compare(complain2.isActive(),complain1.isActive());
+	        }
+	    });
+		
+		// sort by the latest creation date
+		Collections.sort(data); 
+		
+	
+		
 		cListView.setItems(data);
 	}
 	
@@ -502,7 +524,7 @@ public class ComplainsController implements Initializable {
 							String textCreatorId = "Creator Employee Id:";
 							operationElement = new VBox(createReplyButtonHandler(complain));
 							operationElement.setPadding(new Insets(5,10,5,0));
-							HBox creatorElement = new HBox(new Label(textCreatorId), new Text(String.format("%d",complain.getCustomerId())));
+							HBox creatorElement = new HBox(new Label(textCreatorId), new Text(String.format("%d",complain.getCustomerServiceId())));
 							creatorElement.setPadding(new Insets(5,10,5,20));
 							detailsElements = new VBox(timeElement, titleElement, infoElement,creatorElement);
 							hBox = new HBox(operationElement,detailsElements);
@@ -513,12 +535,14 @@ public class ComplainsController implements Initializable {
 									replyElement.setPadding(new Insets(5,10,5,20));
 									detailsElements = new VBox(titleElement, infoElement, replyElement);
 								}
+								else {
+									detailsElements = new VBox(titleElement, infoElement);
+								}
 							operationElement = new VBox(new Label(textDone));
 							operationElement.setPadding(new Insets(5,10,5,0));
 							hBox = new HBox(operationElement,detailsElements);
 						}
 					}
-						
 				 	timeElement.setPadding(new Insets(5,10,5,20));
 				 	titleElement.setPadding(new Insets(5,10,5,20));
 				 	infoElement.setPadding(new Insets(5,10,5,20));
@@ -557,7 +581,6 @@ public class ComplainsController implements Initializable {
 
 								primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 							          public void handle(WindowEvent we) {
-							        	  
 							        	  primaryStage.close();
 										  ServiceMenuController menu = new ServiceMenuController();
 										  try {
@@ -565,16 +588,12 @@ public class ComplainsController implements Initializable {
 										} catch (Exception e) {
 											ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
 										}
-
 							          }
-							      }); 
-
-								
+							      });	
 								Scene scene = new Scene(root);
 								primaryStage.setTitle(title);
 								primaryStage.setScene(scene);
 								primaryStage.show();
-
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -704,6 +723,46 @@ public class ComplainsController implements Initializable {
 		setTextAreaLengthProperty(txtAddDesc, 200);
 	}
 	
+	private Customer getCustomerByUid(int uId)
+	{
+		Customer retCustomer = null;
+		for(Customer customer : customersList)
+			if(customer.getuId() == uId)
+				retCustomer = customer;
+		return retCustomer;
+	}
+	
+	/***
+	 * 
+	 * Load customers from DB
+	 */
+	private void loadCustomers()
+	{
+		Packet packet = new Packet();
+		packet.addCommand(Command.getCustomers);
+		
+		SystemSender sender = new SystemSender(packet);
+		sender.registerHandler(new IResultHandler() {
+			/**
+			 * On waiting for result
+			 */
+			@Override
+			public void onWaitingForResult() {
+				// TODO Auto-generated method stub
+				
+			}
+			/**
+			 * On getting the results from the server
+			 */
+			@Override
+			public void onReceivingResult(Packet p) {
+				// TODO Auto-generated method stub
+				customersList = p.<Customer>convertedResultListForCommand(Command.getCustomers);
+			}
+		});
+		sender.start();
+	}
+	
 	/**
 	 * Perform an initialization for the list view by defining the handler for each row, setting the handler for the search text field
 	 * and showing all the relevant complains of the current employee 
@@ -711,6 +770,7 @@ public class ComplainsController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// TODO Auto-generated method stub
+		loadCustomers();
 		setTextFieldsLimits();
 		setListCellFactory();
 		setSearchOnTextChange();
