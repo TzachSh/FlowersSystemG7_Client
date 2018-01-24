@@ -99,7 +99,7 @@ public class ComplainsController implements Initializable {
 	 */
 	public static Employee customerService = (Employee)LoginController.userLogged;
 	/***
-	 * Customer Id to show his complains by searching
+	 * Customer id to show his complains by search
 	 */
 	private int customerId;
 	
@@ -243,10 +243,7 @@ public class ComplainsController implements Initializable {
 						for (Complain complain : allComplainsList)
 							if (complain.getCustomerServiceId() == customerService.geteId())
 								currentServiceEmployeeComplains.add(complain);
-						
-						// sort by the latest creation date
-						Collections.sort(currentServiceEmployeeComplains); 
-						
+							
 						// sort by the activation status
 						Collections.sort(currentServiceEmployeeComplains, new Comparator<Complain>() { 
 					        @Override
@@ -266,8 +263,14 @@ public class ComplainsController implements Initializable {
 							if(complain.isActive())
 								currentServiceEmployeeComplains.add(complain);
 						
-						// sort by date
-						Collections.sort(currentServiceEmployeeComplains);
+						// sort by the activation status
+						Collections.sort(currentServiceEmployeeComplains, new Comparator<Complain>() { 
+					        @Override
+					        public int compare(Complain complain1, Complain complain2) {
+					            return Boolean.compare(complain2.isActive(),complain1.isActive());
+					        }
+					    });
+
 						
 						data = FXCollections.observableArrayList(currentServiceEmployeeComplains);
 						// binding the data
@@ -316,7 +319,7 @@ public class ComplainsController implements Initializable {
 	@FXML
 	public void handleAddNewComplain(Event event)
 	{
-		int customerUid = 0;
+		int customerId = 0;
 		String title = txtAddTitle.getText().replaceAll("'", "\\'");
 		String details = txtAddDesc.getText().replaceAll("'", "\\'");
 		
@@ -328,7 +331,7 @@ public class ComplainsController implements Initializable {
 		}
 		
 		try {
-			customerUid = Integer.parseInt(txtAddCustId.getText());
+			customerId = Integer.parseInt(txtAddCustId.getText());
 		}
 		catch(Exception e)
 		{
@@ -336,12 +339,11 @@ public class ComplainsController implements Initializable {
 			alert.show();
 			return;
 		}
-		Customer customer = getCustomerByUid(customerUid);
 		int customerServiceId = customerService.geteId();
 		java.util.Date today = new java.util.Date();
 		java.sql.Timestamp sqlDate = new java.sql.Timestamp(today.getTime());
 		int branchId = cmbBranch.getSelectionModel().getSelectedItem().getbId();
-		Complain complain = new Complain(sqlDate, title, details, customer.getId(), customerServiceId,true,branchId);
+		Complain complain = new Complain(sqlDate, title, details, customerId, customerServiceId,true,branchId);
 		
 		Packet packet = new Packet();
 		packet.addCommand(Command.addComplain);
@@ -403,7 +405,6 @@ public class ComplainsController implements Initializable {
 	
 	@FXML
 	private void handleSearchPressed(Event event) {
-		int searchId = 0;
 		
 		if (txtCustId.getText().isEmpty()) {
 			Alert alert = new Alert(AlertType.ERROR,"Invalid customer ID");
@@ -413,9 +414,7 @@ public class ComplainsController implements Initializable {
 		}
 		
 		try {
-			searchId = Integer.parseInt(txtCustId.getText());
-			Customer customer = getCustomerByUid(searchId);
-			customerId = customer.getId();
+			customerId = Integer.parseInt(txtCustId.getText());
 		}
 		catch (Exception e) {
 			// TODO: handle exception
@@ -424,25 +423,12 @@ public class ComplainsController implements Initializable {
 			txtCustId.clear();
 			return;
 		}
+		
 		data = FXCollections.observableArrayList(allComplainsList);
 		data.removeIf((Complain complain)->
 		{
 			return complain.getCustomerId()!= customerId;	
 		});
-	
-		// sort by the activation status
-		Collections.sort(data, new Comparator<Complain>() { 
-	        @Override
-	        public int compare(Complain complain1, Complain complain2) {
-	            return Boolean.compare(complain2.isActive(),complain1.isActive());
-	        }
-	    });
-		
-		// sort by the latest creation date
-		Collections.sort(data); 
-		
-	
-		
 		cListView.setItems(data);
 	}
 	
@@ -524,7 +510,7 @@ public class ComplainsController implements Initializable {
 							String textCreatorId = "Creator Employee Id:";
 							operationElement = new VBox(createReplyButtonHandler(complain));
 							operationElement.setPadding(new Insets(5,10,5,0));
-							HBox creatorElement = new HBox(new Label(textCreatorId), new Text(String.format("%d",complain.getCustomerServiceId())));
+							HBox creatorElement = new HBox(new Label(textCreatorId), new Text(String.format("%d",complain.getCustomerId())));
 							creatorElement.setPadding(new Insets(5,10,5,20));
 							detailsElements = new VBox(timeElement, titleElement, infoElement,creatorElement);
 							hBox = new HBox(operationElement,detailsElements);
@@ -535,14 +521,12 @@ public class ComplainsController implements Initializable {
 									replyElement.setPadding(new Insets(5,10,5,20));
 									detailsElements = new VBox(titleElement, infoElement, replyElement);
 								}
-								else {
-									detailsElements = new VBox(titleElement, infoElement);
-								}
 							operationElement = new VBox(new Label(textDone));
 							operationElement.setPadding(new Insets(5,10,5,0));
 							hBox = new HBox(operationElement,detailsElements);
 						}
 					}
+						
 				 	timeElement.setPadding(new Insets(5,10,5,20));
 				 	titleElement.setPadding(new Insets(5,10,5,20));
 				 	infoElement.setPadding(new Insets(5,10,5,20));
@@ -581,6 +565,7 @@ public class ComplainsController implements Initializable {
 
 								primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 							          public void handle(WindowEvent we) {
+							        	  
 							        	  primaryStage.close();
 										  ServiceMenuController menu = new ServiceMenuController();
 										  try {
@@ -588,12 +573,16 @@ public class ComplainsController implements Initializable {
 										} catch (Exception e) {
 											ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
 										}
+
 							          }
-							      });	
+							      }); 
+
+								
 								Scene scene = new Scene(root);
 								primaryStage.setTitle(title);
 								primaryStage.setScene(scene);
 								primaryStage.show();
+
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -723,23 +712,14 @@ public class ComplainsController implements Initializable {
 		setTextAreaLengthProperty(txtAddDesc, 200);
 	}
 	
-	private Customer getCustomerByUid(int uId)
-	{
-		Customer retCustomer = null;
-		for(Customer customer : customersList)
-			if(customer.getuId() == uId)
-				retCustomer = customer;
-		return retCustomer;
-	}
-	
 	/***
 	 * 
-	 * Load customers from DB
+	 * @return ArrayList which contains all of the customers
 	 */
 	private void loadCustomers()
 	{
 		Packet packet = new Packet();
-		packet.addCommand(Command.getCustomers);
+		packet.addCommand(Command.getUsers);
 		
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
@@ -760,7 +740,6 @@ public class ComplainsController implements Initializable {
 				customersList = p.<Customer>convertedResultListForCommand(Command.getCustomers);
 			}
 		});
-		sender.start();
 	}
 	
 	/**
@@ -770,9 +749,9 @@ public class ComplainsController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// TODO Auto-generated method stub
-		loadCustomers();
 		setTextFieldsLimits();
 		setListCellFactory();
+		loadCustomers();
 		setSearchOnTextChange();
 		displayComplains();
 		initBranchesCmb();
