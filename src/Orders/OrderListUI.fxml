@@ -5,14 +5,15 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="365.0" prefWidth="422.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Orders.OrderManagementController">
+<AnchorPane prefHeight="425.0" prefWidth="539.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Orders.OrderManagementController">
    <children>
-      <Button fx:id="btnBack" layoutX="185.0" layoutY="313.0" mnemonicParsing="false" onAction="#onClickBack" text="Back" />
-      <Label layoutX="158.0" layoutY="24.0" text="My orders" />
-      <ListView fx:id="listOrder" layoutX="26.0" layoutY="64.0" prefHeight="240.0" prefWidth="346.0" />
+      <Button fx:id="btnBack" layoutX="260.0" layoutY="311.0" mnemonicParsing="false" onAction="#onClickBack" text="Back" />
+      <Label layoutX="254.0" layoutY="14.0" text="My orders" />
+      <ListView fx:id="listOrder" layoutX="26.0" layoutY="64.0" prefHeight="240.0" prefWidth="494.0" />
       <Label layoutX="34.0" layoutY="50.0" text="Id" />
       <Label layoutX="70.0" layoutY="50.0" text="Creation" />
-      <Label layoutX="142.0" layoutY="50.0" text="Requested" />
-      <Label layoutX="240.0" layoutY="50.0" text="Price" />
+      <Label layoutX="166.0" layoutY="50.0" text="Requested" />
+      <Label layoutX="260.0" layoutY="50.0" text="Price" />
+      <Label layoutX="329.0" layoutY="50.0" text="Payed" />
    </children>
 </AnchorPane>

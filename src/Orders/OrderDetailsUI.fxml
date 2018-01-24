@@ -1,10 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="Orders.OrderDetailsController">
-	<!-- TODO Add Nodes -->
+<AnchorPane prefHeight="533.0" prefWidth="635.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Orders.OrderDetailsController">
+   <children>
+      <Label layoutX="217.0" layoutY="31.0" text="Order Details" />
+      <TabPane layoutX="13.0" layoutY="90.0" prefHeight="382.0" prefWidth="614.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Order lines">
+               <content>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <ListView fx:id="listViewOrderLines" layoutX="14.0" layoutY="10.0" prefHeight="338.0" prefWidth="588.0" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+          <Tab text="Payment details">
+               <content>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <ListView fx:id="listViewOrderPayments" layoutX="7.0" layoutY="30.0" prefHeight="179.0" prefWidth="457.0" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+      <Button fx:id="btnBack" layoutX="25.0" layoutY="489.0" mnemonicParsing="false" onAction="#onClickBack" text="Back" />
+      <Button fx:id="btnCacenlOrder" layoutX="450.0" layoutY="489.0" mnemonicParsing="false" text="Cancel order" />
+      <Label fx:id="lblCreDate" layoutX="130.0" layoutY="48.0" text="date" />
+      <Label fx:id="lblReqDate" layoutX="128.0" layoutY="74.0" text="date" />
+      <CheckBox fx:id="chkIsDelivery" layoutX="429.0" layoutY="65.0" mnemonicParsing="false" text="Include delivery" />
+      <Label layoutX="36.0" layoutY="48.0" text="Creation date:" />
+      <Label layoutX="28.0" layoutY="74.0" text="Requested date" />
+   </children>
 </AnchorPane>

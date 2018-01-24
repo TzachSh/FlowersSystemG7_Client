@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import javax.print.attribute.standard.DateTimeAtCompleted;
 import javax.swing.JOptionPane;
@@ -112,9 +113,11 @@ public class OrderManagementController implements Initializable {
 	private void getOrdersByCId() {
 		Packet packet = new Packet();//create packet to send
 		packet.addCommand(Command.getOrdersByCIdandBrId);//add command
+		packet.addCommand(Command.getPaymentDetails);//add command
 		ArrayList<Object> list = new ArrayList<>();
 		list.add(CustomerMenuController.currentAcc);
 		packet.setParametersForCommand(Command.getOrdersByCIdandBrId, list);
+		packet.setParametersForCommand(Command.getPaymentDetails,list);
 		// create the thread for send to server the message
 		SystemSender send = new SystemSender(packet);
 
@@ -130,6 +133,11 @@ public class OrderManagementController implements Initializable {
 			{
 				if (p.getResultState()) {
 					ArrayList<Order> orderList = p.<Order>convertedResultListForCommand(Command.getOrdersByCIdandBrId);
+					ArrayList<OrderPayment> payment = p.<OrderPayment>convertedResultListForCommand(Command.getPaymentDetails);
+					for(Order order : orderList)
+					{
+						order.setOrderPaymentList((ArrayList<OrderPayment>) payment.stream().filter(c->c.getOrderId()==order.getoId()).collect(Collectors.toList()));
+					}
 					data = FXCollections.observableArrayList(orderList);
 					fillOrders();
 				}
@@ -151,14 +159,31 @@ public class OrderManagementController implements Initializable {
 					DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                     VBox orderCol = new VBox(new Text(""+order.getoId()));
                     orderCol.setMinWidth(30);
+                    orderCol.setAlignment(Pos.CENTER);
                     VBox amountCol = new VBox(new Text(String.format("%.2f¤",order.getTotal())));
                     amountCol.setMinWidth(50);
+                    amountCol.setAlignment(Pos.CENTER_RIGHT);
                     VBox createdCol = new VBox(new Text(formatter.format(order.getCreationDate())));
                     createdCol.setMinWidth(70);
+                    createdCol.setAlignment(Pos.CENTER);
                     formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm");
                     String reqDate = formatter.format(order.getRequestedDate());
                     VBox requestedDateCol = new VBox(new Text(reqDate));
-                    requestedDateCol.setMinWidth(120);
+                    requestedDateCol.setMinWidth(110);
+                    requestedDateCol.setAlignment(Pos.CENTER);
+                    String paymentValue="";
+                    for( OrderPayment pay :order.getOrderPaymentList())
+                    {
+                    	if(pay.getPaymentDate()==null)
+                    	{
+                    		paymentValue="Not charged";
+                    	}
+                    }
+                    if(paymentValue.length()==0)
+                    	paymentValue="Charged";
+                    VBox payment = new VBox(new Text(paymentValue));
+                    payment.setMinWidth(100);
+                    payment.setAlignment(Pos.CENTER);
                     Button details=  new Button("Details");
                     details.setOnMouseClicked((event) ->  {
 							OrderDetailsController menu = new OrderDetailsController();
@@ -171,8 +196,9 @@ public class OrderManagementController implements Initializable {
 							}
 					});
                     VBox detailsCol = new VBox(details);
-                    detailsCol.setMinWidth(50);
-                    HBox lineBox = new HBox(orderCol,createdCol,requestedDateCol,amountCol,detailsCol);
+                    detailsCol.setMinWidth(90);
+                    detailsCol.setAlignment(Pos.CENTER);
+                    HBox lineBox = new HBox(orderCol,createdCol,requestedDateCol,amountCol,payment,detailsCol);
                     setGraphic(lineBox);
 				}
 
@@ -193,7 +219,6 @@ public class OrderManagementController implements Initializable {
 
             @Override
             public void handle(MouseEvent event) {
-            	//listViewCatalog.getSelectionModel().select(-1);
                 event.consume();
             }
         });		
