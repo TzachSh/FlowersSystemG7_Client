@@ -37,10 +37,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -53,7 +55,10 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -63,20 +68,25 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 
+/**
+ * This class controlling the creation custom which customer created.
+ * The customer can add flower that matches the dominant color which he entered
+ * and the max price will be the maximum which he entered. Each time the customer add new flower it will shown in listView
+ * The customer can also reduce the number of flowers in the product. Customer can add blessing to his product if he didn't do it and add "add to order" the
+ * System will ask him if he want to add blessing otherwise it will open cart with new product in it
+ */
 public class CustomProductController implements Initializable {
-
-	
-	/**
-	 * This class controlling the creation custom which customer created.
-	 * The customer can add flower that matches the dominant color which he entered
-	 * and the max price will be the maximum which he entered. Each time the customer add new flower it will shown in listView
-	 * The customer can also reduce the number of flowers in the product. Customer can add blessing to his product if he didn't do it and add "add to order" the
-	 * System will ask him if he want to add blessing otherwise it will open cart with new product in it
-	 */
-	
 	/**
 	 * FXML controls
 	 */
+
+
+    @FXML
+    private AnchorPane paneFilter;
+    @FXML
+    private TextField txtMinCost;
+	@FXML
+	private CheckBox chkColor;
 	@FXML
 	private TabPane paneFlowers;
 	@FXML
@@ -105,8 +115,10 @@ public class CustomProductController implements Initializable {
 	private ObservableList<Flower> data;//storing flowers in observable list to get option to update it when app is run
 	private ArrayList<Flower> flowerList;//all flowers from db
 	private static Stage stage;
-	private double cashLeft;
-	private double maxPrice;
+	private double total;
+	private double minPrice = 0;
+	private double maxPrice = 0;
+	
 	private LinkedHashMap<Flower,Integer> flowerInProduct= new LinkedHashMap<>();
 	/**
 	 * to available run javafx
@@ -137,6 +149,22 @@ public class CustomProductController implements Initializable {
 							txtMaxCost.setText(oldValue);
 						else
 							txtMaxCost.setText("");
+					}
+			}
+		});
+		
+		txtMinCost.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue,String newValue) {
+					if((!newValue.matches("[0-9]*\\.?[0-9]?[0-9]?") && newValue.length()>0)//check if number
+							|| (newValue.indexOf(".")>3//check if before point is less then 100 
+									|| (newValue.length()>3 &&newValue.indexOf(".")==-1  )))//check if no point and less then 100
+					{
+						if(oldValue.length()>0)	
+							txtMinCost.setText(oldValue);
+						else
+							txtMinCost.setText("");
 					}
 			}
 		});
@@ -171,7 +199,7 @@ public class CustomProductController implements Initializable {
 	 */
 	protected void addToCartCloseWindow() {
 			int productType = cmbProductType.getSelectionModel().getSelectedItem().getId();//get typeId from combobox
-			CustomProduct product = new CustomProduct(-1,productType , maxPrice-cashLeft, null, null, txtBlessing.getText());
+			CustomProduct product = new CustomProduct(-1,productType , total, null, null, txtBlessing.getText());
 			ArrayList<Object> pList = new ArrayList<>(Arrays.asList(product));
 			ArrayList<Object> flowerInProductList = new ArrayList<>();
 			for(Entry<Flower, Integer> set : flowerInProduct.entrySet())
@@ -245,20 +273,25 @@ public class CustomProductController implements Initializable {
 		btnFind.setDisable(false);
 		lblCashLeft.setText("");
 		flowerInProduct.clear();
-		lblTotalPrice.setText("");
+		lblTotalPrice.setText("0.0¤");
+		total = 0;
+		minPrice = 0;
+		maxPrice = 0;
 	}
 	public void onClickSetSetting()
 	{
 		try {
 			isValid();
+			minPrice = Double.valueOf(txtMinCost.getText());
+			maxPrice = Double.valueOf(txtMaxCost.getText());
+			paneFilter.setDisable(true);
 			btnFind.setDisable(true);
 			paneFlowers.setVisible(true);
 			txtMaxCost.setDisable(true);
 			cmbColor.setDisable(true);
-			maxPrice=cashLeft=Double.parseDouble(txtMaxCost.getText());
 			initList();
-			lblCashLeft.setText("Cash left:"+cashLeft);
-			lblTotalPrice.setText("Total: "+(maxPrice-cashLeft));
+			
+			lblTotalPrice.setText("0.0¤");
 		}
 		catch(Exception e)
 		{
@@ -267,13 +300,13 @@ public class CustomProductController implements Initializable {
 	}
 	private void isValid() throws Exception {
 		String msg= new String();
-		if(txtMaxCost.getText().length()==0)
-			msg = "Invalid cost";
-		if(cmbColor.getValue()== null)
-			msg= msg+"\r\nChoose dominant color";
+		if(txtMaxCost.getText().length()==0 || txtMinCost.getText().length()==0)
+			msg = "Invalid Range";
+		if(chkColor.isSelected() && cmbColor.getValue() == null)
+			msg= msg+"\r\nChoose Dominant Color";
 		if(cmbProductType.getValue()== null)
-			msg= msg+"\r\nChoose product type";
-		if(msg.length()>0)
+			msg= msg+"\r\nChoose Product Type";
+		if(msg.length() > 0)
 			throw new Exception(msg);
 	}
 	public void start(Stage primaryStage) throws IOException {
@@ -339,19 +372,18 @@ public class CustomProductController implements Initializable {
 							private void setCellHandler(Flower flo)
 							{
 								Text flower = new Text(flo.getName());
-								VBox nameBox = new VBox(flower);
-								Text price = new Text(""+flo.getPrice());
-								VBox priceBox = new VBox(price);
-								nameBox.setMinWidth(50);
+								flower.setFont(new Font(14));
+								flower.setStyle("-fx-font-weight: bold");
 								
-
+								// color of flower
+								ColorProduct colorFlower = ConstantData.getColorOfFlowerByColorId(flo.getColor());
+								Label color = new Label(colorFlower.getColorName());
+								color.setFont(new Font(12));
+							
+								
 								Button decButton = new Button();
 								Image imageDec = new Image("minusQty.png");
 						        ImageView viewDec = new ImageView(imageDec);
-						        if(flowerInProduct.containsKey(flo) && flowerInProduct.get(flo)>0)
-						        	decButton.setDisable(false);
-						        else
-						        	decButton.setDisable(true);
 						       
 								viewDec.setFitWidth(10);
 								viewDec.setFitHeight(10);
@@ -366,18 +398,26 @@ public class CustomProductController implements Initializable {
 								viewInc.setFitHeight(10);
 								incButton.setGraphic(viewInc);
 								incButton.setPrefWidth(12);
-								 if(cashLeft<flo.getPrice())
-									 incButton.setDisable(true);
-								 else
-									 incButton.setDisable(false);
+								
 								
 								Text qty = new Text(""+(flowerInProduct.get(flo)==null?0:flowerInProduct.get(flo)));
 								qty.setFont(new Font(13.5));
 								qty.setFill(Color.RED);
 								qty.setTextAlignment(TextAlignment.CENTER);
 								
-								Text priceQty = new Text(""+Integer.parseInt(qty.getText())*flo.getPrice());
-								VBox prBox = new VBox(priceQty);
+								Text price = new Text(Integer.parseInt(qty.getText())*flo.getPrice() + "¤");
+								price.setFont(new Font(12));
+							
+								HBox flowerColorPrice = new HBox(color, price);
+								flowerColorPrice.setPadding(new Insets(0, 10, 0, 0));
+								flowerColorPrice.setSpacing(10);
+								
+							
+								Region region1 = new Region();
+								HBox.setHgrow(region1, Priority.ALWAYS);
+								
+								VBox flowerDetails = new VBox(flower, flowerColorPrice);
+
 								
 								decButton.setOnMouseClicked((event) -> {
 									if(flowerInProduct.containsKey(flo) && flowerInProduct.get(flo)>0)
@@ -386,9 +426,8 @@ public class CustomProductController implements Initializable {
 										qty.setText(""+flowerInProduct.get(flo));
 										if(flowerInProduct.get(flo)==0)
 											flowerInProduct.remove(flo);
-										cashLeft+=flo.getPrice();
-										lblCashLeft.setText("Cash left:"+cashLeft);
-										lblTotalPrice.setText("Total: "+(maxPrice-cashLeft));
+										
+										// update total price
 									}
 								});
 								
@@ -401,25 +440,22 @@ public class CustomProductController implements Initializable {
 										flowerInProduct.put(flo, 1);
 										//decButton.setDisable(false);
 									}
-									cashLeft-=flo.getPrice();
-									lblCashLeft.setText("Cash left:"+cashLeft);
-									lblTotalPrice.setText("Total: "+(maxPrice-cashLeft));
+								
 									qty.setText(""+flowerInProduct.get(flo));
-									priceQty.setText(""+Integer.parseInt(qty.getText())*flo.getPrice());
+									price.setText(""+Integer.parseInt(qty.getText())*flo.getPrice());
 								});
 								
-								VBox decBtn = new VBox(decButton);
-								VBox addBtn = new VBox(incButton);
+							
+								HBox qtyOptions = new HBox(decButton, qty, incButton);
+								qtyOptions.setSpacing(8);
+								qtyOptions.setAlignment(Pos.CENTER);
 								
-								HBox line = new HBox(nameBox,priceBox,decBtn,qty,addBtn,prBox);
+								HBox line = new HBox(flowerDetails, region1, qtyOptions);
 								line.setStyle("-fx-border-style: solid inside;"
 							 	        + "-fx-border-width: 1;" + "-fx-border-insets: 5;"
 							 	        + "-fx-border-radius: 5;");
 								line.setSpacing(10);
 			                    line.setPadding(new Insets(50));
-			                    
-			                  
-			                    
 			                    
 			                    
 			                    setGraphic(line);
@@ -433,7 +469,6 @@ public class CustomProductController implements Initializable {
 										 	setCellHandler(item);
 				                        }
 							 }
-							
 						};
 			}
 		});
