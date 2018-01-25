@@ -110,6 +110,7 @@ public class OrderManagementController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		getOrdersByCId();		
 	}
+	
 	private void getOrdersByCId() {
 		Packet packet = new Packet();//create packet to send
 		packet.addCommand(Command.getOrdersByCIdandBrId);//add command
