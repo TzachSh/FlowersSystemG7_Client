@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 
 import com.sun.scenario.effect.impl.state.LinearConvolveRenderState.PassType;
 
+import Branches.Branch;
 import Branches.Employee;
 import Login.CustomerMenuController;
 import Login.LoginController;
@@ -50,6 +51,7 @@ public class UpdateCustomerController implements Initializable {
 	private ArrayList<Membership> memshipList ;
 	private ArrayList<MemberShipAccount> memshipAccount ;
 	private ArrayList<Customer> cList ;
+	private Branch currentBranch;
 	@FXML
 	private Label lbHeader;
 	@FXML
@@ -150,6 +152,8 @@ public class UpdateCustomerController implements Initializable {
 				txtCreditCard5.setEditable(false);
 				btnSave.setVisible(false);
 				btnchangePassword.setVisible(false);
+				rbMemberShip.setVisible(false);
+				rbdeleteMemberShip.setVisible(false);
 				lbHeader.setText("Client Information");
 		 }
 	 }
@@ -166,57 +170,7 @@ public class UpdateCustomerController implements Initializable {
 			cbMemberShip.setVisible(true);
 			lblmembership.setVisible(true);
 		}
-		/*Alert alert = new Alert(AlertType.CONFIRMATION);
-		alert.setTitle("Delete MemberShip");
-		alert.setHeaderText("Delete Membership For  "+uList.get(0).getUser());
-		alert.setContentText("Are you ok with this?");
 		
-		Optional<ButtonType> result = alert.showAndWait();
-		if (result.get() == ButtonType.OK)
-		{
-		    //user chose OK ,so we must Delete MemberShip and hide membership combobox and show add membership radio button 
-			//opening packet
-			Packet packet = new Packet();
-			//adding commands to the packet
-			packet.addCommand(Command.deleteMemberShipAccountByacNum);
-			ArrayList<Object> info=new ArrayList<>();
-			info.add(accList.get(0).getNum());
-			packet.setParametersForCommand(Command.getMemberShipAccountByAcNum, info);
-			//sending the packet
-			SystemSender send = new SystemSender(packet);
-			send.registerHandler(new IResultHandler() {
-				
-				@Override
-				public void onWaitingForResult() {
-					// TODO Auto-generated method stub
-					
-				}
-				
-				@Override
-				public void onReceivingResult(Packet p) {
-					if(p.getResultState()) {
-					//lunching pop out message that the membership was deleted 
-					ConstantData.displayAlert(AlertType.INFORMATION, "", "MemberShip Was Deleted Successfully", "User name or Password are missing!");					
-					cbMemberShip.setVisible(false);
-					lblmembership.setVisible(false);
-					rbdeleteMemberShip.setVisible(false);
-					rbMemberShip.setVisible(true);
-					}
-					else {
-						ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to deletemembership","");
-						myStage.close();
-					}
-						
-				}
-			});
-			send.start();
-			
-		} else 
-		{
-		    // ... user chose CANCEL or closed the dialog
-			rbdeleteMemberShip.setSelected(false);
-			return;
-		}*/
 	}
 	 /**
 	 * This function show membership combo box if the radio button was selected , else it will hide it .
@@ -240,6 +194,15 @@ public class UpdateCustomerController implements Initializable {
 	  */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		
+		if(LoginController.userLogged instanceof Employee)
+			currentBranch=ManagersMenuController.currentBranch;
+		else
+			if(LoginController.userLogged instanceof Customer)
+				currentBranch=CustomerMenuController.currentBranch;
+			else
+				ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to get branch id", null);
+
 		apnextinfo.setVisible(false);
 		appassword.setVisible(false);
 		//validate customer text field input 
@@ -416,7 +379,8 @@ public class UpdateCustomerController implements Initializable {
 						 	searchForCustomerByID();
 						}
 						else
-							showError("Error Loading Information , Please Try Again Later");
+							ConstantData.displayAlert(AlertType.ERROR, "Error", "Error Loading Information , Please Try Again Later", null);
+
 					}
 				});
 				//sending the packet
@@ -498,7 +462,7 @@ public class UpdateCustomerController implements Initializable {
 	public void searchForCustomerByID()
 	{
 		if(txtCustomerID.getText().isEmpty()) {
-			showError("Please Insert Customer's ID");
+			ConstantData.displayAlert(AlertType.ERROR, "Error", "Please Insert Customer's ID", null);
 			return;
 		}
 		//opening packet
@@ -533,7 +497,7 @@ public class UpdateCustomerController implements Initializable {
 				//if there is no customer with this id , we show error
 				if(cList.isEmpty())
 				{
-					showError("Customer Dose Not Exist");
+					ConstantData.displayAlert(AlertType.ERROR, "Error", "Customer Dose Not Exist", null);
 					txtCustomerID.setText("");
 					return;
 				}
@@ -548,7 +512,7 @@ public class UpdateCustomerController implements Initializable {
 				ArrayList<Object> accl=new ArrayList<>();
 				accl.add(cList.get(0).getId());
 				if(currentuser!=null)
-					accl.add(currentuser.getBranchId());
+					accl.add(currentBranch.getbId());
 				else
 					accl.add(currentCustomerAccount.getBranchId());
 				packet.setParametersForCommand(Command.getAccountbycIDandBranch, accl);
@@ -644,12 +608,13 @@ public class UpdateCustomerController implements Initializable {
 										rbdeleteMemberShip.setVisible(false);
 										cbMemberShip.setVisible(false);
 										lblmembership.setVisible(false);
-										rbMemberShip.setVisible(true);
+										rbMemberShip.setVisible(false);
 									}
 									
 								}
 								else
-									showError("Error Loading Information , Please Try Again Later");	
+									ConstantData.displayAlert(AlertType.ERROR, "Error", "Error Loading Information , Please Try Again Later", null);
+
 							}
 						});
 						//sending the package
@@ -671,19 +636,19 @@ public class UpdateCustomerController implements Initializable {
 		//validate user
 		if(txtUser.getText().isEmpty())//check if the user field is empty
 		{
-			showError("Please Enter New User");
+			ConstantData.displayAlert(AlertType.ERROR, "Error", "Please Enter New User", null);
 			return;
 		}
 		//validate credit card fields that they are not empty
 		if(txtCreditCard1.getText().isEmpty()||txtCreditCard2.getText().isEmpty()||txtCreditCard3.getText().isEmpty()||txtCreditCard4.getText().isEmpty()||txtCreditCard5.getText().isEmpty())
 		{
-			showError("Please Enter Valid Credit Card Number");
+			ConstantData.displayAlert(AlertType.ERROR, "Error", "Please Enter Valid Credit Card Number", null);
 			return;
 		}
 		//validate the number of digits in each section is 4 in the credit card 
 		if(txtCreditCard1.getText().length()!=4||txtCreditCard2.getText().length()!=4||txtCreditCard3.getText().length()!=4||txtCreditCard4.getText().length()!=4||txtCreditCard5.getText().length()!=4)
 		{
-			showError("Please Insert 4 Digits For Credit Card Section");
+			ConstantData.displayAlert(AlertType.ERROR, "Error", "Please Insert 4 Digits For Credit Card Section", null);
 			return;
 		}
 		//if we wanted to change the password , so we need to validate it
@@ -691,34 +656,35 @@ public class UpdateCustomerController implements Initializable {
 		{
 			if(txtPassword.getText().isEmpty()) //checking if the password field is empty
 			{		
-				showError("Please Enter The Old Password ");
+				ConstantData.displayAlert(AlertType.ERROR, "Error", "Please Enter The Old Password ", null);
 				return;
 			}
 			if(uList.get(0).getPassword().equals(txtPassword.getText())==false)//checking that the user password and the input password are the same 
 			{
-				showError("Please Enter The Correct Old Password");
+				ConstantData.displayAlert(AlertType.ERROR, "Error", "Please Enter The Correct Old Password", null);
+
 				return;
 			}
 			if(txtNewPassword.getText().isEmpty()) //checking that the new password field is not empty
 			{		
-				showError("Please Enter The New Password ");
+				//showError("Please Enter The New Password ");
 				return;
 			}
 			if(txtConfirmPassword.getText().isEmpty()) //checking that the new confirm password field is not empty
 			{		
-				showError("Please Enter The New Confirm Password ");
+				//showError("Please Enter The New Confirm Password ");
 				return;
 			}
 			if(txtNewPassword.getText().equals(txtConfirmPassword.getText())==false)//checking that the new password and the confirm password are the same
 			{
-				showError("New Password And Confirm Password Are Not Matched");
+				//showError("New Password And Confirm Password Are Not Matched");
 				return;
 			}
 		}
 		//if therer is error fetching the user .
 		if(uList.isEmpty())
 		{
-			showError("Error Loading Customer , Please Try Again");
+			//showError("Error Loading Customer , Please Try Again");
 			return;
 		}
 		
@@ -752,25 +718,6 @@ public class UpdateCustomerController implements Initializable {
 		//the user didnt change his password
 		packet.setParametersForCommand(Command.updateUserByuId, userl);
 		
-		
-		//updating Customer
-		/*for(Membership mem:memshipList)//getting the orginal membership name (we got only membership id)
-		{
-			if(mem.getNum()==memshipAccount.get(0).getmId())
-					orginalmemship=mem.getMembershipType().toString();//getting original member ship
-			if(mem.getMembershipType().toString().equals(newmembership))
-				choosedmemid=mem.getNum();//getting the choosed membership id
-		}
-		if(orginalmemship.isEmpty()==false&&choosedmemid!=-1)//validate the membership id and field
-			if(newmembership.equals(orginalmemship)==false)//he changed the membership
-			{
-				//adding the command and the array list for the query to use the informaiton
-				packet.addCommand(Command.updateMemberShipAccountByAcNum);
-				java.sql.Date sqlDate = new java.sql.Date(new java.util.Date().getTime());
-				memshipacc.add(new MemberShipAccount(accList.get(0).getNum(), choosedmemid, sqlDate));
-				packet.setParametersForCommand(Command.updateMemberShipAccountByAcNum, memshipacc);
-			}
-		*/
 		//updating membership for this account 
 		if(cbMemberShip.isVisible()==true)
 		{
@@ -894,17 +841,7 @@ public class UpdateCustomerController implements Initializable {
 		btnCancelUpdatingPassword.setVisible(true);
 	
 	}
-	/**
-	 * This function show the error pop out with error message
-	 * @param str the error message
-	 */
-	public void showError(String str)
-	{
-		JOptionPane.showMessageDialog(null, 
-				str, 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE);
-	}
+	
 	/**
 	 * This 
 	 * @param primaryStage 
@@ -925,6 +862,7 @@ public class UpdateCustomerController implements Initializable {
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(getClass().getResource(srcCSS).toExternalForm());
 			primaryStage.setTitle(title);
+			primaryStage.setResizable(false);
 			primaryStage.setScene(scene);
 			
 			primaryStage.show();

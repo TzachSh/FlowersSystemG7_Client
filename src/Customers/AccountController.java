@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 
 import javax.swing.JOptionPane;
 
+import Branches.Branch;
 import Branches.Employee;
 import Login.LoginApp;
 import Login.LoginController;
@@ -74,6 +75,7 @@ public class AccountController implements Initializable{
 	private ArrayList<Membership> memshipList ;
 	private Employee currentEmployee=(Employee)LoginController.userLogged;
 	private Customer currentCustomer;
+	private Branch currentBranch=ManagersMenuController.currentBranch;
 	private static Stage myStage;
 	/**
 	 * Initialize the combo box information
@@ -235,11 +237,11 @@ public class AccountController implements Initializable{
 		packet.addCommand(Command.addAccounts);
 		packet.addCommand(Command.getAccountbycIDandBranch);
 		ArrayList<Object> acclist=new ArrayList<>();
-		acclist.add(new Account(currentEmployee.getBranchId(), currentCustomer.getId(), mId, 0, AccountStatus.Active, fullCreditCar));
+		acclist.add(new Account(currentBranch.getbId(), currentCustomer.getId(), mId, 0, AccountStatus.Active, fullCreditCar));
 		packet.setParametersForCommand(Command.addAccounts, acclist);
 		ArrayList<Object> info=new ArrayList<>();
 		info.add(currentCustomer.getId());
-		info.add(currentEmployee.getBranchId());
+		info.add(currentBranch.getbId());
 		packet.setParametersForCommand(Command.getAccountbycIDandBranch, info);
 		//sending the packet
 		SystemSender send = new SystemSender(packet);
@@ -392,7 +394,7 @@ public class AccountController implements Initializable{
 				//adding the information to the packet
 				ArrayList<Object> accl=new ArrayList<>();
 				accl.add(currentCustomer.getId());
-				accl.add(currentEmployee.getBranchId());
+				accl.add(currentBranch.getbId());
 				packet.setParametersForCommand(Command.getAccountbycIDandBranch, accl);
 				//sending the packet
 				SystemSender send = new SystemSender(packet);

@@ -69,7 +69,7 @@ public class CustomerMenuController implements Initializable {
 
 	public static ArrayList<Branch> branchesList = new ArrayList<>();
 	
-    public static Branch currentBranch;
+    public static Branch currentBranch=null;
     
     private static ArrayList<Account> userAccountsList = new ArrayList<>();
     

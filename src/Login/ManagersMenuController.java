@@ -35,6 +35,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.stage.Stage;
@@ -45,7 +46,8 @@ public class ManagersMenuController implements Initializable {
 
 	@FXML
     private Hyperlink linkChangeBranch;
-
+	@FXML
+	private Label lblBranchList;
     @FXML
     private Hyperlink linkLogout;
 
@@ -78,7 +80,7 @@ public class ManagersMenuController implements Initializable {
     public static ArrayList<Branch> branchesList = new ArrayList<>();
 	private static Stage primaryStage;
 	private static Employee employee = (Employee)LoginController.userLogged;
-	public static Branch currentBranch;
+	public static Branch currentBranch=null;
 	
 	private static LoginController loginController;
     
@@ -119,11 +121,19 @@ public class ManagersMenuController implements Initializable {
 			btnCatalogSales.setDisable(false);
 			Branch branch = branchesList.get(index);
 			currentBranch = branch;
+			lblBranchList.setVisible(false);
+			btnCreateClient.setDisable(false);
+			btnUpdateClient.setDisable(false);
+			btnAccount.setDisable(false);
 		}
 		else
 		{
 			btnCatalogSales.setDisable(true);
+			lblBranchList.setVisible(true);
 			currentBranch = null;
+			btnCreateClient.setDisable(true);
+			btnUpdateClient.setDisable(true);
+			btnAccount.setDisable(true);
 		}
 	}
 	
@@ -266,8 +276,21 @@ public class ManagersMenuController implements Initializable {
 		if(employee.getRole().toString().equals((Role.Branch).toString()))
 		{
 			btnReports.setDisable(true);
+			btnCreateClient.setDisable(true);
+			btnUpdateClient.setDisable(true);
+			btnAccount.setDisable(true);	
 		}
-	}
+		lblBranchList.setVisible(true);
+		if(employee.getRole().toString().equals((Role.BranchesManager).toString()))
+			{
+				if(cmbBranch.getSelectionModel().getSelectedIndex()==-1)
+				{
+					btnCreateClient.setDisable(true);
+					btnUpdateClient.setDisable(true);
+					btnAccount.setDisable(true);	
+				}
+			}
+}
 	
 	public void onClickUpdateClient()
 	{

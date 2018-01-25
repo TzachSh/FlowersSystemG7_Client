@@ -110,6 +110,7 @@ public class CustomerController implements Initializable {
 			scene.getStylesheets().add(getClass().getResource(srcCSS).toExternalForm());
 			primaryStage.setTitle(title);
 			primaryStage.setScene(scene);
+			primaryStage.setResizable(false);
 			primaryStage.show();
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -150,36 +151,6 @@ public class CustomerController implements Initializable {
 			ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
 		}
 	}
-	/**
-	 * This function empty the credit card
-	 */
-	/*public void emptyCreditCardText()
-	{
-		if(txtCreditCard.getText().isEmpty())
-			return;
-		txtCreditCard.setText("");
-		creditcard="";
-		txtCreditCard.setDisable(false);
-		btnAddCreditCard.setDisable(false);
-
-
-	}
-
-	
-	public void addCreditCard()
-	{
-		if(txtCreditCard.getText().isEmpty())
-		{
-			showError("Please Fill Credit Card Number");
-			
-			return;
-		}
-		creditcard=txtCreditCard.getText();
-		txtCreditCard.setDisable(true);
-		btnAddCreditCard.setDisable(true);
-		
-	}*/
-
 	
 	public void showError(String str)
 	{
