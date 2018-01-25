@@ -7,13 +7,17 @@
 
 <AnchorPane prefHeight="425.0" prefWidth="539.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Orders.OrderManagementController">
    <children>
-      <Button fx:id="btnBack" layoutX="260.0" layoutY="311.0" mnemonicParsing="false" onAction="#onClickBack" text="Back" />
+      <Button fx:id="btnBack" layoutX="260.0" layoutY="377.0" mnemonicParsing="false" onAction="#onClickBack" text="Back" />
       <Label layoutX="254.0" layoutY="14.0" text="My orders" />
-      <ListView fx:id="listOrder" layoutX="26.0" layoutY="64.0" prefHeight="240.0" prefWidth="494.0" />
-      <Label layoutX="34.0" layoutY="50.0" text="Id" />
-      <Label layoutX="70.0" layoutY="50.0" text="Creation" />
-      <Label layoutX="166.0" layoutY="50.0" text="Requested" />
-      <Label layoutX="260.0" layoutY="50.0" text="Price" />
-      <Label layoutX="329.0" layoutY="50.0" text="Payed" />
+      <ListView fx:id="listOrder" layoutX="26.0" layoutY="130.0" prefHeight="240.0" prefWidth="494.0" />
+      <Label layoutX="34.0" layoutY="116.0" text="Id" />
+      <Label layoutX="70.0" layoutY="116.0" text="Creation" />
+      <Label layoutX="166.0" layoutY="116.0" text="Requested" />
+      <Label layoutX="260.0" layoutY="116.0" text="Price" />
+      <Label layoutX="329.0" layoutY="116.0" text="Payed" />
+      <Label layoutX="22.0" layoutY="63.0" text="Status:" />
+      <CheckBox fx:id="chBoxPending" layoutX="77.0" layoutY="63.0" mnemonicParsing="false" text="Pending" />
+      <CheckBox fx:id="chBoxCompleted" layoutX="182.0" layoutY="63.0" mnemonicParsing="false" text="Completed" />
+      <CheckBox fx:id="chBoxCanceled" layoutX="308.0" layoutY="63.0" mnemonicParsing="false" text="Canceled" />
    </children>
 </AnchorPane>

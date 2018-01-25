@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,8 +88,7 @@ public class OrderDetailsController implements Initializable {
 
     @FXML
     private ListView<OrderPayment> listViewOrderPayments;
-
-
+  
 	private ObservableList<Product> dataOrderLine;
 
 	private ObservableList<OrderPayment> dataOrderPayment;

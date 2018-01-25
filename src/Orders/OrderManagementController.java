@@ -5,12 +5,14 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import javax.print.attribute.standard.DateTimeAtCompleted;
 import javax.swing.JOptionPane;
 
+import Commons.Status;
 import Login.CustomerMenuController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
@@ -34,6 +36,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
@@ -56,10 +59,19 @@ public class OrderManagementController implements Initializable {
 	private static Stage primaryStage;
 	@FXML
     private Button btnBack;
-
     @FXML
     private ListView<Order> listOrder;
     private ObservableList<Order> data;
+    
+    @FXML
+    private CheckBox chBoxPending;
+    @FXML
+    private CheckBox chBoxCanceled;
+    @FXML
+    private CheckBox chBoxCompleted;
+    
+    private HashMap<Status,ArrayList<Order>> ordersMap = new HashMap<Status,ArrayList<Order>>();
+    
     @FXML
     void onClickBack(ActionEvent event) {
 		CustomerMenuController menu = new CustomerMenuController();
@@ -133,11 +145,15 @@ public class OrderManagementController implements Initializable {
 			public void onReceivingResult(Packet p)//set combobox values
 			{
 				if (p.getResultState()) {
+					ordersMap.put(Status.Canceled, new ArrayList<>());
+					ordersMap.put(Status.Completed, new ArrayList<>());
+					ordersMap.put(Status.Pending, new ArrayList<>());
 					ArrayList<Order> orderList = p.<Order>convertedResultListForCommand(Command.getOrdersByCIdandBrId);
 					ArrayList<OrderPayment> payment = p.<OrderPayment>convertedResultListForCommand(Command.getPaymentDetails);
 					for(Order order : orderList)
 					{
 						order.setOrderPaymentList((ArrayList<OrderPayment>) payment.stream().filter(c->c.getOrderId()==order.getoId()).collect(Collectors.toList()));
+						ordersMap.get(order.getStatus()).add(order);
 					}
 					data = FXCollections.observableArrayList(orderList);
 					fillOrders();

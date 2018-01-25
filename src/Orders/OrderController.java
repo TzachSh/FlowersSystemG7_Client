@@ -8,10 +8,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
 
 import Commons.ProductInOrder;
+import Commons.Status;
 import Customers.Account;
 import Customers.MemberShipAccount;
 import Login.CustomerMenuController;
@@ -71,8 +73,6 @@ public class OrderController implements Initializable, ChangeListener<String>{
 	private Tab delivery;
 	@FXML
 	private Tab payment;
-	
-	
 	@FXML
 	private RadioButton radAccount;
 	@FXML
@@ -385,7 +385,7 @@ public class OrderController implements Initializable, ChangeListener<String>{
 		
 		//create order
 		ArrayList<Object> order = new ArrayList<>();
-		order.add(new Order(0,dateNow,timestamp,account.getCustomerId(),2,account.getBranchId(),totalAfter));
+		order.add(new Order(0,dateNow,timestamp,account.getCustomerId(),Status.Pending,account.getBranchId(),totalAfter));
 		ArrayList<Object> prodInOrder = new ArrayList<>();
 		//set all products in order
 		for(Entry<Product,Integer> prod : CartController.cartProducts.entrySet())
