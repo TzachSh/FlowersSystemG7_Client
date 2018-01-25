@@ -1,5 +1,6 @@
 package Login;
 
+import java.net.SocketException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -275,10 +276,10 @@ public class LoginController implements Initializable {
 		ArrayList<Object> param = new ArrayList<>(Arrays.asList(user));
 	
 		packet.setParametersForCommand(Command.getUserByNameAndPass, param);
-		
+	
 		// create the thread for send to server the message
 		SystemSender send = new SystemSender(packet);
-
+		
 		// register the handler that occurs when the data arrived from the server
 		send.registerHandler(new IResultHandler() {
 
@@ -321,7 +322,6 @@ public class LoginController implements Initializable {
 			public void onWaitingForResult() { }
 			
 		});
-		
 		send.start();
     }
     

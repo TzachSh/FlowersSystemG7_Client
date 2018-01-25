@@ -4,8 +4,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.SocketException;
 
 import Login.ConfigurationController;
+import Products.ConstantData;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 
 /**
@@ -74,9 +79,16 @@ public class SystemSender extends Thread
 			if (handler != null)
 				handler.onWaitingForResult();
 		}
-		catch (IOException e)
+		catch (Exception e)
 		{
-			e.printStackTrace();
+			Platform.runLater(new Runnable() {
+				
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					ConstantData.displayAlert(AlertType.ERROR, "Error", "Server Error", e.getMessage());
+				}
+			});
 		}
 	}
 	

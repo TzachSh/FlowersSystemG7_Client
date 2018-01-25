@@ -35,7 +35,7 @@ public class SystemClient extends AbstractClient
 		}
 		catch (IOException e) 
 		{
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 	
