@@ -434,8 +434,8 @@ public class OrderController implements Initializable, ChangeListener<String>{
 		packet.setParametersForCommand(Command.createOrderPayments, payments);
 		if(blncePay>0)
 		{
-			packet.addCommand(Command.updateAccountBalance);
-			packet.setParametersForCommand(Command.updateAccountBalance, acList);
+			packet.addCommand(Command.updateAccountsBycId);
+			packet.setParametersForCommand(Command.updateAccountsBycId, acList);
 		}
 		if(chkDelivery.isSelected())
 		{

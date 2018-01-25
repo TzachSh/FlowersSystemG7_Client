@@ -6,20 +6,29 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.swing.JOptionPane;
 
 import Commons.ProductInOrder;
+import Commons.Refund;
+import Commons.Status;
+import Login.CustomerMenuController;
 import PacketSender.Command;
 import PacketSender.FileSystem;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
 import Products.CatalogProduct;
+import Products.ConstantData;
 import Products.Flower;
 import Products.FlowerInProduct;
 import Products.Product;
@@ -40,6 +49,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -353,43 +364,128 @@ public class OrderDetailsController implements Initializable {
 		listViewOrderPayments.setItems(dataOrderPayment);
 	}
 	
-	private Date getDiffTimes(java.sql.Timestamp currentTime, java.sql.Timestamp oldTime)
+	private Map<TimeUnit,Long> computeDiff(Timestamp requestedTime, Timestamp currentTime) {
+	    long diffInMillies = requestedTime.getTime() - currentTime.getTime();
+	    List<TimeUnit> units = new ArrayList<TimeUnit>(EnumSet.allOf(TimeUnit.class));
+	    Collections.reverse(units);
+	    Map<TimeUnit,Long> result = new LinkedHashMap<TimeUnit,Long>();
+	    long milliesRest = diffInMillies;
+	    for ( TimeUnit unit : units ) {
+	        long diff = unit.convert(milliesRest,TimeUnit.MILLISECONDS);
+	        long diffInMilliesForUnit = unit.toMillis(diff);
+	        milliesRest = milliesRest - diffInMilliesForUnit;
+	        result.put(unit,diff);
+	    }
+	    return result;
+	}
+	
+	private void changeOrderStatus(Order order , Status status)
 	{
-	  long milliseconds1 = oldTime.getTime();
-	  long milliseconds2 = currentTime.getTime();
+		order.setStatus(status);
+	}
+	
+	private double getOrderPayments(Order order)
+	{
+		double payments = 0;
+		for(OrderPayment orderPayment : order.getOrderPaymentList())
+			payments+=orderPayment.getAmount();
+		return payments;
+	}
+	
+	private Refund getCancelRefund(Timestamp requestedTime , Timestamp currentTime)
+	{
+		Map<TimeUnit,Long> diffTime = computeDiff(requestedTime,currentTime);
+		Refund refund = null;
+		
+		//Check if the cancel request is on the same day of the order's creation time
+		if (diffTime.get(TimeUnit.DAYS) == 0) {
 
-	  long diff = milliseconds2 - milliseconds1;
-	  long diffSeconds = diff / 1000;
-	  long diffMinutes = diff / (60 * 1000);
-	  long diffHours = diff / (60 * 60 * 1000);
-	  long diffDays = diff / (24 * 60 * 60 * 1000);
-	  
-	  Date date = new Date(currentTime.getYear(),currentTime.getMonth(),(int)diffDays,(int)diffHours,(int)diffMinutes,(int)diffSeconds);
-	  
-	  return date; 
-	}
-	
-	private void changeOrderStatus()
-	{
-		
-	}
-	
-	private double getCancelRefund(Timestamp currentTime , Timestamp requestedTime)
-	{
-		Date diffDate = getDiffTimes(currentTime,requestedTime);
-		
-		return 0;
+			if (diffTime.get(TimeUnit.HOURS) >= 3) // canceled 3 hours or more before the requested time
+			{
+				// Full refund
+
+				java.sql.Date currentDate = new java.sql.Date(new java.util.Date().getTime()); // get current date
+				refund = new Refund(currentDate, getOrderPayments(order), order.getoId()); // create new full refund
+				
+			} else if (diffTime.get(TimeUnit.HOURS) >= 1 && diffTime.get(TimeUnit.HOURS) <= 3) {
+
+				// 50% refund
+
+				java.sql.Date currentDate = new java.sql.Date(new java.util.Date().getTime()); // get current date
+				refund = new Refund(currentDate, getOrderPayments(order) - (getOrderPayments(order) * 0.5),order.getoId()); // create new half refund
+			}
+			else {
+				// No refund, just cancel
+				
+				refund = null;
+			}
+		}
+		//Passed 1 day or more
+		else {
+			// No refund, just cancel
+			
+			refund = null;
+		}
+		return refund;
 	}
 	
 	@FXML
 	private void onCancelPressedHandler()
 	{
-		//changeOrderStatus();
+		changeOrderStatus(order,Status.Canceled);
+		
+		Packet packet = new Packet();
+		
+		packet.addCommand(Command.updateOrder);
+		ArrayList<Object> paramListOrder = new ArrayList<>();
+		paramListOrder.add(order);
+		packet.setParametersForCommand(Command.updateOrder, paramListOrder);
 		
 		//Get current time
 		java.util.Date today = new java.util.Date();
 		java.sql.Timestamp sqlTimestamp = new java.sql.Timestamp(today.getTime());
 		
-		getCancelRefund(sqlTimestamp , order.getRequestedDate());
+		Refund refund = getCancelRefund(order.getRequestedDate(),sqlTimestamp);
+		if(refund != null)
+		{
+			double currentBalance = CustomerMenuController.currentAcc.getBalance();
+			double newBalance = currentBalance + refund.getAmount();
+			CustomerMenuController.currentAcc.setBalance(newBalance);
+			
+			packet.addCommand(Command.updateAccountsBycId);
+			packet.addCommand(Command.addOrderRefund);
+			ArrayList<Object> paramListAccount = new ArrayList<>();
+			ArrayList<Object> paramListRefund = new ArrayList<>();
+			paramListAccount.add(CustomerMenuController.currentAcc);
+			packet.setParametersForCommand(Command.updateAccountsBycId, paramListAccount);
+			paramListRefund.add(refund);
+			packet.setParametersForCommand(Command.addOrderRefund, paramListRefund);
+		}
+		
+		SystemSender sender = new SystemSender(packet);
+		sender.registerHandler(new IResultHandler() {
+			
+			@Override
+			public void onWaitingForResult() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onReceivingResult(Packet p) {
+				// TODO Auto-generated method stub
+				if(p.getResultState())
+				{
+					ConstantData.displayAlert(AlertType.INFORMATION, "Cancel Order", "Success", "Order has been canceled successfully");
+				}
+				else
+				{
+					ConstantData.displayAlert(AlertType.ERROR, "Cancel Order", "Error", p.getExceptionMessage());
+				}
+			}
+		});
+
+		sender.start();
 	}
+	
 }
