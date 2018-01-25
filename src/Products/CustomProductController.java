@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
@@ -52,6 +53,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -185,6 +187,12 @@ public class CustomProductController implements Initializable {
 	 */
 	public void onClickAddToOrderBtn() 
 	{
+		if (flowerInProduct.size() == 0)
+		{
+			ConstantData.displayAlert(AlertType.ERROR, "Error", "No Items Selected", "Please Select First Some Items");
+			return;
+		}
+		
 				//display notification
 		if (txtBlessing.getText().length()==0 && JOptionPane.showConfirmDialog(null, "Do you want to add blessing?", "Notification",
 		        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
@@ -199,7 +207,7 @@ public class CustomProductController implements Initializable {
 	 */
 	protected void addToCartCloseWindow() {
 			int productType = cmbProductType.getSelectionModel().getSelectedItem().getId();//get typeId from combobox
-			CustomProduct product = new CustomProduct(-1,productType , total, null, null, txtBlessing.getText());
+			CustomProduct product = new CustomProduct(-1,productType , total , null, null, txtBlessing.getText());
 			ArrayList<Object> pList = new ArrayList<>(Arrays.asList(product));
 			ArrayList<Object> flowerInProductList = new ArrayList<>();
 			for(Entry<Flower, Integer> set : flowerInProduct.entrySet())
@@ -247,11 +255,13 @@ public class CustomProductController implements Initializable {
 						cartController.start(cartStage);
 						closeStage();	
 					} catch (Exception e) {
-						JOptionPane.showMessageDialog(null,"Failed to open Cart "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+						ConstantData.displayAlert(AlertType.ERROR, "Error", "Error","Failed to open Cart "+e.getMessage());
 					}
 				}
 				else//if it was error in connection
-					JOptionPane.showMessageDialog(null,"Connection error","Error",JOptionPane.ERROR_MESSAGE);
+				{
+					ConstantData.displayAlert(AlertType.ERROR, "Error", "Error",p.getExceptionMessage());
+				}
 			}
 		});
 		send.start();
@@ -265,6 +275,7 @@ public class CustomProductController implements Initializable {
 
 	public void onClickResetButton()
 	{
+		txtMinCost.setText("");
 		txtMaxCost.setText("");
 		cmbColor.getSelectionModel().clearSelection();
 		paneFlowers.setVisible(false);
@@ -277,6 +288,7 @@ public class CustomProductController implements Initializable {
 		total = 0;
 		minPrice = 0;
 		maxPrice = 0;
+		paneFilter.setDisable(false);
 	}
 	public void onClickSetSetting()
 	{
@@ -295,7 +307,7 @@ public class CustomProductController implements Initializable {
 		}
 		catch(Exception e)
 		{
-			JOptionPane.showMessageDialog(null,e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+			ConstantData.displayAlert(AlertType.ERROR, "Error", "Error",e.getMessage());
 		}
 	}
 	private void isValid() throws Exception {
@@ -354,14 +366,67 @@ public class CustomProductController implements Initializable {
 				if (p.getResultState())
 					flowerList= p.<Flower>convertedResultListForCommand(Command.getFlowers);								
 				else//if it was error in connection
-					JOptionPane.showMessageDialog(null,"Connection error","Error",JOptionPane.ERROR_MESSAGE);
+				{
+					ConstantData.displayAlert(AlertType.ERROR, "Error", "Error", p.getExceptionMessage());
+				}
 			}
 		});
 		send.start();
 	}
+	
+	/**
+	 * Event that occurs when changed the state on the checkbox of color
+	 */
+	public void onChangedChecked()
+	{
+		if (chkColor.isSelected())
+		{
+			cmbColor.setDisable(false);
+		}
+		else
+		{
+			cmbColor.setDisable(true);
+		}
+	}
+	
+	/**
+	 * calculate and update the total price of all flowers collection
+	 */
+	public void calcTotalPrice()
+	{
+		double total = 0;
+		for (Map.Entry<Flower,Integer> entry : flowerInProduct.entrySet())
+		{
+			total += entry.getValue() * entry.getKey().getPrice();
+		}
+		lblTotalPrice.setText("" + total + "¤");
+		this.total = total;
+	}
+	
 	public void initList()
 	{
-		ArrayList<Flower> tempList = flowerList.stream().filter(c->c.getPrice()<=maxPrice && c.getColor()==cmbColor.getSelectionModel().getSelectedItem().getColId()).collect(Collectors.toCollection(ArrayList::new));
+		ArrayList<Flower> tempList;
+		if (chkColor.isSelected())
+		{
+			tempList = flowerList.stream().filter(c->c.getPrice() <= maxPrice && c.getPrice() >= minPrice &&
+						c.getColor()==cmbColor.getSelectionModel().getSelectedItem().getColId()).collect(Collectors.toCollection(ArrayList::new));
+		}
+		else
+		{
+			tempList = flowerList.stream().filter(c->c.getPrice() <= maxPrice && c.getPrice() >= minPrice).collect(Collectors.toCollection(ArrayList::new));
+		}
+		
+		if (tempList.size() == 0)
+		{
+			ConstantData.displayAlert(AlertType.ERROR, "Error", "No Flowers Found", "Try To Change The Current Filters");
+			paneFilter.setDisable(false);
+			paneFlowers.setVisible(false);
+			txtMaxCost.setDisable(false);
+			cmbColor.setDisable(false);
+			btnFind.setDisable(false);
+			return;
+		}
+		
 		data = FXCollections.observableArrayList(tempList);
 		flowerListView.setCellFactory(new Callback<ListView<Flower>, ListCell<Flower>>() {
 			
@@ -405,11 +470,11 @@ public class CustomProductController implements Initializable {
 								qty.setFill(Color.RED);
 								qty.setTextAlignment(TextAlignment.CENTER);
 								
-								Text price = new Text(Integer.parseInt(qty.getText())*flo.getPrice() + "¤");
+								Text price = new Text(flo.getPrice() + "¤");
 								price.setFont(new Font(12));
 							
 								HBox flowerColorPrice = new HBox(color, price);
-								flowerColorPrice.setPadding(new Insets(0, 10, 0, 0));
+								flowerColorPrice.setPadding(new Insets(0, 5, 0, 0));
 								flowerColorPrice.setSpacing(10);
 								
 							
@@ -428,6 +493,7 @@ public class CustomProductController implements Initializable {
 											flowerInProduct.remove(flo);
 										
 										// update total price
+										calcTotalPrice();
 									}
 								});
 								
@@ -438,11 +504,11 @@ public class CustomProductController implements Initializable {
 									}
 									else {
 										flowerInProduct.put(flo, 1);
-										//decButton.setDisable(false);
+										
 									}
 								
 									qty.setText(""+flowerInProduct.get(flo));
-									price.setText(""+Integer.parseInt(qty.getText())*flo.getPrice());
+									 calcTotalPrice();
 								});
 								
 							
@@ -455,7 +521,7 @@ public class CustomProductController implements Initializable {
 							 	        + "-fx-border-width: 1;" + "-fx-border-insets: 5;"
 							 	        + "-fx-border-radius: 5;");
 								line.setSpacing(10);
-			                    line.setPadding(new Insets(50));
+			                    line.setPadding(new Insets(10));
 			                    
 			                    
 			                    setGraphic(line);
