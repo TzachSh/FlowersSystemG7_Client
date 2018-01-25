@@ -1,21 +1,11 @@
 package Branches;
 
 import java.net.URL;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Locale.Category;
 import java.util.ResourceBundle;
-
 import javax.swing.JOptionPane;
-
-import com.sun.org.apache.bcel.internal.generic.NEW;
-import com.sun.org.apache.xpath.internal.operations.Or;
-import com.sun.xml.internal.bind.v2.runtime.reflect.Lister.Pack;
-
 import Customers.Complain;
-import Customers.Membership;
-import Login.CustomerMenuController;
 import Login.LoginController;
 import Login.ManagersMenuController;
 import PacketSender.Command;
@@ -23,34 +13,26 @@ import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
 import Products.ConstantData;
-import Survey.AnswerSurvey;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Side;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import jdk.nashorn.internal.runtime.linker.JavaAdapterFactory;
 
 public class ReportsController implements Initializable{
 	
@@ -183,6 +165,7 @@ public class ReportsController implements Initializable{
 	public void BuildTableViewForOrder(TableView<OrderReport> table ,ArrayList<OrderReport> orderReportList)
 	{
 		int i,j=-1;
+		//making subtables by category
 		for(i=1;i<orderReportList.size();i++)
 		{
 			if(j==-1) {
@@ -215,13 +198,11 @@ public class ReportsController implements Initializable{
 		TableColumn<OrderReport, String> creationDate=new TableColumn<>("Creation Date");
 		creationDate.setCellValueFactory(new PropertyValueFactory<OrderReport, String>("creationDate"));
 		creationDate.setSortable(false);
-		creationDate.impl_setReorderable(false);
-		
+		creationDate.impl_setReorderable(false);	
 		TableColumn<OrderReport, String> status=new TableColumn<>("Status");
 		status.setCellValueFactory(new PropertyValueFactory<OrderReport, String>("status"));
 		status.setSortable(false);
 		status.impl_setReorderable(false);
-		
 		TableColumn<OrderReport, String> productId=new TableColumn<>("Product Number");
 		productId.setCellValueFactory(new PropertyValueFactory<OrderReport, String>("productId"));
 		productId.setSortable(false);
@@ -250,7 +231,7 @@ public class ReportsController implements Initializable{
 		receiver.setCellValueFactory(new PropertyValueFactory<OrderReport, String>("receiver"));
 		receiver.setSortable(false);	
 		receiver.impl_setReorderable(false);
-		
+		//setting sortable to false 
 		for(TableColumn<OrderReport, ?> col :table.getColumns())
 		{
 			col.setSortable(false);
@@ -258,6 +239,12 @@ public class ReportsController implements Initializable{
 		table.getColumns().addAll(productCategory,orderId,creationDate,status,productId,productName,price,paymentMethod,address,phone,receiver);
 		table.setVisible(true);
 	}
+	/**
+	 * 
+	 * @param bartable the bar chart 
+	 * @param info the report information , that we need to fill the table 
+	 * @param reportinfo1 the report information
+	 */
 	public void BuildBarChartForSatisfaction(BarChart<String,Double> bartable,ArrayList<SatisfactionReport> info, ArrayList<String> reportinfo1)
 	{
 		int i;
@@ -265,6 +252,7 @@ public class ReportsController implements Initializable{
 		bartable.setVisible(true);
 		bartable.getData().clear();
 		bartable.setTitle("Satisfaction Report For Branch "+reportinfo1.get(1)+"Quarter "+reportinfo1.get(0));
+		//adding the bars and fill the informations 
 		ArrayList<XYChart.Series<String, Double>> serlist=new ArrayList<>();
 		for(i=0;i<info.size();i++)
 		{
@@ -272,14 +260,13 @@ public class ReportsController implements Initializable{
 			try {
 				avg=Double.parseDouble(info.get(i).getAvg());
 			}catch (Exception e) {
-				return;//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@22
+				return;
 			}
 			serlist.get(i).getData().add(new XYChart.Data<>("",avg));
 			serlist.get(i).setName(info.get(i).getQuestion());
-
+			//adding the bars to the chart
 			bartable.getData().add(serlist.get(i));
 		}
-
 	}
 	/**
 	 * building bar chart for complains
@@ -289,9 +276,9 @@ public class ReportsController implements Initializable{
 	 */
 	public void BuildBarChartForComplain(BarChart<String,Integer> barch, int active ,int notactive)
 	{
+		//building the bars and adding it to the chart 
 		barch.setVisible(true);
 		barch.getData().clear();
-		barch.setTitle("Complains Status 1");
 		XYChart.Series<String, Integer> ser1=new XYChart.Series<>();
 		XYChart.Series<String, Integer> ser2=new XYChart.Series<>();
 		ser1.getData().add(new XYChart.Data<>("",active));
@@ -300,8 +287,7 @@ public class ReportsController implements Initializable{
 		ser2.setName("Not Active");
 		barch.getData().add(ser1);
 		barch.getData().add(ser2);
-	}
-	
+	}	
 	/**
 	 * 
 	 * @param primaryStage starts the screen
@@ -331,17 +317,13 @@ public class ReportsController implements Initializable{
 			@Override
 			public void handle(WindowEvent event) {
 				  primaryStage.close();
-				  
+				  //on close we must return the main menu
 				  try {
 					  ManagersMenuController menumanager=new ManagersMenuController();
 					  menumanager.start(new Stage());
 					} catch (Exception e) {
 						ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
-					}
-				
-		
-			
-				
+					}		
 			}
 		});
 	}
@@ -357,27 +339,26 @@ public class ReportsController implements Initializable{
 		reportinfo1.add(""+Integer.parseInt(cbQuarterly1.getSelectionModel().getSelectedItem()));
 		reportinfo1.add(cbBranchesName.getSelectionModel().getSelectedItem().toString());
 		
-		
+		//filling the information about the report search that we want to display
+		//if there is  two quarterlies 
 		if(rbcomp.isSelected()==true)
 			reportinfo2.add(""+Integer.parseInt(cbQuarterly2.getSelectionModel().getSelectedItem()));
 		else
 			reportinfo2.add(""+Integer.parseInt(cbQuarterly1.getSelectionModel().getSelectedItem()));
-		
+		//if there is two branchem
 		if(rbcompbranch.isSelected()==true)
 			reportinfo2.add(cbBranchTwoName.getSelectionModel().getSelectedItem().toString());
 		else
 			reportinfo2.add(cbBranchesName.getSelectionModel().getSelectedItem().toString());
-		
+		//handling the labels
 		lblFirstReportSection.setVisible(true);
 		lblFirstReportSection.setText("Generated Report For Branch "+reportinfo1.get(1)+" Quarter "+reportinfo1.get(0));
-		
+		//filling the labels
 		if(rbcomp.isSelected()||rbcompbranch.isSelected())
 		{
 			lblSecondReportSection.setVisible(true);
 			lblSecondReportSection.setText("Generated Report For Branch "+reportinfo2.get(1)+" Quarter "+reportinfo2.get(0));
 		}
-		
-		
 		//getting what the branches manager want to do 
 		//choice 0 is only 1 branch and only one quartiles
 		//if he wants to compare with 2 quarterlies
@@ -393,7 +374,10 @@ public class ReportsController implements Initializable{
 		//handling Complains Report
 		if(report.equals("Complains"))
 		{
-			
+			lblFirstReportSection.setVisible(false);
+			lblSecondReportSection.setVisible(false);
+			barChart.setTitle("Branch "+reportinfo1.get(1)+" Quarter "+reportinfo1.get(0));
+			barChart1.setTitle("Branch "+reportinfo2.get(1)+" Quarter "+reportinfo2.get(0));
 			Packet packet = new Packet();
 			Packet packet2 = new Packet();
 			//building the query by the  choice ,and adding the relative command
@@ -428,21 +412,15 @@ public class ReportsController implements Initializable{
 				//building the first packet to get the first information
 				BuildPacketForReport(packet, year, quartely, brId,Command.getComplainsForReport);
 				//building the second packet to get the second information
-				BuildPacketForReport(packet2, year, secondquartely, secondBranchNumber2,Command.getComplainsForReport);
-				
+				BuildPacketForReport(packet2, year, secondquartely, secondBranchNumber2,Command.getComplainsForReport);	
 				break;
-
 			}
 			//sending the packet
 			SystemSender send = new SystemSender(packet);
 			send.registerHandler(new IResultHandler() {
-				
 				@Override
-				public void onWaitingForResult() {
-					// TODO Auto-generated method stub
-					
-				}
-				
+				public void onWaitingForResult() {		
+				}	
 				@Override
 				public void onReceivingResult(Packet p) {
 					// checking the result
@@ -461,28 +439,21 @@ public class ReportsController implements Initializable{
 								notactive1++;
 						}	
 						//filling and initialize the barchart
-						BuildBarChartForComplain(barChart, active1, notactive1);
-					
+						BuildBarChartForComplain(barChart, active1, notactive1);		
 					}
 					else
-						System.out.println("Fail: " + p.getExceptionMessage());	
-				
+						System.out.println("Fail: " + p.getExceptionMessage());		
 				}
 			});
 			send.start();
 			//sending the second packet
 			SystemSender send2 = new SystemSender(packet2);
-			send2.registerHandler(new IResultHandler() {
-				
+			send2.registerHandler(new IResultHandler() {	
 				@Override
 				public void onWaitingForResult() {
-					// TODO Auto-generated method stub
-					
-				}
-				
+				}	
 				@Override
 				public void onReceivingResult(Packet p) {
-					// TODO Auto-generated method stub
 					if(p.getResultState()) 
 					{
 						int active2=0,notactive2=0;
@@ -499,25 +470,12 @@ public class ReportsController implements Initializable{
 						}	
 						//filling and initialize the barchart
 						BuildBarChartForComplain(barChart1, active2, notactive2);
-						/*
-						barChart1.setVisible(true);
-						barChart1.getData().clear();
-						barChart1.setTitle("Complains Status 2");
-						XYChart.Series<String, Integer> ser3=new XYChart.Series<>();
-						XYChart.Series<String, Integer> ser4=new XYChart.Series<>();
-						ser3.getData().add(new XYChart.Data<>("",active2));
-						ser3.setName("Active");
-						ser4.getData().add(new XYChart.Data<>("",notactive2));
-						ser4.setName("Not Active");
-						barChart1.getData().add(ser3);
-						barChart1.getData().add(ser4);*/
 					}
 					else
 						System.out.println("Fail: " + p.getExceptionMessage());	
 				}
 			});
-			send2.start();
-			
+			send2.start();		
 		}
 		else
 			if(report.equals("Income"))
@@ -558,7 +516,6 @@ public class ReportsController implements Initializable{
 					//building the second packet to get the second information
 					BuildPacketForReport(packet2, year, secondquartely, secondBranchNumber2,Command.getIncomeReport);
 					break;
-
 				}
 				//sending the packet
 				SystemSender send = new SystemSender(packet);
@@ -566,21 +523,19 @@ public class ReportsController implements Initializable{
 					
 					@Override
 					public void onWaitingForResult() {
-						// TODO Auto-generated method stub		
 					}		
 					@Override
 					public void onReceivingResult(Packet p) {
 						// checking the result
 						if(p.getResultState()) 
-						{
-							
+						{						
 							//filling the information in list
 							incomeReport1= p.<IncomeReport>convertedResultListForCommand(Command.getIncomeReport);
 							IncomeReport newincomereport=null;
-							if(incomeReport1.isEmpty()==false)
+							if(incomeReport1.isEmpty()==false) {
 								newincomereport=new IncomeReport(incomeReport1.get(0).getBrId(), incomeReport1.get(0).getBrName(), incomeReport1.get(0).getAmount());
 								
-							
+							}
 							//building the incoming result 
 							//sending the wanted table and the result to function that builds the tableview
 							BuildTableViewForIncome(table1Income, newincomereport);
@@ -592,15 +547,12 @@ public class ReportsController implements Initializable{
 				send.start();
 				//sending the second packet
 				SystemSender send2 = new SystemSender(packet2);
-				send2.registerHandler(new IResultHandler() {
-					
+				send2.registerHandler(new IResultHandler() {	
 					@Override
 					public void onWaitingForResult() {
-						// TODO Auto-generated method stub		
 					}		
 					@Override
 					public void onReceivingResult(Packet p) {
-						// TODO Auto-generated method stub
 						if(p.getResultState()) 
 						{
 							//filling the information in the list
@@ -608,7 +560,6 @@ public class ReportsController implements Initializable{
 							IncomeReport newincomereport=null;
 							if(incomeReport2.isEmpty()==false)
 								newincomereport=new IncomeReport(incomeReport2.get(0).getBrId(), incomeReport2.get(0).getBrName(), incomeReport2.get(0).getAmount());
-
 							//building the incoming result 
 							//sending the wanted table and the result to function that builds the tableview
 							BuildTableViewForIncome(table2Income, newincomereport);
@@ -665,25 +616,16 @@ public class ReportsController implements Initializable{
 				
 				@Override
 				public void onWaitingForResult() {
-					// TODO Auto-generated method stub		
 				}		
 				@Override
 				public void onReceivingResult(Packet p) {
 					// checking the result
 					if(p.getResultState()) 
-					{
-						
+					{				
 						//filling the information in list
-						orderReport1= p.<OrderReport>convertedResultListForCommand(Command.getOrderReport);
-						/*if(orderReport1.isEmpty()==true)
-						{
-							showError("Error,Please Try Again Later");
-							return;
-						}*/
+						orderReport1= p.<OrderReport>convertedResultListForCommand(Command.getOrderReport);					
 						//building the incoming result 
-						BuildTableViewForOrder(tblViewOrder1, orderReport1);
-
-						
+						BuildTableViewForOrder(tblViewOrder1, orderReport1);	
 					}
 					else
 						System.out.println("Fail: " + p.getExceptionMessage());		
@@ -692,27 +634,18 @@ public class ReportsController implements Initializable{
 			send.start();
 			//sending the second packet
 			SystemSender send2 = new SystemSender(packet2);
-			send2.registerHandler(new IResultHandler() {
-				
+			send2.registerHandler(new IResultHandler() {	
 				@Override
 				public void onWaitingForResult() {
-					// TODO Auto-generated method stub		
 				}		
 				@Override
 				public void onReceivingResult(Packet p) {
-					// TODO Auto-generated method stub
 					if(p.getResultState()) 
 					{
 						//filling the information in list
-						orderReport2= p.<OrderReport>convertedResultListForCommand(Command.getOrderReport);
-						/*if(orderReport2.isEmpty()==true)
-						{
-							showError("Error,Please Try Again Later");
-							return;
-						}*/
+						orderReport2= p.<OrderReport>convertedResultListForCommand(Command.getOrderReport);						
 						//building the incoming result 
 						BuildTableViewForOrder(tblViewOrder2, orderReport2);
-
 					}
 					else
 						System.out.println("Fail: " + p.getExceptionMessage());	
@@ -762,11 +695,9 @@ public class ReportsController implements Initializable{
 			}
 			//sending the packet
 			SystemSender send = new SystemSender(packet);
-			send.registerHandler(new IResultHandler() {
-				
+			send.registerHandler(new IResultHandler() {			
 				@Override
 				public void onWaitingForResult() {
-					// TODO Auto-generated method stub		
 				}		
 				@Override
 				public void onReceivingResult(Packet p) {
@@ -775,16 +706,8 @@ public class ReportsController implements Initializable{
 					{
 						
 						//getting the information from the returned packet
-						ArrayList<SatisfactionReport> surveyReport ;
-						
-						surveyReport= p.<SatisfactionReport>convertedResultListForCommand(Command.getSatisfactionReport);
-						//checking the list
-						/*if(surveyReport.isEmpty()==true)
-						{
-							showError("Error,There Is No Data For This Selection");
-							return;
-						}*/
-						
+						ArrayList<SatisfactionReport> surveyReport ;					
+						surveyReport= p.<SatisfactionReport>convertedResultListForCommand(Command.getSatisfactionReport);				
 						//sending the wanted table and the result to function that builds the tableview
 						//BuildTableViewForSatisfaction(tblViewSatisfaction1,surveyReport);
 						BuildTableViewForSatisfaction(tblViewSatisfaction1, surveyReport);
@@ -797,28 +720,17 @@ public class ReportsController implements Initializable{
 			send.start();
 			//sending the second packet
 			SystemSender send2 = new SystemSender(packet2);
-			send2.registerHandler(new IResultHandler() {
-				
+			send2.registerHandler(new IResultHandler() {			
 				@Override
 				public void onWaitingForResult() {
-					// TODO Auto-generated method stub		
 				}		
 				@Override
 				public void onReceivingResult(Packet p) {
-					// TODO Auto-generated method stub
 					if(p.getResultState()) 
 					{
 						//getting the information from the returned packet
-						ArrayList<SatisfactionReport> surveyReport ;
-						
-						surveyReport= p.<SatisfactionReport>convertedResultListForCommand(Command.getSatisfactionReport);
-						//checking the list
-						/*if(surveyReport.isEmpty()==true)
-						{
-							showError("Error,There Is No Data For This Selection");
-							return;
-						}*/
-						
+						ArrayList<SatisfactionReport> surveyReport ;			
+						surveyReport= p.<SatisfactionReport>convertedResultListForCommand(Command.getSatisfactionReport);									
 						//sending the wanted table and the result to function that builds the tableview
 						//BuildTableViewForSatisfaction(tblViewSatisfaction1,surveyReport);
 						BuildTableViewForSatisfaction(tblViewSatisfaction2, surveyReport);
@@ -829,28 +741,28 @@ public class ReportsController implements Initializable{
 				}
 			});
 			send2.start();
-		}
-	
-		
-	
+		}	
 	}
 	/**
 	 * Generates Reports for Branch Manager
 	 */
-	@SuppressWarnings("deprecation")
 	public void generateReportForBranchManager(int brId,String report,int year,int quartely)
 	{
 		ArrayList<String > reportinfo1=new ArrayList<>();
 		brId=Integer.parseInt(cbBranches.getSelectionModel().getSelectedItem());
 		reportinfo1.add(cbQuarterly1.getSelectionModel().getSelectedItem().toString());
 		reportinfo1.add(cbBranchesName.getSelectionModel().getSelectedItem().toString());
+		//handling information
 		lblFirstReportSection.setVisible(true);
 		lblFirstReportSection.setText("Generated Report For Branch "+reportinfo1.get(1)+" Quarter "+reportinfo1.get(0));
 		if(report.equals("Complains"))
 		{
+			lblFirstReportSection.setVisible(false);
+			lblSecondReportSection.setVisible(false);
 			//setting barchart1
 			barChart1.setVisible(false);
 			barChart1.getData().clear();
+			barChart.setTitle("Branch "+reportinfo1.get(1)+" Quarter "+reportinfo1.get(0));
 			//handling Complains Report
 			//opening packet
 			Packet packet = new Packet();
@@ -864,29 +776,18 @@ public class ReportsController implements Initializable{
 			packet.setParametersForCommand(Command.getComplainsForReport, info);
 			//sending the packet
 			SystemSender send = new SystemSender(packet);
-			send.registerHandler(new IResultHandler() {
-				
+			send.registerHandler(new IResultHandler() {	
 				@Override
-				public void onWaitingForResult() {
-					// TODO Auto-generated method stub
-					
-				}
-				
+				public void onWaitingForResult() {	
+				}	
 				@Override
 				public void onReceivingResult(Packet p) {
-					// TODO Auto-generated method stub
 					if(p.getResultState())
 					{
 						//getting the information from the returned packet
 						ArrayList<Complain> complainList ;
 						int active=0,notactive=0;
 						complainList= p.<Complain>convertedResultListForCommand(Command.getComplainsForReport);
-						//checking the list
-						/*if(complainList.isEmpty()==true)
-						{
-							showError("Error,There Is No Data For This Selection");
-							return;
-						}*/
 						//gathering information for the chart
 						for(Complain comp : complainList)
 						{
@@ -897,22 +798,10 @@ public class ReportsController implements Initializable{
 								notactive++;
 						}	
 						//filling and initialize the barchart
-						BuildBarChartForComplain(barChart, active, notactive);
-						/*
-						barChart.setVisible(true);
-						barChart.setTitle("Complains Status");
-						XYChart.Series<String, Integer> ser1=new XYChart.Series<>();
-						XYChart.Series<String, Integer> ser2=new XYChart.Series<>();
-						ser1.getData().add(new XYChart.Data<>("",active));
-						ser1.setName("Active");
-						ser2.getData().add(new XYChart.Data<>("",notactive));
-						ser2.setName("Not Active");
-						barChart.getData().add(ser1);
-						barChart.getData().add(ser2);*/
+						BuildBarChartForComplain(barChart, active, notactive);					
 					}
 					else
-						System.out.println("Fail: " + p.getExceptionMessage());	
-					
+						System.out.println("Fail: " + p.getExceptionMessage());					
 				}
 			});
 			send.start();	
@@ -931,40 +820,33 @@ public class ReportsController implements Initializable{
 			packet.setParametersForCommand(Command.getIncomeReport, info);
 			//sending the packet
 			SystemSender send = new SystemSender(packet);
-			send.registerHandler(new IResultHandler() {
-				
+			send.registerHandler(new IResultHandler() {	
 				@Override
-				public void onWaitingForResult() {
-					// TODO Auto-generated method stub
-					
-				}
-				
+				public void onWaitingForResult() {					
+				}		
 				@Override
 				public void onReceivingResult(Packet p) {
-					// TODO Auto-generated method stub
 					if(p.getResultState())
 					{
 						//getting the information from the returned packet
-						ArrayList<IncomeReport> IncomeList ;
-						
+						ArrayList<IncomeReport> IncomeList ;	
 						IncomeList= p.<IncomeReport>convertedResultListForCommand(Command.getIncomeReport);
 						//checking the list
 						IncomeReport newincomereport = null;
 						if(IncomeList.isEmpty()==false)
 						{
+							//getting the report information
 							newincomereport=new IncomeReport(IncomeList.get(0).getBrId(), IncomeList.get(0).getBrName(), IncomeList.get(0).getAmount());
 						}
 						//building the incoming result 
 						//sending the wanted table and the result to function that builds the tableview
-						BuildTableViewForIncome(table1Income, newincomereport);
-						
+						BuildTableViewForIncome(table1Income, newincomereport);						
 					}
 					else
 						System.out.println("Fail: " + p.getExceptionMessage());	
 				}
 			});
 			send.start();	
-
 		}
 		if(report.equals("Orders"))
 		{
@@ -983,30 +865,17 @@ public class ReportsController implements Initializable{
 			send.registerHandler(new IResultHandler() {
 				
 				@Override
-				public void onWaitingForResult() {
-					// TODO Auto-generated method stub
-					
-				}
-				
+				public void onWaitingForResult() {					
+				}			
 				@Override
 				public void onReceivingResult(Packet p) {
-					// TODO Auto-generated method stub
 					if(p.getResultState())
 					{
 						//getting the information from the returned packet
-						ArrayList<OrderReport> IncomeList ;
-						
-						IncomeList= p.<OrderReport>convertedResultListForCommand(Command.getOrderReport);
-						//checking the list
-						/*if(IncomeList.isEmpty()==true)
-						{
-							showError("Error,There Is No Data For This Selection");
-							return;
-						}*/
-						
+						ArrayList<OrderReport> IncomeList ;			
+						IncomeList= p.<OrderReport>convertedResultListForCommand(Command.getOrderReport);					
 						//sending the wanted table and the result to function that builds the tableview
-						BuildTableViewForOrder(tblViewOrder1, IncomeList);
-						
+						BuildTableViewForOrder(tblViewOrder1, IncomeList);		
 					}
 					else
 						System.out.println("Fail: " + p.getExceptionMessage());	
@@ -1028,44 +897,28 @@ public class ReportsController implements Initializable{
 			packet.setParametersForCommand(Command.getSatisfactionReport, info);
 			//sending the packet
 			SystemSender send = new SystemSender(packet);
-			send.registerHandler(new IResultHandler() {
-				
+			send.registerHandler(new IResultHandler() {	
 				@Override
-				public void onWaitingForResult() {
-					// TODO Auto-generated method stub
-					
+				public void onWaitingForResult() {					
 				}
-				
 				@Override
 				public void onReceivingResult(Packet p) {
-					// TODO Auto-generated method stub
 					if(p.getResultState())
 					{
 						//getting the information from the returned packet
 						ArrayList<SatisfactionReport> surveyReport ;
-						
-						surveyReport= p.<SatisfactionReport>convertedResultListForCommand(Command.getSatisfactionReport);
-						//checking the list
-						/*if(surveyReport.isEmpty()==true)
-						{
-							showError("Error,There Is No Data For This Selection");
-							return;
-						}*/
-						
+						surveyReport= p.<SatisfactionReport>convertedResultListForCommand(Command.getSatisfactionReport);					
 						//sending the wanted table and the result to function that builds the tableview
 						//BuildTableViewForSatisfaction(tblViewSatisfaction1,surveyReport);
 						BuildTableViewForSatisfaction(tblViewSatisfaction1, surveyReport);
 						BuildBarChartForSatisfaction(bcSatisfaction1,surveyReport,reportinfo1);
-
 					}
 					else
 						System.out.println("Fail: " + p.getExceptionMessage());	
 				}
 			});
 			send.start();	
-		}
-	
-		
+		}		
 	}
 	/**
 	 * This function starts when the user clicks on generate report button , 
@@ -1107,20 +960,8 @@ public class ReportsController implements Initializable{
 			generateReportForBranchesManager(report,year,quartely1);
 		else
 			generateReportForBranchManager(employee.getBranchId(),report,year,quartely1);	
-
 	}
-
-	/**
-	 * This function show error message 
-	 * @param str error message
-	 */
-	public void showError(String str)
-	{
-		JOptionPane.showMessageDialog(null, 
-				str, 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE);
-	}
+	
 	/**
 	 * handling first branch  number combo box
 	 */
@@ -1245,8 +1086,6 @@ public class ReportsController implements Initializable{
 			cbBranchTwoName.getSelectionModel().select(1);		
 		}
 	}
-	
-
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// hiding the not wanted fields and options
@@ -1277,9 +1116,7 @@ public class ReportsController implements Initializable{
 		send.registerHandler(new IResultHandler() {
 			
 			@Override
-			public void onWaitingForResult() {
-				// TODO Auto-generated method stub
-				
+			public void onWaitingForResult() {				
 			}
 			
 			@Override
@@ -1293,7 +1130,7 @@ public class ReportsController implements Initializable{
 					//checking the list
 					 if(branchlist.isEmpty()==true)
 					 {
-						 showError("Error , Please Try Again");
+							ConstantData.displayAlert(AlertType.ERROR, "Error , Please Try Again","", null);
 							return;
 					 }
 					 //checking employee type
