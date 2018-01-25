@@ -617,6 +617,7 @@ public class OrderController implements Initializable{
 				if (p.getResultState())
 				{
 					ConstantData.displayAlert(AlertType.INFORMATION, "Order created", "Order confirmation", "Order has been created thanks for buying in our shop");
+					CartController.cartProducts.clear();
 					primaryStage.close();
 					CartController.cartProducts.clear();
 					CustomerMenuController custController = new CustomerMenuController();
