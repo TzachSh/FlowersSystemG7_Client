@@ -136,6 +136,20 @@ public class CustomerController implements Initializable {
 			}
 		});	
 	}
+	
+	public void onClosingForm()
+	{
+		//closing the window
+		 myStage.close();
+		 //getting the menu object
+		  ManagersMenuController menu = new ManagersMenuController();
+		  try {
+			  //opening the menu window
+			menu.start(new Stage());
+		} catch (Exception e) {
+			ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
+		}
+	}
 	/**
 	 * This function empty the credit card
 	 */
