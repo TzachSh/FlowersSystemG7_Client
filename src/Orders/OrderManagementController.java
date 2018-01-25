@@ -39,6 +39,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -161,8 +163,10 @@ public class OrderManagementController implements Initializable {
 					data = FXCollections.observableArrayList(orderList);
 					fillOrders();
 				}
-				else//if it was error in connection
-					JOptionPane.showMessageDialog(null,"Connection error","Error",JOptionPane.ERROR_MESSAGE);
+				else{//if it was error in connection
+					Alert alert = new Alert(AlertType.ERROR,"Connection error");
+					alert.show();
+				}
 			}
 		});
 		send.start();

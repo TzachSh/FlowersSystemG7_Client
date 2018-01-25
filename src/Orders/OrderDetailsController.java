@@ -209,7 +209,7 @@ public class OrderDetailsController implements Initializable {
 					lblReqDate.setText(formatter.format(order.getRequestedDate()));
 				}
 				else//if it was error in connection
-					JOptionPane.showMessageDialog(null,"Connection error","Error",JOptionPane.ERROR_MESSAGE);
+					ConstantData.displayAlert(AlertType.ERROR, "Orders Error","Error Getting Orders", "Can't retrieve orders from server");
 			}
 		});
 		send.start();

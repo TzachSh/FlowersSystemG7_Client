@@ -213,18 +213,18 @@ public class AccountController implements Initializable{
 		//checking that the credit card text fields is not empty
 		if(txtCreditCard1.getText().isEmpty()||txtCreditCard2.getText().isEmpty()||txtCreditCard3.getText().isEmpty()||txtCreditCard4.getText().isEmpty()||txtCreditCard5.getText().isEmpty())
 		{
-			showError("Please Insert Valid Credit Card");
+			ConstantData.displayAlert(AlertType.ERROR, "Missing Field", "Credit Card", "Please Insert Valid Credit Card");
 			return;
 		}
 		//checking if the digits is 4 in the credit card fields
 		if(txtCreditCard1.getText().length()!=4||txtCreditCard2.getText().length()!=4||txtCreditCard3.getText().length()!=4||txtCreditCard4.getText().length()!=4||txtCreditCard5.getText().length()!=4)
 		{
-			showError("Please Insert 4 Digits For Credit Card Section");
+			ConstantData.displayAlert(AlertType.ERROR, "Missing Field", "Credit Card", "Please Insert 4 Digits For Credit Card Section");
 			return;
 		}
 		if(rbAddMemberShip.isSelected()==true&&txtDiscount.getText().isEmpty())
 		{
-			showError("Please Pick MemberShip");
+			ConstantData.displayAlert(AlertType.ERROR, "Missing Field", "MemberShip", "Please Pick MemberShip");
 			return;
 		}
 		//getting the information
@@ -290,10 +290,7 @@ public class AccountController implements Initializable{
 							public void onReceivingResult(Packet p) {
 								if (p.getResultState())
 								{
-									JOptionPane.showMessageDialog(null, 
-											"The Account Has Been Added With MemberShip", 
-							                "Success", 
-							                JOptionPane.CLOSED_OPTION);
+									ConstantData.displayAlert(AlertType.INFORMATION, "Account", "Adding Account", "The Account Has Been Added With MemberShip Successfully");
 									//closing the window and returning to menu
 									myStage.close();
 									 ManagersMenuController menu = new ManagersMenuController();
@@ -312,6 +309,7 @@ public class AccountController implements Initializable{
 					}
 					else
 					{
+						
 						JOptionPane.showMessageDialog(null, 
 								"The Account Has Been Added Without MemberShip", 
 				                "Success", 
@@ -327,7 +325,7 @@ public class AccountController implements Initializable{
 					}
 				}
 				else
-					System.out.println("Fail: " + p.getExceptionMessage());
+					ConstantData.displayAlert(AlertType.ERROR, "Error", "Loading Error", p.getExceptionMessage());
 			}
 		});
 		//sending the packet
@@ -340,7 +338,7 @@ public class AccountController implements Initializable{
 	{
 		//checking that the id field is not empty
 		if(txtID.getText().isEmpty()) {
-			showError("Please Insert Customer's ID");
+			ConstantData.displayAlert(AlertType.ERROR, "Missing Field", "Customer ID", "Please Insert Customer's ID");
 			return;
 		}
 		//setting the id field and btn to be disable
@@ -381,7 +379,7 @@ public class AccountController implements Initializable{
 				memshipList= p.<Membership>convertedResultListForCommand(Command.getMemberShip);
 				if(cList.isEmpty())//checking that there is customer with this id
 				{
-					showError("Customer Not Exist In The DataBase Please Add Customer First");
+					ConstantData.displayAlert(AlertType.ERROR, "Customer ID", "Customer Not Exists", "Customer Not Exist In The DataBase Please Add Customer First");
 					btnCheckCustomersID.setDisable(false);
 					txtID.setDisable(false);
 					txtID.setText("");
@@ -419,7 +417,7 @@ public class AccountController implements Initializable{
 							accList=p.<Account>convertedResultListForCommand(Command.getAccountbycIDandBranch);
 							if(!accList.isEmpty())
 							{
-								showError("Customer Already Have Account");
+								ConstantData.displayAlert(AlertType.ERROR, "Customer Account", "Customer Not Exists", "Customer Already Have Account");
 								btnCheckCustomersID.setDisable(false);
 								txtID.setDisable(false);
 								txtID.setText("");
@@ -441,17 +439,6 @@ public class AccountController implements Initializable{
 		});
 		//sending the packet
 		send.start();
-	}
-	/**
-	 * This function show error message 
-	 * @param str error message
-	 */
-	public void showError(String str)
-	{
-		JOptionPane.showMessageDialog(null, 
-				str, 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE);
 	}
 	/**
 	 * getting the discount and the membership type once clicked on combo box
