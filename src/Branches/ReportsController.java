@@ -56,6 +56,8 @@ public class ReportsController implements Initializable{
 	
 	@FXML private Label lblBranchName;
 	@FXML private Label lblBranchNumber;
+	@FXML private Label lblFirstReportSection;
+	@FXML private Label lblSecondReportSection;
 	@FXML private Label lblEmployeeName;
 	@FXML private ComboBox<String> cbReports;
 	@FXML private TableView<IncomeReport> table1Income;
@@ -256,13 +258,13 @@ public class ReportsController implements Initializable{
 		table.getColumns().addAll(productCategory,orderId,creationDate,status,productId,productName,price,paymentMethod,address,phone,receiver);
 		table.setVisible(true);
 	}
-	public void BuildBarChartForSatisfaction(BarChart<String,Double> bartable,ArrayList<SatisfactionReport> info)
+	public void BuildBarChartForSatisfaction(BarChart<String,Double> bartable,ArrayList<SatisfactionReport> info, ArrayList<String> reportinfo1)
 	{
 		int i;
 		double avg=-1;
 		bartable.setVisible(true);
 		bartable.getData().clear();
-		bartable.setTitle("Satisfaction");
+		bartable.setTitle("Satisfaction Report For Branch "+reportinfo1.get(1)+"Quarter "+reportinfo1.get(0));
 		ArrayList<XYChart.Series<String, Double>> serlist=new ArrayList<>();
 		for(i=0;i<info.size();i++)
 		{
@@ -274,6 +276,7 @@ public class ReportsController implements Initializable{
 			}
 			serlist.get(i).getData().add(new XYChart.Data<>("",avg));
 			serlist.get(i).setName(info.get(i).getQuestion());
+
 			bartable.getData().add(serlist.get(i));
 		}
 
@@ -348,7 +351,32 @@ public class ReportsController implements Initializable{
 	public void generateReportForBranchesManager(String report,int year,int quartely)
 	{
 		int brId;
+		ArrayList<String > reportinfo1=new ArrayList<>();
+		ArrayList<String > reportinfo2=new ArrayList<>();
 		brId=Integer.parseInt(cbBranches.getSelectionModel().getSelectedItem());
+		reportinfo1.add(""+Integer.parseInt(cbQuarterly1.getSelectionModel().getSelectedItem()));
+		reportinfo1.add(cbBranchesName.getSelectionModel().getSelectedItem().toString());
+		
+		
+		if(rbcomp.isSelected()==true)
+			reportinfo2.add(""+Integer.parseInt(cbQuarterly2.getSelectionModel().getSelectedItem()));
+		else
+			reportinfo2.add(""+Integer.parseInt(cbQuarterly1.getSelectionModel().getSelectedItem()));
+		
+		if(rbcompbranch.isSelected()==true)
+			reportinfo2.add(cbBranchTwoName.getSelectionModel().getSelectedItem().toString());
+		else
+			reportinfo2.add(cbBranchesName.getSelectionModel().getSelectedItem().toString());
+		
+		lblFirstReportSection.setVisible(true);
+		lblFirstReportSection.setText("Generated Report For Branch "+reportinfo1.get(1)+" Quarter "+reportinfo1.get(0));
+		
+		if(rbcomp.isSelected()||rbcompbranch.isSelected())
+		{
+			lblSecondReportSection.setVisible(true);
+			lblSecondReportSection.setText("Generated Report For Branch "+reportinfo2.get(1)+" Quarter "+reportinfo2.get(0));
+		}
+		
 		
 		//getting what the branches manager want to do 
 		//choice 0 is only 1 branch and only one quartiles
@@ -548,13 +576,12 @@ public class ReportsController implements Initializable{
 							
 							//filling the information in list
 							incomeReport1= p.<IncomeReport>convertedResultListForCommand(Command.getIncomeReport);
-							if(incomeReport1.isEmpty()==true)
-							{
-								showError("Error,Please Try Again Later");
-								return;
-							}
+							IncomeReport newincomereport=null;
+							if(incomeReport1.isEmpty()==false)
+								newincomereport=new IncomeReport(incomeReport1.get(0).getBrId(), incomeReport1.get(0).getBrName(), incomeReport1.get(0).getAmount());
+								
+							
 							//building the incoming result 
-							IncomeReport newincomereport=new IncomeReport(incomeReport1.get(0).getBrId(), incomeReport1.get(0).getBrName(), incomeReport1.get(0).getAmount());
 							//sending the wanted table and the result to function that builds the tableview
 							BuildTableViewForIncome(table1Income, newincomereport);
 						}
@@ -578,13 +605,11 @@ public class ReportsController implements Initializable{
 						{
 							//filling the information in the list
 							incomeReport2= p.<IncomeReport>convertedResultListForCommand(Command.getIncomeReport);
-							if(incomeReport2.isEmpty()==true)
-							{
-								showError("Error,Please Try Again Later");
-								return;
-							}
+							IncomeReport newincomereport=null;
+							if(incomeReport2.isEmpty()==false)
+								newincomereport=new IncomeReport(incomeReport2.get(0).getBrId(), incomeReport2.get(0).getBrName(), incomeReport2.get(0).getAmount());
+
 							//building the incoming result 
-							IncomeReport newincomereport=new IncomeReport(incomeReport2.get(0).getBrId(), incomeReport2.get(0).getBrName(), incomeReport2.get(0).getAmount());
 							//sending the wanted table and the result to function that builds the tableview
 							BuildTableViewForIncome(table2Income, newincomereport);
 						}
@@ -650,11 +675,11 @@ public class ReportsController implements Initializable{
 						
 						//filling the information in list
 						orderReport1= p.<OrderReport>convertedResultListForCommand(Command.getOrderReport);
-						if(orderReport1.isEmpty()==true)
+						/*if(orderReport1.isEmpty()==true)
 						{
 							showError("Error,Please Try Again Later");
 							return;
-						}
+						}*/
 						//building the incoming result 
 						BuildTableViewForOrder(tblViewOrder1, orderReport1);
 
@@ -680,11 +705,11 @@ public class ReportsController implements Initializable{
 					{
 						//filling the information in list
 						orderReport2= p.<OrderReport>convertedResultListForCommand(Command.getOrderReport);
-						if(orderReport2.isEmpty()==true)
+						/*if(orderReport2.isEmpty()==true)
 						{
 							showError("Error,Please Try Again Later");
 							return;
-						}
+						}*/
 						//building the incoming result 
 						BuildTableViewForOrder(tblViewOrder2, orderReport2);
 
@@ -754,16 +779,16 @@ public class ReportsController implements Initializable{
 						
 						surveyReport= p.<SatisfactionReport>convertedResultListForCommand(Command.getSatisfactionReport);
 						//checking the list
-						if(surveyReport.isEmpty()==true)
+						/*if(surveyReport.isEmpty()==true)
 						{
 							showError("Error,There Is No Data For This Selection");
 							return;
-						}
+						}*/
 						
 						//sending the wanted table and the result to function that builds the tableview
 						//BuildTableViewForSatisfaction(tblViewSatisfaction1,surveyReport);
 						BuildTableViewForSatisfaction(tblViewSatisfaction1, surveyReport);
-						BuildBarChartForSatisfaction(bcSatisfaction1,surveyReport);
+						BuildBarChartForSatisfaction(bcSatisfaction1,surveyReport,reportinfo1);
 					}
 					else
 						System.out.println("Fail: " + p.getExceptionMessage());		
@@ -788,15 +813,16 @@ public class ReportsController implements Initializable{
 						
 						surveyReport= p.<SatisfactionReport>convertedResultListForCommand(Command.getSatisfactionReport);
 						//checking the list
-						if(surveyReport.isEmpty()==true)
+						/*if(surveyReport.isEmpty()==true)
 						{
 							showError("Error,There Is No Data For This Selection");
 							return;
-						}
+						}*/
 						
 						//sending the wanted table and the result to function that builds the tableview
 						//BuildTableViewForSatisfaction(tblViewSatisfaction1,surveyReport);
 						BuildTableViewForSatisfaction(tblViewSatisfaction2, surveyReport);
+						BuildBarChartForSatisfaction(bcSatisfaction2,surveyReport,reportinfo2);
 					}
 					else
 						System.out.println("Fail: " + p.getExceptionMessage());	
@@ -814,7 +840,12 @@ public class ReportsController implements Initializable{
 	@SuppressWarnings("deprecation")
 	public void generateReportForBranchManager(int brId,String report,int year,int quartely)
 	{
-
+		ArrayList<String > reportinfo1=new ArrayList<>();
+		brId=Integer.parseInt(cbBranches.getSelectionModel().getSelectedItem());
+		reportinfo1.add(cbQuarterly1.getSelectionModel().getSelectedItem().toString());
+		reportinfo1.add(cbBranchesName.getSelectionModel().getSelectedItem().toString());
+		lblFirstReportSection.setVisible(true);
+		lblFirstReportSection.setText("Generated Report For Branch "+reportinfo1.get(1)+" Quarter "+reportinfo1.get(0));
 		if(report.equals("Complains"))
 		{
 			//setting barchart1
@@ -851,11 +882,11 @@ public class ReportsController implements Initializable{
 						int active=0,notactive=0;
 						complainList= p.<Complain>convertedResultListForCommand(Command.getComplainsForReport);
 						//checking the list
-						if(complainList.isEmpty()==true)
+						/*if(complainList.isEmpty()==true)
 						{
 							showError("Error,There Is No Data For This Selection");
 							return;
-						}
+						}*/
 						//gathering information for the chart
 						for(Complain comp : complainList)
 						{
@@ -918,13 +949,12 @@ public class ReportsController implements Initializable{
 						
 						IncomeList= p.<IncomeReport>convertedResultListForCommand(Command.getIncomeReport);
 						//checking the list
-						if(IncomeList.isEmpty()==true)
+						IncomeReport newincomereport = null;
+						if(IncomeList.isEmpty()==false)
 						{
-							showError("Error,There Is No Data For This Selection");
-							return;
+							newincomereport=new IncomeReport(IncomeList.get(0).getBrId(), IncomeList.get(0).getBrName(), IncomeList.get(0).getAmount());
 						}
 						//building the incoming result 
-						IncomeReport newincomereport=new IncomeReport(IncomeList.get(0).getBrId(), IncomeList.get(0).getBrName(), IncomeList.get(0).getAmount());
 						//sending the wanted table and the result to function that builds the tableview
 						BuildTableViewForIncome(table1Income, newincomereport);
 						
@@ -968,11 +998,11 @@ public class ReportsController implements Initializable{
 						
 						IncomeList= p.<OrderReport>convertedResultListForCommand(Command.getOrderReport);
 						//checking the list
-						if(IncomeList.isEmpty()==true)
+						/*if(IncomeList.isEmpty()==true)
 						{
 							showError("Error,There Is No Data For This Selection");
 							return;
-						}
+						}*/
 						
 						//sending the wanted table and the result to function that builds the tableview
 						BuildTableViewForOrder(tblViewOrder1, IncomeList);
@@ -1016,16 +1046,16 @@ public class ReportsController implements Initializable{
 						
 						surveyReport= p.<SatisfactionReport>convertedResultListForCommand(Command.getSatisfactionReport);
 						//checking the list
-						if(surveyReport.isEmpty()==true)
+						/*if(surveyReport.isEmpty()==true)
 						{
 							showError("Error,There Is No Data For This Selection");
 							return;
-						}
+						}*/
 						
 						//sending the wanted table and the result to function that builds the tableview
 						//BuildTableViewForSatisfaction(tblViewSatisfaction1,surveyReport);
 						BuildTableViewForSatisfaction(tblViewSatisfaction1, surveyReport);
-						BuildBarChartForSatisfaction(bcSatisfaction1,surveyReport);
+						BuildBarChartForSatisfaction(bcSatisfaction1,surveyReport,reportinfo1);
 
 					}
 					else
@@ -1070,6 +1100,8 @@ public class ReportsController implements Initializable{
 		tblViewSatisfaction2.setVisible(false);
 		bcSatisfaction1.setVisible(false);
 		bcSatisfaction2.setVisible(false);
+		lblSecondReportSection.setVisible(false);
+		lblFirstReportSection.setVisible(false);
 		//checking which user is using this screen and by its type , function will be called depended on his type 
 		if(employee.getRole().toString().equals((Role.BranchesManager).toString()))
 			generateReportForBranchesManager(report,year,quartely1);
