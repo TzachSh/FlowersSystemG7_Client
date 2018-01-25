@@ -26,6 +26,8 @@ import Products.ConstantData;
 import Products.Product;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableIntegerArray;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -35,6 +37,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -43,15 +46,25 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 
-public class OrderController implements Initializable, ChangeListener<String>{
+public class OrderController implements Initializable{
 
 	@FXML
-	private TextField txtTimeRequested;
+	private ComboBox<Integer> cmbHour;
+	@FXML
+	private Label lblErrAdd;
+	@FXML
+	private Label lblErrName;
+	@FXML
+	private Label lblErrPhone;	
+	@FXML
+	private ComboBox<Integer> cmbMin;
 	@FXML
 	private Button btnNext;
 	@FXML
@@ -89,21 +102,26 @@ public class OrderController implements Initializable, ChangeListener<String>{
 	private Label lblAvailableBalance;
 	@FXML
 	private TextField txtBlncePay;
-	
 	@FXML
 	private CheckBox chkExpressDelivery;
 	@FXML
 	private CheckBox chkDelivery;
+	@FXML
+	private Label lblDeliveryCost;
+	
+	private final double deliveryPayment=10;
 	private double totalAfter;
 	private double blncePay;
 	private ToggleGroup toggleGroup = new ToggleGroup();
 	private int tabActive=0;
-	private int emptyLines=3;
 	private static Stage primaryStage;
 	private double blnce;
 	private Account account;
-	private MemberShipAccount memberAc;
-	private final double deliveryPrice=10;
+	ArrayList<Integer> hours= new ArrayList<>();
+	ArrayList<Integer> min = new ArrayList<>();
+	private boolean phoneCorrect;
+	private boolean nameCorrect;
+	private boolean addressCorrect;
 	public OrderController() {}
 	public void start(Stage arg0) throws Exception {
 		primaryStage=arg0;
@@ -137,48 +155,158 @@ public class OrderController implements Initializable, ChangeListener<String>{
 		});
 	}
 	@Override
-	public void initialize(URL location, ResourceBundle resources) {		
+	public void initialize(URL location, ResourceBundle resources) {
+		lblDeliveryCost.setTextFill(Color.RED);
+		lblDeliveryCost.setVisible(false);
+		lblErrName.setVisible(false);
+		lblErrAdd.setVisible(false);
+		lblErrPhone.setVisible(false);
+		lblLeftToPay.setTextFill(Color.RED);
+		lblErrAdd.setTextFill(Color.RED);
+		lblErrPhone.setTextFill(Color.RED);
+		lblErrName.setTextFill(Color.RED);
 		registerDateTimePicker();
-		registerTxtRequestedTime();
+		initCmbTime();
 		btnNext.setDisable(true);
 		registerRadionBtn();
 		registerChkExpressDelivery();
 		registerChkDelivery();
 		getPriceDetails();
 		registerLblLeftToPayListener();
-		lblLeftToPay.setText(String.format("%.2f¤", totalAfter-blncePay));
-		txtAddress.textProperty().addListener(this);
-		txtName.textProperty().addListener(this);
-		txtPhone.textProperty().addListener(this);
+		addListeners();
+		if(chkDelivery.isSelected())
+			lblLeftToPay.setText(String.format("%.2f¤", totalAfter-blncePay+deliveryPayment));
+		else
+			lblLeftToPay.setText(String.format("%.2f¤", totalAfter-blncePay));
 		delivery.setDisable(true);
 		payment.setDisable(true);
 	}
 
+	private void addListeners() {
+		txtAddress.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) 
+			{
+				if(newValue.length()>50)
+				{
+					txtAddress.setText(oldValue);
+					lblErrAdd.setText("Too long");
+					lblErrAdd.setVisible(true);
+				}
+				else if(newValue.length()<5)
+				{
+					addressCorrect=false;
+					btnNext.setDisable(true);
+					lblErrAdd.setText("Too short");
+					lblErrAdd.setVisible(true);
+				}
+				else 
+				{
+					addressCorrect=true;
+					lblErrAdd.setVisible(false);
+					if(phoneCorrect && nameCorrect)
+						btnNext.setDisable(false);
+				}
+			}
+
+		});
+		txtPhone.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) 
+			{
+				if(newValue.matches("^(?:(?:(\\+?972|\\(\\+?972\\)|\\+?\\(972\\))(?:\\s|\\.|-)?([1-9]\\d?))|(0[23489]{1})|(0[57]{1}[0-9]))(?:\\s|\\.|-)?([^0\\D]{1}\\d{2}(?:\\s|\\.|-)?\\d{4})$"))//check if correct number
+				{
+					phoneCorrect=true;
+					if(nameCorrect && addressCorrect)
+					{
+						lblErrPhone.setVisible(false);
+						lblErrPhone.setText("incorrect number format");
+						btnNext.setDisable(false);
+					}
+				}
+				else 
+				{
+					lblErrPhone.setVisible(true);
+					lblErrPhone.setText("Incorrect number");
+					phoneCorrect=false;
+					btnNext.setDisable(true);
+				}
+			}
+		});
+		txtName.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if(newValue.length()>50)//check the max len of the name
+					txtName.setText(oldValue);
+				else if(newValue.length()>=2 && newValue.matches("[a-zA-Z]+"))//check alphabetical
+				{
+					nameCorrect=true;
+					if(phoneCorrect && addressCorrect)
+						btnNext.setDisable(false);
+					lblErrName.setVisible(false);
+				}
+				else//else incorrect
+				{
+					nameCorrect=false;
+					btnNext.setDisable(true);
+					lblErrName.setVisible(true);
+					lblErrName.setText("Name incorrect");
+				}
+			}
+		});
+		
+		
+	}
+	private void initCmbTime() {
+				
+		for(int i = 0 ; i < 60;i++)
+		{
+			if(i<24)
+				hours.add(i);
+			min.add(i);
+		}
+		cmbHour.setItems(FXCollections.observableArrayList(hours));
+		cmbMin.setItems(FXCollections.observableArrayList(min));
+	}
 	private void registerLblLeftToPayListener() {
 		txtBlncePay.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				if( !newValue.matches("[0-9]*\\.?[0-9]?[0-9]?"))//check if number
-								
 				{
-					txtBlncePay.setText(oldValue);
+					lblLeftToPay.setText("Invalid price number");
+					lblLeftToPay.setVisible(true);
+					btnNext.setDisable(true);
 				}
 				else {
 					try {
 					blncePay=Double.parseDouble(txtBlncePay.getText());
-					}catch(Exception e) {};
-					double left = totalAfter-blncePay;
-					if(left < 0 || blncePay>blnce)
-						txtBlncePay.setText(oldValue);
+					}catch(Exception e) {
+						blncePay=0;
+					};
+					double left;
+					if(chkDelivery.isSelected())
+						left = totalAfter-blncePay+deliveryPayment;
 					else
+						left = totalAfter-blncePay;
+					if(left < 0 || blncePay>blnce)
+					{
+						lblLeftToPay.setVisible(true);
+						lblLeftToPay.setText("The amount is bigger than the price");
+						btnNext.setDisable(true);
+					}
+					else
+					{
 						lblLeftToPay.setText(String.format("%.2f¤", left));
+						btnNext.setDisable(false);
+					}
 				}
 			}
 		});
 		
 	}
 	private void getPriceDetails() {
-		lblTotalBeforeDiscount.setText(""+CartController.getTotalPrice());
+		lblTotalBeforeDiscount.setText(String.format("%.2f¤",CartController.getTotalPrice()));
 		account = CustomerMenuController.currentAcc;		
 		if(account.getMemberShip() != null)
 		{ 
@@ -187,8 +315,6 @@ public class OrderController implements Initializable, ChangeListener<String>{
 			double discount = CartController.getTotalPrice()*account.getMemberShip().getDiscount()/100;
 			lblDiscount.setText(String.format("%.2f¤",discount));
 			totalAfter=CartController.getTotalPrice()*(1-account.getMemberShip().getDiscount()/100);
-			if(chkDelivery.isSelected())
-				totalAfter+=deliveryPrice;
 			lblTotal.setText(String.format("%.2f¤",totalAfter));
 		}
 		else
@@ -214,15 +340,23 @@ public class OrderController implements Initializable, ChangeListener<String>{
 			public void handle(ActionEvent event) {
 				if(chkDelivery.isSelected())
 				{
+					lblTotal.setText(String.format("%.2f¤+%.2f¤",totalAfter,deliveryPayment));
+					lblDeliveryCost.setVisible(true);
 					txtAddress.setDisable(false);
 					txtName.setDisable(false);
 					txtPhone.setDisable(false);
 				}
 				else
 				{
+					lblTotal.setText(String.format("%.2f¤",totalAfter));
+					lblDeliveryCost.setVisible(false);
+					txtAddress.setText("");
+					txtName.setText("");
+					txtPhone.setText("");
 					txtAddress.setDisable(true);
 					txtName.setDisable(true);
 					txtPhone.setDisable(true);
+					btnNext.setDisable(false);
 				}
 				
 			}
@@ -235,24 +369,30 @@ public class OrderController implements Initializable, ChangeListener<String>{
 			public void handle(ActionEvent event) {
 				if(chkExpressDelivery.isSelected())
 				{
+					lblTotal.setText(String.format("%.2f¤+%.2f¤",totalAfter,deliveryPayment));
+					lblDeliveryCost.setVisible(true);
 					chkDelivery.setSelected(true);
 					chkDelivery.setDisable(true);
 					requestedDate.setDisable(true);
 					txtAddress.setDisable(false);
 					txtName.setDisable(false);
 					txtPhone.setDisable(false);
-					txtTimeRequested.setDisable(true);
 					requestedDate.setValue(LocalDate.now());
 					LocalDateTime dt = LocalDateTime.now().plusHours(3);
-					txtTimeRequested.setText(dt.getHour() +":"+(dt.getMinute()<10?"0"+dt.getMinute():dt.getMinute()));
+					cmbHour.getSelectionModel().clearAndSelect(dt.getHour());
+					cmbMin.getSelectionModel().clearAndSelect(dt.getMinute());
+					cmbHour.setDisable(true);
+					cmbMin.setDisable(true);
 				}
 				else
 				{
+					lblTotal.setText(String.format("%.2f¤",totalAfter));
+					lblDeliveryCost.setVisible(false);
+					cmbHour.setDisable(false);
+					cmbMin.setDisable(false);
 					chkDelivery.setDisable(false);
 					requestedDate.setDisable(false);
-					txtTimeRequested.setDisable(false);
-					txtTimeRequested.setText("");
-
+					initCmbTime();
 				}
 				
 			}
@@ -278,17 +418,35 @@ public class OrderController implements Initializable, ChangeListener<String>{
 			tabPane.getSelectionModel().select(0);
 			date.setDisable(false);
 			delivery.setDisable(true);
+			btnNext.setDisable(false);
 			break;
 		case 2:
 			tabPane.getSelectionModel().select(1);
 			delivery.setDisable(false);
 			payment.setDisable(true);
 			btnNext.setText("Next");
+			if(chkDelivery.isSelected())
+				lblDeliveryCost.setVisible(true);
 			break;
 		    default:;
 		}
 		tabActive--;
 		
+	}
+	public void onClickCmbCorrect()
+	{
+		try {
+			int hour = cmbHour.getSelectionModel().getSelectedItem();
+			int min = cmbMin.getSelectionModel().getSelectedItem();
+			LocalDateTime dt = LocalDateTime.now().plusHours(3);
+			if(hour>dt.getHour() || (hour==dt.getHour() && min>= dt.getMinute()))
+					btnNext.setDisable(false);
+			else
+				btnNext.setDisable(true);
+		}
+		catch(Exception e) {
+			
+		}
 	}
 	protected void displayCart() {
 		 Stage cartStage = new Stage();
@@ -301,20 +459,6 @@ public class OrderController implements Initializable, ChangeListener<String>{
 				e.printStackTrace();
 			}
 	}
-	private void registerTxtRequestedTime() {
-		txtTimeRequested.textProperty().addListener(new ChangeListener<String>() {
-
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue,String newValue) {
-					if(txtTimeRequested.getText().matches("([01]?[0-9]|2[0-3]):[0-5][0-9]"))
-					{
-						btnNext.setDisable(false);
-					}
-					else
-						btnNext.setDisable(true);
-			}
-		});
-	}
 	public void onClickNextBtn() {
 		switch(tabActive)
 		{
@@ -322,15 +466,44 @@ public class OrderController implements Initializable, ChangeListener<String>{
 			tabPane.getSelectionModel().select(1);
 			delivery.setDisable(false);
 			date.setDisable(true);			
-			if(chkDelivery.isSelected() && emptyLines!=0)
+			if(chkDelivery.isSelected() && (!nameCorrect || !phoneCorrect || !addressCorrect))//if delivery is selected and not all fields are filled
 				btnNext.setDisable(true);
 			break;
 		case 1:
 			tabPane.getSelectionModel().select(2);
-			checkDisplayMode();
 			delivery.setDisable(true);
 			payment.setDisable(false);
-			btnNext.setText("Create order");				
+			btnNext.setText("Create order");
+			lblDeliveryCost.setVisible(false);
+			
+			if( lblLeftToPay.getText().matches("[0-9]*\\.?[0-9]?[0-9]?"))//check if number
+			{
+				lblLeftToPay.setText("Invalid price number");
+				btnNext.setDisable(true);
+			}
+			else {
+				try {
+				blncePay=Double.parseDouble(txtBlncePay.getText());
+				}catch(Exception e) {
+					blncePay=0;
+				};
+				double left;
+				if(chkDelivery.isSelected())
+					left = totalAfter-blncePay+deliveryPayment;
+				else
+					left = totalAfter-blncePay;
+				if(left < 0 || blncePay>blnce)
+				{
+					lblLeftToPay.setVisible(true);
+					lblLeftToPay.setText("The amount is bigger than the price");
+					btnNext.setDisable(true);
+				}
+				else
+				{
+					lblLeftToPay.setText(String.format("%.2f¤", left));
+					btnNext.setDisable(false);
+				}
+			}
 			break;
 		case 2:
 			insertOrder();
@@ -339,9 +512,7 @@ public class OrderController implements Initializable, ChangeListener<String>{
 		}
 		tabActive++;
 	}
-	protected void checkDisplayMode() {
-				
-	}
+
 	private void registerDateTimePicker() {
 		DatePicker minDate = new DatePicker(); // DatePicker, used to define max date available
 		minDate.setValue(LocalDate.now()); // Max date available will be one year
@@ -361,30 +532,21 @@ public class OrderController implements Initializable, ChangeListener<String>{
 		requestedDate.setDayCellFactory(dayCellFactory);
 		
 	}
-	@Override
-	public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-		if(oldValue.length()==0)
-			emptyLines--;
-		else if(newValue.length()==0)
-			emptyLines++;
-		if(!chkDelivery.isSelected())
-			btnNext.setDisable(false);
-		else
-			btnNext.setDisable(emptyLines!=0);
-	}
+
 	private void insertOrder()
 	{
-		String[] time = txtTimeRequested.getText().split(":");
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(Date.valueOf(requestedDate.getValue()));
-		cal.add(Calendar.HOUR_OF_DAY, Integer.parseInt(time[0]));
-		cal.add(Calendar.MINUTE, Integer.parseInt(time[1]));
+		cal.add(Calendar.HOUR_OF_DAY, cmbHour.getSelectionModel().getSelectedItem());
+		cal.add(Calendar.MINUTE, cmbMin.getSelectionModel().getSelectedItem());
 		Timestamp timestamp = new Timestamp(cal.getTimeInMillis());
 		Date dateNow = new Date(Calendar.getInstance().getTime().getTime());
 		
 		
 		//create order
 		ArrayList<Object> order = new ArrayList<>();
+		if(chkDelivery.isSelected())
+			totalAfter+=deliveryPayment;
 		order.add(new Order(0,dateNow,timestamp,account.getCustomerId(),Status.Pending,account.getBranchId(),totalAfter));
 		ArrayList<Object> prodInOrder = new ArrayList<>();
 		//set all products in order

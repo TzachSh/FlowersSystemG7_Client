@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
@@ -16,9 +17,11 @@
                      <children>
                         <DatePicker fx:id="requestedDate" layoutX="125.0" layoutY="59.0" />
                         <Label layoutX="32.0" layoutY="63.0" text="Requested date:" />
-                        <TextField fx:id="txtTimeRequested" layoutX="126.0" layoutY="102.0" />
                         <Label layoutX="32.0" layoutY="106.0" text="Requested time:" />
                         <CheckBox fx:id="chkExpressDelivery" layoutX="139.0" layoutY="144.0" mnemonicParsing="false" text="express delivery" />
+                        <ComboBox fx:id="cmbHour" layoutX="125.0" layoutY="102.0" onAction="#onClickCmbCorrect" prefHeight="25.0" prefWidth="77.0" promptText="Hour" />
+                        <ComboBox fx:id="cmbMin" layoutX="212.0" layoutY="102.0" onAction="#onClickCmbCorrect" prefHeight="25.0" prefWidth="90.0" promptText="Min" />
+                        <Label layoutX="138.0" layoutY="174.0" text="*Delivery cost is 10₪" />
                      </children>
                   </AnchorPane>
             </content>
@@ -34,6 +37,10 @@
                         <TextField fx:id="txtName" disable="true" layoutX="126.0" layoutY="67.0" />
                         <TextField fx:id="txtPhone" disable="true" layoutX="126.0" layoutY="104.0" />
                         <CheckBox fx:id="chkDelivery" layoutX="143.0" layoutY="14.0" mnemonicParsing="false" text="Set delivery option" />
+                        <Label fx:id="lblErrAdd" layoutX="295.0" layoutY="40.0" text="Label" />
+                        <Label fx:id="lblErrName" layoutX="295.0" layoutY="71.0" text="Label" />
+                        <Label fx:id="lblErrPhone" layoutX="295.0" layoutY="108.0" text="Label" />
+                        <Label layoutX="151.0" layoutY="146.0" text="*Delivery cost is 10₪" />
                      </children></AnchorPane>
             </content>
           </Tab>
@@ -56,14 +63,15 @@
                         <Label fx:id="lblDiscount" layoutX="190.0" layoutY="100.0" prefHeight="17.0" prefWidth="88.0" />
                         <Label layoutX="171.0" layoutY="126.0" />
                         <Label fx:id="lblAvailableBalance" layoutX="188.0" layoutY="159.0" prefHeight="17.0" prefWidth="91.0" />
-                        <Label fx:id="lblLeftToPay" layoutX="187.0" layoutY="220.0" prefHeight="17.0" prefWidth="92.0" />
+                        <Label fx:id="lblLeftToPay" layoutX="187.0" layoutY="220.0" prefHeight="17.0" prefWidth="207.0" />
                      </children>
                   </AnchorPane>
                </content>
             </Tab>
         </tabs>
       </TabPane>
-      <Button fx:id="btnNext" layoutX="218.0" layoutY="295.0" mnemonicParsing="false" onAction="#onClickNextBtn" text="Next" />
-      <Button fx:id="btnPrev" layoutX="150.0" layoutY="295.0" mnemonicParsing="false" onAction="#onClickBackBtn" text="Prev" />
+      <Button fx:id="btnNext" layoutX="220.0" layoutY="308.0" mnemonicParsing="false" onAction="#onClickNextBtn" text="Next" />
+      <Button fx:id="btnPrev" layoutX="128.0" layoutY="308.0" mnemonicParsing="false" onAction="#onClickBackBtn" text="Prev" />
+      <Label fx:id="lblDeliveryCost" layoutX="93.0" layoutY="280.0" text="Delivery cost will be included in you order" />
    </children>
 </AnchorPane>
