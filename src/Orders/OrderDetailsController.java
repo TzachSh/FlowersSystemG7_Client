@@ -150,11 +150,19 @@ public class OrderDetailsController implements Initializable {
 			e.printStackTrace();
 		}
 	}
+	
+	private void setButtonDisabledState(Button btn , boolean state)
+	{
+		if(order.getStatus() == Status.Canceled)
+			btn.setDisable(state);
+	}
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		getOrderDetails();
 		fillItems();
 		fillPayment();
+		setButtonDisabledState(btnCacenlOrder,true);
 	}
 
 	private void getOrderDetails() {

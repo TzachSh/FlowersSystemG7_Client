@@ -213,9 +213,9 @@ public class OrderManagementController implements Initializable {
 				{
 					DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                     VBox orderCol = new VBox(new Text(""+order.getoId()));
-                    orderCol.setMinWidth(30);
+                    orderCol.setMinWidth(0);
                     orderCol.setAlignment(Pos.CENTER);
-                    VBox amountCol = new VBox(new Text(String.format("%.2f¤",order.getTotal())));
+                    VBox amountCol = new VBox(new Text(String.format("%.2fâ‚ª",order.getTotal())));
                     amountCol.setMinWidth(50);
                     amountCol.setAlignment(Pos.CENTER_RIGHT);
                     VBox createdCol = new VBox(new Text(formatter.format(order.getCreationDate())));
