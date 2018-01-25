@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="425.0" prefWidth="539.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Orders.OrderManagementController">
+<AnchorPane prefHeight="425.0" prefWidth="585.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Orders.OrderManagementController">
    <children>
       <Button fx:id="btnBack" layoutX="260.0" layoutY="377.0" mnemonicParsing="false" onAction="#onClickBack" text="Back" />
       <Label layoutX="254.0" layoutY="14.0" text="My orders" />
@@ -15,9 +15,7 @@
       <Label layoutX="166.0" layoutY="116.0" text="Requested" />
       <Label layoutX="260.0" layoutY="116.0" text="Price" />
       <Label layoutX="329.0" layoutY="116.0" text="Payed" />
-      <Label layoutX="22.0" layoutY="63.0" text="Status:" />
-      <CheckBox fx:id="chBoxPending" layoutX="77.0" layoutY="63.0" mnemonicParsing="false" text="Pending" />
-      <CheckBox fx:id="chBoxCompleted" layoutX="182.0" layoutY="63.0" mnemonicParsing="false" text="Completed" />
-      <CheckBox fx:id="chBoxCanceled" layoutX="308.0" layoutY="63.0" mnemonicParsing="false" text="Canceled" />
+      <Label layoutX="22.0" layoutY="63.0" text="Filter By Status:" />
+      <ComboBox fx:id="cmbStatus" layoutX="149.0" layoutY="57.0" prefWidth="150.0" />
    </children>
 </AnchorPane>

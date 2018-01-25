@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 import javax.print.attribute.standard.DateTimeAtCompleted;
 import javax.swing.JOptionPane;
 
+import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory.Default;
+
 import Commons.Status;
 import Login.CustomerMenuController;
 import PacketSender.Command;
@@ -24,6 +26,8 @@ import Products.FlowerInProduct;
 import Products.Product;
 import Products.SelectProductController;
 import Products.SelectProductController.CatalogProductDetails;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -37,8 +41,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -62,14 +70,8 @@ public class OrderManagementController implements Initializable {
     @FXML
     private ListView<Order> listOrder;
     private ObservableList<Order> data;
-    
     @FXML
-    private CheckBox chBoxPending;
-    @FXML
-    private CheckBox chBoxCanceled;
-    @FXML
-    private CheckBox chBoxCompleted;
-    
+    private ComboBox<String> cmbStatus;
     private HashMap<Status,ArrayList<Order>> ordersMap = new HashMap<Status,ArrayList<Order>>();
     
     @FXML
@@ -116,11 +118,12 @@ public class OrderManagementController implements Initializable {
 				}
 			}
 		});
-		
     }
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		getOrdersByCId();		
+		getOrdersByCId();
+		initCmbBox();
+
 	}
 	
 	private void getOrdersByCId() {
@@ -164,7 +167,42 @@ public class OrderManagementController implements Initializable {
 		});
 		send.start();
 	}
-	protected void fillOrders() {
+	
+	
+	
+	private void initCmbBox()
+	{
+		cmbStatus.getItems().addAll("All",Status.Canceled.name(),Status.Completed.name(),Status.Pending.name());
+		cmbStatus.getSelectionModel().select(0);
+		
+		cmbStatus.valueProperty().addListener(new ChangeListener<String>() {
+	        @Override public void changed(ObservableValue ov, String oldValue, String newValue) {
+	        	switch(newValue)
+	        	{
+	        	case "Canceled":
+	        			listOrder.getItems().clear();
+	        			listOrder.getItems().addAll(ordersMap.get(Status.Canceled));
+	        			break;
+	        	case "Pending":
+	        			listOrder.getItems().clear();
+	        			listOrder.getItems().addAll(ordersMap.get(Status.Pending));
+	        			break;
+	        	case "Completed":
+        			listOrder.getItems().clear();
+        			listOrder.getItems().addAll(ordersMap.get(Status.Completed));
+        			break;
+        		default:
+        			listOrder.getItems().clear();
+        			listOrder.getItems().addAll(ordersMap.get(Status.Pending));
+        			listOrder.getItems().addAll(ordersMap.get(Status.Completed));
+        			listOrder.getItems().addAll(ordersMap.get(Status.Canceled));
+        			break;
+	        	}
+	        }    
+	    });
+	}
+	
+	private void fillOrders() {
 		listOrder.setCellFactory(new Callback<ListView<Order>, ListCell<Order>>() {
 			
 			@Override
@@ -188,16 +226,16 @@ public class OrderManagementController implements Initializable {
                     VBox requestedDateCol = new VBox(new Text(reqDate));
                     requestedDateCol.setMinWidth(110);
                     requestedDateCol.setAlignment(Pos.CENTER);
-                    String paymentValue="";
-                    for( OrderPayment pay :order.getOrderPaymentList())
-                    {
-                    	if(pay.getPaymentDate()==null)
-                    	{
-                    		paymentValue="Not charged";
-                    	}
-                    }
-                    if(paymentValue.length()==0)
-                    	paymentValue="Charged";
+                    String paymentValue="-";
+                    if(order.getStatus() != Status.Canceled) {
+							for (OrderPayment pay : order.getOrderPaymentList()) {
+								if (pay.getPaymentDate() == null) {
+									paymentValue = "Not charged";
+								}
+							}
+							if (paymentValue.length() == 0)
+								paymentValue = "Charged";
+	                }
                     VBox payment = new VBox(new Text(paymentValue));
                     payment.setMinWidth(100);
                     payment.setAlignment(Pos.CENTER);
@@ -230,7 +268,6 @@ public class OrderManagementController implements Initializable {
 			}
 		});
 		listOrder.setItems(data);
-		
 		
 		listOrder.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
 

@@ -31,10 +31,9 @@
         </tabs>
       </TabPane>
       <Button fx:id="btnBack" layoutX="25.0" layoutY="489.0" mnemonicParsing="false" onAction="#onClickBack" text="Back" />
-      <Button fx:id="btnCacenlOrder" onAction="#onCancelPressedHandler" layoutX="450.0" layoutY="489.0" mnemonicParsing="false" text="Cancel order" />
+      <Button fx:id="btnCacenlOrder" layoutX="450.0" layoutY="489.0" mnemonicParsing="false" onAction="#onCancelPressedHandler" text="Cancel order" />
       <Label fx:id="lblCreDate" layoutX="130.0" layoutY="48.0" text="date" />
       <Label fx:id="lblReqDate" layoutX="128.0" layoutY="74.0" text="date" />
-      <CheckBox fx:id="chkIsDelivery" layoutX="429.0" layoutY="65.0" mnemonicParsing="false" text="Include delivery" />
       <Label layoutX="36.0" layoutY="48.0" text="Creation date:" />
       <Label layoutX="28.0" layoutY="74.0" text="Requested date" />
    </children>
