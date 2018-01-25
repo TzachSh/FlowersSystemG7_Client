@@ -314,8 +314,6 @@ public class OrderDetailsController implements Initializable {
 	}
 	public void fillPayment()
 	{
-		
-
 		dataOrderPayment = FXCollections.observableArrayList(order.getOrderPaymentList());
 		listViewOrderPayments.setCellFactory(new Callback<ListView<OrderPayment>, ListCell<OrderPayment>>() {
 			
@@ -359,8 +357,6 @@ public class OrderDetailsController implements Initializable {
                     
                     setGraphic(hBox);
 				}
-
-				
 			    @Override
 				protected void updateItem(OrderPayment item, boolean empty) {						
 					 if (item != null) {	
@@ -402,10 +398,16 @@ public class OrderDetailsController implements Initializable {
 	
 	private Refund getCancelRefund(Timestamp requestedTime , Timestamp currentTime)
 	{
+
 		Map<TimeUnit,Long> diffTime = computeDiff(requestedTime,currentTime);
 		Refund refund = null;
 		
 		//Check if the cancel request is on the same day of the order's creation time
+		if ( diffTime.get(TimeUnit.DAYS) == 0 && diffTime.get(TimeUnit.HOURS) < 0)
+		{
+			diffTime.put(TimeUnit.HOURS, diffTime.get(TimeUnit.HOURS) + 24);
+		}
+		
 		if (diffTime.get(TimeUnit.DAYS) == 0) {
 
 			if (diffTime.get(TimeUnit.HOURS) >= 3) // canceled 3 hours or more before the requested time
@@ -485,6 +487,16 @@ public class OrderDetailsController implements Initializable {
 				if(p.getResultState())
 				{
 					ConstantData.displayAlert(AlertType.INFORMATION, "Cancel Order", "Success", "Order has been canceled successfully");
+					 Stage stage = (Stage) btnBack.getScene().getWindow();
+					 stage.close();
+					 OrderManagementController orderManagementController = new OrderManagementController();
+					 try {
+						orderManagementController.start(stage);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
 				}
 				else
 				{

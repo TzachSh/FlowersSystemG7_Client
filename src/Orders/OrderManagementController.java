@@ -193,9 +193,7 @@ public class OrderManagementController implements Initializable {
         			break;
         		default:
         			listOrder.getItems().clear();
-        			listOrder.getItems().addAll(ordersMap.get(Status.Pending));
-        			listOrder.getItems().addAll(ordersMap.get(Status.Completed));
-        			listOrder.getItems().addAll(ordersMap.get(Status.Canceled));
+        			listOrder.setItems(data);
         			break;
 	        	}
 	        }    
@@ -213,7 +211,7 @@ public class OrderManagementController implements Initializable {
 				{
 					DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                     VBox orderCol = new VBox(new Text(""+order.getoId()));
-                    orderCol.setMinWidth(0);
+                    orderCol.setMinWidth(30);
                     orderCol.setAlignment(Pos.CENTER);
                     VBox amountCol = new VBox(new Text(String.format("%.2f₪",order.getTotal())));
                     amountCol.setMinWidth(50);
@@ -233,7 +231,7 @@ public class OrderManagementController implements Initializable {
 									paymentValue = "Not charged";
 								}
 							}
-							if (paymentValue.length() == 0)
+							if (paymentValue.length() == 1)
 								paymentValue = "Charged";
 	                }
                     VBox payment = new VBox(new Text(paymentValue));

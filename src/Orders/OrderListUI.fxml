@@ -1,21 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="425.0" prefWidth="585.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Orders.OrderManagementController">
+<AnchorPane prefHeight="425.0" prefWidth="542.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Orders.OrderManagementController">
    <children>
       <Button fx:id="btnBack" layoutX="260.0" layoutY="377.0" mnemonicParsing="false" onAction="#onClickBack" text="Back" />
-      <Label layoutX="254.0" layoutY="14.0" text="My orders" />
+      <Label layoutX="235.0" layoutY="14.0" text="My Orders" underline="true">
+         <font>
+            <Font size="24.0" />
+         </font></Label>
       <ListView fx:id="listOrder" layoutX="26.0" layoutY="130.0" prefHeight="240.0" prefWidth="494.0" />
-      <Label layoutX="34.0" layoutY="116.0" text="Id" />
+      <Label layoutX="46.0" layoutY="116.0" text="Id" />
       <Label layoutX="70.0" layoutY="116.0" text="Creation" />
       <Label layoutX="166.0" layoutY="116.0" text="Requested" />
       <Label layoutX="260.0" layoutY="116.0" text="Price" />
       <Label layoutX="329.0" layoutY="116.0" text="Payed" />
       <Label layoutX="22.0" layoutY="63.0" text="Filter By Status:" />
-      <ComboBox fx:id="cmbStatus" layoutX="149.0" layoutY="57.0" prefWidth="150.0" />
+      <ComboBox fx:id="cmbStatus" layoutX="144.0" layoutY="57.0" prefWidth="150.0" />
+      <Label layoutX="420.0" layoutY="116.0" text="Action" />
    </children>
 </AnchorPane>
