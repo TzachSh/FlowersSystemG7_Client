@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 
 import Branches.Branch;
 import Customers.Account;
+import Customers.AccountStatus;
 import Customers.Customer;
 import Customers.MemberShipAccount;
 import Customers.Membership;
@@ -79,6 +80,8 @@ public class CustomerMenuController implements Initializable {
     private static LoginController loginController;
     
     public static ArrayList<MemberShipAccount> memberShipsByAccount;
+    
+    private static boolean noAccountAlerted = false;
     
     private static Stage menuStage;
     
@@ -279,7 +282,23 @@ public class CustomerMenuController implements Initializable {
 			// if there is no account, disable the option for select products, or add to cart
 			if (currentAcc != null)
 			{
-				enableComponentsWhenThereIsAccount();
+				if (currentAcc.getAccountStatus() == AccountStatus.Blocked)
+				{
+					lblBranch.setText("Your Account has been BLOCKED! Contact with Branch Manager");
+
+					disableComponentsWhenThereIsNoAccount();
+					
+					if (!noAccountAlerted)
+					{
+						displayAlert(AlertType.WARNING, "Warning!", "Account Blocked", "Your Account has been BLOCKED!, Please contact with Branch Manager");
+						noAccountAlerted = true;
+					}
+				}
+				else
+				{
+					enableComponentsWhenThereIsAccount();
+				}
+				
 				MemberShipAccount memberByAc = memberShipsByAccount.stream().filter(c->c.getAcNum()==currentAcc.getNum()).findFirst().orElse(null);
 				if(memberByAc !=null)
 				{
@@ -287,6 +306,7 @@ public class CustomerMenuController implements Initializable {
 					currentAcc.setMemberShip(memberShip);
 				}
 
+				
 			}
 			else 
 			{
@@ -294,7 +314,11 @@ public class CustomerMenuController implements Initializable {
 
 				disableComponentsWhenThereIsNoAccount();
 				
-				displayAlert(AlertType.WARNING, "Warning!", "No Account!", "You don't have account for selected branch, Please contact with Branch Manager for open a new one");
+				if (!noAccountAlerted)
+				{
+					displayAlert(AlertType.WARNING, "Warning!", "No Account!", "You don't have account for selected branch, Please contact with Branch Manager for open a new one");
+					noAccountAlerted = true;
+				}
 			}
 		}
 		else

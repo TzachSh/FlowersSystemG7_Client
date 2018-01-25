@@ -12,6 +12,7 @@ import java.util.ResourceBundle;
 import Branches.Branch;
 import Branches.Employee;
 import Customers.Account;
+import Customers.AccountStatus;
 import Customers.Customer;
 import Login.CustomerMenuController;
 import Login.LoginController;
@@ -971,8 +972,16 @@ public class SelectProductController implements Initializable
 			
 			registerAddToCartButtonHandle();
 			
-			if (!CustomerMenuController.hasAccountForCurrentBranch)
+			if (CustomerMenuController.currentAcc != null && CustomerMenuController.currentAcc.getAccountStatus() == AccountStatus.Blocked)
+			{
+				lblBranch.setText("Your Account has been BLOCKED! Contact with Branch Manager");
+			}
+			else if (CustomerMenuController.currentBranch == null)
+				lblBranch.setText("Select Branch for Viewing Discounts Sales and for Buying");
+			
+			else if (!CustomerMenuController.hasAccountForCurrentBranch)
 				lblBranch.setText("You don't have an Account! Contact with Branch Manager for Open");
+	
 		}
 		else if (catalogUse == CatalogUse.updateSale)
 		{

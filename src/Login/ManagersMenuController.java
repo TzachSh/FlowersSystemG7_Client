@@ -18,6 +18,7 @@ import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
+import Products.FlowerController;
 import Products.SelectProductController;
 import Survey.AnswerSurveyController;
 import javafx.application.Platform;
@@ -338,6 +339,19 @@ public class ManagersMenuController implements Initializable {
 		try {
 			primaryStage.close();
 			accountController.start(new Stage());
+			
+		} catch (Exception e) {
+			displayAlert(AlertType.ERROR, "Error", "Exception Error:", e.getMessage());
+		}
+	}
+	
+	public void onClickAddFlower() 
+	{
+		FlowerController flowerController = new FlowerController();
+
+		try {
+			primaryStage.close();
+			flowerController.start(new Stage());
 			
 		} catch (Exception e) {
 			displayAlert(AlertType.ERROR, "Error", "Exception Error:", e.getMessage());

@@ -310,9 +310,15 @@ public class CatalogProductController implements Initializable {
 				double priceConverted = Double.valueOf(price);
 				if (priceConverted <= 0)
 					throw new NumberFormatException();
-
+				
+				if (priceConverted > 5000)
+					throw new NumberFormatException("max");
+				
 				errPriceNum.setVisible(false);
 			} catch (NumberFormatException e) {
+				if (e.getMessage().equals("max"))
+					errPriceNum.setText("Max: 5000.0¤");
+				
 				errPriceNum.setVisible(true);
 				valid = false;
 			}
@@ -916,6 +922,11 @@ public class CatalogProductController implements Initializable {
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				if (newValue.length() > 50) {
 					txtName.setText(oldValue);
+					errNameTooMuchLong.setVisible(true);
+				}
+				else
+				{
+					errNameTooMuchLong.setVisible(false);
 				}
 
 				int selectedTypeIndex = cmbType.getSelectionModel().getSelectedIndex();
@@ -1137,6 +1148,7 @@ public class CatalogProductController implements Initializable {
 			}
 		});
 	}
+	
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {

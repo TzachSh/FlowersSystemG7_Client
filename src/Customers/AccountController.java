@@ -87,8 +87,7 @@ public class AccountController implements Initializable{
 		membership.add(MembershipType.Yearly.toString());
 		observelistMembership = FXCollections.observableArrayList(membership);
 		cbMemberShip.setItems(observelistMembership);
-		cbMemberShip.getSelectionModel().selectFirst();
-
+	
 		
 	}
 	/**

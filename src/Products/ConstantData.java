@@ -48,6 +48,24 @@ public class ConstantData {
 		});
 		send.start();
 	}
+	
+	/**
+	 * Get the instance of color by color id
+	 * 
+	 * @param colorId
+	 *            The color Id to search for index
+	 * @return The instance of the color in the collection that found, If not found,
+	 *         return null
+	 */
+	public static ColorProduct getColorOfFlowerByColorId(int colorId) {
+		for (ColorProduct color : ConstantData.productColorList) {
+			if (color.getColId() == colorId)
+				return color;
+		}
+
+		return null;
+	}
+	
 	/**
 	 * Show an Alert dialog with custom info
 	 */

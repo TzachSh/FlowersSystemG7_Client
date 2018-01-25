@@ -468,7 +468,6 @@ public class UpdateCustomerController implements Initializable {
 			ArrayList<String> AccStatus = new ArrayList<>();
 			AccStatus.add(AccountStatus.Active.name());
 			AccStatus.add(AccountStatus.Blocked.name());
-			AccStatus.add(AccountStatus.Closed.name());
 			observelistStatus = FXCollections.observableArrayList(AccStatus);
 			cbStatus.setItems(observelistStatus);
 			//checking which status the customer got to show him in combo box (the shown value).
@@ -826,10 +825,9 @@ public class UpdateCustomerController implements Initializable {
 				AccountStatus accstatusvar;
 				if(newstatus.equals(AccountStatus.Active.name()))
 					accstatusvar=AccountStatus.Active;
-				else if(newstatus.equals(AccountStatus.Blocked.name()))
+				else 
 					accstatusvar=AccountStatus.Blocked;
-				else
-					accstatusvar=AccountStatus.Closed;
+
 				//checking what changed so we can add only what changed
 				switch(accountinfochanged)
 				{

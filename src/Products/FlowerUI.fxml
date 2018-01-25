@@ -7,27 +7,28 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="335.0" prefWidth="424.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Products.FlowerController">
+<AnchorPane prefHeight="512.0" prefWidth="424.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Products.FlowerController">
    <children>
-      <Button layoutX="300.0" layoutY="176.0" mnemonicParsing="false" onAction="#onCreateClicked" text="Create" />
-      <Label layoutX="147.0" layoutY="14.0" text="Create new Flower" />
-      <Button layoutX="71.0" layoutY="178.0" mnemonicParsing="false" text="Back" />
-      <Label layoutX="90.0" layoutY="72.0" text="Name:" />
-      <Label layoutX="89.0" layoutY="101.0" text="Color:" />
-      <Label layoutX="91.0" layoutY="136.0" text="Price:" />
-      <TextField fx:id="txtName" layoutX="136.0" layoutY="68.0" prefHeight="25.0" prefWidth="156.0" promptText="enter flower name here" />
-      <TextField fx:id="txtprice" layoutX="136.0" layoutY="132.0" prefHeight="25.0" prefWidth="111.0" promptText="enter the price" />
-      <Label layoutX="263.0" layoutY="136.0" text="\$" />
-      <ComboBox fx:id="cmbColor" layoutX="136.0" layoutY="97.0" prefHeight="25.0" prefWidth="119.0" promptText="Choose color" />
-      <Label fx:id="lblColor" layoutX="257.0" layoutY="97.0" prefHeight="25.0" prefWidth="35.0" />
-      <ListView layoutX="25.0" layoutY="209.0" prefHeight="109.0" prefWidth="363.0" />
-      <Label fx:id="lblErrName" layoutX="292.0" layoutY="67.0" prefHeight="17.0" prefWidth="35.0" textFill="RED">
+      <Button fx:id="btnCreate" layoutX="293.0" layoutY="457.0" mnemonicParsing="false" onAction="#onCreateClicked" prefHeight="34.0" prefWidth="80.0" text="Create" />
+      <Label layoutX="139.0" layoutY="12.0" text="Create new Flower" underline="true">
          <font>
             <Font size="18.0" />
          </font></Label>
-      <Label fx:id="lblErrPrice" layoutX="275.0" layoutY="135.0" prefHeight="17.0" prefWidth="35.0" textFill="RED">
+      <Button fx:id="btnBack" layoutX="51.0" layoutY="457.0" mnemonicParsing="false" onAction="#onClosingForm" prefHeight="34.0" prefWidth="80.0" text="Back" />
+      <Label layoutX="92.0" layoutY="53.0" text="Name:" />
+      <Label layoutX="92.0" layoutY="88.0" text="Color:" />
+      <Label layoutX="92.0" layoutY="124.0" text="Price:" />
+      <TextField fx:id="txtName" layoutX="138.0" layoutY="49.0" prefHeight="25.0" prefWidth="168.0" promptText="enter flower name here" />
+      <TextField fx:id="txtprice" layoutX="137.0" layoutY="120.0" prefHeight="25.0" prefWidth="51.0" />
+      <Label layoutX="194.0" layoutY="125.0" text="₪" />
+      <ComboBox fx:id="cmbColor" layoutX="139.0" layoutY="84.0" prefHeight="25.0" prefWidth="119.0" promptText="Choose color" />
+      <Label fx:id="lblColor" layoutX="270.0" layoutY="84.0" prefHeight="25.0" prefWidth="35.0" />
+      <ListView fx:id="lstFlowers" layoutX="35.0" layoutY="184.0" prefHeight="263.0" prefWidth="363.0" />
+      <Label fx:id="lblErrName" layoutX="310.0" layoutY="48.0" prefHeight="27.0" prefWidth="72.0" textFill="RED" />
+      <Label fx:id="lblErrPrice" layoutX="214.0" layoutY="123.0" prefHeight="20.0" prefWidth="145.0" textFill="RED">
          <font>
             <Font name="System Bold" size="14.0" />
          </font></Label>
+      <Label layoutX="37.0" layoutY="166.0" text="Flowers That Already Exists:" />
    </children>
 </AnchorPane>
