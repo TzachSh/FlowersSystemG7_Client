@@ -122,16 +122,19 @@ public class ManagersMenuController implements Initializable {
 			Branch branch = branchesList.get(index);
 			currentBranch = branch;
 			lblBranchList.setVisible(false);
-			btnCreateClient.setDisable(false);
-			btnUpdateClient.setDisable(false);
-			btnAccount.setDisable(false);
+			if(employee.getRole().toString().equals("Branch")==false)
+			{
+				btnCreateClient.setDisable(false);
+				btnUpdateClient.setDisable(false);
+				btnAccount.setDisable(false);
+			}	
 		}
 		else
 		{
 			btnCatalogSales.setDisable(true);
 			lblBranchList.setVisible(true);
 			currentBranch = null;
-			btnCreateClient.setDisable(true);
+			btnCreateClient.setDisable(false);
 			btnUpdateClient.setDisable(true);
 			btnAccount.setDisable(true);
 		}
@@ -285,7 +288,6 @@ public class ManagersMenuController implements Initializable {
 			{
 				if(cmbBranch.getSelectionModel().getSelectedIndex()==-1)
 				{
-					btnCreateClient.setDisable(true);
 					btnUpdateClient.setDisable(true);
 					btnAccount.setDisable(true);	
 				}
