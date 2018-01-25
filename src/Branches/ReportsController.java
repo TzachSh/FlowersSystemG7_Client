@@ -90,6 +90,10 @@ public class ReportsController implements Initializable{
     private BarChart<String,Integer> barChart;
 	@FXML
     private BarChart<String,Integer> barChart1;
+	@FXML
+    private BarChart<String,Double> bcSatisfaction1;
+	@FXML
+    private BarChart<String,Double> bcSatisfaction2;
 	private ArrayList<Branch> branchlist;
 	private ArrayList<Complain> complainList1,complainList2;
 	private ArrayList<IncomeReport> incomeReport1,incomeReport2;
@@ -232,10 +236,6 @@ public class ReportsController implements Initializable{
 		paymentMethod.setCellValueFactory(new PropertyValueFactory<OrderReport, String>("paymentMethod"));
 		paymentMethod.setSortable(false);
 		paymentMethod.impl_setReorderable(false);
-		TableColumn<OrderReport, String> deliveryNumber=new TableColumn<>("Delivery Number");
-		deliveryNumber.setCellValueFactory(new PropertyValueFactory<OrderReport, String>("deliveryNumber"));
-		deliveryNumber.setSortable(false);
-		deliveryNumber.impl_setReorderable(false);
 		TableColumn<OrderReport, String> address=new TableColumn<>("Address");
 		address.setCellValueFactory(new PropertyValueFactory<OrderReport, String>("address"));
 		address.setSortable(false);
@@ -246,16 +246,44 @@ public class ReportsController implements Initializable{
 		phone.impl_setReorderable(false);
 		TableColumn<OrderReport, String> receiver=new TableColumn<>("Receiver");
 		receiver.setCellValueFactory(new PropertyValueFactory<OrderReport, String>("receiver"));
-		receiver.setSortable(false);
+		receiver.setSortable(false);	
 		receiver.impl_setReorderable(false);
 		
 		for(TableColumn<OrderReport, ?> col :table.getColumns())
 		{
 			col.setSortable(false);
 		}
-		table.getColumns().addAll(productCategory,orderId,creationDate,status,productId,productName,price,paymentMethod,deliveryNumber,address,phone,receiver);
+		table.getColumns().addAll(productCategory,orderId,creationDate,status,productId,productName,price,paymentMethod,address,phone,receiver);
 		table.setVisible(true);
 	}
+	public void BuildBarChartForSatisfaction(BarChart<String,Double> bartable,ArrayList<SatisfactionReport> info)
+	{
+		int i;
+		double avg=-1;
+		bartable.setVisible(true);
+		bartable.getData().clear();
+		bartable.setTitle("Satisfaction");
+		ArrayList<XYChart.Series<String, Double>> serlist=new ArrayList<>();
+		for(i=0;i<info.size();i++)
+		{
+			serlist.add(new XYChart.Series<>());
+			try {
+				avg=Double.parseDouble(info.get(i).getAvg());
+			}catch (Exception e) {
+				return;//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@22
+			}
+			serlist.get(i).getData().add(new XYChart.Data<>("",avg));
+			serlist.get(i).setName(info.get(i).getQuestion());
+			bartable.getData().add(serlist.get(i));
+		}
+
+	}
+	/**
+	 * building bar chart for complains
+	 * @param barch branch 
+	 * @param active active complains
+	 * @param notactive not active complains
+	 */
 	public void BuildBarChartForComplain(BarChart<String,Integer> barch, int active ,int notactive)
 	{
 		barch.setVisible(true);
@@ -270,6 +298,7 @@ public class ReportsController implements Initializable{
 		barch.getData().add(ser1);
 		barch.getData().add(ser2);
 	}
+	
 	/**
 	 * 
 	 * @param primaryStage starts the screen
@@ -405,18 +434,7 @@ public class ReportsController implements Initializable{
 						}	
 						//filling and initialize the barchart
 						BuildBarChartForComplain(barChart, active1, notactive1);
-						/*
-						barChart.setVisible(true);
-						barChart.getData().clear();
-						barChart.setTitle("Complains Status 1");
-						XYChart.Series<String, Integer> ser1=new XYChart.Series<>();
-						XYChart.Series<String, Integer> ser2=new XYChart.Series<>();
-						ser1.getData().add(new XYChart.Data<>("",active1));
-						ser1.setName("Active");
-						ser2.getData().add(new XYChart.Data<>("",notactive1));
-						ser2.setName("Not Active");
-						barChart.getData().add(ser1);
-						barChart.getData().add(ser2);*/
+					
 					}
 					else
 						System.out.println("Fail: " + p.getExceptionMessage());	
@@ -745,7 +763,7 @@ public class ReportsController implements Initializable{
 						//sending the wanted table and the result to function that builds the tableview
 						//BuildTableViewForSatisfaction(tblViewSatisfaction1,surveyReport);
 						BuildTableViewForSatisfaction(tblViewSatisfaction1, surveyReport);
-						
+						BuildBarChartForSatisfaction(bcSatisfaction1,surveyReport);
 					}
 					else
 						System.out.println("Fail: " + p.getExceptionMessage());		
@@ -1007,7 +1025,8 @@ public class ReportsController implements Initializable{
 						//sending the wanted table and the result to function that builds the tableview
 						//BuildTableViewForSatisfaction(tblViewSatisfaction1,surveyReport);
 						BuildTableViewForSatisfaction(tblViewSatisfaction1, surveyReport);
-					
+						BuildBarChartForSatisfaction(bcSatisfaction1,surveyReport);
+
 					}
 					else
 						System.out.println("Fail: " + p.getExceptionMessage());	
@@ -1049,6 +1068,8 @@ public class ReportsController implements Initializable{
 		tblViewOrder2.setVisible(false);
 		tblViewSatisfaction1.setVisible(false);
 		tblViewSatisfaction2.setVisible(false);
+		bcSatisfaction1.setVisible(false);
+		bcSatisfaction2.setVisible(false);
 		//checking which user is using this screen and by its type , function will be called depended on his type 
 		if(employee.getRole().toString().equals((Role.BranchesManager).toString()))
 			generateReportForBranchesManager(report,year,quartely1);
@@ -1213,6 +1234,8 @@ public class ReportsController implements Initializable{
 		tblViewOrder2.setVisible(false);
 		tblViewSatisfaction1.setVisible(false);
 		tblViewSatisfaction2.setVisible(false);
+		bcSatisfaction1.setVisible(false);
+		bcSatisfaction2.setVisible(false);
 		//building new packet
 		Packet packet = new Packet();
 		//adding command
