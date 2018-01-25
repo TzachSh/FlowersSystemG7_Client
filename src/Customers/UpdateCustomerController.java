@@ -558,67 +558,72 @@ public class UpdateCustomerController implements Initializable {
 							txtCreditCard4.setText(accList.get(0).getCreditCard().substring(12, 16));
 							txtCreditCard5.setText(accList.get(0).getCreditCard().substring(16, 20));
 							}
+							
 						}
-						//opening packet
-						Packet packet = new Packet();
-						//adding commands to the packet
-						packet.addCommand(Command.getMemberShipAccountByAcNum);
-						ArrayList<Object> info=new ArrayList<>();
-						info.add(accList.get(0).getNum());
-						packet.setParametersForCommand(Command.getMemberShipAccountByAcNum, info);
-						//sending the packet
-						SystemSender send = new SystemSender(packet);
-						send.registerHandler(new IResultHandler() {
-							/**
-							 * waiting for result from the server
-							 */
-							@Override
-							public void onWaitingForResult() {
-								
-							}
-							/**
-							 * getting the result p from the server
-							 */
-							@Override
-							public void onReceivingResult(Packet p) {
-								// if the result status is true , we can get the  membership from the returned information .
-								if(p.getResultState())
-								{
-									//getting the information from the packet
-									memshipAccount=p.<MemberShipAccount>convertedResultListForCommand(Command.getMemberShipAccountByAcNum);
-									if(memshipAccount.isEmpty()==false)
+						else
+						{
+							
+							//opening packet
+							Packet packet = new Packet();
+							//adding commands to the packet
+							packet.addCommand(Command.getMemberShipAccountByAcNum);
+							ArrayList<Object> info=new ArrayList<>();
+							info.add(accList.get(0).getNum());
+							packet.setParametersForCommand(Command.getMemberShipAccountByAcNum, info);
+							//sending the packet
+							SystemSender send = new SystemSender(packet);
+							send.registerHandler(new IResultHandler() {
+								/**
+								 * waiting for result from the server
+								 */
+								@Override
+								public void onWaitingForResult() {
+									
+								}
+								/**
+								 * getting the result p from the server
+								 */
+								@Override
+								public void onReceivingResult(Packet p) {
+									// if the result status is true , we can get the  membership from the returned information .
+									if(p.getResultState())
 									{
-										cbMemberShip.setVisible(true);
-										lblmembership.setVisible(true);
-										rbMemberShip.setVisible(false);
-										rbdeleteMemberShip.setVisible(false);
-										for(Membership mem:memshipList)
+										//getting the information from the packet
+										memshipAccount=p.<MemberShipAccount>convertedResultListForCommand(Command.getMemberShipAccountByAcNum);
+										if(memshipAccount.isEmpty()==false)
 										{
-											//if the memberhsip number are the same 
-											if(mem.getNum()==memshipAccount.get(0).getmId())
+											cbMemberShip.setVisible(true);
+											lblmembership.setVisible(true);
+											rbMemberShip.setVisible(false);
+											rbdeleteMemberShip.setVisible(false);
+											for(Membership mem:memshipList)
 											{
-												cbMemberShip.getSelectionModel().select(mem.getNum()-1);
-												break;
+												//if the memberhsip number are the same 
+												if(mem.getNum()==memshipAccount.get(0).getmId())
+												{
+													cbMemberShip.getSelectionModel().select(mem.getNum()-1);
+													break;
+												}
 											}
+											
+										}
+										else
+										{
+											rbdeleteMemberShip.setVisible(false);
+											cbMemberShip.setVisible(false);
+											lblmembership.setVisible(false);
+											rbMemberShip.setVisible(false);
 										}
 										
 									}
 									else
-									{
-										rbdeleteMemberShip.setVisible(false);
-										cbMemberShip.setVisible(false);
-										lblmembership.setVisible(false);
-										rbMemberShip.setVisible(false);
-									}
-									
+										ConstantData.displayAlert(AlertType.ERROR, "Error", "Error Loading Information , Please Try Again Later", null);
+		
 								}
-								else
-									ConstantData.displayAlert(AlertType.ERROR, "Error", "Error Loading Information , Please Try Again Later", null);
-
-							}
-						});
-						//sending the package
-						send.start();				
+							});
+							//sending the package
+							send.start();	
+						}
 				}
 				});		
 				//sending the package
@@ -662,29 +667,28 @@ public class UpdateCustomerController implements Initializable {
 			if(uList.get(0).getPassword().equals(txtPassword.getText())==false)//checking that the user password and the input password are the same 
 			{
 				ConstantData.displayAlert(AlertType.ERROR, "Error", "Please Enter The Correct Old Password", null);
-
 				return;
 			}
 			if(txtNewPassword.getText().isEmpty()) //checking that the new password field is not empty
 			{		
-				//showError("Please Enter The New Password ");
+				ConstantData.displayAlert(AlertType.ERROR, "Error", "Please Enter The New Password ", null);
 				return;
 			}
 			if(txtConfirmPassword.getText().isEmpty()) //checking that the new confirm password field is not empty
 			{		
-				//showError("Please Enter The New Confirm Password ");
+				ConstantData.displayAlert(AlertType.ERROR, "Error", "Please Enter The New Confirm Password  ", null);
 				return;
 			}
 			if(txtNewPassword.getText().equals(txtConfirmPassword.getText())==false)//checking that the new password and the confirm password are the same
 			{
-				//showError("New Password And Confirm Password Are Not Matched");
+				ConstantData.displayAlert(AlertType.ERROR, "Error", "New Password And Confirm Password Are Not Matched", null);
 				return;
 			}
 		}
 		//if therer is error fetching the user .
 		if(uList.isEmpty())
 		{
-			//showError("Error Loading Customer , Please Try Again");
+			ConstantData.displayAlert(AlertType.ERROR, "Error", "Error Loading Customer , Please Try Again", null);
 			return;
 		}
 		
