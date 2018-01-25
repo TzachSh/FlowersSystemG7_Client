@@ -546,7 +546,7 @@ public class UpdateCustomerController implements Initializable {
 						initComboBox();
 						txtUser.setText(uList.get(0).getUser());
 						//check if there is account for this customer;
-						if(accList.isEmpty()==false)
+						if(accList.isEmpty()==true)
 						{
 							//adding information to the fields
 							txtBalance.setText(""+accList.get(0).getBalance());
@@ -557,12 +557,7 @@ public class UpdateCustomerController implements Initializable {
 							txtCreditCard3.setText(accList.get(0).getCreditCard().substring(8, 12));
 							txtCreditCard4.setText(accList.get(0).getCreditCard().substring(12, 16));
 							txtCreditCard5.setText(accList.get(0).getCreditCard().substring(16, 20));
-							}
-							
-						}
-						else
-						{
-							
+							}							
 							//opening packet
 							Packet packet = new Packet();
 							//adding commands to the packet
