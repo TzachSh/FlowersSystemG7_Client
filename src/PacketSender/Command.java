@@ -96,4 +96,5 @@ public enum Command implements Serializable
 	deleteMemberShipAccountByacNum,
 	getCustomers, 
 	getPaymentDetails
+	
 	}
