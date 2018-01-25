@@ -2,8 +2,11 @@ package Orders;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -82,7 +85,6 @@ public class OrderDetailsController implements Initializable {
 	private static Stage primaryStage;
 	private static Order order;
 	
-	
 	public static LinkedHashMap<Product, Integer> cartProducts = new LinkedHashMap<>();
 	
 	public OrderDetailsController() {
@@ -98,8 +100,6 @@ public class OrderDetailsController implements Initializable {
 		String title = "Orders details";
 		String srcFXML = "/Orders/OrderDetailsUI.fxml";
 		String srcCSS = "/Orders/application.css";
-
-		
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(getClass().getResource(srcFXML));
@@ -351,6 +351,45 @@ public class OrderDetailsController implements Initializable {
 			}
 		});
 		listViewOrderPayments.setItems(dataOrderPayment);
+	}
+	
+	private Date getDiffTimes(java.sql.Timestamp currentTime, java.sql.Timestamp oldTime)
+	{
+	  long milliseconds1 = oldTime.getTime();
+	  long milliseconds2 = currentTime.getTime();
 
+	  long diff = milliseconds2 - milliseconds1;
+	  long diffSeconds = diff / 1000;
+	  long diffMinutes = diff / (60 * 1000);
+	  long diffHours = diff / (60 * 60 * 1000);
+	  long diffDays = diff / (24 * 60 * 60 * 1000);
+	  
+	  Date date = new Date(currentTime.getYear(),currentTime.getMonth(),(int)diffDays,(int)diffHours,(int)diffMinutes,(int)diffSeconds);
+	  
+	  return date; 
+	}
+	
+	private void changeOrderStatus()
+	{
+		
+	}
+	
+	private double getCancelRefund(Timestamp currentTime , Timestamp requestedTime)
+	{
+		Date diffDate = getDiffTimes(currentTime,requestedTime);
+		
+		return 0;
+	}
+	
+	@FXML
+	private void onCancelPressedHandler()
+	{
+		//changeOrderStatus();
+		
+		//Get current time
+		java.util.Date today = new java.util.Date();
+		java.sql.Timestamp sqlTimestamp = new java.sql.Timestamp(today.getTime());
+		
+		getCancelRefund(sqlTimestamp , order.getRequestedDate());
 	}
 }

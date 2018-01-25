@@ -6,6 +6,8 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 
+import javax.swing.JOptionPane;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -15,7 +17,7 @@ public class LoginApp extends Application {
 	 private static FileChannel channel;
      private static FileLock lock;
      
-	public static void main(String[] args) {
+     public static void main(String[] args) {
 		 try {
 	            f = new File("RunLock.lock");
 	            // Check if the lock exist
@@ -28,9 +30,12 @@ public class LoginApp extends Application {
 	            lock = channel.tryLock();
 	            if(lock == null)
 	            {
-	                // File is lock by other application
+	                // File	 is lock by other application
 	                channel.close();
-	                throw new RuntimeException("Only 1 instance of the application can run.");
+	               
+	              //default title and icon
+	            	JOptionPane.showMessageDialog(null, "Only 1 instance of the application can run." ,"Error", JOptionPane.ERROR_MESSAGE);
+	            	return;
 	            }
 	            // Add shutdown hook to release lock when application shutdown
 	            ShutdownHook shutdownHook = new ShutdownHook();
@@ -38,13 +43,11 @@ public class LoginApp extends Application {
 	 
 	            //Starting the application
 	    		launch(args);
-	 
 	        }
 	        catch(IOException e)
 	        {
 	            throw new RuntimeException("Error starting application process", e);
 	        }
-	 
 	    }
 	 
 		/***
