@@ -542,11 +542,12 @@ public class UpdateCustomerController implements Initializable {
 						
 						//handle fields after the result
 						btnSearch.setDisable(true);
+						txtCustomerID.setDisable(true);
 						apnextinfo.setVisible(true);
 						initComboBox();
 						txtUser.setText(uList.get(0).getUser());
 						//check if there is account for this customer;
-						if(accList.isEmpty()==true)
+						if(accList.isEmpty()==false)
 						{
 							//adding information to the fields
 							txtBalance.setText(""+accList.get(0).getBalance());
@@ -608,6 +609,11 @@ public class UpdateCustomerController implements Initializable {
 											cbMemberShip.setVisible(false);
 											lblmembership.setVisible(false);
 											rbMemberShip.setVisible(false);
+
+											if(LoginController.userLogged instanceof Employee)
+											{
+												rbMemberShip.setVisible(true);
+											}
 										}
 										
 									}
