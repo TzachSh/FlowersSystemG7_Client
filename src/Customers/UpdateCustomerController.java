@@ -598,8 +598,14 @@ public class UpdateCustomerController implements Initializable {
 												if(mem.getNum()==memshipAccount.get(0).getmId())
 												{
 													cbMemberShip.getSelectionModel().select(mem.getNum()-1);
+													
 													break;
 												}
+											}
+											if(LoginController.userLogged instanceof Employee)
+											{
+												rbMemberShip.setVisible(false);
+												rbdeleteMemberShip.setVisible(true);
 											}
 											
 										}
@@ -613,6 +619,8 @@ public class UpdateCustomerController implements Initializable {
 											if(LoginController.userLogged instanceof Employee)
 											{
 												rbMemberShip.setVisible(true);
+												rbdeleteMemberShip.setVisible(false);
+
 											}
 										}
 										
