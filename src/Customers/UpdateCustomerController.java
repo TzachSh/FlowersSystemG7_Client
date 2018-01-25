@@ -591,7 +591,7 @@ public class UpdateCustomerController implements Initializable {
 										cbMemberShip.setVisible(true);
 										lblmembership.setVisible(true);
 										rbMemberShip.setVisible(false);
-										rbdeleteMemberShip.setVisible(true);
+										rbdeleteMemberShip.setVisible(false);
 										for(Membership mem:memshipList)
 										{
 											//if the memberhsip number are the same 
