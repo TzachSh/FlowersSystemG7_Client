@@ -249,8 +249,9 @@ public class OrderManagementController implements Initializable {
 					
 				private void setCellHandler(Order order)
 				{
-					Calendar cal = Calendar.getInstance();
-					Date date = cal.getTime();
+					Date t = order.getRequestedDate();
+					Calendar c = Calendar.getInstance();
+					c.setTime(t);
 					DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                     VBox orderCol = new VBox(new Text(""+order.getoId()));
                     orderCol.setMinWidth(30);
@@ -258,11 +259,11 @@ public class OrderManagementController implements Initializable {
                     VBox amountCol = new VBox(new Text(String.format("%.2f$",order.getTotal())));
                     amountCol.setMinWidth(50);
                     amountCol.setAlignment(Pos.CENTER_RIGHT);
-                    VBox createdCol = new VBox(new Text(formatter.format(date)));
+                    VBox createdCol = new VBox(new Text(formatter.format(order.getCreationDate())));
                     createdCol.setMinWidth(70);
                     createdCol.setAlignment(Pos.CENTER);
                     formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                    String reqDate = formatter.format(order.getRequestedDate());
+                    String reqDate = formatter.format(c.getTime());
                     VBox requestedDateCol = new VBox(new Text(reqDate));
                     requestedDateCol.setMinWidth(110);
                     requestedDateCol.setAlignment(Pos.CENTER);
