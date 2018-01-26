@@ -358,30 +358,29 @@ public class OrderController implements Initializable{
 	 * Get the current price details of an order
 	 */
 	private void getPriceDetails() {
-		lblTotalBeforeDiscount.setText(String.format("%.2f₪",CartController.getTotalPrice()));
+		lblTotalBeforeDiscount.setText(String.format("%.2f$",CartController.getTotalPrice()));
 		account = CustomerMenuController.currentAcc;		
 		if(account.getMemberShip() != null)
 		{ 
 			double discount = CartController.getTotalPrice()*account.getMemberShip().getDiscount()/100;
-			lblDiscount.setText(String.format("%.2f₪",discount));
+			lblDiscount.setText(String.format("%.2f$",discount));
 			totalAfter=CartController.getTotalPrice()*(1-account.getMemberShip().getDiscount()/100);
-			lblTotal.setText(String.format("%.2f₪",totalAfter));
+			lblTotal.setText(String.format("%.2f$",totalAfter));
 		}
 		else
 		{
 			totalAfter=CartController.getTotalPrice();
-			lblDiscount.setText("0");
-			lblTotal.setText(String.format("%.2f₪",totalAfter));
+			lblDiscount.setText("0$");
+			lblTotal.setText(String.format("%.2f$",totalAfter));
 		}
 		blnce = account.getBalance();
 		if(blnce<=0)
 		{
 			blncePay=0;
 			txtBlncePay.setDisable(true);
-			txtBlncePay.setText("0¤");
+			txtBlncePay.setText("0$");	
 		}
-		lblAvailableBalance.setText(String.format("%.2f₪",blnce));
-		
+		lblAvailableBalance.setText(String.format("%.2f$",blnce));
 	}
 	/***
 	 * Set delivery option check box

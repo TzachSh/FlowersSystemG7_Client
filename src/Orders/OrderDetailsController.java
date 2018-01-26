@@ -102,6 +102,10 @@ public class OrderDetailsController implements Initializable {
 		super();
 	}
 	/**
+	 * Refund for cancellation
+	 */
+	private Refund refund;
+	/**
 	 * set selected order
 	 * @param order instance of order
 	 */
@@ -267,7 +271,7 @@ public class OrderDetailsController implements Initializable {
 					productDetails.setAlignment(Pos.TOP_CENTER);
 					
 					// price of product
-					Text price = new Text(String.format("%.2f₪", (pro.getPrice() * count)));
+					Text price = new Text(String.format("%.2f$", (pro.getPrice() * count)));
 					price.setFont(new Font(14));
 					price.setTextAlignment(TextAlignment.CENTER);
 					Text txtprice = new Text("Price");
@@ -495,7 +499,7 @@ public class OrderDetailsController implements Initializable {
 		java.util.Date today = new java.util.Date();
 		java.sql.Timestamp sqlTimestamp = new java.sql.Timestamp(today.getTime());
 		
-		Refund refund = getCancelRefund(order.getRequestedDate(),sqlTimestamp);
+		refund = getCancelRefund(order.getRequestedDate(),sqlTimestamp);
 		if(refund != null)
 		{
 			double currentBalance = CustomerMenuController.currentAcc.getBalance();
@@ -526,7 +530,12 @@ public class OrderDetailsController implements Initializable {
 				// TODO Auto-generated method stub
 				if(p.getResultState())
 				{
-					ConstantData.displayAlert(AlertType.INFORMATION, "Cancel Order", "Success", "Order has been canceled successfully");
+					String refundInfo;
+					 if(refund != null)
+						 refundInfo = String.format("You have a refund of: %.2f$", refund.getAmount());
+					 else
+						 refundInfo = new String("You have no refund");
+					 ConstantData.displayAlert(AlertType.INFORMATION, "Cancel Order", "Success", "Order has been canceled successfully, " + refundInfo);
 					 Stage stage = (Stage) btnBack.getScene().getWindow();
 					 stage.close();
 					 OrderManagementController orderManagementController = new OrderManagementController();
