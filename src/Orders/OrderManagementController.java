@@ -5,6 +5,8 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
@@ -247,15 +249,16 @@ public class OrderManagementController implements Initializable {
 					
 				private void setCellHandler(Order order)
 				{
+					Calendar cal = Calendar.getInstance();
+					Date date = cal.getTime();
 					DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-					formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
                     VBox orderCol = new VBox(new Text(""+order.getoId()));
                     orderCol.setMinWidth(30);
                     orderCol.setAlignment(Pos.CENTER);
                     VBox amountCol = new VBox(new Text(String.format("%.2f$",order.getTotal())));
                     amountCol.setMinWidth(50);
                     amountCol.setAlignment(Pos.CENTER_RIGHT);
-                    VBox createdCol = new VBox(new Text(formatter.format(order.getCreationDate())));
+                    VBox createdCol = new VBox(new Text(formatter.format(date)));
                     createdCol.setMinWidth(70);
                     createdCol.setAlignment(Pos.CENTER);
                     formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
