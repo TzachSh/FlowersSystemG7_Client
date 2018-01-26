@@ -1,6 +1,5 @@
 package Login;
 
-import java.net.SocketException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,7 +13,6 @@ import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
 import Products.ConstantData;
-import Users.Permission;
 import Users.User;
 import Users.UsersManagementController;
 import javafx.application.Platform;
@@ -48,22 +46,20 @@ public class LoginController implements Initializable {
     @FXML
     private PasswordField txtPassword;
 	
+    /**
+     * user logged information
+     */
 	public static User userLogged;
-	
+	/**
+	 * current stage
+	 */
 	private static Stage mainStage;
 	
 	/**
-	 * Show an Alert dialog with custom info
+	 * change login status to avoid login with same account
+	 * @param user user who make the action
+	 * @param loggedIn status true login else logout
 	 */
-	public void displayAlert(AlertType type , String title , String header , String content)
-	{
-		Alert alert = new Alert(type);
-		alert.setTitle(title);
-		alert.setHeaderText(header);
-		alert.setContentText(content);
-		alert.showAndWait();
-	}
-	
 	private void changeUserLoginState(User user, boolean loggedIn)
 	{
 		Packet packet = new Packet();
@@ -85,13 +81,13 @@ public class LoginController implements Initializable {
 			{
 				if (!loggedIn) // only for logout operation
 				{
-					displayAlert(AlertType.INFORMATION, "Logout", "Logout Successfull", "You are Logged out from the system Successfully");
+					ConstantData.displayAlert(AlertType.INFORMATION, "Logout", "Logout Successfull", "You are Logged out from the system Successfully");
 					Platform.exit();
 				}
 			}
 			else
 			{
-				displayAlert(AlertType.ERROR, "Error", "Exception Error", p.getExceptionMessage());
+				ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception Error", p.getExceptionMessage());
 			}
 	   	}
 
@@ -171,7 +167,7 @@ public class LoginController implements Initializable {
 					catch (Exception e)
 					{
 						performLoggedOut(user);
-						displayAlert(AlertType.ERROR, "Error", "Exception Error", e.getMessage());
+						ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception Error", e.getMessage());
 					}
 				}
 				
@@ -196,7 +192,7 @@ public class LoginController implements Initializable {
 						catch (Exception e)
 						{
 							performLoggedOut(user);
-							displayAlert(AlertType.ERROR, "Error", "Exception Error", e.getMessage());
+							ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception Error", e.getMessage());
 						}
 					}
 					else
@@ -211,7 +207,7 @@ public class LoginController implements Initializable {
 						catch (Exception e)
 						{
 							performLoggedOut(user);
-							displayAlert(AlertType.ERROR, "Error", "Exception Error", e.getMessage());
+							ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception Error", e.getMessage());
 						}
 					}
 				}
@@ -235,14 +231,14 @@ public class LoginController implements Initializable {
 					catch (Exception e)
 					{
 						performLoggedOut(user);
-						displayAlert(AlertType.ERROR, "Error", "Exception Error", e.getMessage());
+						ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception Error", e.getMessage());
 					}
 				}
 				
 			}
 			else
 			{
-				displayAlert(AlertType.ERROR, "Error", "Exception Error", p.getExceptionMessage());
+				ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception Error", p.getExceptionMessage());
 			}
 		}
 
@@ -264,7 +260,7 @@ public class LoginController implements Initializable {
     	
     	if (userName.isEmpty() || pass.isEmpty())
     	{
-    		displayAlert(AlertType.ERROR, "Error", "Login Failed", "User name or Password are missing!");
+    		ConstantData.displayAlert(AlertType.ERROR, "Error", "Login Failed", "User name or Password are missing!");
     		return;
     	}
     	
@@ -296,7 +292,7 @@ public class LoginController implements Initializable {
 						// check if user is already logged in
 						if (user.isLogged())
 						{
-							displayAlert(AlertType.ERROR, "Error", "Login Failed", "User Is already Logged In!");
+							ConstantData.displayAlert(AlertType.ERROR, "Error", "Login Failed", "User Is already Logged In!");
 							return;
 						}
 						
@@ -309,12 +305,12 @@ public class LoginController implements Initializable {
 					}
 					else
 					{
-						displayAlert(AlertType.ERROR, "Error", "Login Failed", "User name or Password are incorrect!");
+						ConstantData.displayAlert(AlertType.ERROR, "Error", "Login Failed", "User name or Password are incorrect!");
 					}
 				}
 				else
 				{
-					displayAlert(AlertType.ERROR, "Error", "Cannot Continue with Validation", p.getExceptionMessage());
+					ConstantData.displayAlert(AlertType.ERROR, "Error", "Cannot Continue with Validation", p.getExceptionMessage());
 				}
 			}
 
@@ -337,10 +333,15 @@ public class LoginController implements Initializable {
     	}
     	catch (Exception e)
     	{
-    		displayAlert(AlertType.ERROR, "Error", "Exception", e.getMessage());
+    		ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception", e.getMessage());
     	}
     }
-    
+    /**
+     *
+	 * Show the scene view  
+	 * @param primaryStage - current stage to build
+     * @throws Exception message if failed
+     */
 	public void start(Stage primaryStage) throws Exception {
 		this.mainStage = primaryStage;
 		
@@ -368,7 +369,9 @@ public class LoginController implements Initializable {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * initialize controls
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		Image img = new Image("settings.png");

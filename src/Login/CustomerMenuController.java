@@ -67,23 +67,41 @@ public class CustomerMenuController implements Initializable {
     private Button btnAccount;
     @FXML
     private Button btnComplains;
-
+    /**
+     * all sale branches
+     */
 	public static ArrayList<Branch> branchesList = new ArrayList<>();
-	
+	/**
+	 * selected branch
+	 */
     public static Branch currentBranch=null;
-    
+    /**
+     * all customer accounts
+     */
     private static ArrayList<Account> userAccountsList = new ArrayList<>();
-    
+    /**
+     * customer account in the selected branch if exist
+     */
     public static Account currentAcc;
-
+    /**
+     * contains value if customer has account in the branch for purchase access
+     */
     public static boolean hasAccountForCurrentBranch = false;
-    
+    /**
+     * Contains login details
+     */
     private static LoginController loginController;
-    
+    /**
+     * memberships of the customer's accounts
+     */
     public static ArrayList<MemberShipAccount> memberShipsByAccount;
-    
+    /**
+     * contains if alert has been passed
+     */
     private static boolean noAccountAlerted = false;
-    
+    /**
+     * stage build
+     */
     private static Stage menuStage;
     
     public void setLoginController(LoginController login)
@@ -429,7 +447,11 @@ public class CustomerMenuController implements Initializable {
 		});
 		send.start();
 	}
-	
+	/**
+	 * creating window
+	 * @param primaryStage stage to build
+	 * @throws Exception message if failed
+	 */
 	public void start(Stage primaryStage) throws Exception {
 		menuStage = primaryStage;
 		
@@ -476,7 +498,9 @@ public class CustomerMenuController implements Initializable {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * initialize constant data and other collections to display
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		if(!ConstantData.isInit)

@@ -76,15 +76,31 @@ public class ManagersMenuController implements Initializable {
     private Button btnCreateClient;
     @FXML
     private Button btnUpdateClient;
-    
+    /**
+     * all possible branches
+     */
     public static ArrayList<Branch> branchesList = new ArrayList<>();
+    /**
+     * current stage to build
+     */
 	private static Stage primaryStage;
+	/**
+	 * employee logged in details
+	 */
 	private static Employee employee = (Employee)LoginController.userLogged;
+	/**
+	 * selected branch
+	 */
 	public static Branch currentBranch=null;
-	
+	/**
+	 * login controller to perform logout
+	 */
 	private static LoginController loginController;
     
-    
+    /**
+     * set loginController
+     * @param login
+     */
 	public void setLoginController(LoginController login)
 	{
 	   loginController = login;
@@ -273,7 +289,9 @@ public class ManagersMenuController implements Initializable {
 				cmbBranch.setDisable(true);
 			}
 		}
-		
+	/**
+	 * initialize data and controls
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		initializeCollections();

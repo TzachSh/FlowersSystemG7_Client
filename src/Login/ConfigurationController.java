@@ -16,6 +16,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
+/**
+ * Controller
+ * Manage connection setting to the server
+ *
+ */
 public class ConfigurationController implements Initializable {
 
     @FXML
@@ -26,9 +31,13 @@ public class ConfigurationController implements Initializable {
 
     @FXML
     private TextField txtAddress;
-	
+	/**
+	 * default ip address
+	 */
 	public static String address = "localhost";
-	
+	/**
+	 * default port number
+	 */
 	public static int port = 5555;
 	
 	
@@ -43,7 +52,10 @@ public class ConfigurationController implements Initializable {
 		alert.setContentText(content);
 		alert.showAndWait();
 	}
-	
+	/**
+	 * saving configuration to connect and closing the window
+	 * @param event
+	 */
 	public void saveConfigFields(ActionEvent event)
 	{
 		try
@@ -58,7 +70,11 @@ public class ConfigurationController implements Initializable {
 			displayAlert(AlertType.ERROR, "Error", "Invalid Port", "The Port must be a valid Number!");
 		}
 	}
-	
+	/**
+	 * initialize window
+	 * @param primaryStage stage to build
+	 * @throws Exception messge if failed
+	 */
 	public void start(Stage primaryStage) throws Exception {
 		String title = "Configuration";
 		String srcFXML = "/Login/ConfigurationUI.fxml";

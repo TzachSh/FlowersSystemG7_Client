@@ -36,11 +36,19 @@ import javafx.stage.WindowEvent;
 
 public class ServiceMenuController implements Initializable
 {
-	
+	/**
+	 * current stage to build
+	 */
 	private static Stage primaryStage;
+	/**
+	 * login controller to perform logout
+	 */
 	private static LoginController loginController;
 	@FXML private Label lblNotification;    
-	    
+	/**
+	 * set loginController
+	 * @param login
+	 */
 	public void setLoginController(LoginController login)
 	{
 	   loginController = login;
@@ -95,19 +103,12 @@ public class ServiceMenuController implements Initializable
 		packet.addCommand(Command.getComplains);
 		
 		SystemSender sender = new SystemSender(packet);
-		sender.registerHandler(new IResultHandler() {
-			/**
-			 * On waiting for a result
-			 */
+		sender.registerHandler(new IResultHandler() {			
 			@Override
 			public void onWaitingForResult() {
 				// TODO Auto-generated method stub
 				
 			}
-			/***
-			 * On receiving a result
-			 * @param p packet with data from the server
-			 */
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub
@@ -144,6 +145,12 @@ public class ServiceMenuController implements Initializable
 		});
 		sender.start();
 	}
+	/**
+	 * Show the scene view of complains management
+	 * 
+	 * @param mainStage stage to build
+	 * @throws Exception message if failed
+	 */
 	public void start(Stage mainStage) throws Exception {
 		String title = "Main Menu";
 		String srcFXML = "/Login/ServiceMenu.fxml";
@@ -188,7 +195,9 @@ public class ServiceMenuController implements Initializable
 			e.printStackTrace();
 		}
 	}
-	
+	/**
+	 * initialize complains at start
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// TODO Auto-generated method stub

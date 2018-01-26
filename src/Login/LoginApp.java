@@ -16,7 +16,6 @@ public class LoginApp extends Application {
 	 private static File f;
 	 private static FileChannel channel;
      private static FileLock lock;
-     
      public static void main(String[] args) {
 		 try {
 	            f = new File("RunLock.lock");
@@ -77,7 +76,9 @@ public class LoginApp extends Application {
 	            unlockFile();
 	        }
 	    }
-	
+	/**
+	 * Start login GUI
+	 */
 	@Override
 	public void start(Stage arg0) throws Exception {
 		LoginController loginController = new LoginController();
