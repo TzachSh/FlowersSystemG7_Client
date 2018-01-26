@@ -343,17 +343,19 @@ public class AnswerSurveyController implements Initializable{
 				e.printStackTrace();
 			}
 	    }
-	    else {	
-		attachQuestionToSurvey(activeSurvey);
-		ArrayList<Question> questionsToDisplay = getQuestionsOfSurvey(activeSurvey);
-		
-		setLabelQuestion(questionsToDisplay.get(0), lblQ1);
-		setLabelQuestion(questionsToDisplay.get(1), lblQ2);
-		setLabelQuestion(questionsToDisplay.get(2), lblQ3);
-		setLabelQuestion(questionsToDisplay.get(3), lblQ4);
-		setLabelQuestion(questionsToDisplay.get(4), lblQ5);
-		setLabelQuestion(questionsToDisplay.get(5), lblQ6);
-	    }
+		else {
+			attachQuestionToSurvey(activeSurvey);
+			ArrayList<Question> questionsToDisplay = getQuestionsOfSurvey(activeSurvey);
+
+			if (questionsToDisplay.size() == 6) {
+				setLabelQuestion(questionsToDisplay.get(0), lblQ1);
+				setLabelQuestion(questionsToDisplay.get(1), lblQ2);
+				setLabelQuestion(questionsToDisplay.get(2), lblQ3);
+				setLabelQuestion(questionsToDisplay.get(3), lblQ4);
+				setLabelQuestion(questionsToDisplay.get(4), lblQ5);
+				setLabelQuestion(questionsToDisplay.get(5), lblQ6);
+			}
+		}
 	}
 
 	/***
