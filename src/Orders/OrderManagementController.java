@@ -286,7 +286,6 @@ public class OrderManagementController implements Initializable {
                     setGraphic(lineBox);
 				}
 
-				
 			    @Override
 				protected void updateItem(Order item, boolean empty) {
 						
@@ -307,6 +306,4 @@ public class OrderManagementController implements Initializable {
             }
         });		
 	}
-    
-
 }
