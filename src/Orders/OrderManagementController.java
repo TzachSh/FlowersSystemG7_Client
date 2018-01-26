@@ -83,7 +83,7 @@ public class OrderManagementController implements Initializable {
     /**
      * order list of the customer in the branch
      */
-    private HashMap<Status,ArrayList<Order>> ordersMap = new HashMap<Status,ArrayList<Order>>();
+    private HashMap<Status,ArrayList<Order>> ordersMap;
     /**
      * handle click on back button
      * close current window and open customer menu
@@ -144,9 +144,9 @@ public class OrderManagementController implements Initializable {
      */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		setListOrdersHandlers();
 		getOrdersByCId();
 		initCmbBox();
-		setListOrdersHandlers();
 	}
 	/**
 	 * get orders by customer id and branch id
@@ -173,7 +173,7 @@ public class OrderManagementController implements Initializable {
 			public void onReceivingResult(Packet p)//set combobox values
 			{
 				if (p.getResultState()) {
-					ordersMap = new HashMap<>();
+					ordersMap = new HashMap<Status,ArrayList<Order>>();
 					ordersMap.put(Status.Canceled, new ArrayList<>());
 					ordersMap.put(Status.Completed, new ArrayList<>());
 					ordersMap.put(Status.Pending, new ArrayList<>());
@@ -195,8 +195,6 @@ public class OrderManagementController implements Initializable {
 		});
 		send.start();
 	}
-	
-	
 	/**
 	 * initialize combobox data and set behavior when changing
 	 */
@@ -209,15 +207,21 @@ public class OrderManagementController implements Initializable {
 	        	{
 	        	case "Canceled":
 	        			data = FXCollections.observableArrayList(ordersMap.get(Status.Canceled));
-	        			listOrder.setItems(data);
+	        			listOrder.getItems().clear();
+	        			for(Order order : data)
+	        				listOrder.getItems().add(order);
 	        			break;
 	        	case "Pending":
 	        		data = FXCollections.observableArrayList(ordersMap.get(Status.Pending));
-        			listOrder.setItems(data);
+        			listOrder.getItems().clear();
+        			for(Order order : data)
+        				listOrder.getItems().add(order);
 	        			break;
 	        	case "Completed":
 	        		data = FXCollections.observableArrayList(ordersMap.get(Status.Completed));
-        			listOrder.setItems(data);
+	        		listOrder.getItems().clear();
+        			for(Order order : data)
+        				listOrder.getItems().add(order);
         			break;
 	        	case "All":
         			getOrdersByCId();
@@ -288,7 +292,7 @@ public class OrderManagementController implements Initializable {
 
 			    @Override
 				protected void updateItem(Order item, boolean empty) {
-						
+						super.updateItem(item, empty);
 					 if (item != null) {	
 						 	setCellHandler(item);
                         }
