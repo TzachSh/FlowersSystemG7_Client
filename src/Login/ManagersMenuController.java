@@ -122,6 +122,7 @@ public class ManagersMenuController implements Initializable {
 			Branch branch = branchesList.get(index);
 			currentBranch = branch;
 			lblBranchList.setVisible(false);
+			btnSurvey.setDisable(false);
 			if(employee.getRole().toString().equals("Branch")==false)
 			{
 				btnCreateClient.setDisable(false);
@@ -131,6 +132,7 @@ public class ManagersMenuController implements Initializable {
 		}
 		else
 		{
+			btnSurvey.setDisable(true);
 			btnCatalogSales.setDisable(true);
 			lblBranchList.setVisible(true);
 			currentBranch = null;
