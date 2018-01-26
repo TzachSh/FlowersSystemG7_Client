@@ -33,7 +33,10 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-
+/**
+ * Controller
+ * Handle reports to the client
+ */
 public class ReportsController implements Initializable{
 	
 	@FXML private Label lblBranchName;
