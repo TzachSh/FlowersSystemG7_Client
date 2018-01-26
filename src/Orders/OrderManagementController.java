@@ -333,7 +333,7 @@ public class OrderManagementController implements Initializable {
 				// TODO Auto-generated method stub
 				if(p.getResultState())
 				{
-					
+					//Status updated successfully, No message is necessary 
 				}
 				else
 				{

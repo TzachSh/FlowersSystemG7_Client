@@ -510,7 +510,7 @@ public class OrderController implements Initializable{
 				btnNext.setDisable(true);
 				lblErrTime.setVisible(true);
 			}
-			else if (diffTime.get(TimeUnit.HOURS) >= 3 || (diffTime.get(TimeUnit.HOURS)>=2 && diffTime.get(TimeUnit.MINUTES)>58)) 
+			else if (diffTime.get(TimeUnit.DAYS) >= 1 || diffTime.get(TimeUnit.HOURS) >= 3 || (diffTime.get(TimeUnit.HOURS)>=2 && diffTime.get(TimeUnit.MINUTES)>58)) 
 			{
 					btnNext.setDisable(false);
 					lblErrTime.setVisible(false);
