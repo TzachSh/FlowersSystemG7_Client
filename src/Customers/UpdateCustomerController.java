@@ -505,6 +505,7 @@ public class UpdateCustomerController implements Initializable {
 						//handle fields after the result
 						btnSearch.setDisable(true);
 						txtCustomerID.setDisable(true);
+						txtUser.setDisable(true);
 						apnextinfo.setVisible(true);
 						initComboBox();
 						txtUser.setText(uList.get(0).getUser());
