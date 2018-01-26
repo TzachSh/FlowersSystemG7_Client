@@ -4,8 +4,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import Commons.Refund;
-
+/***
+ * 
+ * Entity class to define Account of customer
+ *
+ */
 public class Account implements Serializable {
+	/***
+	 * Instance Variables
+	 */
 	private int num;
 	private int customerId;
 	private double balance;

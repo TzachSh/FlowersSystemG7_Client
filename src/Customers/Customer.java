@@ -7,6 +7,11 @@ import Orders.Order;
 import Users.Permission;
 import Users.User;
 
+/***
+ * 
+ * Entity to define a Customer
+ *
+ */
 public class Customer extends User implements Serializable {
 
 	private int id;

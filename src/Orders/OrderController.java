@@ -52,7 +52,11 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
-
+/***
+ * 
+ * Controller class to define order process functionality
+ *
+ */
 public class OrderController implements Initializable{
 
 	@FXML
@@ -122,7 +126,15 @@ public class OrderController implements Initializable{
 	private boolean phoneCorrect;
 	private boolean nameCorrect;
 	private boolean addressCorrect;
+	/***
+	 * Default constructor
+	 */
 	public OrderController() {}
+	/***
+	 * 
+	 * @param arg0 - Stage to be loaded
+	 * @throws Exception - throw the relevant exception if can't load the stage
+	 */
 	public void start(Stage arg0) throws Exception {
 		primaryStage=arg0;
 		String title = "Create new order";
@@ -154,6 +166,9 @@ public class OrderController implements Initializable{
 			}
 		});
 	}
+	/***
+	 * Initialize all of the data to be displayed
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		lblDeliveryCost.setTextFill(Color.RED);
@@ -181,7 +196,9 @@ public class OrderController implements Initializable{
 		delivery.setDisable(true);
 		payment.setDisable(true);
 	}
-
+	/***
+	 * Listener to handle on change operation for the labels when checking input
+	 */
 	private void addListeners() {
 		txtAddress.textProperty().addListener(new ChangeListener<String>() {
 			@Override
@@ -210,6 +227,9 @@ public class OrderController implements Initializable{
 			}
 
 		});
+		/***
+		 * Listener to handle on change operation for the labels when checking input
+		 */
 		txtPhone.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) 
@@ -233,6 +253,9 @@ public class OrderController implements Initializable{
 				}
 			}
 		});
+		/***
+		 * Listener to handle on change operation for the labels when checking input
+		 */
 		txtName.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -257,6 +280,9 @@ public class OrderController implements Initializable{
 		
 		
 	}
+	/***
+	 * Initialize the combobox time to be selected
+	 */
 	private void initCmbTime() {
 				
 		for(int i = 0 ; i < 60;i++)
@@ -268,6 +294,9 @@ public class OrderController implements Initializable{
 		cmbHour.setItems(FXCollections.observableArrayList(hours));
 		cmbMin.setItems(FXCollections.observableArrayList(min));
 	}
+	/***
+	 * Listener to define the left pay amount
+	 */
 	private void registerLblLeftToPayListener() {
 		txtBlncePay.textProperty().addListener(new ChangeListener<String>() {
 			@Override
@@ -305,6 +334,9 @@ public class OrderController implements Initializable{
 		});
 		
 	}
+	/***
+	 * Get the current price details of an order
+	 */
 	private void getPriceDetails() {
 		lblTotalBeforeDiscount.setText(String.format("%.2f¤",CartController.getTotalPrice()));
 		account = CustomerMenuController.currentAcc;		
@@ -333,6 +365,9 @@ public class OrderController implements Initializable{
 		lblAvailableBalance.setText(String.format("%.2f¤",blnce));
 		
 	}
+	/***
+	 * Set delivery option check box
+	 */
 	private void registerChkDelivery() {
 		chkDelivery.setOnAction(new EventHandler<ActionEvent>() {
 			
@@ -362,6 +397,9 @@ public class OrderController implements Initializable{
 			}
 		});
 	}
+	/***
+	 * Set Express delivery option check box
+	 */
 	private void registerChkExpressDelivery() {
 		chkExpressDelivery.setOnAction(new EventHandler<ActionEvent>() {
 			
@@ -399,14 +437,17 @@ public class OrderController implements Initializable{
 		});
 		
 	}
+	/***
+	 * Register radio buttons in a toggle group
+	 */
 	private void registerRadionBtn() {
-		
-
 		radAccount.setToggleGroup(toggleGroup);
 		radCash.setToggleGroup(toggleGroup);
 		toggleGroup.selectToggle(radCash);
-		
 	}
+	/***
+	 * Perform back operation
+	 */
 	public void onClickBackBtn() {
 		switch(tabActive)
 		{
@@ -433,6 +474,9 @@ public class OrderController implements Initializable{
 		tabActive--;
 		
 	}
+	/***
+	 * Check the ComboBox for correct input
+	 */
 	public void onClickCmbCorrect()
 	{
 		try {
@@ -448,6 +492,9 @@ public class OrderController implements Initializable{
 			
 		}
 	}
+	/***
+	 * Load the controller of the cart
+	 */
 	protected void displayCart() {
 		 Stage cartStage = new Stage();
 			CartController cartController = new CartController();
@@ -459,6 +506,9 @@ public class OrderController implements Initializable{
 				e.printStackTrace();
 			}
 	}
+	/***
+	 * Perform next operation to go trough the next window
+	 */
 	public void onClickNextBtn() {
 		switch(tabActive)
 		{
@@ -513,6 +563,9 @@ public class OrderController implements Initializable{
 		tabActive++;
 	}
 
+	/***
+	 * Register the handler for the DateTime picker with the relevant dates
+	 */
 	private void registerDateTimePicker() {
 		DatePicker minDate = new DatePicker(); // DatePicker, used to define max date available
 		minDate.setValue(LocalDate.now()); // Max date available will be one year
@@ -532,7 +585,9 @@ public class OrderController implements Initializable{
 		requestedDate.setDayCellFactory(dayCellFactory);
 		
 	}
-
+	/***
+	 * Perform insert order
+	 */
 	private void insertOrder()
 	{
 		Calendar cal = Calendar.getInstance();
@@ -585,6 +640,14 @@ public class OrderController implements Initializable{
 		saveOrder(order,prodInOrder,orderPayment,acList,delivery);		
 		
 	}
+	/***
+	 * 
+	 * @param order to save
+	 * @param productInOrder with all of his product in order list
+	 * @param payments with all of the payments
+	 * @param acList list of all the account
+	 * @param delivery to save
+	 */
 	private void saveOrder(ArrayList<Object> order,ArrayList<Object> productInOrder,ArrayList<Object> payments,ArrayList<Object> acList,ArrayList<Object> delivery)
 	{
 		Packet packet = new Packet();

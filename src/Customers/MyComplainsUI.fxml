@@ -6,19 +6,18 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane prefHeight="586.0" prefWidth="802.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+<AnchorPane prefHeight="447.0" prefWidth="534.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label layoutX="325.0" layoutY="14.0" text="My Complains" underline="true">
+      <Label layoutX="191.0" layoutY="14.0" text="My Complains" underline="true">
          <font>
             <Font size="24.0" />
          </font>
       </Label>
-      <TitledPane animated="false" collapsible="false" layoutX="42.0" layoutY="77.0" prefHeight="477.0" prefWidth="718.0" text="Follow Complains">
+      <TitledPane animated="false" collapsible="false" layoutX="10.0" layoutY="55.0" prefHeight="384.0" prefWidth="514.0" text="Follow Complains">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <ListView fx:id="cListView" layoutX="14.0" layoutY="14.0" prefHeight="437.0" prefWidth="716.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <ListView fx:id="cListView" layoutX="14.0" layoutY="14.0" prefHeight="322.0" prefWidth="493.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
         </content>

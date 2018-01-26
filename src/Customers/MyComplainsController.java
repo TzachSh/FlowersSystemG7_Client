@@ -251,11 +251,17 @@ public class MyComplainsController implements Initializable{
 							}
 						}
 						else {
+							detailsElements = new VBox(statusElement,dateElement,titleElement,infoElement);
+								if (branch != null) {
+									branchElement = new HBox(new Label(textBranch), new Text(branch.getName()));
+									branchElement.setPadding(new Insets(5, 10, 5, 20));
+									detailsElements.getChildren().add(branchElement);
+								}
 								if (reply != null) {
 									HBox replyElement = new HBox(new Label(textReply), new Text(reply.getReplyment()));
 									replyElement.setPadding(new Insets(5, 10, 5, 20));
-									detailsElements = new VBox(statusElement, dateElement, titleElement, infoElement,
-											replyElement);
+									detailsElements = new VBox(statusElement, dateElement, titleElement, infoElement,replyElement);
+									detailsElements.getChildren().add(branchElement);
 								}
 								else
 								{

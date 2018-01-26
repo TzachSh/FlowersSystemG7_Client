@@ -2,6 +2,11 @@ package Orders;
 
 import java.io.Serializable;
 
+/***
+ * 
+ * Entity class to define a delivery
+ *
+ */
 public class Delivery implements Serializable {
 	
 	private int id;
@@ -9,37 +14,84 @@ public class Delivery implements Serializable {
 	private String phone;
 	private String receiver;
 	private int orderId;
-	
+	/***
+	 * 
+	 * @return delivery id
+	 */
 	public int getId() {
 		return id;
 	}
+	/***
+	 * 
+	 * @param id to set
+	 */
 	public void setId(int id) {
 		this.id = id;
 	}
+	/***
+	 * 
+	 * @return address
+	 */
 	public String getAddress() {
 		return address;
 	}
+	/***
+	 * 
+	 * @param address to set
+	 */
 	public void setAddress(String address) {
 		this.address = address;
 	}
+	/***
+	 * 
+	 * @return phone
+	 */
 	public String getPhone() {
 		return phone;
 	}
+	/***
+	 * 
+	 * @param phone to set
+	 */
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
+	/***
+	 * 
+	 * @return receiver name
+	 */
 	public String getReceiver() {
 		return receiver;
 	}
+	/***
+	 * 
+	 * @param receiver to set
+	 */
 	public void setReceiver(String receiver) {
 		this.receiver = receiver;
 	}
+	/***
+	 * 
+	 * @return order it
+	 */
 	public int getOrderId() {
 		return orderId;
 	}
+	/***
+	 * 
+	 * @param orderId to set
+	 */
 	public void setOrderId(int orderId) {
 		this.orderId = orderId;
 	}
+	/***
+	 * Constructor for server side
+	 * @param id
+	 * @param address
+	 * @param phone
+	 * @param receiver
+	 * @param orderId
+	 */
 	public Delivery(int id, String address, String phone, String receiver, int orderId) {
 		super();
 		this.id = id;
@@ -48,6 +100,12 @@ public class Delivery implements Serializable {
 		this.receiver = receiver;
 		this.orderId = orderId;
 	}
+	/***
+	 * Constructor for client side
+	 * @param address
+	 * @param phone
+	 * @param receiver
+	 */
 	public Delivery(String address, String phone, String receiver) {
 		super();
 		this.address = address;

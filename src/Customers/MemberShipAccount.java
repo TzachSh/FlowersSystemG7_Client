@@ -3,6 +3,11 @@ package Customers;
 import java.io.Serializable;
 import java.sql.Date;
 
+/**
+ * 
+ * Class to define a Membership of account
+ *
+ */
 public class MemberShipAccount implements Serializable{
 	private int acNum;
 	private int mId;

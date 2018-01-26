@@ -40,6 +40,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+/***
+ * 
+ * Controller class to perform account functionality
+ *
+ */
 public class AccountController implements Initializable{
 	
 	@FXML
