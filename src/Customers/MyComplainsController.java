@@ -223,8 +223,14 @@ public class MyComplainsController implements Initializable{
 								refundElement.getChildren().add(branchElement);
 								refundElement.setPadding(new Insets(5, 10, 5, 20));
 								detailsElements = new VBox(statusElement, dateElement, titleElement, infoElement,refundElement);
+								if(reply != null)
+								{
+									HBox replyElement = new HBox(new Label(textReply), new Text(reply.getReplyment()));
+									replyElement.setPadding(new Insets(5, 10, 5, 20));
+									detailsElements.getChildren().add(replyElement);
+								}
 							}
-								else if (reply != null) {
+							else if (reply != null) {
 									HBox replyElement = new HBox(new Label(textReply), new Text(reply.getReplyment()));
 									branchElement = new HBox(new Label(textBranch), new Text(branch.getName()));
 									branchElement.setPadding(new Insets(0, 10, 5, 20));
@@ -247,7 +253,7 @@ public class MyComplainsController implements Initializable{
 							}
 						}
 						else {
-							detailsElements = new VBox(statusElement,dateElement,titleElement,infoElement);
+								detailsElements = new VBox(statusElement,dateElement,titleElement,infoElement);
 								if (branch != null) {
 									branchElement = new HBox(new Label(textBranch), new Text(branch.getName()));
 									branchElement.setPadding(new Insets(5, 10, 5, 20));

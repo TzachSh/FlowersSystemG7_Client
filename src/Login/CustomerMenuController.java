@@ -265,7 +265,6 @@ public class CustomerMenuController implements Initializable {
 		lblBranch.setVisible(false);
 		hasAccountForCurrentBranch = true;
 		
-		btnComplains.setDisable(false);
 		btnMyOrders.setDisable(false);
 		btnCart.setDisable(false);
 		btnAccount.setDisable(false);
@@ -280,7 +279,6 @@ public class CustomerMenuController implements Initializable {
 		
 		hasAccountForCurrentBranch = false;
 		
-		btnComplains.setDisable(true);
 		btnMyOrders.setDisable(true);
 		btnCart.setDisable(true);
 		btnAccount.setDisable(true);
