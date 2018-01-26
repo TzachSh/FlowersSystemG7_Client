@@ -78,14 +78,19 @@ public class ReportsController implements Initializable{
     private BarChart<String,Double> bcSatisfaction1;
 	@FXML
     private BarChart<String,Double> bcSatisfaction2;
+	/** branch list */
 	private ArrayList<Branch> branchlist;
+	/** complain lists */
 	private ArrayList<Complain> complainList1,complainList2;
+	/**income reports */
 	private ArrayList<IncomeReport> incomeReport1,incomeReport2;
+	/**order reports*/
 	private ArrayList<OrderReport> orderReport1,orderReport2;
 	/**
 	 * choice :saving manager choice of different branches/quarterlies
 	 */
 	private int choice=0;
+	/** getting employee object*/
 	private Employee employee=(Employee)LoginController.userLogged;
 	
 	/**
@@ -1086,6 +1091,7 @@ public class ReportsController implements Initializable{
 			cbBranchTwoName.getSelectionModel().select(1);		
 		}
 	}
+	/** initialize settings and fields*/
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// hiding the not wanted fields and options
