@@ -428,8 +428,7 @@ public class UpdateCustomerController implements Initializable {
 				cbStatus.getSelectionModel().select(0);
 			else if(accList.get(0).getAccountStatus().toString().equals("1"))
 				cbStatus.getSelectionModel().select(1);
-			else if(accList.get(0).getAccountStatus().toString().equals("2"))
-				cbStatus.getSelectionModel().select(2);
+		
 		}
 		else//there is no account for this user , we hide account fields
 		{

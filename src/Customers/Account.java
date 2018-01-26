@@ -198,7 +198,7 @@ public class Account implements Serializable {
 	 * @param accountStatus the account status Blocked , active , closed
 	 * @param creditCard credit card
 	 */
-	public Account(int branchId, int customerId,double balance, AccountStatus accountStatus, String creditCard) {
+	public Account(int customerId,int branchId,double balance, AccountStatus accountStatus, String creditCard) {
 		super();
 		this.customerId = customerId;
 		this.balance = balance;
