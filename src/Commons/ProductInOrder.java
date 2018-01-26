@@ -3,15 +3,7 @@ package Commons;
 import java.io.Serializable;
 
 /**
- * @author VladimirB
  * Storage products in order in it's quantity
- */
-import Orders.Order;
-import Products.Product;
-/***
- * 
- * Entity class to define a Product in Order
- *
  */
 public class ProductInOrder implements Serializable {
 	
@@ -31,30 +23,26 @@ public class ProductInOrder implements Serializable {
 	 * 
 	 * @return order number
 	 */
-	/***
-	 * 
-	 * @return orderId
-	 */
 	public int getOrderId() {
 		return orderId;
 	}
 	/**
 	 * 
-	 * @param orderId - to set
+	 * @param order number
 	 */
 	public void setOrderId(int orderId) {
 		this.orderId = orderId;
 	}
-	/***
+	/**
 	 * 
-	 * @return productId
+	 * @return product number
 	 */
 	public int getProductId() {
 		return productId;
 	}
-	/***
+	/**
 	 * 
-	 * @param productId to set
+	 * @param product number
 	 */
 	public void setProductId(int productId) {
 		this.productId = productId;
@@ -78,12 +66,6 @@ public class ProductInOrder implements Serializable {
 	 * @param orderId order number
 	 * @param productId product number
 	 * @param quantity amount in order
-	 */
-	/***
-	 * Constructor
-	 * @param orderId
-	 * @param productId
-	 * @param quantity
 	 */
 	public ProductInOrder(int orderId, int productId, int quantity) {
 		this.orderId = orderId;
