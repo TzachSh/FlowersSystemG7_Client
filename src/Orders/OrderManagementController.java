@@ -312,7 +312,11 @@ public class OrderManagementController implements Initializable {
             }
         });		
 	}
-	
+	/***
+	 * 
+	 * @param paramList - List with updated orders to be saved.
+	 * Save the updated orders to the server database 
+	 */
 	private void updateOrdersToDB(ArrayList<Object> paramList)
 	{
 		Packet packet = new Packet();
@@ -344,6 +348,12 @@ public class OrderManagementController implements Initializable {
 		sender.start();
 	}
 	
+	/***
+	 * 
+	 * @param orderList with the relevant orders to update their status
+	 * When the current time is after the requested date time for each order  in the list,
+	 * Then the status has to be updated to COMPLETED
+	 */
 	private void updateStatusForOrders(ArrayList<Order> orderList)
 	{
 		ArrayList<Object> paramListOrders = new ArrayList<>();
@@ -352,7 +362,7 @@ public class OrderManagementController implements Initializable {
 		java.sql.Timestamp sqlTimestamp = new java.sql.Timestamp(today.getTime());
 		
 		for(Order order : orderList)
-			if(sqlTimestamp.after(order.getRequestedDate())) {
+			if(sqlTimestamp.after(order.getRequestedDate()) && order.getStatus() == Status.Pending) {
 				order.setStatus(Status.Completed);
 				paramListOrders.add(order);
 			}
