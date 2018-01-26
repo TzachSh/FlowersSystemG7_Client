@@ -8,18 +8,13 @@ import javax.swing.JOptionPane;
 
 import Branches.Branch;
 import Branches.Employee;
-import Login.LoginApp;
 import Login.LoginController;
 import Login.ManagersMenuController;
-import Login.ServiceMenuController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
 import Products.ConstantData;
-import Users.Permission;
-import Users.User;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -40,11 +35,12 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-/***
+/**
  * 
- * Controller class to perform account functionality
- *
+ * Controller
+ * Handling Account managing options *  
  */
+
 public class AccountController implements Initializable{
 	
 	@FXML
@@ -75,10 +71,25 @@ public class AccountController implements Initializable{
 	private RadioButton rbAddMemberShip;
 	@FXML
 	private Button btnFinish;
-	private String membership,discount;
+	/**
+	 * membership name
+	 */
+	private String membership;
+	/**
+	 * membership code
+	 */
 	private int mId;
+	/**
+	 * all possible memberships
+	 */
 	private ArrayList<Membership> memshipList ;
+	/**
+	 * Active employee
+	 */
 	private Employee currentEmployee=(Employee)LoginController.userLogged;
+	/**
+	 * current customer to check
+	 */
 	private Customer currentCustomer;
 	private Branch currentBranch=ManagersMenuController.currentBranch;
 	private static Stage myStage;
@@ -98,7 +109,7 @@ public class AccountController implements Initializable{
 		
 	}
 	/**
-	 * This function show membership combo box if the radio button was selected , else it will hide it .
+	 * show membership combo box if the radio button was selected , else it will hide it .
 	 */
 	public void showMemberShipComboBox()
 	{
@@ -119,7 +130,7 @@ public class AccountController implements Initializable{
 		}
 	}
 	/**
-	 * This function initialize the settings
+	 * initialize the settings
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -213,7 +224,7 @@ public class AccountController implements Initializable{
 	
 
 	/**
-	 * This function adds the account to the database 
+	 * add the account to the database 
 	 */
 	public void addAccountNow()
 	{
@@ -251,16 +262,9 @@ public class AccountController implements Initializable{
 		//sending the packet
 		SystemSender send = new SystemSender(packet);
 		send.registerHandler(new IResultHandler() {
-			/**
-			 * on waiting for results from server
-			 */
 			@Override
 			public void onWaitingForResult() {				
 			}
-			/**
-			 * 
-			 * @param p the result from the server 
-			 */
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub
@@ -339,7 +343,7 @@ public class AccountController implements Initializable{
 		send.start();
 	}
 	/**
-	 * This function checks that the user exist in the database
+	 * check that the user exist in the database
 	 */
 	public void checkUserExist()
 	{
@@ -363,17 +367,9 @@ public class AccountController implements Initializable{
 		//sending the packet
 		SystemSender send = new SystemSender(packet);
 		send.registerHandler(new IResultHandler() {
-		/**
-		 * on waiting for result from the server
-		 */
 		@Override
 		public void onWaitingForResult() {	
 		}
-		
-		/**
-		 * 
-		 * @param p the result from the server 
-		 */
 		@Override
 		public void onReceivingResult(Packet p) {
 			// TODO Auto-generated method stub
@@ -404,17 +400,10 @@ public class AccountController implements Initializable{
 				//sending the packet
 				SystemSender send = new SystemSender(packet);
 				send.registerHandler(new IResultHandler() {
-					/**
-					 * on waiting for result from the server
-					 */
 					@Override
 					public void onWaitingForResult() {
 						
 					}
-					/**
-					 * 
-					 * @param p the result from the server 
-					 */
 					@Override
 					public void onReceivingResult(Packet p) {
 						ArrayList<Account> accList = new ArrayList<>();
@@ -494,9 +483,6 @@ public class AccountController implements Initializable{
 			e.printStackTrace();
 		}		
 		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			/**
-			 * handling windows once this window closed
-			 */
 			@Override
 			public void handle(WindowEvent event) {
 				//lunching managers menu 

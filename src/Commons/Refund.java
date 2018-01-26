@@ -6,18 +6,26 @@ import java.sql.Date;
 import Customers.Complain;
 import Orders.Order;
 
-/***
- * 
+/**
+ * @author VladimirB
  * Entity class to define a refund
- *
  */
 public class Refund implements Serializable {
 	/***
-	 * Instance variables
+	 * refund id
 	 */
 	private int id;
+	/**
+	 * creation of the refund
+	 */
 	private Date creationDate;
+	/**
+	 * amount value in the refund
+	 */
 	private double amount;
+	/**
+	 * purpose refund id order/complain key 
+	 */
 	private int refundAbleId;
 	/***
 	 * 

@@ -3,16 +3,12 @@ package Customers;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Timestamp;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.concurrent.TimeUnit;
-
 import Branches.Branch;
-import Branches.CustomerService;
 import Branches.Employee;
 import Branches.Role;
 import Login.LoginController;
@@ -27,7 +23,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -50,8 +45,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -60,16 +53,13 @@ import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 /**
- * 
+ * Controller
  * Complains controller which performs adding new complains and follow them 
  *
  */
 
 public class ComplainsController implements Initializable {
 
-	/***
-	 * FXML components to be used during runtime
-	 */
 	@FXML private TextField txtCustId;
 	@FXML private Button btnSearch;
 	@FXML private Button btnAdd;
@@ -81,15 +71,29 @@ public class ComplainsController implements Initializable {
 	@FXML private TabPane complainsTabedPane;
 	@FXML private ComboBox<Branch> cmbBranch;
 	
-	
-	/***
-	 * Lists to handle the data
+	/**
+	 * all replies
 	 */
 	private ArrayList<Reply> replyList;
+	/**
+	 * complains observable list for dynamic access
+	 */
 	private ObservableList<Complain> data;
+	/**
+	 * branches list
+	 */
 	private ArrayList<Branch> branchList;
+	/**
+	 * branches observable list for dynamic access
+	 */
 	private ObservableList<Branch> branchData;
+	/**
+	 * complains list
+	 */
 	private ArrayList<Complain> allComplainsList;
+	/**
+	 * complain of current service employee
+	 */
 	private ArrayList<Complain> currentServiceEmployeeComplains;
 	private ArrayList<User> usersList;
 	private ArrayList<Customer> customersList;
@@ -218,17 +222,11 @@ public class ComplainsController implements Initializable {
 		
 		sender.registerHandler(new IResultHandler() {
 			
-			/**
-			 * On waiting for a message from the server
-			 */
 			@Override
 			public void onWaitingForResult() {
 				// TODO Auto-generated method stub
 				
 			}
-			/**
-			 * On getting a message from the server
-			 */
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub
@@ -352,16 +350,10 @@ public class ComplainsController implements Initializable {
 		packet.setParametersForCommand(Command.addComplain, paramList);
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
-			/**
-			 * On waiting for a message from the server
-			 */
 			@Override
 			public void onWaitingForResult() {
 				// TODO Auto-generated method stub
 			}
-			/**
-			 * On getting a message from the server
-			 */
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub
@@ -623,17 +615,11 @@ public class ComplainsController implements Initializable {
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
 			
-			/**
-			 * On waiting for a message from the server
-			 */
 			@Override
 			public void onWaitingForResult() {
 				// TODO Auto-generated method stub
 				
 			}
-			/**
-			 * On getting a message from the server
-			 */
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub
@@ -660,14 +646,7 @@ public class ComplainsController implements Initializable {
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				// TODO Auto-generated method stub
 				if (newValue.intValue() > oldValue.intValue()) {
-					/**
-					 *  Check if the new character is greater than LIMIT
-					 */
 					if (textField.getText().length() >= limit) {
-
-					/**
-					 *  if it's the limited character then just setText to previous one
-					 */
 						textField.setText(textField.getText().substring(0, limit));
 					}
 				}
@@ -687,14 +666,7 @@ public class ComplainsController implements Initializable {
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				// TODO Auto-generated method stub
 				if (newValue.intValue() > oldValue.intValue()) {
-					/**
-					 *  Check if the new character is greater than LIMIT
-					 */
 					if (textArea.getText().length() >= limit) {
-
-						/**
-						 *  if it's the limited character then just setText to previous one
-						 */
 						textArea.setText(textArea.getText().substring(0, limit));
 					}
 				}
@@ -723,17 +695,11 @@ public class ComplainsController implements Initializable {
 		
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
-			/**
-			 * On waiting for result
-			 */
 			@Override
 			public void onWaitingForResult() {
 				// TODO Auto-generated method stub
 				
 			}
-			/**
-			 * On getting the results from the server
-			 */
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub

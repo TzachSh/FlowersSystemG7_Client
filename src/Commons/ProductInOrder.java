@@ -2,6 +2,10 @@ package Commons;
 
 import java.io.Serializable;
 
+/**
+ * @author VladimirB
+ * Storage products in order in it's quantity
+ */
 import Orders.Order;
 import Products.Product;
 /***
@@ -11,13 +15,22 @@ import Products.Product;
  */
 public class ProductInOrder implements Serializable {
 	
-	/***
-	 * Instance Variables
+	/**
+	 * order number
 	 */
 	private int orderId;
+	/**
+	 * product number
+	 */
 	private int productId;
+	/**
+	 * quantity in order line
+	 */
 	private int quantity;
-	
+	/**
+	 * 
+	 * @return order number
+	 */
 	/***
 	 * 
 	 * @return orderId
@@ -46,20 +59,26 @@ public class ProductInOrder implements Serializable {
 	public void setProductId(int productId) {
 		this.productId = productId;
 	}
-	/***
+	/**
 	 * 
-	 * @return quantity
+	 * @return amount in the order
 	 */
 	public int getQuantity() {
 		return quantity;
 	}
-	/***
+	/**
 	 * 
-	 * @param quantity to set
+	 * @param quantity in order
 	 */
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
+	/**
+	 * Constructor
+	 * @param orderId order number
+	 * @param productId product number
+	 * @param quantity amount in order
+	 */
 	/***
 	 * Constructor
 	 * @param orderId
