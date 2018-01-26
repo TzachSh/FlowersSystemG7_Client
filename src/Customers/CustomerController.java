@@ -161,9 +161,9 @@ public class CustomerController implements Initializable {
 		}
 		//getting the information
 		cusid=txtID.getText();
-		user=txtUser.getText();
-		password=txtPassword.getText();
-		confirmpassword=txtConfirmPassword.getText();
+		user=txtUser.getText().replaceAll("'", "\\'");;
+		password=txtPassword.getText().replaceAll("'", "\\'");;
+		confirmpassword=txtConfirmPassword.getText().replaceAll("'", "\\'");;
 		//check input
 		if(!(checkInput(1)&&checkInput(2)))
 		{
@@ -231,7 +231,7 @@ public class CustomerController implements Initializable {
 	/**
 	 * 
 	 * @param choice check type
-	 * @return returns ther result true/false
+	 * @return returns the result true/false
 	 */
 	private boolean checkInput(int choice)
 	{

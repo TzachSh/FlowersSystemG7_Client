@@ -701,11 +701,11 @@ public class UpdateCustomerController implements Initializable {
 		Packet packet = new Packet();
 
 		//updating the information
-		newuser=txtUser.getText();
+		newuser=txtUser.getText().replaceAll("'", "\\'");;
 		newstatus=cbStatus.getSelectionModel().getSelectedItem();
 		newmembership=cbMemberShip.getSelectionModel().getSelectedItem();
 		newcreditcard=txtCreditCard1.getText()+txtCreditCard2.getText()+txtCreditCard3.getText()+txtCreditCard4.getText()+txtCreditCard5.getText();
-		newpassword=txtNewPassword.getText();
+		newpassword=txtNewPassword.getText().replaceAll("'", "\\'");;
 		
 		ArrayList<Object> accl=new ArrayList<>();
 		ArrayList<Object> userl=new ArrayList<>();
