@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ResourceBundle;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import javax.print.attribute.standard.DateTimeAtCompleted;
@@ -247,6 +248,7 @@ public class OrderManagementController implements Initializable {
 				private void setCellHandler(Order order)
 				{
 					DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+					formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
                     VBox orderCol = new VBox(new Text(""+order.getoId()));
                     orderCol.setMinWidth(30);
                     orderCol.setAlignment(Pos.CENTER);
