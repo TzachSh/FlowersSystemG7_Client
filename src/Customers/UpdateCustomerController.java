@@ -815,11 +815,15 @@ public class UpdateCustomerController implements Initializable {
 	 * @throws Exception message if failed
 	 */
 	public void start(Stage primaryStage)  throws Exception{
-		// TODO Auto-generated method stub
-		String title = "Add Account UI";
+		// TODO Auto-generated method stub\
+		String title;
+		if(LoginController.userLogged instanceof Customer)
+			title="Client Information";
+		else
+			title = "Update Client Information";
 		String srcFXML = "/Customers/updateCustomerUI.fxml";
 		String srcCSS = "/Customers/application.css";
-		myStage=primaryStage;
+		
 
 		//tyrying to init the window
 		try {
@@ -831,7 +835,7 @@ public class UpdateCustomerController implements Initializable {
 			primaryStage.setTitle(title);
 			primaryStage.setResizable(false);
 			primaryStage.setScene(scene);
-			
+			myStage=primaryStage;
 			primaryStage.show();
 		} catch (Exception e) {
 			// TODO: handle exception
