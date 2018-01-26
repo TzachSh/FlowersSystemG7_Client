@@ -1,30 +1,18 @@
 package Customers;
 
-import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import Users.Permission;
 import Users.User;
-
-import javax.swing.JOptionPane;
-
-import com.sun.org.apache.bcel.internal.generic.NEW;
-
 import Login.ManagersMenuController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
-import Products.CatalogProduct;
 import Products.ConstantData;
-import Products.FlowerInProduct;
-import javafx.application.Platform;
-import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -33,20 +21,16 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.DialogPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import sun.invoke.util.BytecodeName;
 
 public class CustomerController implements Initializable {
 	
-	private String cusid,user,password,confirmpassword,creditcard,status,permission;
-	private ArrayList<Account> accList ;
+	private String cusid,user,password,confirmpassword;
 	private ArrayList<User> uList;
-	private ArrayList<Customer> cList ;
 	
 	@FXML
 	private TextField txtID;
@@ -226,10 +210,7 @@ public class CustomerController implements Initializable {
 
 			if (p.getResultState())
 			{
-				JOptionPane.showMessageDialog(null, 
-						"The Client : "+user+"  : Has Been Added", 
-		                "Success", 
-		                JOptionPane.CLOSED_OPTION);
+				ConstantData.displayAlert(AlertType.CONFIRMATION, "Success", "The Client"+user+"  : Has Been Added",null);
 				//after we finished adding the new customer we must close this window and returns to the menu
 				myStage.close();
 				 ManagersMenuController menu = new ManagersMenuController();
