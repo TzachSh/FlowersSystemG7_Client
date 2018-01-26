@@ -13,7 +13,7 @@ import ocsf.client.AbstractClient;
 public class SystemClient extends AbstractClient
 {
 	/**
-	 *  private attributes
+	 *  handler result behavior
 	 */
 	private IResultHandler handler; 
 	
@@ -48,7 +48,9 @@ public class SystemClient extends AbstractClient
 	{
 		this.handler = handler;
 	}
-
+	/**
+	 * receive message from server
+	 */
 	@Override
 	protected void handleMessageFromServer(Object msg) 
 	{

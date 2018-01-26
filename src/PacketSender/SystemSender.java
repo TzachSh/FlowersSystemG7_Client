@@ -20,12 +20,14 @@ import javafx.scene.control.Alert.AlertType;
  */
 public class SystemSender extends Thread
 {
-	/**
-	 *  private attributes
-	 */
-	
 	private SystemClient client;
+	/**
+	 * packet with message to the server
+	 */
 	private Packet packet;
+	/**
+	 * handler result behavior
+	 */
 	private IResultHandler handler;
 	
 	/**
