@@ -5,12 +5,17 @@ import java.sql.Date;
 
 /**
  * 
- * Class to define a Membership of account
+ * Entity 
+ * Membership of account contain membership code account of the customer
+ * in the branch and creation date of the membership
  *
  */
 public class MemberShipAccount implements Serializable{
+	/**customer account number*/
 	private int acNum;
+	/**membership code*/
 	private int mId;
+	/**creation of the membership*/
 	private Date creationDate;
 	/**
 	 * membership account constructor

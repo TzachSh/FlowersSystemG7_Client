@@ -54,8 +54,7 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 /**
  * Controller
- * Complains controller which performs adding new complains and follow them 
- *
+ * Complains controller performs adding new complains and follow them 
  */
 public class ComplainsController implements Initializable {
 

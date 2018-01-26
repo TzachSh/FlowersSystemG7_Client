@@ -8,9 +8,8 @@ import Users.Permission;
 import Users.User;
 
 /***
- * 
- * Entity to define a Customer
- *
+ * Entity
+ * Customer with id, orders, actual account number and complains
  */
 public class Customer extends User implements Serializable {
 

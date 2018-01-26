@@ -26,7 +26,10 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-
+/**
+ * Controller
+ * manage new customers information
+ */
 public class CustomerController implements Initializable {
 	
 	private String cusid,user,password,confirmpassword;
@@ -121,7 +124,9 @@ public class CustomerController implements Initializable {
 			}
 		});	
 	}
-	
+	/**
+	 * closing form and open managers menu if something went wrong display error message
+	 */
 	public void onClosingForm()
 	{
 		//closing the window
@@ -201,9 +206,6 @@ public class CustomerController implements Initializable {
 		public void onWaitingForResult() {
 			
 		}
-		/**
-		 * the server returns result p
-		 */
 		@Override
 		public void onReceivingResult(Packet p) {
 			// TODO Auto-generated method stub
@@ -274,18 +276,11 @@ public class CustomerController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		//validate customer user field input
 		txtUser.textProperty().addListener(new ChangeListener<String>() {
-			/**
-			 * if the text changed , we must check it 
-			 */
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				//the text length must be below 51
 				if(newValue.length()>50)
 					txtUser.setText(oldValue);
-				/*if(!newValue.equals("") &&newValue.matches("^[a-zA-Z0-9._-]{0,50}$"))
-					txtUser.setText(newValue);
-				else
-					txtUser.setText(oldValue);*/
 			}
 		});
 		//validate id
@@ -334,10 +329,6 @@ public class CustomerController implements Initializable {
 		SystemSender send = new SystemSender(packet);	
 		// register the handler that occurs when the data arrived from the server
 		send.registerHandler(new IResultHandler() {
-			
-			/**
-			 * waiting for result from the server
-			 */
 			public void onWaitingForResult() {
 			}
 			

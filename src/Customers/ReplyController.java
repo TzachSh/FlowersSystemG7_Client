@@ -34,14 +34,11 @@ import javafx.util.StringConverter;
 
 
 /**
- * 
- * Reply controller which is handling complain reply, and giving a refund to customer
+ * Controller
+ * Handling complain reply, and giving a refund to customer
  *
  */
 public class ReplyController {
-	/***
-	 * FXML components which be changed during runtime
-	 */
 	@FXML
 	private Button btnSend;
 	@FXML
@@ -62,10 +59,13 @@ public class ReplyController {
 	 */
 	boolean isRefund;
 	
+	/**
+	 * contains all branches
+	 */
+	private ArrayList<Branch> branchList;
 	/***
 	 * List to be updated during runtime
 	 */
-	private ArrayList<Branch> branchList;
 	private ObservableList<Branch> data;
 	
 	/***
@@ -180,17 +180,10 @@ public class ReplyController {
 
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
-
-			/**
-			 * On waiting for a message from the server
-			 */
 			@Override
 			public void onWaitingForResult() {
 				// TODO Auto-generated method stub
 			}
-			/**
-			 * On getting a message from the server
-			 */
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub
@@ -298,18 +291,11 @@ public class ReplyController {
 		packet.setParametersForCommand(Command.getBranches, paramListBranches);
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
-			
-			/**
-			 * On waiting for a message from the server
-			 */
 			@Override
 			public void onWaitingForResult() {
 				// TODO Auto-generated method stub
 				
 			}
-			/**
-			 * On getting a message from the server
-			 */
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub

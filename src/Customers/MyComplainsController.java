@@ -41,20 +41,20 @@ import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 
 /***
- * 
- * Class to define MyComplains Controller functionality
+ * Controller
+ * Allows to customer to follow his complains and see the response
  *
  */
 
 public class MyComplainsController implements Initializable{
-
-	/**
-	 * Define list to initialize the data
-	 */
 	@FXML private ListView<Complain> cListView;
+	/**customer complains*/
 	private ArrayList<Complain> complainsList;
+	/**possible branches*/
 	private ArrayList<Branch> branchesList;
+	/**refunds from complains*/
 	private ArrayList<Refund> refundsList;
+	/**complain's employee reply*/
 	private ArrayList<Reply> replyList;
 	/**
 	 * Observable collection to be set in to the views
@@ -90,9 +90,6 @@ public class MyComplainsController implements Initializable{
 			primaryStage.setScene(scene);
 			primaryStage.show();
 			
-			/**
-			 * Set on close to back to the previous menu
-			 */
 			primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 		          public void handle(WindowEvent we) {
 		        	  
@@ -108,7 +105,6 @@ public class MyComplainsController implements Initializable{
 		      }); 
 			
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println(e);
 			e.printStackTrace();
 		}
@@ -328,17 +324,11 @@ public class MyComplainsController implements Initializable{
 		
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
-			/**
-			 * While waiting for results from the server
-			 */
 			@Override
 			public void onWaitingForResult() {
 				// TODO Auto-generated method stub
 				
 			}
-			/**
-			 * When the results arrived
-			 */
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub

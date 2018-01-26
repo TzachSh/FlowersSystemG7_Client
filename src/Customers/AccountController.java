@@ -38,7 +38,8 @@ import javafx.stage.WindowEvent;
 /**
  * 
  * Controller
- * Handling Account managing options *  
+ * Handling Account managing options
+ *   
  */
 
 public class AccountController implements Initializable{

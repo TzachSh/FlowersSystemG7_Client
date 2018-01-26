@@ -2,8 +2,7 @@ package Customers;
 
 import java.io.Serializable;
 
-/***
- * 
+/*** 
  * Entity class to define Membership
  *
  */

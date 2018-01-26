@@ -33,7 +33,10 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-
+/**
+ * Controller
+ * Handle existing customer's information
+ */
 public class UpdateCustomerController implements Initializable {
 	/**the current user*/
 	public User user;
@@ -47,6 +50,7 @@ public class UpdateCustomerController implements Initializable {
 	private ArrayList<MemberShipAccount> memshipAccount ;
 	/**customer list*/
 	private ArrayList<Customer> cList ;
+	/**selected branch*/
 	private Branch currentBranch;
 	@FXML
 	private Label lbHeader;
@@ -247,9 +251,6 @@ public class UpdateCustomerController implements Initializable {
 			
 		});
 		txtCreditCard2.textProperty().addListener(new ChangeListener<String>() {
-			/**
-			 * if the text changed
-			 */
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				// TODO Auto-generated method stub
@@ -261,9 +262,6 @@ public class UpdateCustomerController implements Initializable {
 			
 		});
 		txtCreditCard3.textProperty().addListener(new ChangeListener<String>() {
-			/**
-			 * if the text changed
-			 */
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				// TODO checking the length
@@ -275,9 +273,6 @@ public class UpdateCustomerController implements Initializable {
 			
 		});
 		txtCreditCard4.textProperty().addListener(new ChangeListener<String>() {
-			/**
-			 * if the text changed
-			 */
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				// checking the length
@@ -303,9 +298,6 @@ public class UpdateCustomerController implements Initializable {
 		});		
 		//password validation
 		txtPassword.textProperty().addListener(new ChangeListener<String>() {
-			/**
-			 * if the text changed
-			 */
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				//checking the length
@@ -314,9 +306,6 @@ public class UpdateCustomerController implements Initializable {
 			}
 		});
 		txtConfirmPassword.textProperty().addListener(new ChangeListener<String>() {
-			/**
-			 * if the text changed
-			 */
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				// checking the length
@@ -325,9 +314,6 @@ public class UpdateCustomerController implements Initializable {
 			}
 		});
 		txtNewPassword.textProperty().addListener(new ChangeListener<String>() {
-			/**
-			 * if the text changed
-			 */
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				// checking the length
@@ -467,16 +453,10 @@ public class UpdateCustomerController implements Initializable {
 		//sending the packet
 		SystemSender send = new SystemSender(packet);
 		send.registerHandler(new IResultHandler() {
-			/**
-			 * waiting for result from the server
-			 */
 			@Override
 			public void onWaitingForResult() {
 				
 			}
-			/**
-			 * getting the result p from the server
-			 */
 			@Override
 			public void onReceivingResult(Packet p) {
 				//getting the result from the Query
@@ -512,15 +492,9 @@ public class UpdateCustomerController implements Initializable {
 				//sending the packet
 				SystemSender send = new SystemSender(packet);
 				send.registerHandler(new IResultHandler() {
-					/**
-					 * waiting for result from the server
-					 */
 					@Override
 					public void onWaitingForResult() {						
 					}
-					/**
-					 * getting the result p from the server
-					 */
 					@Override
 					public void onReceivingResult(Packet p) {
 						//getting the result from the Query
@@ -557,16 +531,10 @@ public class UpdateCustomerController implements Initializable {
 							//sending the packet
 							SystemSender send = new SystemSender(packet);
 							send.registerHandler(new IResultHandler() {
-								/**
-								 * waiting for result from the server
-								 */
 								@Override
 								public void onWaitingForResult() {
 									
 								}
-								/**
-								 * getting the result p from the server
-								 */
 								@Override
 								public void onReceivingResult(Packet p) {
 									// if the result status is true , we can get the  membership from the returned information .
@@ -842,9 +810,9 @@ public class UpdateCustomerController implements Initializable {
 	}
 	
 	/**
-	 * This 
-	 * @param primaryStage 
-	 * @throws Exception
+	 * creating window  
+	 * @param primaryStage scene to build 
+	 * @throws Exception message if failed
 	 */
 	public void start(Stage primaryStage)  throws Exception{
 		// TODO Auto-generated method stub
@@ -872,9 +840,6 @@ public class UpdateCustomerController implements Initializable {
 		}
 		
 		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			/**
-			 * handling closing the window event
-			 */
 			@Override
 			public void handle(WindowEvent event) {
 				  primaryStage.close();

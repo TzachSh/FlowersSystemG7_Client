@@ -8,9 +8,6 @@ import java.io.Serializable;
  *
  */
 public enum MembershipType implements Serializable {
-	/***
-	 * Possibly states of membership 
-	 */
 	Monthly,
 	Yearly
 }

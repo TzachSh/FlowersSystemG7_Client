@@ -2,10 +2,6 @@ package Customers;
 
 import java.io.Serializable;
 /**
- * Enumeration to define account status
- *
- */
-/***
  * 
  * Enumeration to define Account Status 
  *
