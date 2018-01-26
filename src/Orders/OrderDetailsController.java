@@ -1,15 +1,11 @@
 package Orders;
 
-import java.io.IOException;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,14 +13,11 @@ import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import javax.swing.JOptionPane;
-
 import Commons.ProductInOrder;
 import Commons.Refund;
 import Commons.Status;
 import Login.CustomerMenuController;
 import PacketSender.Command;
-import PacketSender.FileSystem;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
@@ -33,8 +26,6 @@ import Products.ConstantData;
 import Products.Flower;
 import Products.FlowerInProduct;
 import Products.Product;
-import Products.SelectProductController;
-import Products.SelectProductController.CatalogProductDetails;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -50,22 +41,18 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
-
+/**
+ * Display Order details include products and payments
+ * */
 public class OrderDetailsController implements Initializable {
 	
 	@FXML
@@ -88,24 +75,44 @@ public class OrderDetailsController implements Initializable {
 
     @FXML
     private ListView<OrderPayment> listViewOrderPayments;
-  
+    /**
+     * dynamic product list from order
+     */
 	private ObservableList<Product> dataOrderLine;
-
+	/**
+	 * dynamic payment list from order
+	 */
 	private ObservableList<OrderPayment> dataOrderPayment;
-	
+	/**
+	 * current stage
+	 */
 	private static Stage primaryStage;
+	/**
+	 * selected order from previous window
+	 */
 	private static Order order;
-	
-	public static LinkedHashMap<Product, Integer> cartProducts = new LinkedHashMap<>();
-	
+	/**
+	 * all products in it quantity in the order
+	 */
+	public static LinkedHashMap<Product, Integer> orderProducts = new LinkedHashMap<>();
+	/**
+	 * default constructor
+	 */
 	public OrderDetailsController() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
+	/**
+	 * set selected order
+	 * @param order instance of order
+	 */
 	public void setOrder(Order order) {
 		this.order=order;
-		// TODO Auto-generated constructor stub
 	}
+	/**
+	 * 
+	 * @param arg0 - Stage to be loaded
+	 * @throws Exception - throw the relevant exception if can't load the stage
+	 */
 	public void start(Stage arg0) throws Exception {
 		primaryStage=arg0;
 		String title = "Orders details";
@@ -140,6 +147,10 @@ public class OrderDetailsController implements Initializable {
 		});	
     }
 
+	/**
+	 * Back button handler
+	 * close current window and open orders list
+	 */
 	public void onClickBack()
 	{
 		OrderManagementController orders = new OrderManagementController();
@@ -150,13 +161,19 @@ public class OrderDetailsController implements Initializable {
 			e.printStackTrace();
 		}
 	}
-	
+	/**
+	 * init button cancel
+	 * @param btn Button to initialize
+	 * @param state if set disable
+	 */
 	private void setButtonDisabledState(Button btn , boolean state)
 	{
 		if(order.getStatus() == Status.Canceled)
 			btn.setDisable(state);
 	}
-	
+	/**
+	 * initialize data and fill the controls
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		getOrderDetails();
@@ -164,7 +181,9 @@ public class OrderDetailsController implements Initializable {
 		fillPayment();
 		setButtonDisabledState(btnCacenlOrder,true);
 	}
-
+	/**
+	 * get order details from server
+	 */
 	private void getOrderDetails() {
 		Packet packet = new Packet();//create packet to send
 		packet.addCommand(Command.getOrderInProductsDetails);
@@ -199,7 +218,7 @@ public class OrderDetailsController implements Initializable {
 							floInProd.setFlower(flowerList.stream().filter(c->c.getId()==floInProd.getFlowerId()).findFirst().orElse(null));
 						}
 						prod.setFlowerInProductList(listFlowersInProd);
-						cartProducts.put(prod, pInOrder.getQuantity());
+						orderProducts.put(prod, pInOrder.getQuantity());
 					}
 					fillItems();
 					fillPayment();
@@ -214,9 +233,12 @@ public class OrderDetailsController implements Initializable {
 		});
 		send.start();
 	}
+	/**
+	 * fill product control view
+	 */
 	public void fillItems()
 	{
-		dataOrderLine = FXCollections.observableArrayList(new ArrayList<>(cartProducts.keySet()));
+		dataOrderLine = FXCollections.observableArrayList(new ArrayList<>(orderProducts.keySet()));
 		listViewOrderLines.setCellFactory(new Callback<ListView<Product>, ListCell<Product>>() {
 			
 			@Override
@@ -225,7 +247,7 @@ public class OrderDetailsController implements Initializable {
 					
 				private void setCellHandler(Product pro)
 				{
-					int count = cartProducts.get(pro);
+					int count = orderProducts.get(pro);
 					
 					// name of product
 					Text proName = new Text();
@@ -262,7 +284,7 @@ public class OrderDetailsController implements Initializable {
 					txtQty.setUnderline(true);
 					txtQty.setFont(new Font(14));
 					txtQty.setStyle("-fx-font-weight: bold");
-					Text qty = new Text("" + cartProducts.get(pro)+" Unit");
+					Text qty = new Text("" + orderProducts.get(pro)+" Unit");
 					qty.setFont(new Font(13.5));
 					qty.setTextAlignment(TextAlignment.CENTER);
 					VBox qtyOptions = new VBox(txtQty,qty);
@@ -312,6 +334,9 @@ public class OrderDetailsController implements Initializable {
 		});
 		listViewOrderLines.setItems(dataOrderLine);
 	}
+	/**
+	 * fill payment control view
+	 */
 	public void fillPayment()
 	{
 		dataOrderPayment = FXCollections.observableArrayList(order.getOrderPaymentList());
@@ -382,12 +407,20 @@ public class OrderDetailsController implements Initializable {
 	    }
 	    return result;
 	}
-	
+	/**
+	 * update order status
+	 * @param order order to change
+	 * @param status new status
+	 */
 	private void changeOrderStatus(Order order , Status status)
 	{
 		order.setStatus(status);
 	}
-	
+	/**
+	 * get total payment
+	 * @param order order to get payments of
+	 * @return total amount
+	 */
 	private double getOrderPayments(Order order)
 	{
 		double payments = 0;
@@ -395,7 +428,12 @@ public class OrderDetailsController implements Initializable {
 			payments+=orderPayment.getAmount();
 		return payments;
 	}
-	
+	/**
+	 * get relevant refund by comparing date and time of the requested and current timestamp
+	 * @param requestedTime requested time of the order to be ready
+	 * @param currentTime current time now
+	 * @return new refund 
+	 */
 	private Refund getCancelRefund(Timestamp requestedTime , Timestamp currentTime)
 	{
 
@@ -438,7 +476,9 @@ public class OrderDetailsController implements Initializable {
 		}
 		return refund;
 	}
-	
+	/**
+	 * Handle cancel button pressed
+	 */
 	@FXML
 	private void onCancelPressedHandler()
 	{

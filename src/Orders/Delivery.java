@@ -9,10 +9,15 @@ import java.io.Serializable;
  */
 public class Delivery implements Serializable {
 	
+	/**delivery code*/
 	private int id;
+	/**address to delivery*/
 	private String address;
+	/**phone of the receiver*/
 	private String phone;
+	/**receiver's name*/
 	private String receiver;
+	/**order number to delivery*/
 	private int orderId;
 	/***
 	 * 
@@ -86,11 +91,11 @@ public class Delivery implements Serializable {
 	}
 	/***
 	 * Constructor for server side
-	 * @param id
-	 * @param address
-	 * @param phone
-	 * @param receiver
-	 * @param orderId
+	 * @param id delivery code
+	 * @param address receiver's address
+	 * @param phone receiver's phone
+	 * @param receiver receiver's name
+	 * @param orderId order number
 	 */
 	public Delivery(int id, String address, String phone, String receiver, int orderId) {
 		super();
@@ -102,9 +107,9 @@ public class Delivery implements Serializable {
 	}
 	/***
 	 * Constructor for client side
-	 * @param address
-	 * @param phone
-	 * @param receiver
+	 * @param address receiver's address
+	 * @param phone receiver's phone
+	 * @param receiver receiver's name
 	 */
 	public Delivery(String address, String phone, String receiver) {
 		super();

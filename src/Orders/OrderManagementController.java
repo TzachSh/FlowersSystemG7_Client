@@ -74,8 +74,15 @@ public class OrderManagementController implements Initializable {
     private ObservableList<Order> data;
     @FXML
     private ComboBox<String> cmbStatus;
+    /**
+     * order list of the customer in the branch
+     */
     private HashMap<Status,ArrayList<Order>> ordersMap = new HashMap<Status,ArrayList<Order>>();
-    
+    /**
+     * handle click on back button
+     * close current window and open customer menu
+     * @param event event
+     */
     @FXML
     void onClickBack(ActionEvent event) {
 		CustomerMenuController menu = new CustomerMenuController();
@@ -86,6 +93,10 @@ public class OrderManagementController implements Initializable {
 			e.printStackTrace();
 		}
     }
+    /**
+	 * @param arg0 - Stage to be loaded
+	 * @throws Exception - throw the relevant exception if can't load the stage
+	 */
     public void start(Stage arg0) throws Exception {
 		primaryStage=arg0;
 		String title = "Orders";
@@ -121,13 +132,19 @@ public class OrderManagementController implements Initializable {
 			}
 		});
     }
+    /**
+     * get data from the server
+     * initialize controls
+     */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		getOrdersByCId();
 		initCmbBox();
 
 	}
-	
+	/**
+	 * get orders by customer id and branch id
+	 */
 	private void getOrdersByCId() {
 		Packet packet = new Packet();//create packet to send
 		packet.addCommand(Command.getOrdersByCIdandBrId);//add command
@@ -173,7 +190,9 @@ public class OrderManagementController implements Initializable {
 	}
 	
 	
-	
+	/**
+	 * initialize combobox data and set behavior when changing
+	 */
 	private void initCmbBox()
 	{
 		cmbStatus.getItems().addAll("All",Status.Canceled.name(),Status.Completed.name(),Status.Pending.name());
@@ -203,7 +222,9 @@ public class OrderManagementController implements Initializable {
 	        }    
 	    });
 	}
-	
+	/**
+	 * fill the listView with orders
+	 */
 	private void fillOrders() {
 		listOrder.setCellFactory(new Callback<ListView<Order>, ListCell<Order>>() {
 			

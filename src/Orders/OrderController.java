@@ -121,19 +121,31 @@ public class OrderController implements Initializable{
 	private CheckBox chkDelivery;
 	@FXML
 	private Label lblDeliveryCost;
-	
+	/**delivery standard cost*/
 	private final double deliveryPayment=10;
+	/** cost after discount*/
 	private double totalAfter;
+	/** amount to pay with balance from the customer account*/
 	private double blncePay;
+	/**control the radio buttons options*/
 	private ToggleGroup toggleGroup = new ToggleGroup();
+	/**selected active tab*/
 	private int tabActive=0;
+	/**current stage*/
 	private static Stage primaryStage;
+	/** account balance*/
 	private double blnce;
+	/** customer account to create order*/
 	private Account account;
+	/**list of all hours*/
 	ArrayList<Integer> hours= new ArrayList<>();
+	/**list of all minutes*/
 	ArrayList<Integer> min = new ArrayList<>();
+	/**validation phone*/
 	private boolean phoneCorrect;
+	/**validation name*/
 	private boolean nameCorrect;
+	/**validation address*/
 	private boolean addressCorrect;
 	/***
 	 * Default constructor
@@ -207,9 +219,6 @@ public class OrderController implements Initializable{
 		delivery.setDisable(true);
 		payment.setDisable(true);
 	}
-	/***
-	 * Listener to handle on change operation for the labels when checking input
-	 */
 	private void addListeners() {
 		txtAddress.textProperty().addListener(new ChangeListener<String>() {
 			@Override
@@ -238,9 +247,6 @@ public class OrderController implements Initializable{
 			}
 
 		});
-		/***
-		 * Listener to handle on change operation for the labels when checking input
-		 */
 		txtPhone.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) 
@@ -264,9 +270,6 @@ public class OrderController implements Initializable{
 				}
 			}
 		});
-		/***
-		 * Listener to handle on change operation for the labels when checking input
-		 */
 		txtName.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -522,6 +525,12 @@ public class OrderController implements Initializable{
 			
 		}
 	}
+	/**
+	 * compute the difference between two timestamps
+	 * @param requestedTime requested date and time
+	 * @param currentTime current date and time
+	 * @return difference between timestamps
+	 */
 	private Map<TimeUnit,Long> computeDiff(Timestamp requestedTime, Timestamp currentTime) {
 	    long diffInMillies = requestedTime.getTime() - currentTime.getTime();
 	    List<TimeUnit> units = new ArrayList<TimeUnit>(EnumSet.allOf(TimeUnit.class));
@@ -691,7 +700,7 @@ public class OrderController implements Initializable{
 		
 	}
 	/***
-	 * 
+	 * Send to server the new order and it details
 	 * @param order to save
 	 * @param productInOrder with all of his product in order list
 	 * @param payments with all of the payments
