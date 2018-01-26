@@ -329,10 +329,16 @@ public class OrderController implements Initializable{
 						left = totalAfter-blncePay+deliveryPayment;
 					else
 						left = totalAfter-blncePay;
-					if(left < 0 || blncePay>blnce)
+					if(left < 0)
 					{
 						lblLeftToPay.setVisible(true);
 						lblLeftToPay.setText("The amount is bigger than the price");
+						btnNext.setDisable(true);
+					}
+					else if(blncePay>blnce)
+					{
+						lblLeftToPay.setVisible(true);
+						lblLeftToPay.setText("The amount is bigger than the balance");
 						btnNext.setDisable(true);
 					}
 					else
@@ -353,8 +359,6 @@ public class OrderController implements Initializable{
 		account = CustomerMenuController.currentAcc;		
 		if(account.getMemberShip() != null)
 		{ 
-			radAccount.setVisible(false);
-			radCash.setVisible(false);
 			double discount = CartController.getTotalPrice()*account.getMemberShip().getDiscount()/100;
 			lblDiscount.setText(String.format("%.2f¤",discount));
 			totalAfter=CartController.getTotalPrice()*(1-account.getMemberShip().getDiscount()/100);
@@ -501,10 +505,14 @@ public class OrderController implements Initializable{
 			Map<TimeUnit,Long> diffTime = computeDiff(requested,cur);
 			if ( diffTime.get(TimeUnit.DAYS) == 0 && diffTime.get(TimeUnit.HOURS) < 0)
 			{
-				diffTime.put(TimeUnit.HOURS, diffTime.get(TimeUnit.HOURS) + 24);
+				btnNext.setDisable(true);
+				lblErrTime.setVisible(true);
 			}
-			if (diffTime.get(TimeUnit.HOURS) >= 3) 
+			else if (diffTime.get(TimeUnit.HOURS) >= 3 || (diffTime.get(TimeUnit.HOURS)>=2 && diffTime.get(TimeUnit.MINUTES)>58)) 
+			{
 					btnNext.setDisable(false);
+					lblErrTime.setVisible(false);
+			}
 			else {
 				btnNext.setDisable(true);
 				lblErrTime.setVisible(true);
@@ -578,10 +586,16 @@ public class OrderController implements Initializable{
 					left = totalAfter-blncePay+deliveryPayment;
 				else
 					left = totalAfter-blncePay;
-				if(left < 0 || blncePay>blnce)
+				if(left < 0 )
 				{
 					lblLeftToPay.setVisible(true);
 					lblLeftToPay.setText("The amount is bigger than the price");
+					btnNext.setDisable(true);
+				}
+				else if(blncePay>blnce)
+				{
+					lblLeftToPay.setVisible(true);
+					lblLeftToPay.setText("The amount is bigger than the balance");
 					btnNext.setDisable(true);
 				}
 				else
