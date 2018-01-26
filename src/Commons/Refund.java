@@ -3,11 +3,7 @@ package Commons;
 import java.io.Serializable;
 import java.sql.Date;
 
-import Customers.Complain;
-import Orders.Order;
-
 /**
- * @author VladimirB
  * Entity class to define a refund
  */
 public class Refund implements Serializable {
