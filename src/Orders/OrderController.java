@@ -424,6 +424,7 @@ public class OrderController implements Initializable{
 			public void handle(ActionEvent event) {
 				if(chkExpressDelivery.isSelected())
 				{
+					lblErrTime.setVisible(false);
 					lblTotal.setText(String.format("%.2f$+%.2f$",totalAfter,deliveryPayment));
 					lblDeliveryCost.setVisible(true);
 					chkDelivery.setSelected(true);
@@ -442,7 +443,6 @@ public class OrderController implements Initializable{
 				}
 				else
 				{
-					lblErrTime.setVisible(false);
 					lblDeliveryCost.setVisible(false);
 					cmbHour.setDisable(false);
 					
