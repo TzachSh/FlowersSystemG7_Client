@@ -256,7 +256,7 @@ public class ReportsController implements Initializable{
 		double avg=-1;
 		bartable.setVisible(true);
 		bartable.getData().clear();
-		bartable.setTitle("Satisfaction Report For Branch "+reportinfo1.get(1)+"Quarter "+reportinfo1.get(0));
+		bartable.setTitle("Satisfaction Report For Branch "+reportinfo1.get(1)+" Quarter "+reportinfo1.get(0));
 		//adding the bars and fill the informations 
 		ArrayList<XYChart.Series<String, Double>> serlist=new ArrayList<>();
 		for(i=0;i<info.size();i++)
@@ -754,9 +754,10 @@ public class ReportsController implements Initializable{
 	public void generateReportForBranchManager(int brId,String report,int year,int quartely)
 	{
 		ArrayList<String > reportinfo1=new ArrayList<>();
-		brId=Integer.parseInt(cbBranches.getSelectionModel().getSelectedItem());
+		//brId=Integer.parseInt(cbBranches.getSelectionModel().getSelectedItem());
+		brId=ManagersMenuController.currentBranch.getbId();
 		reportinfo1.add(cbQuarterly1.getSelectionModel().getSelectedItem().toString());
-		reportinfo1.add(cbBranchesName.getSelectionModel().getSelectedItem().toString());
+		reportinfo1.add(ManagersMenuController.currentBranch.getName());
 		//handling information
 		lblFirstReportSection.setVisible(true);
 		lblFirstReportSection.setText("Generated Report For Branch "+reportinfo1.get(1)+" Quarter "+reportinfo1.get(0));
