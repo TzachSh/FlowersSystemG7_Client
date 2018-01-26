@@ -64,6 +64,12 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 
+/**
+ * 
+ * Controller
+ * Handling order managing options
+ *   
+ */
 public class OrderManagementController implements Initializable {
 
 	private static Stage primaryStage;
@@ -140,7 +146,7 @@ public class OrderManagementController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		getOrdersByCId();
 		initCmbBox();
-
+		setListOrdersHandlers();
 	}
 	/**
 	 * get orders by customer id and branch id
@@ -167,6 +173,7 @@ public class OrderManagementController implements Initializable {
 			public void onReceivingResult(Packet p)//set combobox values
 			{
 				if (p.getResultState()) {
+					ordersMap = new HashMap<>();
 					ordersMap.put(Status.Canceled, new ArrayList<>());
 					ordersMap.put(Status.Completed, new ArrayList<>());
 					ordersMap.put(Status.Pending, new ArrayList<>());
@@ -178,7 +185,7 @@ public class OrderManagementController implements Initializable {
 						ordersMap.get(order.getStatus()).add(order);
 					}
 					data = FXCollections.observableArrayList(orderList);
-					fillOrders();
+					listOrder.setItems(data);
 				}
 				else{//if it was error in connection
 					Alert alert = new Alert(AlertType.ERROR,"Connection error");
@@ -196,36 +203,35 @@ public class OrderManagementController implements Initializable {
 	private void initCmbBox()
 	{
 		cmbStatus.getItems().addAll("All",Status.Canceled.name(),Status.Completed.name(),Status.Pending.name());
-		cmbStatus.getSelectionModel().select(0);
-		
 		cmbStatus.valueProperty().addListener(new ChangeListener<String>() {
 	        @Override public void changed(ObservableValue ov, String oldValue, String newValue) {
 	        	switch(newValue)
 	        	{
 	        	case "Canceled":
-	        			listOrder.getItems().clear();
-	        			listOrder.getItems().addAll(ordersMap.get(Status.Canceled));
+	        			data = FXCollections.observableArrayList(ordersMap.get(Status.Canceled));
+	        			listOrder.setItems(data);
 	        			break;
 	        	case "Pending":
-	        			listOrder.getItems().clear();
-	        			listOrder.getItems().addAll(ordersMap.get(Status.Pending));
+	        		data = FXCollections.observableArrayList(ordersMap.get(Status.Pending));
+        			listOrder.setItems(data);
 	        			break;
 	        	case "Completed":
-        			listOrder.getItems().clear();
-        			listOrder.getItems().addAll(ordersMap.get(Status.Completed));
-        			break;
-        		default:
-        			listOrder.getItems().clear();
+	        		data = FXCollections.observableArrayList(ordersMap.get(Status.Completed));
         			listOrder.setItems(data);
+        			break;
+	        	case "All":
+        			getOrdersByCId();
         			break;
 	        	}
 	        }    
 	    });
+		
+		cmbStatus.getSelectionModel().select(0);
 	}
 	/**
 	 * fill the listView with orders
 	 */
-	private void fillOrders() {
+	private void setListOrdersHandlers() {
 		listOrder.setCellFactory(new Callback<ListView<Order>, ListCell<Order>>() {
 			
 			@Override
@@ -287,10 +293,11 @@ public class OrderManagementController implements Initializable {
 					 if (item != null) {	
 						 	setCellHandler(item);
                         }
+					 else
+						 setGraphic(null);
 				}};
 			}
 		});
-		listOrder.setItems(data);
 		
 		listOrder.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
 

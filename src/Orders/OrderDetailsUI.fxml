@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
@@ -7,7 +8,10 @@
 
 <AnchorPane prefHeight="533.0" prefWidth="635.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Orders.OrderDetailsController">
    <children>
-      <Label layoutX="217.0" layoutY="31.0" text="Order Details" />
+      <Label layoutX="250.0" layoutY="20.0" text="Order Details" underline="true">
+         <font>
+            <Font size="24.0" />
+         </font></Label>
       <TabPane layoutX="13.0" layoutY="90.0" prefHeight="382.0" prefWidth="614.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="Order lines">
