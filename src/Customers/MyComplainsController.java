@@ -216,7 +216,7 @@ public class MyComplainsController implements Initializable{
 					HBox statusElement = new HBox(new Label(textStatus),new Text( complain.isActive() ? "Pending" : "Closed" ));
 					HBox branchElement = null;
 					if(!complain.isActive() && refund != null) {
-						HBox refundElement = new HBox(new Label(textRefund) , new Text( String.format("%.2f", refund.getAmount())));
+						HBox refundElement = new HBox(new Label(textRefund) , new Text( String.format("%.2f$", refund.getAmount())));
 							if (branch != null) {
 								branchElement = new HBox(new Label(textBranch), new Text(branch.getName()));
 								branchElement.setPadding(new Insets(0, 10, 5, 20));

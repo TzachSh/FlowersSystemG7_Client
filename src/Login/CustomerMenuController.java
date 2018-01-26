@@ -326,8 +326,6 @@ public class CustomerMenuController implements Initializable {
 					Membership memberShip = ConstantData.memberShipList.stream().filter(c->c.getNum()==memberByAc.getmId()).findFirst().orElse(null);
 					currentAcc.setMemberShip(memberShip);
 				}
-
-				
 			}
 			else 
 			{

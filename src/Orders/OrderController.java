@@ -213,9 +213,9 @@ public class OrderController implements Initializable{
 		registerLblLeftToPayListener();
 		addListeners();
 		if(chkDelivery.isSelected())
-			lblLeftToPay.setText(String.format("%.2f₪", totalAfter-blncePay+deliveryPayment));
+			lblLeftToPay.setText(String.format("%.2f$", totalAfter-blncePay+deliveryPayment));
 		else
-			lblLeftToPay.setText(String.format("%.2f₪", totalAfter-blncePay));
+			lblLeftToPay.setText(String.format("%.2f$", totalAfter-blncePay));
 		delivery.setDisable(true);
 		payment.setDisable(true);
 	}
@@ -346,7 +346,7 @@ public class OrderController implements Initializable{
 					}
 					else
 					{
-						lblLeftToPay.setText(String.format("%.2f₪", left));
+						lblLeftToPay.setText(String.format("%.2f$", left));
 						btnNext.setDisable(false);
 					}
 				}
@@ -392,7 +392,7 @@ public class OrderController implements Initializable{
 			public void handle(ActionEvent event) {
 				if(chkDelivery.isSelected())
 				{
-					lblTotal.setText(String.format("%.2f₪+%.2f₪",totalAfter,deliveryPayment));
+					lblTotal.setText(String.format("%.2f$+%.2f$",totalAfter,deliveryPayment));
 					lblDeliveryCost.setVisible(true);
 					txtAddress.setDisable(false);
 					txtName.setDisable(false);
@@ -400,7 +400,7 @@ public class OrderController implements Initializable{
 				}
 				else
 				{
-					lblTotal.setText(String.format("%.2f₪",totalAfter));
+					lblTotal.setText(String.format("%.2f$",totalAfter));
 					lblDeliveryCost.setVisible(false);
 					txtAddress.setText("");
 					txtName.setText("");
@@ -424,7 +424,7 @@ public class OrderController implements Initializable{
 			public void handle(ActionEvent event) {
 				if(chkExpressDelivery.isSelected())
 				{
-					lblTotal.setText(String.format("%.2f₪+%.2f₪",totalAfter,deliveryPayment));
+					lblTotal.setText(String.format("%.2f$+%.2f$",totalAfter,deliveryPayment));
 					lblDeliveryCost.setVisible(true);
 					chkDelivery.setSelected(true);
 					chkDelivery.setDisable(true);
@@ -608,7 +608,7 @@ public class OrderController implements Initializable{
 				}
 				else
 				{
-					lblLeftToPay.setText(String.format("%.2f₪", left));
+					lblLeftToPay.setText(String.format("%.2f$", left));
 					btnNext.setDisable(false);
 				}
 			}
@@ -616,7 +616,7 @@ public class OrderController implements Initializable{
 		case 2:
 			insertOrder();
 			break;
-		default:;
+		default:;	
 		}
 		tabActive++;
 	}

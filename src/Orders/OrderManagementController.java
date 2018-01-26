@@ -21,6 +21,7 @@ import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
 import Products.CatalogProduct;
+import Products.ConstantData;
 import Products.Flower;
 import Products.FlowerInProduct;
 import Products.Product;
@@ -178,6 +179,7 @@ public class OrderManagementController implements Initializable {
 					ordersMap.put(Status.Completed, new ArrayList<>());
 					ordersMap.put(Status.Pending, new ArrayList<>());
 					ArrayList<Order> orderList = p.<Order>convertedResultListForCommand(Command.getOrdersByCIdandBrId);
+					updateStatusForOrders(orderList);
 					ArrayList<OrderPayment> payment = p.<OrderPayment>convertedResultListForCommand(Command.getPaymentDetails);
 					for(Order order : orderList)
 					{
@@ -248,13 +250,13 @@ public class OrderManagementController implements Initializable {
                     VBox orderCol = new VBox(new Text(""+order.getoId()));
                     orderCol.setMinWidth(30);
                     orderCol.setAlignment(Pos.CENTER);
-                    VBox amountCol = new VBox(new Text(String.format("%.2f₪",order.getTotal())));
+                    VBox amountCol = new VBox(new Text(String.format("%.2f$",order.getTotal())));
                     amountCol.setMinWidth(50);
                     amountCol.setAlignment(Pos.CENTER_RIGHT);
                     VBox createdCol = new VBox(new Text(formatter.format(order.getCreationDate())));
                     createdCol.setMinWidth(70);
                     createdCol.setAlignment(Pos.CENTER);
-                    formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+                    formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                     String reqDate = formatter.format(order.getRequestedDate());
                     VBox requestedDateCol = new VBox(new Text(reqDate));
                     requestedDateCol.setMinWidth(110);
@@ -310,4 +312,52 @@ public class OrderManagementController implements Initializable {
             }
         });		
 	}
+	
+	private void updateOrdersToDB(ArrayList<Object> paramList)
+	{
+		Packet packet = new Packet();
+		packet.addCommand(Command.updateOrder);
+		packet.setParametersForCommand(Command.updateOrder, paramList);
+		
+		SystemSender sender = new SystemSender(packet);
+		sender.registerHandler(new IResultHandler() {
+			
+			@Override
+			public void onWaitingForResult() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onReceivingResult(Packet p) {
+				// TODO Auto-generated method stub
+				if(p.getResultState())
+				{
+					
+				}
+				else
+				{
+					ConstantData.displayAlert(AlertType.ERROR, "Orders Update", "Orders Updating To DB", "Failed to update the orders");
+				}
+			}
+		});
+		sender.start();
+	}
+	
+	private void updateStatusForOrders(ArrayList<Order> orderList)
+	{
+		ArrayList<Object> paramListOrders = new ArrayList<>();
+		//Get current time
+		java.util.Date today = new java.util.Date();
+		java.sql.Timestamp sqlTimestamp = new java.sql.Timestamp(today.getTime());
+		
+		for(Order order : orderList)
+			if(sqlTimestamp.after(order.getRequestedDate())) {
+				order.setStatus(Status.Completed);
+				paramListOrders.add(order);
+			}
+		
+		updateOrdersToDB(paramListOrders);
+	}
+	
 }
