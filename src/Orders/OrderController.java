@@ -442,9 +442,10 @@ public class OrderController implements Initializable{
 				}
 				else
 				{
-					
+					lblErrTime.setVisible(false);
 					lblDeliveryCost.setVisible(false);
 					cmbHour.setDisable(false);
+					
 					cmbMin.setDisable(false);
 					chkDelivery.setDisable(false);
 					requestedDate.setDisable(false);
