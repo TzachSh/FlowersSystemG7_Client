@@ -8,8 +8,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 import java.util.ResourceBundle;
 
 import Commons.ProductInOrder;
@@ -24,6 +30,7 @@ import PacketSender.SystemSender;
 import Products.CartController;
 import Products.ConstantData;
 import Products.Product;
+import Products.SelectProductController;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -94,6 +101,8 @@ public class OrderController implements Initializable{
 	private RadioButton radAccount;
 	@FXML
 	private RadioButton radCash;
+	@FXML
+	private Label lblErrTime;
 	@FXML
 	private Label lblTotalBeforeDiscount;
 	@FXML 
@@ -172,6 +181,8 @@ public class OrderController implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		lblDeliveryCost.setTextFill(Color.RED);
+		lblErrTime.setTextFill(Color.RED);
+		lblErrTime.setVisible(false);
 		lblDeliveryCost.setVisible(false);
 		lblErrName.setVisible(false);
 		lblErrAdd.setVisible(false);
@@ -417,6 +428,7 @@ public class OrderController implements Initializable{
 					txtPhone.setDisable(false);
 					requestedDate.setValue(LocalDate.now());
 					LocalDateTime dt = LocalDateTime.now().plusHours(3);
+					btnNext.setDisable(false);
 					cmbHour.getSelectionModel().clearAndSelect(dt.getHour());
 					cmbMin.getSelectionModel().clearAndSelect(dt.getMinute());
 					cmbHour.setDisable(true);
@@ -424,7 +436,7 @@ public class OrderController implements Initializable{
 				}
 				else
 				{
-					lblTotal.setText(String.format("%.2f¤",totalAfter));
+					
 					lblDeliveryCost.setVisible(false);
 					cmbHour.setDisable(false);
 					cmbMin.setDisable(false);
@@ -475,22 +487,46 @@ public class OrderController implements Initializable{
 		
 	}
 	/***
-	 * Check the ComboBox for correct input
+	 * Check the ComboBox and DatePicker for correct input
 	 */
 	public void onClickCmbCorrect()
 	{
 		try {
-			int hour = cmbHour.getSelectionModel().getSelectedItem();
-			int min = cmbMin.getSelectionModel().getSelectedItem();
-			LocalDateTime dt = LocalDateTime.now().plusHours(3);
-			if(hour>dt.getHour() || (hour==dt.getHour() && min>= dt.getMinute()))
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(Date.valueOf(requestedDate.getValue()));
+			cal.add(Calendar.HOUR_OF_DAY, cmbHour.getSelectionModel().getSelectedItem());
+			cal.add(Calendar.MINUTE, cmbMin.getSelectionModel().getSelectedItem());
+			Timestamp requested = new Timestamp(cal.getTimeInMillis());
+			Timestamp cur = Timestamp.valueOf(LocalDateTime.now());
+			Map<TimeUnit,Long> diffTime = computeDiff(requested,cur);
+			if ( diffTime.get(TimeUnit.DAYS) == 0 && diffTime.get(TimeUnit.HOURS) < 0)
+			{
+				diffTime.put(TimeUnit.HOURS, diffTime.get(TimeUnit.HOURS) + 24);
+			}
+			if (diffTime.get(TimeUnit.HOURS) >= 3) 
 					btnNext.setDisable(false);
-			else
+			else {
 				btnNext.setDisable(true);
+				lblErrTime.setVisible(true);
+			}
 		}
 		catch(Exception e) {
 			
 		}
+	}
+	private Map<TimeUnit,Long> computeDiff(Timestamp requestedTime, Timestamp currentTime) {
+	    long diffInMillies = requestedTime.getTime() - currentTime.getTime();
+	    List<TimeUnit> units = new ArrayList<TimeUnit>(EnumSet.allOf(TimeUnit.class));
+	    Collections.reverse(units);
+	    Map<TimeUnit,Long> result = new LinkedHashMap<TimeUnit,Long>();
+	    long milliesRest = diffInMillies;
+	    for ( TimeUnit unit : units ) {
+	        long diff = unit.convert(milliesRest,TimeUnit.MILLISECONDS);
+	        long diffInMilliesForUnit = unit.toMillis(diff);
+	        milliesRest = milliesRest - diffInMilliesForUnit;
+	        result.put(unit,diff);
+	    }
+	    return result;
 	}
 	/***
 	 * Load the controller of the cart
@@ -681,8 +717,8 @@ public class OrderController implements Initializable{
 				{
 					ConstantData.displayAlert(AlertType.INFORMATION, "Order created", "Order confirmation", "Order has been created thanks for buying in our shop");
 					CartController.cartProducts.clear();
+					SelectProductController.productsSelected.clear();
 					primaryStage.close();
-					CartController.cartProducts.clear();
 					CustomerMenuController custController = new CustomerMenuController();
 					try {
 						custController.start(new Stage());

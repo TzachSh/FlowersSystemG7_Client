@@ -15,13 +15,14 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="225.0" prefWidth="356.0">
                      <children>
-                        <DatePicker fx:id="requestedDate" layoutX="125.0" layoutY="59.0" />
+                        <DatePicker fx:id="requestedDate" layoutX="125.0" layoutY="59.0" onAction="#onClickCmbCorrect" />
                         <Label layoutX="32.0" layoutY="63.0" text="Requested date:" />
                         <Label layoutX="32.0" layoutY="106.0" text="Requested time:" />
                         <CheckBox fx:id="chkExpressDelivery" layoutX="139.0" layoutY="144.0" mnemonicParsing="false" text="express delivery" />
                         <ComboBox fx:id="cmbHour" layoutX="125.0" layoutY="102.0" onAction="#onClickCmbCorrect" prefHeight="25.0" prefWidth="77.0" promptText="Hour" />
                         <ComboBox fx:id="cmbMin" layoutX="212.0" layoutY="102.0" onAction="#onClickCmbCorrect" prefHeight="25.0" prefWidth="90.0" promptText="Min" />
                         <Label layoutX="138.0" layoutY="174.0" text="*Delivery cost is 10₪" />
+                        <Label fx:id="lblErrTime" layoutX="101.0" layoutY="201.0" prefHeight="36.0" prefWidth="203.0" text="Possible requested date only 3 hours after creating an order" wrapText="true" />
                      </children>
                   </AnchorPane>
             </content>

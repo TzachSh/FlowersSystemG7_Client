@@ -367,7 +367,8 @@ public class CartController implements Initializable
 					totalPrice+=((CustomProduct)entry.getKey()).getPrice()*entry.getValue();
 				totalItems += entry.getValue();
 			}
-			
+			if(totalItems==0)
+				btnPurchase.setDisable(true);
 			lblPrice.setText(String.format("Total Price: %.2f¤ , Total Items: %d", totalPrice, totalItems));
 		}
 		
@@ -458,7 +459,8 @@ public class CartController implements Initializable
 		registerClearOrderButton();
 		addProductsToCartMap(SelectProductController.productsSelected);
 		updateTotalPrice();
-		
+		if(cartProducts.isEmpty())
+			btnPurchase.setDisable(true);
 		if (comesFromCatalog)
 			btnBackToCatalog.setText("Back To Catalog");
 		else
@@ -493,6 +495,7 @@ public class CartController implements Initializable
 			@Override
 			public void handle(ActionEvent event) {
 				cartProducts.clear();
+				btnPurchase.setDisable(true);
 				SelectProductController.productsSelected.clear();
 				fillCatalogItems();
 				updateTotalPrice();

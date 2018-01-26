@@ -399,7 +399,7 @@ public class CustomProductController implements Initializable {
 		{
 			total += entry.getValue() * entry.getKey().getPrice();
 		}
-		lblTotalPrice.setText("" + total + "¤");
+		lblTotalPrice.setText(String.format("%.2f¤",total));
 		this.total = total;
 	}
 	
