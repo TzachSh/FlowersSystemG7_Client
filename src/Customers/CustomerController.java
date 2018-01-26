@@ -151,15 +151,7 @@ public class CustomerController implements Initializable {
 			ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
 		}
 	}
-	
-	public void showError(String str)
-	{
-		JOptionPane.showMessageDialog(null, 
-				str, 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE);
-	}
-	
+
 	/**
 	 * getting the next information from the customer 
 	 */
@@ -180,8 +172,7 @@ public class CustomerController implements Initializable {
 	public void registerNow()
 	{
 		if(txtID.getText().toString().isEmpty()||txtPassword.getText().isEmpty()||txtUser.getText().isEmpty()||txtConfirmPassword.getText().isEmpty()) {
-			showError("Please Fill All Information");
-			
+			ConstantData.displayAlert(AlertType.ERROR, "Error", "Please Fill All Information", null);
 			return;
 		}
 		//getting the information
@@ -271,13 +262,13 @@ public class CustomerController implements Initializable {
 				{
 					if(users.getuId()==Integer.parseInt(cusid))
 					{
-						showError("Error, ID Exist ");
+						ConstantData.displayAlert(AlertType.ERROR, "Error", "Error, ID Exist ", null);
 						res=false;
 						break;
 					}
 					if(users.getUser().equals(user)) 
 					{
-						showError("User Exist Please Pick Another User");
+						ConstantData.displayAlert(AlertType.ERROR, "Error", "User Exist Please Pick Another User", null);
 						res=false;
 						break;
 					}		
@@ -286,13 +277,11 @@ public class CustomerController implements Initializable {
 			case 2://check both passwords 
 				if(!(confirmpassword.equals(password)))
 				{
-					showError("Please Insert Same Password");
+					ConstantData.displayAlert(AlertType.ERROR, "Error", "Please Insert Same Password", null);
 					res=false;
 					break;
-				}
-					
+				}	
 			break;
-	
 		}
 		//returning the result
 		return res;

@@ -2,13 +2,7 @@ package Customers;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.ResourceBundle;
-
-import javax.swing.JOptionPane;
-
-import com.sun.scenario.effect.impl.state.LinearConvolveRenderState.PassType;
-
 import Branches.Branch;
 import Branches.Employee;
 import Login.CustomerMenuController;
@@ -20,7 +14,6 @@ import PacketSender.Packet;
 import PacketSender.SystemSender;
 import Products.ConstantData;
 import Users.User;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -32,24 +25,27 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 public class UpdateCustomerController implements Initializable {
-
+	/**the current user*/
 	public User user;
+	/**account list*/
 	private ArrayList<Account> accList ;
+	/**user list*/
 	private ArrayList<User> uList;
+	/**membership list*/
 	private ArrayList<Membership> memshipList ;
+	/**membership account list*/
 	private ArrayList<MemberShipAccount> memshipAccount ;
+	/**customer list*/
 	private ArrayList<Customer> cList ;
 	private Branch currentBranch;
 	@FXML
@@ -104,9 +100,13 @@ public class UpdateCustomerController implements Initializable {
 	private AnchorPane appassword;
 	@FXML
 	private Button btnchangePassword;
+	/**the current employee */
 	private static Employee currentuser;
+	/**the current customer*/
 	private static Customer currentcustomer;
+	/**the current customer account*/
 	private Account currentCustomerAccount;
+	/** the current stage */
 	private static Stage myStage;
 
 	
@@ -157,7 +157,7 @@ public class UpdateCustomerController implements Initializable {
 				lbHeader.setText("Client Information");
 		 }
 	 }
-	 
+	 /**deleting membership from account*/
 	public void deleteMemberShipFromAccount()
 	{
 		if(rbdeleteMemberShip.isVisible()&&rbdeleteMemberShip.isSelected())
@@ -402,7 +402,6 @@ public class UpdateCustomerController implements Initializable {
 	 */
 	private void initComboBox()
 	{
-		int i=0;
 		//adding the membership types
 		ObservableList<String> observelistMembership,observelistStatus;
 		ArrayList<String> membership = new ArrayList<>();
@@ -414,17 +413,7 @@ public class UpdateCustomerController implements Initializable {
 		observelistMembership = FXCollections.observableArrayList(membership);
 		cbMemberShip.setItems(observelistMembership);
 		cbMemberShip.getSelectionModel().selectFirst();
-		//checking which membership the customer got to show him in combo box (the shown value).
-		for(Membership mem: memshipList) 
-		{
-			//if the ids are the same , we select it 
-			/*if(mem.getNum()==cList.get(0).getMembershipId())
-			{
-				cbMemberShip.getSelectionModel().select(i);
-				break;
-			}
-			i++;*/
-		}
+
 		//if there is no account for the customer we should not set visible the account fields , else we show them.
 		if(accList.isEmpty()==false)
 		{
@@ -701,7 +690,7 @@ public class UpdateCustomerController implements Initializable {
 			return;
 		}
 		
-		String newuser,newstatus,newmembership,newcreditcard,newpassword,orginalmemship="";
+		String newuser,newstatus,newmembership,newcreditcard,newpassword;
 		int choosedmemid=-1,accountinfochanged=0;//accountinfochanged help us to know what the user changed to his information
 		/*if its
 		* 	0 nothing changed 
@@ -822,10 +811,8 @@ public class UpdateCustomerController implements Initializable {
 				//checking the result
 				if (p.getResultState())
 				{
-					JOptionPane.showMessageDialog(null, 
-							"Update Success", 
-			                "Success", 
-			                JOptionPane.CLOSED_OPTION);
+					ConstantData.displayAlert(AlertType.CONFIRMATION, "Success", "Update Success", null);
+
 					//closing this window
 						myStage.close();
 					  ManagersMenuController menu = new ManagersMenuController();
