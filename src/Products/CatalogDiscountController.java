@@ -161,6 +161,7 @@ public class CatalogDiscountController implements Initializable {
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
 			{
 				boolean valid = true;
+				
 				if (newValue.isEmpty())
 				{
 					lblErrorDiscount.setVisible(true);
@@ -172,7 +173,7 @@ public class CatalogDiscountController implements Initializable {
 					try
 					{
 						int discountConverted = Integer.valueOf(newValue);
-						if (discountConverted <= 0)
+						if (discountConverted <= 0 || discountConverted>100)
 							throw new NumberFormatException();
 						
 						lblErrorDiscount.setVisible(false);

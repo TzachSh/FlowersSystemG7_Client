@@ -1,3 +1,8 @@
 eclipse.preferences.version=1
 encoding//src/Branches/ReportsController.java=UTF-8
+encoding//src/Orders/OrderController.java=UTF-8
+encoding//src/Orders/OrderDetailsController.java=UTF-8
 encoding//src/Orders/OrderManagementController.java=UTF-8
+encoding//src/Products/CartController.java=UTF-8
+encoding//src/Products/FlowerController.java=UTF-8
+encoding//src/Products/SelectProductController.java=UTF-8

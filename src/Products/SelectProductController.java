@@ -488,7 +488,7 @@ public class SelectProductController implements Initializable
 					proType.setFont(new Font(14));
 					proType.setStyle("-fx-font-weight: bold");
 					
-					Text price = new Text(String.format("%.2f¤", pro.getPrice()));
+					Text price = new Text(String.format("%.2fâ‚ª", pro.getPrice()));
 					price.setFont(new Font(14));
 					
 					VBox productImage = new VBox(imgView);
@@ -506,7 +506,7 @@ public class SelectProductController implements Initializable
 						
 						// add text for price after discount
 						double finalPrice = getFinalPrice(catalogProduct);
-						Text sale = new Text(String.format("%.2f¤", finalPrice));
+						Text sale = new Text(String.format("%.2fâ‚ª", finalPrice));
 						sale.setFill(Color.GREEN);
 						sale.setFont(new Font(14));
 						sale.setStyle("-fx-font-weight: bold");
@@ -685,14 +685,6 @@ public class SelectProductController implements Initializable
 				private void setDelOrderStyles(Button del)
 				{
 					del.setText("Added");
-					/*
-					Image imageModify = new Image("x-button.png");
-					ImageView viewModify = new ImageView(imageModify);
-					viewModify.setFitWidth(15);
-					viewModify.setFitHeight(15);
-					del.setGraphic(viewModify);
-					del.setPrefWidth(60);
-					*/
 					setStyle("-fx-background-color: moccasin;");
 				}
 				
@@ -708,7 +700,6 @@ public class SelectProductController implements Initializable
 						}
 						else // exists, remove from collection
 						{
-							//productsSelected.remove(pro);
 							
 							setAddOrderStyles(button);
 						}
@@ -842,7 +833,7 @@ public class SelectProductController implements Initializable
 			}
 			
 			lblBranch.setVisible(true);
-			lblBranch.setText(String.format("Total Products: %d, Total Price: %.2f¤", productsSelected.size(), totalPrice));
+			lblBranch.setText(String.format("Total Products: %d, Total Price: %.2fâ‚ª", productsSelected.size(), totalPrice));
 			btnAddCatalogProduct.setDisable(false);
 		}
 	}

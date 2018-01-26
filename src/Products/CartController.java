@@ -140,7 +140,7 @@ public class CartController implements Initializable
 						proName.setStyle("-fx-font-weight: bold");
 						
 						// price of product
-						Text price = new Text(String.format("%.2f¤", (pro.getPrice() * count)));
+						Text price = new Text(String.format("%.2fâ‚ª", (pro.getPrice() * count)));
 						price.setFont(new Font(14));
 						
 						VBox productDetails = null;
@@ -169,7 +169,7 @@ public class CartController implements Initializable
 								
 								// add text for price after discount
 								double finalPrice = getFinalPrice(pro) * count;
-								Text sale = new Text(String.format("%.2f¤", finalPrice));
+								Text sale = new Text(String.format("%.2fâ‚ª", finalPrice));
 								sale.setFill(Color.GREEN);
 								sale.setFont(new Font(14));
 								sale.setStyle("-fx-font-weight: bold");
@@ -369,7 +369,7 @@ public class CartController implements Initializable
 			}
 			if(totalItems==0)
 				btnPurchase.setDisable(true);
-			lblPrice.setText(String.format("Total Price: %.2f¤ , Total Items: %d", totalPrice, totalItems));
+			lblPrice.setText(String.format("Total Price: %.2fâ‚ª , Total Items: %d", totalPrice, totalItems));
 		}
 		
 		/**

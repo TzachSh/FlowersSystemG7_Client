@@ -82,7 +82,6 @@ public class CustomProductController implements Initializable {
 	 * FXML controls
 	 */
 
-
     @FXML
     private AnchorPane paneFilter;
     @FXML

@@ -79,6 +79,9 @@ public class FlowerController extends Application implements Initializable {
 	private ArrayList<Flower> flowers = new ArrayList<>();
 	private static Stage mainStage;
 	
+	private boolean isCorrectPrice = false;
+	private boolean isCorrectName = false;
+	
 	/**
 	 * init data for form
 	 */
@@ -113,15 +116,18 @@ public class FlowerController extends Application implements Initializable {
 							double price = Double.valueOf(txtprice.getText());
 							if (price > 100)
 							{
+								isCorrectPrice = false;
 								lblErrPrice.setVisible(true);
-								lblErrPrice.setText("Max Price: 100.0¤");
+								lblErrPrice.setText("Max Price: 100.0â‚ª");
 								btnCreate.setDisable(true);
 							
 							}
 							else
 							{
+								isCorrectPrice = true;
 								lblErrPrice.setVisible(false);
-								btnCreate.setDisable(false);
+								if(isCorrectName)
+									btnCreate.setDisable(false);
 							}
 						}
 						catch (Exception e)
@@ -138,8 +144,9 @@ public class FlowerController extends Application implements Initializable {
 
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue,String newValue) {
-					if(newValue.length() > 30)
+					if(newValue.length() > 20)
 					{
+						isCorrectName = false;
 						txtprice.setText(oldValue);
 						lblErrName.setVisible(true);
 						lblErrName.setText("Too Long!");
@@ -149,14 +156,17 @@ public class FlowerController extends Application implements Initializable {
 					{
 						if (newValue.length() == 0)
 						{
+							isCorrectName = false;
 							lblErrName.setVisible(true);
 							lblErrName.setText("*");
 							btnCreate.setDisable(true);
 						}
 						else
 						{
+							isCorrectName = true;
 							lblErrName.setVisible(false);
-							btnCreate.setDisable(false);
+							if(isCorrectPrice)
+								btnCreate.setDisable(false);
 						}
 					}
 			}
@@ -223,7 +233,7 @@ public class FlowerController extends Application implements Initializable {
 						color.setFont(new Font(12));
 						//color.setStyle("-fx-text-fill: "+colorFlower.getColorName()+"; -fx-font-weight: bold");
 						
-						Text price = new Text(flower.getPrice() + "¤");
+						Text price = new Text(flower.getPrice() + "â‚ª");
 						price.setFont(new Font(12));
 						
 						HBox flowerColorPrice = new HBox(color, price);

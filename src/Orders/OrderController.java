@@ -201,9 +201,9 @@ public class OrderController implements Initializable{
 		registerLblLeftToPayListener();
 		addListeners();
 		if(chkDelivery.isSelected())
-			lblLeftToPay.setText(String.format("%.2f¤", totalAfter-blncePay+deliveryPayment));
+			lblLeftToPay.setText(String.format("%.2fâ‚ª", totalAfter-blncePay+deliveryPayment));
 		else
-			lblLeftToPay.setText(String.format("%.2f¤", totalAfter-blncePay));
+			lblLeftToPay.setText(String.format("%.2fâ‚ª", totalAfter-blncePay));
 		delivery.setDisable(true);
 		payment.setDisable(true);
 	}
@@ -343,7 +343,7 @@ public class OrderController implements Initializable{
 					}
 					else
 					{
-						lblLeftToPay.setText(String.format("%.2f¤", left));
+						lblLeftToPay.setText(String.format("%.2fâ‚ª", left));
 						btnNext.setDisable(false);
 					}
 				}
@@ -355,29 +355,29 @@ public class OrderController implements Initializable{
 	 * Get the current price details of an order
 	 */
 	private void getPriceDetails() {
-		lblTotalBeforeDiscount.setText(String.format("%.2f¤",CartController.getTotalPrice()));
+		lblTotalBeforeDiscount.setText(String.format("%.2fâ‚ª",CartController.getTotalPrice()));
 		account = CustomerMenuController.currentAcc;		
 		if(account.getMemberShip() != null)
 		{ 
 			double discount = CartController.getTotalPrice()*account.getMemberShip().getDiscount()/100;
-			lblDiscount.setText(String.format("%.2f¤",discount));
+			lblDiscount.setText(String.format("%.2fâ‚ª",discount));
 			totalAfter=CartController.getTotalPrice()*(1-account.getMemberShip().getDiscount()/100);
-			lblTotal.setText(String.format("%.2f¤",totalAfter));
+			lblTotal.setText(String.format("%.2fâ‚ª",totalAfter));
 		}
 		else
 		{
 			totalAfter=CartController.getTotalPrice();
-			lblDiscount.setText("0¤");
-			lblTotal.setText(String.format("%.2f¤",totalAfter));
+			lblDiscount.setText("0");
+			lblTotal.setText(String.format("%.2fâ‚ª",totalAfter));
 		}
 		blnce = account.getBalance();
 		if(blnce<=0)
 		{
 			blncePay=0;
 			txtBlncePay.setDisable(true);
-			txtBlncePay.setText("0¤");
+			txtBlncePay.setText("0Â¤");
 		}
-		lblAvailableBalance.setText(String.format("%.2f¤",blnce));
+		lblAvailableBalance.setText(String.format("%.2fâ‚ª",blnce));
 		
 	}
 	/***
@@ -390,7 +390,7 @@ public class OrderController implements Initializable{
 			public void handle(ActionEvent event) {
 				if(chkDelivery.isSelected())
 				{
-					lblTotal.setText(String.format("%.2f¤+%.2f¤",totalAfter,deliveryPayment));
+					lblTotal.setText(String.format("%.2fâ‚ª+%.2fâ‚ª",totalAfter,deliveryPayment));
 					lblDeliveryCost.setVisible(true);
 					txtAddress.setDisable(false);
 					txtName.setDisable(false);
@@ -398,7 +398,7 @@ public class OrderController implements Initializable{
 				}
 				else
 				{
-					lblTotal.setText(String.format("%.2f¤",totalAfter));
+					lblTotal.setText(String.format("%.2fâ‚ª",totalAfter));
 					lblDeliveryCost.setVisible(false);
 					txtAddress.setText("");
 					txtName.setText("");
@@ -422,7 +422,7 @@ public class OrderController implements Initializable{
 			public void handle(ActionEvent event) {
 				if(chkExpressDelivery.isSelected())
 				{
-					lblTotal.setText(String.format("%.2f¤+%.2f¤",totalAfter,deliveryPayment));
+					lblTotal.setText(String.format("%.2fâ‚ª+%.2fâ‚ª",totalAfter,deliveryPayment));
 					lblDeliveryCost.setVisible(true);
 					chkDelivery.setSelected(true);
 					chkDelivery.setDisable(true);
@@ -600,7 +600,7 @@ public class OrderController implements Initializable{
 				}
 				else
 				{
-					lblLeftToPay.setText(String.format("%.2f¤", left));
+					lblLeftToPay.setText(String.format("%.2fâ‚ª", left));
 					btnNext.setDisable(false);
 				}
 			}

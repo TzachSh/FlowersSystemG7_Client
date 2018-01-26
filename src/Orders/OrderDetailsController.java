@@ -245,10 +245,10 @@ public class OrderDetailsController implements Initializable {
 					productDetails.setAlignment(Pos.TOP_CENTER);
 					
 					// price of product
-					Text price = new Text(String.format("%.2f¤", (pro.getPrice() * count)));
+					Text price = new Text(String.format("%.2fâ‚ª", (pro.getPrice() * count)));
 					price.setFont(new Font(14));
 					price.setTextAlignment(TextAlignment.CENTER);
-					Text txtprice = new Text("Quantity");
+					Text txtprice = new Text("Price");
 					txtprice.setUnderline(true);
 					txtprice.setFont(new Font(14));
 					txtprice.setStyle("-fx-font-weight: bold");
