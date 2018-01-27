@@ -283,12 +283,12 @@ public class ComplainsController implements Initializable {
 	  long milliseconds2 = currentTime.getTime();
 
 	  long diff = milliseconds2 - milliseconds1;
-	  long diffSeconds = diff / 1000 % 60;
-	  long diffMinutes = diff / (60 * 1000) % 60;
-	  long diffHours = diff / (60 * 60 * 1000) % 24;
+	  long diffSeconds = diff / 1000;
+	  long diffMinutes = diff / (60 * 1000);
+	  long diffHours = diff / (60 * 60 * 1000);
 	  long diffDays = diff / (24 * 60 * 60 * 1000);
 	  
-	  String passedTime = String.format("%02d:%02d Hours",diffHours ,diffMinutes);
+	  String passedTime = String.format("%02d Days And %02d:%02d Hours",diffHours ,diffMinutes);
 	  Text textFieldPassedTime = new Text(passedTime);
 	  if(diffHours > 12)
 		textFieldPassedTime.setFill(Color.RED);
