@@ -147,6 +147,8 @@ public class LoginController implements Initializable {
 				ArrayList<Employee> employeeList = p.<Employee>convertedResultListForCommand(Command.getEmployeeByUid);
 				ArrayList<User> userList = p.<User>convertedResultListForCommand(Command.getUserByuId);
 				
+				performLoggedIn(user);
+				
 				// it's a customer, set user instance as customer object
 				if (customerList.size() > 0)
 				{
@@ -154,10 +156,8 @@ public class LoginController implements Initializable {
 					userLogged = new Customer(user, customer.getId());
 					
 					// <?---- open a menu of customers >
-					
 					try
 					{
-						performLoggedIn(user);
 						mainStage.close();
 						CustomerMenuController menu = new CustomerMenuController();
 						menu.setLoginController(currentLogin);
