@@ -12,9 +12,9 @@
 <AnchorPane fx:id="apPrime" prefHeight="486.0" prefWidth="431.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Customers.UpdateCustomerController">
    <children>
       <Label fx:id="lblCustomerId" layoutX="41.0" layoutY="87.0" text="ID" />
-      <Label fx:id="lbHeader" layoutX="41.0" layoutY="28.0" text="Update Customer Information">
+      <Label fx:id="lbHeader" layoutX="175.0" layoutY="27.0" text="Update Customer Information" underline="true">
          <font>
-            <Font name="System Bold" size="24.0" />
+            <Font size="18.0" />
          </font>
       </Label>
       <TextField id="txtCustomerID" fx:id="txtCustomerID" layoutX="101.0" layoutY="83.0" />
