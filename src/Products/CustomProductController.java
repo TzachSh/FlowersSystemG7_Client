@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
 
 import Login.CustomerMenuController;
+import Login.LoginController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
@@ -32,7 +33,10 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -200,16 +204,28 @@ public class CustomProductController implements Initializable {
 		{
 			ConstantData.displayAlert(AlertType.ERROR, "Error", "No Items Selected", "Please Select First Some Items");
 			return;
+		}		//display notification
+		if (txtBlessing.getText().length()==0)
+		{
+			Alert alert = new Alert(Alert.AlertType.WARNING);
+			alert.setTitle("Add Blessing");
+			alert.setContentText("Do you want to add blessing?");
+			ButtonType okButton = new ButtonType("Yes", ButtonData.YES);
+			ButtonType noButton = new ButtonType("No", ButtonData.NO);
+			
+			alert.getButtonTypes().setAll(okButton, noButton);
+			alert.showAndWait().ifPresent(type -> {
+			        if (type == okButton)
+			        {
+			        	paneFlowers.getSelectionModel().select(1);
+			        }
+			        else {
+			 		   addToCartCloseWindow();//continue to cart
+			        }
+			});
 		}
-		
-				//display notification
-		if (txtBlessing.getText().length()==0 && JOptionPane.showConfirmDialog(null, "Do you want to add blessing?", "Notification",
-		        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-			paneFlowers.getSelectionModel().select(1);
-
-		} else {
-		   addToCartCloseWindow();//continue to cart
-		}		
+		else
+			addToCartCloseWindow();//continue to cart
 	}
 	/**
 	 * getParameters for new custom product and send to create

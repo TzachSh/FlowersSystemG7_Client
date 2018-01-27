@@ -431,6 +431,7 @@ public class OrderController implements Initializable{
 					btnNext.setDisable(false);
 					cmbHour.getSelectionModel().clearAndSelect(dt.getHour());
 					cmbMin.getSelectionModel().clearAndSelect(dt.getMinute());
+					requestedDate.setValue(dt.toLocalDate());
 					cmbHour.setDisable(true);
 					cmbMin.setDisable(true);
 				}
@@ -730,10 +731,7 @@ public class OrderController implements Initializable{
 			public void onReceivingResult(Packet p) {
 				if (p.getResultState())
 				{
-					if(blncePay>0)
-					{
-						CustomerMenuController.currentAcc=p.<Account>convertedResultListForCommand(Command.updateAccountBalance).get(0);
-					}
+					CustomerMenuController.currentAcc=p.<Account>convertedResultListForCommand(Command.updateAccountBalance).get(0);
 					ConstantData.displayAlert(AlertType.INFORMATION, "Order created", "Order confirmation", "Order has been created thanks for buying in our shop");
 					CartController.cartProducts.clear();
 					SelectProductController.productsSelected.clear();
