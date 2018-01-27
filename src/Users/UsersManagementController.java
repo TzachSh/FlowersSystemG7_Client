@@ -363,8 +363,16 @@ public class UsersManagementController implements Initializable{
 							}
 							else
 							{
-								Alert alert = new Alert(AlertType.ERROR,p.getExceptionMessage());
-								alert.show();
+								Alert alert;
+								if(p.getExceptionMessage().toLowerCase().contains("duplicate")) {
+									alert = new Alert(AlertType.ERROR,"Username already exists");
+									alert.show();
+								}
+								else
+								{
+									alert = new Alert(AlertType.ERROR,p.getExceptionMessage());
+									alert.show();
+								}
 							}
 						}
 					});
