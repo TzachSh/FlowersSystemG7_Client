@@ -93,6 +93,9 @@ public class ReportsController implements Initializable{
 	 * choice :saving manager choice of different branches/quarterlies
 	 */
 	private int choice=0;
+	/**
+	 * counters that count how many reports that dosen't have data for each type of report
+	 */
 	private int incomereportcnt=0,satisfactionreportcnt=0,orderreportcnt=0,complainreportcnt=0;
 	/** getting employee object*/
 	private Employee employee=(Employee)LoginController.userLogged;
