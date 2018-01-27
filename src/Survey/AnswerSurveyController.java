@@ -326,7 +326,7 @@ public class AnswerSurveyController implements Initializable{
 	{
 	    activeSurvey = getActiveSurvey();
 	    if(activeSurvey == null) {
-	    	Alert alert = new Alert(AlertType.INFORMATION,"The is no active surevy!");
+	    	Alert alert = new Alert(AlertType.INFORMATION,"There is no active surevy!");
 			alert.showAndWait();
 			stage.close();
 			ManagersMenuController mc = new ManagersMenuController();
