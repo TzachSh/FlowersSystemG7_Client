@@ -132,7 +132,7 @@ public class FlowerController extends Application implements Initializable {
 							{
 								isCorrectPrice = false;
 								lblErrPrice.setVisible(true);
-								lblErrPrice.setText("Max Price: 100.0₪");
+								lblErrPrice.setText("Max Price: 100.0$");
 								btnCreate.setDisable(true);
 							
 							}
@@ -247,7 +247,7 @@ public class FlowerController extends Application implements Initializable {
 						color.setFont(new Font(12));
 						//color.setStyle("-fx-text-fill: "+colorFlower.getColorName()+"; -fx-font-weight: bold");
 						
-						Text price = new Text(flower.getPrice() + "₪");
+						Text price = new Text(flower.getPrice() + "$");
 						price.setFont(new Font(12));
 						
 						HBox flowerColorPrice = new HBox(color, price);
