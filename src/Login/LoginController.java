@@ -13,6 +13,7 @@ import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
 import Products.ConstantData;
+import Users.Permission;
 import Users.User;
 import Users.UsersManagementController;
 import javafx.application.Platform;
@@ -288,6 +289,13 @@ public class LoginController implements Initializable {
 					if (userList.size() > 0)
 					{
 						User user = userList.get(0);
+						
+						if(user.getPermission() == Permission.Blocked)
+						{
+							ConstantData.displayAlert(AlertType.INFORMATION, "Blocked", "User Blocked", "Your user has been blocked. Contact the system administrator");
+							return;
+						}
+						
 						// check if user is already logged in
 						if (user.isLogged())
 						{

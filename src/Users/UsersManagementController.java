@@ -4,6 +4,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import com.sun.net.httpserver.Filter;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.Filter.Chain;
+
 import Login.LoginController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
@@ -157,6 +161,7 @@ public class UsersManagementController implements Initializable{
 				if(p.getResultState())
 				{
 					usersList = p.<User>convertedResultListForCommand(Command.getUsers);
+					usersList.removeIf((User user) -> user.getuId() == LoginController.userLogged.getuId());
 					usersData = FXCollections.observableArrayList(usersList);
 					uListView.setItems(usersData);
 				}
