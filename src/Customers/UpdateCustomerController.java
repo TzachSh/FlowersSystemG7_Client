@@ -514,7 +514,7 @@ public class UpdateCustomerController implements Initializable {
 						if(accList.isEmpty()==false)
 						{
 							//adding information to the fields
-							txtBalance.setText(""+accList.get(0).getBalance());
+							txtBalance.setText(""+accList.get(0).getBalance()+"$");
 							if((accList.get(0).getCreditCard().isEmpty()==false && accList.get(0).getCreditCard().length()==20))
 							{
 							txtCreditCard1.setText(accList.get(0).getCreditCard().substring(0, 4));

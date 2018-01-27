@@ -816,10 +816,19 @@ public class ReportsController implements Initializable{
 	public void generateReportForBranchManager(int brId,String report,int year,int quartely)
 	{
 		ArrayList<String > reportinfo1=new ArrayList<>();
-		//brId=Integer.parseInt(cbBranches.getSelectionModel().getSelectedItem());
-		brId=ManagersMenuController.currentBranch.getbId();
 		reportinfo1.add(cbQuarterly1.getSelectionModel().getSelectedItem().toString());
-		reportinfo1.add(ManagersMenuController.currentBranch.getName());
+		if(((Employee)LoginController.userLogged).getRole().toString().equals("BranchManager") )
+		{
+			brId=((Employee)LoginController.userLogged).getBranchId();
+			reportinfo1.add(lblBranchName.getText().toString());
+			
+		}
+		else
+		{
+			brId=Integer.parseInt(cbBranches.getSelectionModel().getSelectedItem());
+			reportinfo1.add(cbBranchesName.getSelectionModel().getSelectedItem());
+		}
+		
 		//handling information
 		lblFirstReportSection.setVisible(true);
 		lblFirstReportSection.setText("Generated Report For Branch "+reportinfo1.get(1)+" Quarter "+reportinfo1.get(0));
