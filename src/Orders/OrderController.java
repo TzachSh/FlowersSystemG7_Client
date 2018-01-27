@@ -318,7 +318,7 @@ public class OrderController implements Initializable{
 				}
 				else {
 					try {
-					blncePay=Double.parseDouble(txtBlncePay.getText());
+					blncePay=Double.parseDouble(txtBlncePay.getText().replaceAll("'", "\\'"));
 					}catch(Exception e) {
 						blncePay=0;
 					};
@@ -690,7 +690,7 @@ public class OrderController implements Initializable{
 		ArrayList<Object> delivery = new ArrayList<>();
 		if(chkDelivery.isSelected())
 		{
-			delivery.add(new Delivery(txtAddress.getText(),txtPhone.getText(),txtName.getText()));
+			delivery.add(new Delivery(txtAddress.getText().replaceAll("'", "\\'"),txtPhone.getText().replaceAll("'", "\\'"),txtName.getText().replaceAll("'", "\\'")));
 		}
 		saveOrder(order,prodInOrder,orderPayment,acList,delivery);		
 		

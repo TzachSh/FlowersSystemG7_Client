@@ -311,7 +311,7 @@ public class UsersManagementController implements Initializable{
 						btnUpdate = new Button(textUpdate);
 						btnUpdate.setOnMouseClicked((event) -> {
 							// Handle update user
-							updateUser(user,txtUser.getText(),txtPassword.getText(),cbLogged.isSelected(),cmbPerms.getSelectionModel().getSelectedItem());
+							updateUser(user,txtUser.getText().replaceAll("'", "\\'"),txtPassword.getText().replaceAll("'", "\\'"),cbLogged.isSelected(),cmbPerms.getSelectionModel().getSelectedItem());
 						});
 
 						return btnUpdate;
