@@ -93,6 +93,7 @@ public class ReportsController implements Initializable{
 	 * choice :saving manager choice of different branches/quarterlies
 	 */
 	private int choice=0;
+	private int incomereportcnt=0,satisfactionreportcnt=0,orderreportcnt=0,complainreportcnt=0;
 	/** getting employee object*/
 	private Employee employee=(Employee)LoginController.userLogged;
 	
@@ -440,6 +441,12 @@ public class ReportsController implements Initializable{
 						int active1=0,notactive1=0;
 						//filling the information in list
 						complainList1= p.<Complain>convertedResultListForCommand(Command.getComplainsForReport);
+						if(complainList1.isEmpty())
+						{
+							complainreportcnt++;
+							if(complainreportcnt==2)
+								ConstantData.displayAlert(AlertType.ERROR, "Error ,","There Is No Data For Complain Report ", null);
+						}
 						//gathering information for the graphs
 						for(Complain comp : complainList1)
 						{
@@ -470,6 +477,12 @@ public class ReportsController implements Initializable{
 						int active2=0,notactive2=0;
 						//filling the information in the list
 						complainList2= p.<Complain>convertedResultListForCommand(Command.getComplainsForReport);
+						if(complainList2.isEmpty())
+						{
+							complainreportcnt++;
+							if(complainreportcnt==2)
+								ConstantData.displayAlert(AlertType.ERROR, "Error ,","There Is No Data For Complain Report ", null);
+						}
 						//gathering the information
 						for(Complain comp : complainList2)
 						{
@@ -547,6 +560,12 @@ public class ReportsController implements Initializable{
 								newincomereport=new IncomeReport(incomeReport1.get(0).getBrId(), incomeReport1.get(0).getBrName(), incomeReport1.get(0).getAmount());
 								
 							}
+							else
+							{
+								incomereportcnt++;
+								if(incomereportcnt==2)
+									ConstantData.displayAlert(AlertType.ERROR, "Error ,","There Is No Data For Income Report ", null);
+							}
 							//building the incoming result 
 							//sending the wanted table and the result to function that builds the tableview
 							BuildTableViewForIncome(table1Income, newincomereport);
@@ -571,6 +590,12 @@ public class ReportsController implements Initializable{
 							IncomeReport newincomereport=null;
 							if(incomeReport2.isEmpty()==false)
 								newincomereport=new IncomeReport(incomeReport2.get(0).getBrId(), incomeReport2.get(0).getBrName(), incomeReport2.get(0).getAmount());
+							else
+							{
+								incomereportcnt++;
+								if(incomereportcnt==2)
+									ConstantData.displayAlert(AlertType.ERROR, "Error ,","There Is No Data For Income Report ", null);
+							}
 							//building the incoming result 
 							//sending the wanted table and the result to function that builds the tableview
 							BuildTableViewForIncome(table2Income, newincomereport);
@@ -634,7 +659,13 @@ public class ReportsController implements Initializable{
 					if(p.getResultState()) 
 					{				
 						//filling the information in list
-						orderReport1= p.<OrderReport>convertedResultListForCommand(Command.getOrderReport);					
+						orderReport1= p.<OrderReport>convertedResultListForCommand(Command.getOrderReport);	
+						if(orderReport1.isEmpty())
+						{
+							orderreportcnt++;
+							if(orderreportcnt==2)
+								ConstantData.displayAlert(AlertType.ERROR, "Error ,","There Is No Data For Order Report ", null);
+						}
 						//building the incoming result 
 						BuildTableViewForOrder(tblViewOrder1, orderReport1);	
 					}
@@ -654,7 +685,13 @@ public class ReportsController implements Initializable{
 					if(p.getResultState()) 
 					{
 						//filling the information in list
-						orderReport2= p.<OrderReport>convertedResultListForCommand(Command.getOrderReport);						
+						orderReport2= p.<OrderReport>convertedResultListForCommand(Command.getOrderReport);		
+						if(orderReport2.isEmpty())
+						{
+							orderreportcnt++;
+							if(orderreportcnt==2)
+								ConstantData.displayAlert(AlertType.ERROR, "Error ,","There Is No Data For Order Report ", null);
+						}
 						//building the incoming result 
 						BuildTableViewForOrder(tblViewOrder2, orderReport2);
 					}
@@ -718,7 +755,13 @@ public class ReportsController implements Initializable{
 						
 						//getting the information from the returned packet
 						ArrayList<SatisfactionReport> surveyReport ;					
-						surveyReport= p.<SatisfactionReport>convertedResultListForCommand(Command.getSatisfactionReport);				
+						surveyReport= p.<SatisfactionReport>convertedResultListForCommand(Command.getSatisfactionReport);	
+						if(surveyReport.isEmpty())
+						{
+							satisfactionreportcnt++;
+							if(satisfactionreportcnt==2)
+								ConstantData.displayAlert(AlertType.ERROR, "Error ,","There Is No Data For Satisfaction Report ", null);
+						}
 						//sending the wanted table and the result to function that builds the tableview
 						//BuildTableViewForSatisfaction(tblViewSatisfaction1,surveyReport);
 						BuildTableViewForSatisfaction(tblViewSatisfaction1, surveyReport);
@@ -741,7 +784,13 @@ public class ReportsController implements Initializable{
 					{
 						//getting the information from the returned packet
 						ArrayList<SatisfactionReport> surveyReport ;			
-						surveyReport= p.<SatisfactionReport>convertedResultListForCommand(Command.getSatisfactionReport);									
+						surveyReport= p.<SatisfactionReport>convertedResultListForCommand(Command.getSatisfactionReport);	
+						if(surveyReport.isEmpty())
+						{
+							satisfactionreportcnt++;
+							if(satisfactionreportcnt==2)
+								ConstantData.displayAlert(AlertType.ERROR, "Error ,","There Is No Data For Satisfaction Report ", null);
+						}
 						//sending the wanted table and the result to function that builds the tableview
 						//BuildTableViewForSatisfaction(tblViewSatisfaction1,surveyReport);
 						BuildTableViewForSatisfaction(tblViewSatisfaction2, surveyReport);
@@ -804,6 +853,8 @@ public class ReportsController implements Initializable{
 						ArrayList<Complain> complainList ;
 						int active=0,notactive=0;
 						complainList= p.<Complain>convertedResultListForCommand(Command.getComplainsForReport);
+						if(complainList.isEmpty())
+							ConstantData.displayAlert(AlertType.ERROR, "Error ,","There Is No Data For Complain Report ", null);
 						//gathering information for the chart
 						for(Complain comp : complainList)
 						{
@@ -854,6 +905,8 @@ public class ReportsController implements Initializable{
 							//getting the report information
 							newincomereport=new IncomeReport(IncomeList.get(0).getBrId(), IncomeList.get(0).getBrName(), IncomeList.get(0).getAmount());
 						}
+						else
+							ConstantData.displayAlert(AlertType.ERROR, "Error ,","There Is No Data For Income Report ", null);
 						//building the incoming result 
 						//sending the wanted table and the result to function that builds the tableview
 						BuildTableViewForIncome(table1Income, newincomereport);						
@@ -888,10 +941,12 @@ public class ReportsController implements Initializable{
 					if(p.getResultState())
 					{
 						//getting the information from the returned packet
-						ArrayList<OrderReport> IncomeList ;			
-						IncomeList= p.<OrderReport>convertedResultListForCommand(Command.getOrderReport);					
+						ArrayList<OrderReport>OrderList ;			
+						OrderList= p.<OrderReport>convertedResultListForCommand(Command.getOrderReport);
+						if(OrderList.isEmpty())
+							ConstantData.displayAlert(AlertType.ERROR, "Error ,","There Is No Data For Order Report ", null);
 						//sending the wanted table and the result to function that builds the tableview
-						BuildTableViewForOrder(tblViewOrder1, IncomeList);		
+						BuildTableViewForOrder(tblViewOrder1, OrderList);		
 					}
 					else
 						System.out.println("Fail: " + p.getExceptionMessage());	
@@ -923,7 +978,9 @@ public class ReportsController implements Initializable{
 					{
 						//getting the information from the returned packet
 						ArrayList<SatisfactionReport> surveyReport ;
-						surveyReport= p.<SatisfactionReport>convertedResultListForCommand(Command.getSatisfactionReport);					
+						surveyReport= p.<SatisfactionReport>convertedResultListForCommand(Command.getSatisfactionReport);			
+						if(surveyReport.isEmpty())
+							ConstantData.displayAlert(AlertType.ERROR, "Error ,","There Is No Data For Satisfaction Report ", null);
 						//sending the wanted table and the result to function that builds the tableview
 						//BuildTableViewForSatisfaction(tblViewSatisfaction1,surveyReport);
 						BuildTableViewForSatisfaction(tblViewSatisfaction1, surveyReport);
