@@ -55,6 +55,10 @@ public class UpdateCustomerController implements Initializable {
 	private Branch currentBranch;
 	@FXML
 	private Label lbHeader;
+	@FXML 
+	private AnchorPane apPrime;
+	@FXML
+	private Label lblCustomerId;
 	@FXML
 	private Label lbStatus;
 	@FXML
@@ -140,9 +144,9 @@ public class UpdateCustomerController implements Initializable {
 		 }
 		 else
 		 {
+			 
 			 //handling fields and buttons for the client
 				txtCustomerID.setEditable(false);
-			 	btnSearch.setVisible(false);
 				txtBalance.setEditable(false);
 				txtBalance.setDisable(false);
 				txtUser.setEditable(false);
@@ -155,11 +159,16 @@ public class UpdateCustomerController implements Initializable {
 				txtCreditCard3.setEditable(false);
 				txtCreditCard4.setEditable(false);
 				txtCreditCard5.setEditable(false);
-				btnSave.setVisible(false);
-				btnchangePassword.setVisible(false);
 				rbMemberShip.setVisible(false);
 				rbdeleteMemberShip.setVisible(false);
+				btnchangePassword.setVisible(false);
+			 	btnSearch.setVisible(false);
+			    lblCustomerId.setDisable(true);
 				lbHeader.setText("Client Information");
+				btnSave.setVisible(false);
+			  
+
+
 		 }
 	 }
 	 /**deleting membership from account*/
