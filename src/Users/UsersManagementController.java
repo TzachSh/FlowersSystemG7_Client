@@ -161,8 +161,8 @@ public class UsersManagementController implements Initializable{
 				if(p.getResultState())
 				{
 					usersList = p.<User>convertedResultListForCommand(Command.getUsers);
-					usersList.removeIf((User user) -> user.getuId() == LoginController.userLogged.getuId());
 					usersData = FXCollections.observableArrayList(usersList);
+					usersData.removeIf((User user) -> user.getuId() == LoginController.userLogged.getuId());
 					uListView.setItems(usersData);
 				}
 				else {

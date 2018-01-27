@@ -151,7 +151,29 @@ public class LoginController implements Initializable {
 				performLoggedIn(user);
 				
 				// it's a customer, set user instance as customer object
-				if (customerList.size() > 0)
+				// it's an administrator, set user instance as user object
+				if (userList.size() > 0 && userList.get(0).getPermission() == Permission.Administrator)
+				{
+					User administrator = userList.get(0);
+					userLogged = new User(administrator);
+					
+					// <?---- open a menu of customers >
+					
+					try
+					{
+						performLoggedIn(user);
+						mainStage.close();
+						UsersManagementController umController = new UsersManagementController();
+						umController.setLoginController(currentLogin);
+						umController.start(new Stage());
+					}
+					catch (Exception e)
+					{
+						performLoggedOut(user);
+						ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception Error", e.getMessage());
+					}
+				}
+				else if (customerList.size() > 0)
 				{
 					Customer customer = customerList.get(0);
 					userLogged = new Customer(user, customer.getId());
