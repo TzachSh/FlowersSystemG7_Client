@@ -166,8 +166,8 @@ public class OrderController implements Initializable{
 			scene.getStylesheets().add(getClass().getResource(srcCSS).toExternalForm());
 			arg0.setTitle(title);
 			arg0.setScene(scene);
-			arg0.setResizable(false);
 			arg0.show();
+			arg0.setResizable(false);
 			
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -188,6 +188,7 @@ public class OrderController implements Initializable{
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		getCurrentAccountBalance();
 		lblDeliveryCost.setTextFill(Color.RED);
 		lblErrTime.setTextFill(Color.RED);
 		lblErrTime.setVisible(false);
@@ -319,7 +320,7 @@ public class OrderController implements Initializable{
 				}
 				else {
 					try {
-					blncePay=Double.parseDouble(txtBlncePay.getText().replaceAll("'", "\\'"));
+					blncePay=Double.parseDouble(txtBlncePay.getText());
 					}catch(Exception e) {
 						blncePay=0;
 					};
@@ -358,9 +359,11 @@ public class OrderController implements Initializable{
 		account = CustomerMenuController.currentAcc;		
 		if(account.getMemberShip() != null)
 		{ 
-			double discount = CartController.getTotalPrice()*account.getMemberShip().getDiscount()/100;
+			double discount = (CartController.getTotalPrice()*account.getMemberShip().getDiscount()/100);
+			discount =Math.round(discount*100)/100.0;
 			lblDiscount.setText(String.format("%.2f$",discount));
 			totalAfter=CartController.getTotalPrice()*(1-account.getMemberShip().getDiscount()/100);
+			totalAfter = Math.round(totalAfter*100)/100.0;
 			lblTotal.setText(String.format("%.2f$",totalAfter));
 		}
 		else
@@ -369,14 +372,6 @@ public class OrderController implements Initializable{
 			lblDiscount.setText("0$");
 			lblTotal.setText(String.format("%.2f$",totalAfter));
 		}
-		blnce = account.getBalance();
-		if(blnce<=0)
-		{
-			blncePay=0;
-			txtBlncePay.setDisable(true);
-			txtBlncePay.setText("0$");	
-		}
-		lblAvailableBalance.setText(String.format("%.2f$",blnce));
 	}
 	/***
 	 * Set delivery option check box
@@ -681,19 +676,16 @@ public class OrderController implements Initializable{
 		else
 			orderPayment.add(new OrderPayment(payment, amount,Date.valueOf(LocalDate.now())));
 		//if customer uses his balance to pay
-		ArrayList<Object> acList = new ArrayList<>();
 		if(blncePay>0)
 		{
 			orderPayment.add(new OrderPayment(PaymentMethod.BalancePayment, blncePay,Date.valueOf(LocalDate.now())));
-			account.setBalance(blnce-blncePay);
-			acList.add(account);
 		}
 		ArrayList<Object> delivery = new ArrayList<>();
 		if(chkDelivery.isSelected())
 		{
-			delivery.add(new Delivery(txtAddress.getText().replaceAll("'", "\\'"),txtPhone.getText().replaceAll("'", "\\'"),txtName.getText().replaceAll("'", "\\'")));
+			delivery.add(new Delivery(txtAddress.getText(),txtPhone.getText(),txtName.getText()));
 		}
-		saveOrder(order,prodInOrder,orderPayment,acList,delivery);		
+		saveOrder(order,prodInOrder,orderPayment,delivery);		
 		
 	}
 	/***
@@ -704,7 +696,7 @@ public class OrderController implements Initializable{
 	 * @param acList list of all the account
 	 * @param delivery to save
 	 */
-	private void saveOrder(ArrayList<Object> order,ArrayList<Object> productInOrder,ArrayList<Object> payments,ArrayList<Object> acList,ArrayList<Object> delivery)
+	private void saveOrder(ArrayList<Object> order,ArrayList<Object> productInOrder,ArrayList<Object> payments,ArrayList<Object> delivery)
 	{
 		Packet packet = new Packet();
 		packet.addCommand(Command.createOrder);
@@ -715,8 +707,12 @@ public class OrderController implements Initializable{
 		packet.setParametersForCommand(Command.createOrderPayments, payments);
 		if(blncePay>0)
 		{
-			packet.addCommand(Command.updateAccountsBycId);
-			packet.setParametersForCommand(Command.updateAccountsBycId, acList);
+			ArrayList<Object> params = new ArrayList<>();
+			params.add(account.getBranchId());
+			params.add(account.getCustomerId());
+			params.add(blncePay*-1);
+			packet.addCommand(Command.updateAccountBalance);
+			packet.setParametersForCommand(Command.updateAccountBalance,params);
 		}
 		if(chkDelivery.isSelected())
 		{
@@ -735,6 +731,7 @@ public class OrderController implements Initializable{
 			public void onReceivingResult(Packet p) {
 				if (p.getResultState())
 				{
+					CustomerMenuController.currentAcc=p.<Account>convertedResultListForCommand(Command.updateAccountBalance).get(0);
 					ConstantData.displayAlert(AlertType.INFORMATION, "Order created", "Order confirmation", "Order has been created thanks for buying in our shop");
 					CartController.cartProducts.clear();
 					SelectProductController.productsSelected.clear();
@@ -757,6 +754,47 @@ public class OrderController implements Initializable{
 					
 		});
 				
+		send.start();
+	}
+
+	/**
+	 * get updated account balance
+	 */
+	private void getCurrentAccountBalance() {
+		Packet packet = new Packet();
+		//adding commands to the packet
+		packet.addCommand(Command.getAccountbycIDandBranch);
+		//adding array list to the packet's command so the Query can get information for statement .	
+		ArrayList<Object> accl=new ArrayList<>();
+		accl.add(CustomerMenuController.currentAcc.getCustomerId());
+		accl.add(CustomerMenuController.currentBranch.getbId());
+		packet.setParametersForCommand(Command.getAccountbycIDandBranch, accl);
+		//sending the packet
+		SystemSender send = new SystemSender(packet);
+		send.registerHandler(new IResultHandler() {
+			@Override
+			public void onWaitingForResult() {						
+			}
+			@Override
+			public void onReceivingResult(Packet p) {
+				if(p.getResultState())
+				{
+					CustomerMenuController.currentAcc = p.<Account>convertedResultListForCommand(Command.getAccountbycIDandBranch).get(0);
+					blnce = CustomerMenuController.currentAcc.getBalance();
+					lblAvailableBalance.setText(String.format("%.2f",blnce ));
+					if(blnce<=0)
+					{
+						blncePay=0;
+						txtBlncePay.setDisable(true);
+						txtBlncePay.setText("0$");	
+					}
+				}
+				else
+				{
+					ConstantData.displayAlert(AlertType.ERROR, "Error", "Failed connection", p.getExceptionMessage());
+				}
+			}
+		});
 		send.start();
 	}
 }
