@@ -288,12 +288,21 @@ public class ComplainsController implements Initializable {
 	  long diffHours = diff / (60 * 60 * 1000);
 	  long diffDays = diff / (24 * 60 * 60 * 1000);
 	  
-	  String passedTime = String.format("%02d Days And %02d:%02d Hours",diffHours ,diffMinutes);
-	  Text textFieldPassedTime = new Text(passedTime);
-	  if(diffHours > 12)
+	  String passedTime = String.format("%02d:%02d Hours",diffHours ,diffMinutes);
+	  Text textFieldPassedTime;
+	  if(diffHours > 12 && diffHours < 24) {
+		  textFieldPassedTime = new Text(passedTime);
 		textFieldPassedTime.setFill(Color.RED);
-	  else
+	  }
+	  else if(diffHours < 12) {
+		textFieldPassedTime = new Text(passedTime);
 		textFieldPassedTime.setFill(Color.GREEN);
+	  }
+	  else {
+		  textFieldPassedTime = new Text("Day or more");
+		  textFieldPassedTime.setFill(Color.RED);
+		
+	  }  
 	  
 	   return textFieldPassedTime; 
 	}
@@ -476,7 +485,7 @@ public class ComplainsController implements Initializable {
 					
 					Timestamp curerntTime = new Timestamp(System.currentTimeMillis());
 					Text txtPassedTime = getPassedTimeInText(curerntTime, complain.getCreationDate());
-				
+					
 					HBox timeElement = new HBox(new Label(textTimePassed), txtPassedTime);
 					HBox titleElement = new HBox (new Label(textTitle) , new Text(String.format("%s", complain.getTitle())));
 					HBox infoElement = new HBox (new Label(textContent) , new Text(String.format("%s", complain.getDetails())));
