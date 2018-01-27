@@ -284,7 +284,7 @@ public class SurveyManagementController implements Initializable {
 		tabSteps.getSelectionModel().select(0);
 		tabSteps.getSelectionModel().getSelectedItem().setDisable(false);
 		
-		dataSurvey.clear();
+		//dataSurvey.clear();
 		
 		setButtonsVisiblity(true);
 	}
