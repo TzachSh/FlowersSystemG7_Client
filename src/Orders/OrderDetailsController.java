@@ -172,7 +172,7 @@ public class OrderDetailsController implements Initializable {
 	 */
 	private void setButtonDisabledState(Button btn , boolean state)
 	{
-		if(order.getStatus() == Status.Canceled)
+		if(order.getStatus() == Status.Canceled || order.getStatus() == Status.Completed)
 			btn.setDisable(state);
 	}
 	/**
@@ -321,18 +321,18 @@ public class OrderDetailsController implements Initializable {
                     hBox.setSpacing(10);
                     hBox.setPadding(new Insets(10));
                     
-                    
                     setGraphic(hBox);
 				}
 
 				
 			    @Override
 				protected void updateItem(Product item, boolean empty) {
-					//super.updateItem(item, empty);
-						
+					super.updateItem(item, empty);	
 					 if (item != null) {	
 						 	setCellHandler(item);
                         }
+					 else
+						 setGraphic(null);
 				}};
 			}
 		});
@@ -354,7 +354,7 @@ public class OrderDetailsController implements Initializable {
 				{
 					Text method = new Text(payment.getPaymentMethod().toString());
 					VBox vMethod = new VBox(method);
-					Text amount = new Text(""+payment.getAmount());
+					Text amount = new Text(""+payment.getAmount()+"$");
 					VBox vamount = new VBox(amount);
 					Text date;
 					if(payment.getPaymentDate()==null)
@@ -480,6 +480,22 @@ public class OrderDetailsController implements Initializable {
 		}
 		return refund;
 	}
+	
+	/***
+	 * 
+	 * @return The information if the order has been charged or not
+	 */
+	private boolean isCharged()
+	{
+		boolean isCharged = true;
+		for(OrderPayment orderPayment : order.getOrderPaymentList())
+			if(orderPayment.getPaymentDate() == null)
+				isCharged = false;
+		
+		return isCharged;
+	}
+	
+	
 	/**
 	 * Handle cancel button pressed
 	 */
@@ -531,10 +547,14 @@ public class OrderDetailsController implements Initializable {
 				if(p.getResultState())
 				{
 					String refundInfo;
-					 if(refund != null)
+					
+					if(!isCharged()) 
+						refundInfo = "\nThere is no refund, Because of no payment Yet"; 	
+					else if(refund != null)
 						 refundInfo = String.format("You have a refund of: %.2f$", refund.getAmount());
-					 else
+					else
 						 refundInfo = new String("You have no refund");
+					 
 					 ConstantData.displayAlert(AlertType.INFORMATION, "Cancel Order", "Success", "Order has been canceled successfully, " + refundInfo);
 					 Stage stage = (Stage) btnBack.getScene().getWindow();
 					 stage.close();

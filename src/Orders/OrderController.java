@@ -397,6 +397,7 @@ public class OrderController implements Initializable{
 					txtAddress.setDisable(false);
 					txtName.setDisable(false);
 					txtPhone.setDisable(false);
+					btnNext.setDisable(true);
 				}
 				else
 				{
@@ -454,7 +455,6 @@ public class OrderController implements Initializable{
 				
 			}
 		});
-		
 	}
 	/***
 	 * Register radio buttons in a toggle group
