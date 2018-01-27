@@ -26,7 +26,7 @@
         <content>
           <AnchorPane prefHeight="136.0" prefWidth="494.0">
                <children>
-                  <Label layoutX="219.0" layoutY="55.0" text="$">
+                  <Label layoutX="219.0" layoutY="55.0" text="\$">
                      <font>
                         <Font size="29.0" />
                      </font>
