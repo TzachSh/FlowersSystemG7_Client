@@ -129,7 +129,7 @@ public class MyComplainsController implements Initializable{
 	
 	/***
 	 * 
-	 * @param complain 
+	 * @param complain search by
 	 * @return the branch which this complain relies to 
 	 */
 	private Branch getBranchByComplain(Complain complain)
@@ -144,7 +144,7 @@ public class MyComplainsController implements Initializable{
 	
 	/**
 	 * 
-	 * @param complain
+	 * @param complain search by
 	 * @return the refund, if exists, for this complain
 	 */
 	private Refund getRefundByComplain(Complain complain)
@@ -161,7 +161,7 @@ public class MyComplainsController implements Initializable{
 	
 	/**
 	 * 
-	 * @param complain
+	 * @param complain search by
 	 * @return the reply, if exists, for this complain
 	 */
 	private Reply getReplyByComplain(Complain complain)

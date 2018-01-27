@@ -458,8 +458,8 @@ public class AccountController implements Initializable{
 	}
 	/**
 	 * This function  initialize the window
-	 * @param primaryStage
-	 * @throws Exception
+	 * @param primaryStage - current stage to build
+	 * @throws Exception error message
 	 */
 	public void start(Stage primaryStage)  throws Exception{
 		// TODO Auto-generated method stub

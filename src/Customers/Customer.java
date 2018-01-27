@@ -83,7 +83,7 @@ public class Customer extends User implements Serializable {
 	 * @param id customer number
 	 * @param orderList customer's order list
 	 * @param complainList customer's complain list
-	 * @param accountNum
+	 * @param accountNum account number of the customer
 	 */
 	public Customer(int uId, String user, String password, boolean isLogged, Permission permission, int id,
 			ArrayList<Order> orderList, ArrayList<Complain> complainList, int accountNum) {

@@ -47,7 +47,7 @@ public class ServiceMenuController implements Initializable
 	@FXML private Label lblNotification;    
 	/**
 	 * set loginController
-	 * @param login
+	 * @param login to set
 	 */
 	public void setLoginController(LoginController login)
 	{

@@ -113,13 +113,32 @@ public class CustomProductController implements Initializable {
 	@FXML
 	private Button btnBackToCart;
 
-	private ObservableList<Flower> data;//storing flowers in observable list to get option to update it when app is run
-	private ArrayList<Flower> flowerList;//all flowers from db
+	/**
+	 * storing flowers in observable list to get option to update it when app is run
+	 */
+	private ObservableList<Flower> data;
+	
+	/**
+	 * all flowers from db
+	 */
+	private ArrayList<Flower> flowerList;
 	private static Stage stage;
+	/**
+	 * total price of custom product
+	 */
 	private double total;
+	/**
+	 * min range price for flower
+	 */
 	private double minPrice = 0;
+	/**
+	 * max range price for the flower
+	 */
 	private double maxPrice = 0;
 	
+	/**
+	 * all flowers in the custom product
+	 */
 	private LinkedHashMap<Flower,Integer> flowerInProduct= new LinkedHashMap<>();
 	/**
 	 * to available run javafx
@@ -171,6 +190,10 @@ public class CustomProductController implements Initializable {
 		});
 	
 	}
+	/**
+	 * Back Button behavior
+	 * close current window and open cart window
+	 */
 	public void onClickRegisterBtnBack() {
 		Stage cartStage = new Stage();
 		CartController cartController = new CartController();
@@ -214,7 +237,6 @@ public class CustomProductController implements Initializable {
 				flowerInProductList.add(new FlowerInProduct(set.getKey().getId(), set.getValue()));
 			}
 			createCustomProduct(pList,flowerInProductList);
-		//CartController.cartProducts.keySet();
 		
 	}
 	/**
@@ -266,12 +288,19 @@ public class CustomProductController implements Initializable {
 		send.start();
 		
 	}
+	/**
+	 * close current window
+	 */
 	protected void closeStage() {
 		Stage stage = (Stage)btnAddToCart.getScene().getWindow();
 		stage.close();
 		
 	}
-
+	
+	/**
+	 * Handle reset button behavior
+	 * reset the form
+	 */
 	public void onClickResetButton()
 	{
 		txtMinCost.setText("");
@@ -289,6 +318,10 @@ public class CustomProductController implements Initializable {
 		maxPrice = 0;
 		paneFilter.setDisable(false);
 	}
+	/**
+	 * Handle set settings button click
+	 * search flowers by parameters
+	 */
 	public void onClickSetSetting()
 	{
 		try {
@@ -309,6 +342,10 @@ public class CustomProductController implements Initializable {
 			ConstantData.displayAlert(AlertType.ERROR, "Error", "Error",e.getMessage());
 		}
 	}
+	/**
+	 * check validation form
+	 * @throws Exception error message
+	 */
 	private void isValid() throws Exception {
 		String msg= new String();
 		if(txtMaxCost.getText().length()==0 || txtMinCost.getText().length()==0)
@@ -320,6 +357,11 @@ public class CustomProductController implements Initializable {
 		if(msg.length() > 0)
 			throw new Exception(msg);
 	}
+	/**
+	 * Show the scene view of complains management 
+	 * @param primaryStage - current stage to build
+	 * @throws IOException error message
+	 */
 	public void start(Stage primaryStage) throws IOException {
 		String srcFXML = "/Products/CustomProductUI.fxml";
 		String srcCSS = "/Products/application.css";
@@ -344,6 +386,9 @@ public class CustomProductController implements Initializable {
 	          }
 	       });
 	}
+	/**
+	 * get all flowers from the server
+	 */
 	public void getFlowers()
 	{
 		Packet packet = new Packet();//create packet to send
@@ -401,7 +446,9 @@ public class CustomProductController implements Initializable {
 		lblTotalPrice.setText(String.format("%.2f¤",total));
 		this.total = total;
 	}
-	
+	/**
+	 * initialize flower list
+	 */
 	public void initList()
 	{
 		ArrayList<Flower> tempList;

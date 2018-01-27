@@ -118,7 +118,7 @@ public class LoginController implements Initializable {
 	
 	/**
 	 * Set user as employee or customer and fill all object parameters
-	 * @param user
+	 * @param user to check employee or customer
 	 */
 	public void determineEmployeeOrCustomer(User user)
 	{
@@ -323,6 +323,7 @@ public class LoginController implements Initializable {
     
     /**
      * Open a new window for configuration the connection to the server
+     * @param event actual event
      */
     public void showConfigurationForm(ActionEvent event)
     {

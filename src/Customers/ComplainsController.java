@@ -191,7 +191,7 @@ public class ComplainsController implements Initializable {
 	
 	/**
 	 * 
-	 * @param complain
+	 * @param complain to get reply by
 	 * @return the reply relies to this complain
 	 */
 	private Reply getReplyByComplain(Complain complain)
@@ -638,7 +638,7 @@ public class ComplainsController implements Initializable {
 		
 	/***
 	 * 
-	 * @param TextField txtField - to set his text limit.
+	 * @param textField - to set his text limit.
 	 * @param limit - limited text length
 	 *  Prevent writing more characters then the limited in database
 	 */
@@ -659,7 +659,8 @@ public class ComplainsController implements Initializable {
 	
 	/***
 	 * 
-	 * @param TextArea textArea - to set his text limit.
+	 * @param textArea - to set his text limit.
+	 * @param limit  - limited text length
 	 *  Prevent writing more characters then the limited in database
 	 */
 	private void setTextAreaLengthProperty(TextArea textArea , int limit) {

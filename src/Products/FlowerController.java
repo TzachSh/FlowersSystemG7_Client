@@ -74,12 +74,26 @@ public class FlowerController extends Application implements Initializable {
     @FXML
     private Button btnBack;
     
-	private ArrayList<ColorProduct> cList ;//all possible colors for flower
+	/**
+	 * all possible colors for flower
+	 */
+	private ArrayList<ColorProduct> cList ;
+	/**
+	 *  all flowers as dynamic list
+	 */
 	private ObservableList<Flower> data;
+	/**
+	 * all flowers
+	 */
 	private ArrayList<Flower> flowers = new ArrayList<>();
 	private static Stage mainStage;
-	
+	/**
+	 * if price is correct
+	 */
 	private boolean isCorrectPrice = false;
+	/**
+	 * if name is correct
+	 */
 	private boolean isCorrectName = false;
 	
 	/**
@@ -272,6 +286,7 @@ public class FlowerController extends Application implements Initializable {
 	
 	/**
 	 * 	when user click on create checking validation and sending it to the server
+	 * @param event actual event
 	 */
 	public void onCreateClicked(ActionEvent event)
 	{
@@ -383,7 +398,9 @@ public class FlowerController extends Application implements Initializable {
 			}
 		});
 	}
-	
+	/**
+	 * closing main form and open managers menu
+	 */
 	public void onClosingForm()
 	{
 		try

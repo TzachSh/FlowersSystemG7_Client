@@ -337,6 +337,9 @@ public class ReportsController implements Initializable{
 	}
 	/**
 	 * Generates Reports for Branches Manager 
+	 * @param report report name
+	 * @param year report year
+	 * @param quartely report quarter
 	 */
 	public void generateReportForBranchesManager(String report,int year,int quartely)
 	{
@@ -753,6 +756,10 @@ public class ReportsController implements Initializable{
 	}
 	/**
 	 * Generates Reports for Branch Manager
+	 * @param brId branch number
+	 * @param report report name
+	 * @param year selected year
+	 * @param quartely selected quarter
 	 */
 	public void generateReportForBranchManager(int brId,String report,int year,int quartely)
 	{

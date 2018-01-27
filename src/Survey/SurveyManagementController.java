@@ -47,7 +47,7 @@ import javafx.util.Callback;
  *
  */
 public class SurveyManagementController implements Initializable {
-	/***
+	/*
 	 * FXML components to be changed during runtime
 	 */
 	@FXML
@@ -97,9 +97,12 @@ public class SurveyManagementController implements Initializable {
 	private ObservableList<Survey> dataSurvey;
 	
 	/***
-	 * Lists for data handle during runtime 
+	 * Lists for survey conclusion handle during runtime 
 	 */
 	private ArrayList<SurveyConclusion> surveyConclusionList;
+	/***
+	 * Lists for survey handle during runtime 
+	 */
 	private ArrayList<Survey> survyList;
 	/***
 	 * Current logged in employee 
@@ -115,7 +118,7 @@ public class SurveyManagementController implements Initializable {
 	 */
 	private static Stage stage;
 	/**
-	 * Show the scene view of complains management
+	 * Show the scene view of survey management
 	 * 
 	 * @param primaryStage - current stage to build
 	 */
@@ -355,17 +358,11 @@ public class SurveyManagementController implements Initializable {
 		packet.setParametersForCommand(Command.addQuestionsToServey, paramListSurvyQuestion);
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
-			/***
-			 * While waiting for a result from the server	
-			 */
 			@Override
 			public void onWaitingForResult() {
 				// TODO Auto-generated method stub
 				
 			}
-			/***
-			 * When getting a result
-			 */
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub
@@ -401,17 +398,11 @@ public class SurveyManagementController implements Initializable {
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
 			
-			/***
-			 * While waiting for a result from the server
-			 */
 			@Override
 			public void onWaitingForResult() {
 				// TODO Auto-generated method stub
 				
 			}
-			/***
-			 * When getting a result from the server
-			 */
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub

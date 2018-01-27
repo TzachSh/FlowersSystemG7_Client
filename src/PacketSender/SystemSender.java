@@ -1,15 +1,8 @@
 package PacketSender;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.SocketException;
-
 import Login.ConfigurationController;
 import Products.ConstantData;
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
 
@@ -64,6 +57,7 @@ public class SystemSender extends Thread
 	
 	/**
 	 * Initialize client connection from configuration file or uses of default parameters
+	 * @param handler result behavior
 	 * @return Instance of Client
 	 */
 	private SystemClient initClient(IResultHandler handler) {

@@ -36,7 +36,7 @@ import javafx.stage.Stage;
  */
 public class AnswerSurveyController implements Initializable{
 	
-	/***
+	/*
 	 * FXML Components to define the slider of each answer
 	 */
 	@FXML private Slider sliderA1;
@@ -46,7 +46,7 @@ public class AnswerSurveyController implements Initializable{
 	@FXML private Slider sliderA5;
 	@FXML private Slider sliderA6;
 	
-	/***
+	/*
 	 * FXML components to define the labels value to be changed in correspondence to the sliders movement
 	 */
 	@FXML private Label lblA1;
@@ -55,7 +55,7 @@ public class AnswerSurveyController implements Initializable{
 	@FXML private Label lblA4;
 	@FXML private Label lblA5;
 	@FXML private Label lblA6;
-	/***
+	/*
 	 * FXML components to define the label of the answers
 	 */
 	@FXML private Label lblQ1;
@@ -64,21 +64,27 @@ public class AnswerSurveyController implements Initializable{
 	@FXML private Label lblQ4;
 	@FXML private Label lblQ5;
 	@FXML private Label lblQ6;
-	/***
+	/*
 	 * Button to submit the answers
 	 */
 	@FXML Button btnSubmit;
 	
-	/***
+	/**
 	 * Save the survey which is being answered
 	 */
 	private Survey activeSurvey;
 	
 	/***
-	 * List to handle the data 
+	 * list of surveys
 	 */
 	private ArrayList<Survey> surveyList;
+	/**
+	 * list of survey questions
+	 */
 	private ArrayList<SurveyQuestion> surveyQuestionList;
+	/**
+	 * list of questions
+	 */
 	private ArrayList<Question> questionList;
 	/***
 	 * Save the stage to be handled during runtime
@@ -90,7 +96,7 @@ public class AnswerSurveyController implements Initializable{
 	public static Employee branchEmployee = (Employee)LoginController.userLogged;
 
 	/**
-	 * Show the scene view of complains management
+	 * Show the scene view of answer survey management
 	 * 
 	 * @param primaryStage - current stage to build
 	 */
@@ -119,8 +125,8 @@ public class AnswerSurveyController implements Initializable{
 	
 	/***
 	 * 
-	 * @param slider
-	 * @param label
+	 * @param slider add listener to slider
+	 * @param label to change the value
 	 * Set the handler of a slider on change behavior to set his label which the correspondence value
 	 */
 	private void setSliderChangeListener(Slider slider , Label label)
@@ -187,7 +193,7 @@ public class AnswerSurveyController implements Initializable{
 	
 	/***
 	 * Get all the answers in a list
-	 * @return
+	 * @return answer list
 	 */
 	private ArrayList<Integer> getAllAnswers()
 	{
@@ -204,7 +210,7 @@ public class AnswerSurveyController implements Initializable{
 	}
 	/***
 	 * 
-	 * @param label
+	 * @param label label with number
 	 * @return the Integer value of the number in the label
 	 */
 	
@@ -215,7 +221,7 @@ public class AnswerSurveyController implements Initializable{
 	
 	/***
 	 * 
-	 * @param event
+	 * @param event event
 	 * Action to be performed on submitting 
 	 * Save the inserted results of the survey
 	 */
@@ -238,17 +244,11 @@ public class AnswerSurveyController implements Initializable{
 		
 		sender.registerHandler(new IResultHandler() {
 			
-			/***
-			 * While waiting to the results from the server
-			 */
 			@Override
 			public void onWaitingForResult() {
 				// TODO Auto-generated method stub
 				
 			}
-			/***
-			 * When getting the result from the server
-			 */
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub
@@ -270,7 +270,6 @@ public class AnswerSurveyController implements Initializable{
 		sender.start();
 	}
 	/***
-	 * 
 	 * @return the current activated survey
 	 */
 	private Survey getActiveSurvey()
@@ -283,8 +282,7 @@ public class AnswerSurveyController implements Initializable{
 		return retSurvey;
 	}
 	/***
-	 * 
-	 * @param survey
+	 * @param survey survey
 	 * attach the answers to the relevant survey
 	 */
 	private void attachQuestionToSurvey(Survey survey)
@@ -299,7 +297,7 @@ public class AnswerSurveyController implements Initializable{
 	}
 	/***
 	 * 
-	 * @param survey
+	 * @param survey survey
 	 * @return the questions of the relevant survey
 	 */
 	private ArrayList<Question> getQuestionsOfSurvey(Survey survey)
@@ -316,8 +314,8 @@ public class AnswerSurveyController implements Initializable{
 	
 	/***
 	 * 
-	 * @param question
-	 * @param label
+	 * @param question set question text
+	 * @param label change text value
 	 * Set the question in to it's label
 	 */
 	private void setLabelQuestion(Question question , Label label)

@@ -110,17 +110,7 @@ public class CustomerMenuController implements Initializable {
     }
     
     
-	/**
-	 * Show an Alert dialog with custom info
-	 */
-	public void displayAlert(AlertType type , String title , String header , String content)
-	{
-		Alert alert = new Alert(type);
-		alert.setTitle(title);
-		alert.setHeaderText(header);
-		alert.setContentText(content);
-		alert.showAndWait();
-	}
+
 	
 	/**
 	 * Event Logged out that occurs when clicking on logout
@@ -156,7 +146,7 @@ public class CustomerMenuController implements Initializable {
 		}
 		catch (Exception e)
 		{
-			displayAlert(AlertType.ERROR, "Error", "Exception Error:", e.getMessage());
+			ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception Error:", e.getMessage());
 		}
 	}
 	
@@ -172,7 +162,7 @@ public class CustomerMenuController implements Initializable {
 			updateClient.start(new Stage());
 			
 		} catch (Exception e) {
-			displayAlert(AlertType.ERROR, "Error", "Exception Error:", e.getMessage());
+			ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception Error:", e.getMessage());
 		}
 	}
 	
@@ -194,7 +184,7 @@ public class CustomerMenuController implements Initializable {
 		}
 		catch (Exception e) 
 		{
-			displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Add To Cart Window", e.getMessage());
+			ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Add To Cart Window", e.getMessage());
 		}
 	}
 	
@@ -209,7 +199,7 @@ public class CustomerMenuController implements Initializable {
 			orders.start(new Stage());
 			
 		} catch (Exception e) {
-			displayAlert(AlertType.ERROR, "Error", "Exception Error:", e.getMessage());
+			ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception Error:", e.getMessage());
 		}
 	}
 	
@@ -311,7 +301,7 @@ public class CustomerMenuController implements Initializable {
 					
 					if (!noAccountAlerted)
 					{
-						displayAlert(AlertType.WARNING, "Warning!", "Account Blocked", "Your Account has been BLOCKED!, Please contact with Branch Manager");
+						ConstantData.displayAlert(AlertType.WARNING, "Warning!", "Account Blocked", "Your Account has been BLOCKED!, Please contact with Branch Manager");
 						noAccountAlerted = true;
 					}
 				}
@@ -335,7 +325,7 @@ public class CustomerMenuController implements Initializable {
 				
 				if (!noAccountAlerted)
 				{
-					displayAlert(AlertType.WARNING, "Warning!", "No Account!", "You don't have account for selected branch, Please contact with Branch Manager for open a new one");
+					ConstantData.displayAlert(AlertType.WARNING, "Warning!", "No Account!", "You don't have account for selected branch, Please contact with Branch Manager for open a new one");
 					noAccountAlerted = true;
 				}
 			}
@@ -436,7 +426,7 @@ public class CustomerMenuController implements Initializable {
 				}
 				else
 				{
-					displayAlert(AlertType.ERROR, "Error", "Exception Error:", p.getExceptionMessage());
+					ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception Error:", p.getExceptionMessage());
 				}
 				
 			}

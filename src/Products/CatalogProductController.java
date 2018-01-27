@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+
+import com.sun.org.apache.bcel.internal.generic.Select;
+
 import PacketSender.Command;
 import PacketSender.FileSystem;
 import PacketSender.IResultHandler;
@@ -49,7 +52,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
-
+/**
+ * Controller
+ * Manage catalog products
+ */
 public class CatalogProductController implements Initializable {
 	// Views
 	@FXML
@@ -104,26 +110,49 @@ public class CatalogProductController implements Initializable {
 	private ListView<FlowerInProduct> lstFlower;
 	@FXML
 	private TabPane tabPane;
-
+	/**
+	 * dynamic list with flowers in product
+	 */
 	private ObservableList<FlowerInProduct> data;
+	/**
+	 * title for the GUI
+	 */
 	private static String title;
+	/**
+	 * 
+	 */
 	private static boolean updateForm;
+	/**
+	 * instance of catalog product
+	 */
 	private static CatalogProduct catalogProduct;
+	/**
+	 * image of the product
+	 */
 	private static FileSystem imageProduct;
+	/**
+	 *  flower in products
+	 */
 	private static ArrayList<FlowerInProduct> flowersInTheProduct = new ArrayList<>();
 	/** set all active and not active catalog products from db */
 	private static ArrayList<CatalogProduct> catalogProductsList = new ArrayList<>();
+	/**
+	 *  all flowers details
+	 */
 	private ArrayList<Flower> flowersList = new ArrayList<>();
 	private static Stage primaryStage;
-	// private static Stage prevStage;
+	/**
+	 * if comes from catalog
+	 */
 	public static boolean comesFromCatalog = false;
+	
 	private static SelectProductController selectController;
 
 	/**
 	 * Prepare the Form for updating an exists product
-	 * 
-	 * @param product
-	 *            The instance of the product to update
+	 * @param product  The instance of the product to update
+	 * @param productImage product image to load
+	 * @param selectProController instance of SelectProductController
 	 */
 	public void setCatalogProductForUpdating(CatalogProduct product, FileSystem productImage,
 			SelectProductController selectProController) {
@@ -144,6 +173,7 @@ public class CatalogProductController implements Initializable {
 
 	/**
 	 * Prepare the Form for inserting a new product
+	 * @param selectProController instance of SelectProductController
 	 */
 	public void setCatalogProductForInserting(SelectProductController selectProController) {
 		selectController = selectProController;
@@ -171,7 +201,11 @@ public class CatalogProductController implements Initializable {
 		catalogProduct.setPrice(price);
 		catalogProduct.setProductTypeId(typeId);
 	}
-
+	
+	/**
+	 * Update flower list
+	 * @param flowersList list of flowers
+	 */
 	public void setFlowers(ArrayList<Flower> flowersList) {
 		this.flowersList = flowersList;
 	}
@@ -181,6 +215,7 @@ public class CatalogProductController implements Initializable {
 	 * 
 	 * @param productName
 	 *            The name if catalog product to check if it already exists
+	 * @return if already exist
 	 */
 	public boolean productNameIsAlreadyExists(String productName) {
 		for (CatalogProduct product : catalogProductsList) {
@@ -228,23 +263,13 @@ public class CatalogProductController implements Initializable {
 
 					txtName.requestFocus();
 				} else {
-					displayAlert(AlertType.ERROR, "Error", "Exception Error:", p.getExceptionMessage());
+					ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception Error:", p.getExceptionMessage());
 				}
 			}
 		});
 		send.start();
 	}
 
-	/**
-	 * Show an Alert dialog with custom info
-	 */
-	public void displayAlert(AlertType type, String title, String header, String content) {
-		Alert alert = new Alert(type);
-		alert.setTitle(title);
-		alert.setHeaderText(header);
-		alert.setContentText(content);
-		alert.showAndWait();
-	}
 
 	/**
 	 * Initialize the ComboBox of Types with List of Types
@@ -364,7 +389,9 @@ public class CatalogProductController implements Initializable {
 
 		selectController.fillCatalogItems();
 	}
-
+	/**
+	 * clear whole form
+	 */
 	public void clearAllForm() {
 		txtName.clear();
 		cmbType.getSelectionModel().select(-1);
@@ -396,8 +423,9 @@ public class CatalogProductController implements Initializable {
 	/**
 	 * Insert instance of catalogProduct to db
 	 * 
-	 * @param pro
-	 *            instance of CatalogProduct
+	 * @param pro  The instance of the product
+	 * @param imageProduct product image to load
+	 * @param flowerInProduct list of flowers
 	 */
 	public void insertProductToDB(CatalogProduct pro, FileSystem imageProduct,
 			ArrayList<FlowerInProduct> flowerInProduct) {
@@ -434,13 +462,13 @@ public class CatalogProductController implements Initializable {
 								.getParameterForCommand(Command.insertCatalogProduct).get(0);
 						pro.setId(productResult.getId());
 						imageProduct.setProductId(productResult.getId());
-						displayAlert(AlertType.INFORMATION, "Success Inserting", "Inserting To Database",
+						ConstantData.displayAlert(AlertType.INFORMATION, "Success Inserting", "Inserting To Database",
 								"Successfull!");
 						pressedCancelButton();
 					} else {
 						String exception = p.getExceptionMessage();
 						if (exception.toLowerCase().contains("duplicate")) {
-							displayAlert(AlertType.ERROR, "Duplicate Product Name",
+							ConstantData.displayAlert(AlertType.ERROR, "Duplicate Product Name",
 									"Failed on Inserting Catalog Product",
 									"The Product Name is Already Exists! Please Enter another one.");
 
@@ -452,7 +480,7 @@ public class CatalogProductController implements Initializable {
 
 							txtName.requestFocus();
 						} else {
-							displayAlert(AlertType.ERROR, "Error Inserting", "Failed on Inserting Catalog Product",
+							ConstantData.displayAlert(AlertType.ERROR, "Error Inserting", "Failed on Inserting Catalog Product",
 									exception);
 						}
 					}
@@ -460,7 +488,7 @@ public class CatalogProductController implements Initializable {
 			});
 			send.start();
 		} catch (Exception e) {
-			displayAlert(AlertType.ERROR, "Error Inserting", "Failed on Inserting Image", e.getMessage());
+			ConstantData.displayAlert(AlertType.ERROR, "Error Inserting", "Failed on Inserting Image", e.getMessage());
 		}
 	}
 
@@ -513,13 +541,13 @@ public class CatalogProductController implements Initializable {
 				@Override
 				public void onReceivingResult(Packet p) {
 					if (p.getResultState()) {
-						displayAlert(AlertType.INFORMATION, "Success Updating", "Updating To Database", "Successfull!");
+						ConstantData.displayAlert(AlertType.INFORMATION, "Success Updating", "Updating To Database", "Successfull!");
 
 						pressedCancelButton();
 					} else {
 						String exception = p.getExceptionMessage();
 						if (exception.toLowerCase().contains("duplicate")) {
-							displayAlert(AlertType.ERROR, "Duplicate Product Name",
+							ConstantData.displayAlert(AlertType.ERROR, "Duplicate Product Name",
 									"Failed on Updating Catalog Product",
 									"The Product Name is Already Exists! Please Enter another one.");
 
@@ -529,7 +557,7 @@ public class CatalogProductController implements Initializable {
 							SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
 							selectionModel.select(0);
 						} else {
-							displayAlert(AlertType.ERROR, "Error Updating", "Failed on Updating Catalog Product",
+							ConstantData.displayAlert(AlertType.ERROR, "Error Updating", "Failed on Updating Catalog Product",
 									exception);
 						}
 					}
@@ -537,7 +565,7 @@ public class CatalogProductController implements Initializable {
 			});
 			send.start();
 		} catch (Exception e) {
-			displayAlert(AlertType.ERROR, "Error Inserting", "Failed on Inserting Image", e.getMessage());
+			ConstantData.displayAlert(AlertType.ERROR, "Error Inserting", "Failed on Inserting Image", e.getMessage());
 		}
 	}
 
@@ -790,10 +818,10 @@ public class CatalogProductController implements Initializable {
 			tabImage.setDisable(true);
 		} catch (IndexOutOfBoundsException e) {
 			tabFlowers.setDisable(true);
-			displayAlert(AlertType.ERROR, "Error", "Selected Type Error",
+			ConstantData.displayAlert(AlertType.ERROR, "Error", "Selected Type Error",
 					"Failed On Saving Product Details, Make Sure You Selected Type");
 		} catch (Exception e) {
-			displayAlert(AlertType.ERROR, "Error", "Duplicate Product Name",
+			ConstantData.displayAlert(AlertType.ERROR, "Error", "Duplicate Product Name",
 					"The Product Name is Already Exists! Please Enter another one.");
 
 			tabFlowers.setDisable(true);
@@ -842,7 +870,7 @@ public class CatalogProductController implements Initializable {
 	/**
 	 * Load a local image to the image viewer
 	 * 
-	 * @param path
+	 * @param imageProduct
 	 *            The path of the local image
 	 */
 	private void loadImage(FileSystem imageProduct) {
@@ -851,7 +879,7 @@ public class CatalogProductController implements Initializable {
 			imgProduct.setImage(img);
 			imageCheckValidation(true);
 		} catch (IOException e) {
-			displayAlert(AlertType.ERROR, "Image File Corrupted", "Image Loading was Failed:", e.getMessage());
+			ConstantData.displayAlert(AlertType.ERROR, "Image File Corrupted", "Image Loading was Failed:", e.getMessage());
 			imageCheckValidation(false);
 
 			tabFlowers.setDisable(true);
@@ -875,6 +903,7 @@ public class CatalogProductController implements Initializable {
 
 	/**
 	 * Check validation when there is a image for this product
+	 * @param imageInserted if image inserted
 	 */
 	public void imageCheckValidation(boolean imageInserted) {
 		if (imageInserted == true) {
@@ -937,6 +966,7 @@ public class CatalogProductController implements Initializable {
 
 	/**
 	 * Handler event on changing the item selected on Type ComboBox
+	 * @param event actual event
 	 */
 	public void setTypeChangeHandler(ActionEvent event) {
 		int selectedTypeIndex = cmbType.getSelectionModel().getSelectedIndex();
@@ -993,6 +1023,7 @@ public class CatalogProductController implements Initializable {
 	 * 
 	 * @param flowerInProduct
 	 *            the flower in product instance
+     * @return formatted string with flower name and quantity
 	 */
 	private String getFlowerFormatOnList(FlowerInProduct flowerInProduct) {
 		String flowerName = "";
@@ -1011,6 +1042,7 @@ public class CatalogProductController implements Initializable {
 	 *            The flower name
 	 * @param qty
 	 *            The quantity of the flower
+	 *            @return formatted string with flower name and quantity 
 	 */
 	private String getFlowerFormatOnList(String flower, int qty) {
 		return String.format("Flower: %s, Qty: %d", flower, qty);
@@ -1036,7 +1068,7 @@ public class CatalogProductController implements Initializable {
 			
 			lstFlower.scrollTo(lstFlower.getItems().size() - 1);
 		} catch (FlowerIsAlreadyExistsException e) {
-			displayAlert(AlertType.ERROR, "Flower Exists", "Failed on adding the flower: " + flowerName,
+			ConstantData.displayAlert(AlertType.ERROR, "Flower Exists", "Failed on adding the flower: " + flowerName,
 					"This Flower is already exists");
 		} finally {
 			// use the validation for remove the error label for empty flowers
@@ -1095,6 +1127,7 @@ public class CatalogProductController implements Initializable {
 
 	/**
 	 * Handler event on changing the item selected on Flower ComboBox
+	 * @param event actual event
 	 */
 	public void setFlowerChangeHandler(ActionEvent event) {
 		int selectedFlowerIndex = cmbFlower.getSelectionModel().getSelectedIndex();
@@ -1113,7 +1146,13 @@ public class CatalogProductController implements Initializable {
 			}
 		});
 	}
-
+	
+	/**
+	 * Show the scene view of complains management
+	 * 
+	 * @param primaryStage - current stage to build
+	 * @throws Exception error message
+	 */
 	public void start(Stage primaryStage) throws Exception {
 
 		this.primaryStage = primaryStage;
@@ -1149,7 +1188,9 @@ public class CatalogProductController implements Initializable {
 		});
 	}
 	
-
+	/**
+	 * get data from server and initialize controls
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		/* call method to push collections from server */

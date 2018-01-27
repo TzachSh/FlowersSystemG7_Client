@@ -11,10 +11,24 @@ import javax.swing.JOptionPane;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+/**
+ * Main class running application and check if no
+ * other instances of this application
+ *  running in the same time
+ */
 public class LoginApp extends Application {
 
+	 /**
+	  * lock file
+	  */
 	 private static File f;
+	 /**
+	  * access to file
+	  */
 	 private static FileChannel channel;
+	 /**
+	  * file lock not give access to run another application instance
+	  */
      private static FileLock lock;
      public static void main(String[] args) {
 		 try {

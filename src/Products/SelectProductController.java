@@ -58,6 +58,10 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 
+/**
+ * Controller
+ * Display catalog with selected branch
+ */
 public class SelectProductController implements Initializable
 {
     @FXML
@@ -86,30 +90,34 @@ public class SelectProductController implements Initializable
 
 	/** the selection products in the listview, used for order operation */
 	public static ArrayList<Product> productsSelected = new ArrayList<>();
-
+	/**all flowers*/
 	public static ArrayList<Flower> flowersList = new ArrayList<>();
+	/**
+	 * all product types
+	 */
 	public static ArrayList<ProductType> productsTypeList = new ArrayList<>();
+	/**
+	 * purpose catalog
+	 */
 	public static CatalogUse catalogUse;
+	/**
+	 * title for catalog
+	 */
 	private static String title;
+	/**
+	 * dynamic list to display products
+	 */
 	private ObservableList<Product> data;
 	public static Stage mainStage;
 	private static SelectProductController controllerInstance;
-	public static Branch currentBranch;
 	/**
-	 * Show an Alert dialog with custom info
+	 * selected branch
 	 */
-	public void displayAlert(AlertType type , String title , String header , String content)
-	{
-		Alert alert = new Alert(type);
-		alert.setTitle(title);
-		alert.setHeaderText(header);
-		alert.setContentText(content);
-		alert.showAndWait();
-	}
+	public static Branch currentBranch;
+
 	
 	/**
 	 * Set the controller to initialize for updating sale
-	 * @param user Branch Employee object
 	 */
 	public void setForUpdateSale()
 	{
@@ -211,6 +219,7 @@ public class SelectProductController implements Initializable
 	/**
 	 * Get the instance of Product Type by type id
 	 * @param typeId The Type id for searching type
+	 * @return product type description
 	 */
 	public ProductType getProductTypeByTypeId(int typeId)
 	{
@@ -250,7 +259,7 @@ public class SelectProductController implements Initializable
 				}
 				else
 				{
-					displayAlert(AlertType.ERROR, "Error", "Exception Error:", p.getExceptionMessage());
+					ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception Error:", p.getExceptionMessage());
 				}
 			}
 
@@ -263,6 +272,7 @@ public class SelectProductController implements Initializable
 	
 	/**
 	 * Delete an instance product from all lists
+	 * @param product to delete
 	 */
 	private void deleteProductFromLists(Product product)
 	{
@@ -338,14 +348,18 @@ public class SelectProductController implements Initializable
 				}
 				else
 				{
-					displayAlert(AlertType.ERROR, "Error", "Exception Error:", p.getExceptionMessage());
+					ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception Error:", p.getExceptionMessage());
 				}
 				
 			}
 		});
 		send.start();
 	}
-	
+	/**
+	 * create window
+	 * @param primaryStage - current stage to build
+	 * @throws Exception error message
+	 */
 	public void start(Stage primaryStage) throws Exception {	
 		
 		mainStage = primaryStage;
@@ -395,11 +409,11 @@ public class SelectProductController implements Initializable
 					int pId = pro.getId();
 					getProductById(pId).catalogSale = null;
 					fillCatalogItems();
-					displayAlert(AlertType.INFORMATION, "Success", "Deleted Successfull", "The Sale for current product was deleted Successfully!");
+					ConstantData.displayAlert(AlertType.INFORMATION, "Success", "Deleted Successfull", "The Sale for current product was deleted Successfully!");
 				}
 				else
 				{
-					displayAlert(AlertType.ERROR, "Error", "Exception Error:", p.getExceptionMessage());
+					ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception Error:", p.getExceptionMessage());
 				}
 			}
 
@@ -413,6 +427,8 @@ public class SelectProductController implements Initializable
 	
 	/**
 	 * Get Catalog Product Details by Product Id
+	 * @param productId product id
+	 * @return catalog product details
 	 */
 	public CatalogProductDetails getProductById(int productId)
 	{
@@ -426,6 +442,8 @@ public class SelectProductController implements Initializable
 	
 	/**
 	 * Get Catalog Product by Product Id
+	 * @param productId product id
+	 * @return Catalog product
 	 */
 	public CatalogProduct getCatalogProductById(int productId)
 	{
@@ -721,7 +739,7 @@ public class SelectProductController implements Initializable
 						}
 						catch (Exception e) 
 						{
-							displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Add Discount Window", e.getMessage());
+							ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Add Discount Window", e.getMessage());
 						}
 					});
 				}
@@ -738,7 +756,7 @@ public class SelectProductController implements Initializable
 						}
 						catch (Exception e) 
 						{
-							displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Add Discount Window", e.getMessage());
+							ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Add Discount Window", e.getMessage());
 						}
 					});
 				}
@@ -758,7 +776,7 @@ public class SelectProductController implements Initializable
 						}
 						catch (Exception e) 
 						{
-							displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Add Catalog Window", e.getMessage());
+							ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Add Catalog Window", e.getMessage());
 						}
 					});
 				}
@@ -798,6 +816,8 @@ public class SelectProductController implements Initializable
 
 	/**
 	 * Calculate the final price, even after the discount if have
+	 * @param pro to get price
+	 * @return get final price 
 	 */
 	private double getFinalPrice(CatalogProduct pro)
 	{
@@ -841,6 +861,7 @@ public class SelectProductController implements Initializable
 	/**
 	 * Get instance of flower from the collection by flower id
 	 * @param flowerId The flower Id to search for
+	 * @return flowers
 	 */
 	private Flower getFlowerByFlowerId(int flowerId)
 	{
@@ -887,7 +908,7 @@ public class SelectProductController implements Initializable
 		}
 		catch (Exception e) 
 		{
-			displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
+			ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
 		}
 	}
 	
@@ -911,7 +932,7 @@ public class SelectProductController implements Initializable
 	        		}
 	        		catch (Exception e) 
 	        		{
-	        			displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Add Catalog Window", e.getMessage());
+	        			ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Add Catalog Window", e.getMessage());
 	        		}
 	            }
 	        });
@@ -938,7 +959,7 @@ public class SelectProductController implements Initializable
 	        		}
 	        		catch (Exception e) 
 	        		{
-	        			displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Add To Cart Window", e.getMessage());
+	        			ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Add To Cart Window", e.getMessage());
 	        		}
 	            }
 	        });
@@ -1001,7 +1022,9 @@ public class SelectProductController implements Initializable
 			registerAddCatalogButtonHandle();
 		}
 	}
-
+	/**
+	 * setup controls and fetch data 
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
 	{

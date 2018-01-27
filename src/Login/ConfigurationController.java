@@ -40,9 +40,12 @@ public class ConfigurationController implements Initializable {
 	 */
 	public static int port = 5555;
 	
-	
 	/**
 	 * Show an Alert dialog with custom info
+	 * @param type type alert
+	 * @param title title of the window
+	 * @param header header of the message
+	 * @param content message
 	 */
 	public void displayAlert(AlertType type , String title , String header , String content)
 	{
@@ -54,7 +57,7 @@ public class ConfigurationController implements Initializable {
 	}
 	/**
 	 * saving configuration to connect and closing the window
-	 * @param event
+	 * @param event actual event
 	 */
 	public void saveConfigFields(ActionEvent event)
 	{

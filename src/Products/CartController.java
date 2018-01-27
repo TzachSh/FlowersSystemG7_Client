@@ -47,7 +47,11 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
-
+/**
+ * Controller
+ * Handle cart product quantity and manage products in order
+ *
+ */
 public class CartController implements Initializable
 {
       @FXML
@@ -69,37 +73,31 @@ public class CartController implements Initializable
 	
 	   /** Map for save all both catalog products and custom product and their quantity for the cart  */
 	  public static LinkedHashMap<Product, Integer> cartProducts = new LinkedHashMap<>();
-	
+	  /**
+	   * dynamic list with products to display
+	   */
 	  private ObservableList<Product> data;
 	  
 	  private static boolean comesFromCatalog = false;
 	  
 	  private static Stage mainStage;
-	  
+	  /**
+	   * list with all flowers
+	   */
 	  private static ArrayList<Flower> flowerList = new ArrayList<>();
-	  
+	  /**
+	   * calculated total price
+	   */
 	  private static double totalPrice = 0.0;
 	  
 	  /**
 	   * Initialize the state if the controller called from catalog, for back button
-	   * @param comesFromCatalog True - if called from Catalog Viewer, False - else
+	   * @param comesFromCatalogState True - if called from Catalog Viewer, False - else
 	   */
 	  public void setComesFromCatalog(boolean comesFromCatalogState)
 	  {
 		  comesFromCatalog = comesFromCatalogState;
 	  }
-	  
-	  /**
-		* Show an Alert dialog with custom info
-	   */
-		public void displayAlert(AlertType type , String title , String header , String content)
-		{
-			Alert alert = new Alert(type);
-			alert.setTitle(title);
-			alert.setHeaderText(header);
-			alert.setContentText(content);
-			alert.showAndWait();
-		}
 	  
 	  /**
 	   * Add Collection of products to the map with default quantity as 1
@@ -336,8 +334,11 @@ public class CartController implements Initializable
 	        });
 		}
 		
+		
 		/**
 		 * Calculate the final price, even after the discount if have
+		 * @param pro product to get price
+		 * @return final price
 		 */
 		private double getFinalPrice(Product pro)
 		{
@@ -387,7 +388,7 @@ public class CartController implements Initializable
     		}
     		catch (Exception e) 
     		{
-    			displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Select Catalog Window", e.getMessage());
+    			ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Select Catalog Window", e.getMessage());
     		}
 		}
 	
@@ -426,10 +427,14 @@ public class CartController implements Initializable
 			}
 			catch (Exception e) 
 			{
-				displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
+				ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
 			}
 		}
-		
+	/**
+	 * create window
+	 * @param primaryStage - current stage to build
+	 * @throws Exception error message
+	 */
 	  public void start(Stage primaryStage) throws Exception {	
 		  	mainStage = primaryStage;
 			String srcFXML = "/Products/CartUI.fxml";
@@ -449,7 +454,9 @@ public class CartController implements Initializable
 		          }
 		         });
 		}
-	
+	/**
+	 * set up controllers and get relevant data for the window
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		getFlowers();
@@ -485,10 +492,17 @@ public class CartController implements Initializable
 		});
 		
 	}
+	/**
+	 * 
+	 * @return totalPrice
+	 */
 	public static double getTotalPrice()
 	{
 		return totalPrice;
 	}
+	/**
+	 * set action for clear order button
+	 */
 	private void registerClearOrderButton() {
 		btnClearOrder.setOnAction(new EventHandler<ActionEvent>() {
 			
@@ -502,7 +516,9 @@ public class CartController implements Initializable
 			}
 		});
 	}
-
+	/**
+	 * get all flowers from the server
+	 */
 	private void getFlowers()
 	{
 		Packet packet = new Packet();//create packet to send
@@ -531,6 +547,9 @@ public class CartController implements Initializable
 		});
 		send.start();
 	}
+	/**
+	 * set action for create custom product button
+	 */
 	private void registerCreateCustomProductBtn() {
 		btnAddCustomProduct.setOnAction(new EventHandler<ActionEvent>() {
 			
@@ -545,14 +564,17 @@ public class CartController implements Initializable
 	    		}
 	    		catch (Exception e) 
 	    		{
-	    			displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Select Catalog Window", e.getMessage());
+	    			ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Select Catalog Window", e.getMessage());
 	    		}
 				
 			}
 		});
 		
 	}
-
+	/**
+	 * add new product if not exist
+	 * @param product new product to add to the order
+	 */
 	public void addProductsToCartMap(Product product) {
 		if (!cartProducts.containsKey(product))
 			  cartProducts.put(product, 1);

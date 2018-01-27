@@ -11,12 +11,29 @@ import PacketSender.Packet;
 import PacketSender.SystemSender;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-
+/**
+ * constant fields and usable functions
+ */
 public class ConstantData {
+	/**
+	 * list of all product types
+	 */
 	public static ArrayList<ProductType> productTypeList = new ArrayList<>();
+	/**
+	 * list of all colors
+	 */
 	public static ArrayList<ColorProduct> productColorList = new ArrayList<>();
+	/**
+	 * list of all memberships
+	 */
 	public static ArrayList<Membership> memberShipList = new ArrayList<>();
+	/**
+	 * value if constantData is already initialized
+	 */
 	public static boolean isInit=false;
+	/**
+	 * get colors,types and memberships from server
+	 */
 	public static void initColorsAndTypes() {
 		Packet packet = new Packet();//create packet to send
 		packet.addCommand(Command.getColors);//add command
@@ -68,6 +85,10 @@ public class ConstantData {
 	
 	/**
 	 * Show an Alert dialog with custom info
+	 * @param type type alert
+	 * @param title title window
+	 * @param header header of the message
+	 * @param content message
 	 */
 	public static void displayAlert(AlertType type , String title , String header , String content)
 	{

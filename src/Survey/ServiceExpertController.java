@@ -35,7 +35,7 @@ import javafx.stage.WindowEvent;
  */
 public class ServiceExpertController implements Initializable {
 	
-	/***
+	/*
 	 * FXML components to define the slider to show the answers average facility
 	 */
 	@FXML private Slider sliderA1;
@@ -45,7 +45,7 @@ public class ServiceExpertController implements Initializable {
 	@FXML private Slider sliderA5;
 	@FXML private Slider sliderA6;
 	
-	/***
+	/*
 	 * FXML components to define the labels for showing the numerical answers average
 	 */
 	@FXML private Label lblA1;
@@ -55,7 +55,7 @@ public class ServiceExpertController implements Initializable {
 	@FXML private Label lblA5;
 	@FXML private Label lblA6;
 	
-	/***
+	/*
 	 * FXML components to define the labels for showing the questions
 	 */
 	@FXML private Label lblQ1;
@@ -65,30 +65,36 @@ public class ServiceExpertController implements Initializable {
 	@FXML private Label lblQ5;
 	@FXML private Label lblQ6;
 	
-	/***
+	/*
 	 * Labels to define the duration of the survey
 	 */
 	@FXML private Label lblStart;
 	@FXML private Label lblEnd;
 	
-	/***
+	/*
 	 * FXML component to define the conclusion text area field
 	 */
 	@FXML private TextArea txtConclusion;
-	/***
+	/*
 	 * FXML component to define the submit button
 	 */
 	@FXML Button btnSubmit;
 	
-	/***
+	/**
 	 * The relevant survey to conclude 
 	 */
 	private Survey survey;
-	/***
-	 * List to handle the data
+	/**
+	 * survey question
 	 */
 	private ArrayList<SurveyQuestion> surveyQuestionList;
+	/**
+	 * all questions
+	 */
 	private ArrayList<Question> questionList;
+	/**
+	 * average answers for surveys
+	 */
 	private ArrayList<AnswerSurvey> averageAnswerSurveyList;
 	public static Employee serviceExpert;
 	
@@ -165,17 +171,11 @@ public class ServiceExpertController implements Initializable {
 		
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
-			/***
-			 * While waiting for results from the server
-			 */
 			@Override
 			public void onWaitingForResult() {
 				// TODO Auto-generated method stub
 				
 			}
-			/***
-			 * On receiving the results
-			 */
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub
@@ -196,8 +196,8 @@ public class ServiceExpertController implements Initializable {
 	
 	/***
 	 * 
-	 * @param slider
-	 * @param value
+	 * @param slider add listener to slider
+	 * @param value new value
 	 * Set the value of the slider by the relevant average answers 
 	 */
 	private void setSliderValue(Slider slider , double value)
@@ -206,8 +206,8 @@ public class ServiceExpertController implements Initializable {
 	}
 	/***
 	 * 
-	 * @param label
-	 * @param value
+	 * @param label update
+	 * @param value new value
 	 * Show the numeric number in the label of the slider
 	 */
 	private void initLabelsAverageAnswer(Label label , double value)
@@ -353,18 +353,11 @@ public class ServiceExpertController implements Initializable {
 		
 		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
-			
-			/***
-			 * While waiting for result from the server
-			 */
 			@Override
 			public void onWaitingForResult() {
 				// TODO Auto-generated method stub
 				
 			}
-			/***
-			 * While getting the result from the server
-			 */
 			@Override
 			public void onReceivingResult(Packet p) {
 				// TODO Auto-generated method stub
@@ -408,7 +401,7 @@ public class ServiceExpertController implements Initializable {
 	
 	/***
 	 * 
-	 * @param TextArea textArea - to set his text limit.
+	 * @param textArea - to set his text limit.
 	 *  Prevent writing more characters then the limited in database
 	 */
 	private void setTextAreaLengthProperty(TextArea textArea) {

@@ -18,6 +18,7 @@ import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
+import Products.ConstantData;
 import Products.FlowerController;
 import Products.SelectProductController;
 import Survey.AnswerSurveyController;
@@ -99,7 +100,7 @@ public class ManagersMenuController implements Initializable {
     
     /**
      * set loginController
-     * @param login
+     * @param login login object to set
      */
 	public void setLoginController(LoginController login)
 	{
@@ -231,24 +232,12 @@ public class ManagersMenuController implements Initializable {
 					}
 					else
 					{
-						displayAlert(AlertType.ERROR, "Error", "Exception Error:", p.getExceptionMessage());
+						ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception Error:", p.getExceptionMessage());
 					}
 					
 				}
 			});
 			send.start();
-		}
-		
-		/**
-		 * Show an Alert dialog with custom info
-		 */
-		public void displayAlert(AlertType type , String title , String header , String content)
-		{
-			Alert alert = new Alert(type);
-			alert.setTitle(title);
-			alert.setHeaderText(header);
-			alert.setContentText(content);
-			alert.showAndWait();
 		}
 		
 		/**
@@ -322,7 +311,7 @@ public class ManagersMenuController implements Initializable {
 			updateClient.start(new Stage());
 			
 		} catch (Exception e) {
-			displayAlert(AlertType.ERROR, "Error", "Exception Error:", e.getMessage());
+			ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception Error:", e.getMessage());
 		}
 	}
 	
@@ -334,7 +323,7 @@ public class ManagersMenuController implements Initializable {
 		try {
 			selectController.start(new Stage());
 		} catch (Exception e) {
-			displayAlert(AlertType.ERROR, "Error", "Exception Error:", e.getMessage());
+			ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception Error:", e.getMessage());
 		}
 	}
 	public void onClickFetchReport()
@@ -344,7 +333,7 @@ public class ManagersMenuController implements Initializable {
 			primaryStage.close();
 			reportController.start(new Stage());
 		} catch (Exception e) {
-			displayAlert(AlertType.ERROR, "Error", "Exception Error:", e.getMessage());
+			ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception Error:", e.getMessage());
 		}
 	}
 	public void onClickUpdateSaleCatalog()
@@ -355,7 +344,7 @@ public class ManagersMenuController implements Initializable {
 		try {
 			selectController.start(new Stage());
 		} catch (Exception e) {
-			displayAlert(AlertType.ERROR, "Error", "Exception Error:", e.getMessage());
+			ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception Error:", e.getMessage());
 		}
 	}
 	
@@ -374,7 +363,7 @@ public class ManagersMenuController implements Initializable {
 			customerController.start(new Stage());
 			
 		} catch (Exception e) {
-			displayAlert(AlertType.ERROR, "Error", "Exception Error:", e.getMessage());
+			ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception Error:", e.getMessage());
 		}
 	}
 	public void onClickCreateAccount()
@@ -386,7 +375,7 @@ public class ManagersMenuController implements Initializable {
 			accountController.start(new Stage());
 			
 		} catch (Exception e) {
-			displayAlert(AlertType.ERROR, "Error", "Exception Error:", e.getMessage());
+			ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception Error:", e.getMessage());
 		}
 	}
 	
@@ -399,7 +388,7 @@ public class ManagersMenuController implements Initializable {
 			flowerController.start(new Stage());
 			
 		} catch (Exception e) {
-			displayAlert(AlertType.ERROR, "Error", "Exception Error:", e.getMessage());
+			ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception Error:", e.getMessage());
 		}
 	}
 

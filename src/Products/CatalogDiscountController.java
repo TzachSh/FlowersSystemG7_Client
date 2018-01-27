@@ -2,24 +2,14 @@ package Products;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
 import java.util.ResourceBundle;
 
-import javax.swing.JOptionPane;
-
-import Branches.Branch;
-import Login.CustomerMenuController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
-import Products.SelectProductController.CatalogProductDetails;
-import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -27,13 +17,15 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-
+/**
+ * Controller
+ * Handle discount catalog product in branches
+ *
+ */
 public class CatalogDiscountController implements Initializable {
 	
 
@@ -59,29 +51,29 @@ public class CatalogDiscountController implements Initializable {
 	 private static CatalogProduct catalogProduct;
 	 private static Stage mainStage;
 	 
+	 /**
+	  * set catalog product for update discount
+	  * @param selectController catalog
+	  * @param product catalog product
+	  */
 	public void setCatalogDiscount(SelectProductController selectController, CatalogProduct product)
 	{
 		selectIController = selectController;
 		catalogProduct = product;
 	}
-	
+	/**
+	 * Cancel button behavior
+	 * close current window 
+	 */
 	public void onPressedCancelButton()
 	{
 		mainStage.close();
 	}
 	
+
 	/**
-	 * Show an Alert dialog with custom info
+	 * save new discount to catalog product in the branch
 	 */
-	public void displayAlert(AlertType type , String title , String header , String content)
-	{
-		Alert alert = new Alert(type);
-		alert.setTitle(title);
-		alert.setHeaderText(header);
-		alert.setContentText(content);
-		alert.showAndWait();
-	}
-	
 	public void onPressedSaveButton()
 	{
 		int discountConverted = Integer.valueOf(txtDiscount.getText());
@@ -110,12 +102,12 @@ public class CatalogDiscountController implements Initializable {
 					int pId = catalogProduct.getId();
 					selectIController.getProductById(pId).catalogSale = catInBranch;
 					selectIController.fillCatalogItems();
-					displayAlert(AlertType.INFORMATION, "Success", "Updated Successfull", "The Sale for current product was updated Successfully!");
+					ConstantData.displayAlert(AlertType.INFORMATION, "Success", "Updated Successfull", "The Sale for current product was updated Successfully!");
 					mainStage.close();
 				}
 				else
 				{
-					displayAlert(AlertType.ERROR, "Error", "Exception Error:", p.getExceptionMessage());
+					ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception Error:", p.getExceptionMessage());
 				}
 			}
 
@@ -127,7 +119,12 @@ public class CatalogDiscountController implements Initializable {
 		send.start();
 		
 	}
-
+	/**
+	 * Show the scene view of complains management
+	 * 
+	 * @param primaryStage - current stage to build
+	 * @throws Exception error message
+	 */
 	public void start(Stage primaryStage) throws Exception {
 		
 		mainStage = primaryStage;
@@ -196,7 +193,9 @@ public class CatalogDiscountController implements Initializable {
 			}
 		});
 	}
-
+	/**
+	 *  set up controls for the window
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		if (SelectProductController.currentBranch != null)
