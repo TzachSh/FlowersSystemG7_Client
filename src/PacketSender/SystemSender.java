@@ -81,8 +81,8 @@ public class SystemSender extends Thread
 				
 				@Override
 				public void run() {
-					// TODO Auto-generated method stub
-					ConstantData.displayAlert(AlertType.ERROR, "Error", "Server Error", e.getMessage());
+					if(e.getMessage().toLowerCase().contains("socket"))
+						ConstantData.displayAlert(AlertType.ERROR, "Error", "Server Error", e.getMessage());
 				}
 			});
 		}
