@@ -13,10 +13,18 @@ import Users.User;
  */
 public class Customer extends User implements Serializable {
 
+	/**
+	 * customer id
+	 */
 	private int id;
+	/**
+	 * list of customer orders
+	 */
 	private ArrayList<Order> orderList;
+	/**
+	 * list of customer complains
+	 */
 	private ArrayList<Complain> complainList;
-	private int accountNum;
 	/**
 	 * 
 	 * @return the customer's id
@@ -61,18 +69,8 @@ public class Customer extends User implements Serializable {
 	}
 	/**
 	 * 
-	 * @return account's number
-	 */
-	public int getAccountNum() {
-		return accountNum;
-	}
-	/**
-	 * 
 	 * @param accountNum setting the account's number
 	 */
-	public void setAccountNum(int accountNum) {
-		this.accountNum = accountNum;
-	}
 	/**
 	 * Customer constructor
 	 * @param uId customer's id
@@ -91,7 +89,6 @@ public class Customer extends User implements Serializable {
 		this.id = id;
 		this.orderList = orderList;
 		this.complainList = complainList;
-		this.accountNum = accountNum;
 	}
 	/**
 	 * 
