@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
 import Commons.ProductInOrder;
 import Commons.Refund;
 import Commons.Status;
+import Customers.Account;
+import Customers.Customer;
 import Login.CustomerMenuController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
@@ -235,7 +237,7 @@ public class OrderDetailsController implements Initializable {
 					fillPayment();
 					SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 					lblCreDate.setText(""+formatter.format(order.getCreationDate()));
-					formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+					formatter = new SimpleDateFormat("dd/MM/yyyy HH:MM");
 					lblReqDate.setText(formatter.format(order.getRequestedDate()));
 				}
 				else//if it was error in connection
@@ -293,7 +295,10 @@ public class OrderDetailsController implements Initializable {
 	{
 		double payments = 0;
 		for(OrderPayment orderPayment : order.getOrderPaymentList())
-			payments+=orderPayment.getAmount();
+		{
+			if(orderPayment.getPaymentDate()!=null)
+				payments+=orderPayment.getAmount();	
+		}
 		return payments;
 	}
 	/**
@@ -304,7 +309,6 @@ public class OrderDetailsController implements Initializable {
 	 */
 	private Refund getCancelRefund(Timestamp requestedTime , Timestamp currentTime)
 	{
-
 		Map<TimeUnit,Long> diffTime = computeDiff(requestedTime,currentTime);
 		Refund refund = null;
 		
@@ -336,6 +340,12 @@ public class OrderDetailsController implements Initializable {
 				refund = null;
 			}
 		}
+		else if(diffTime.get(TimeUnit.DAYS)>0)
+		{
+			java.sql.Date currentDate = new java.sql.Date(new java.util.Date().getTime()); // get current date
+			refund = new Refund(currentDate, getOrderPayments(order), order.getoId()); // create new full refund
+		}
+
 		//Passed 1 day or more
 		else {
 			// No refund, just cancel
@@ -351,10 +361,10 @@ public class OrderDetailsController implements Initializable {
 	 */
 	private boolean isCharged()
 	{
-		boolean isCharged = true;
+		boolean isCharged = false;
 		for(OrderPayment orderPayment : order.getOrderPaymentList())
-			if(orderPayment.getPaymentDate() == null)
-				isCharged = false;
+			if(orderPayment.getPaymentDate() != null)
+				isCharged = true;
 		
 		return isCharged;
 	}
@@ -380,18 +390,17 @@ public class OrderDetailsController implements Initializable {
 		java.sql.Timestamp sqlTimestamp = new java.sql.Timestamp(today.getTime());
 		
 		refund = getCancelRefund(order.getRequestedDate(),sqlTimestamp);
-		if(refund != null)
-		{
-			double currentBalance = CustomerMenuController.currentAcc.getBalance();
-			double newBalance = currentBalance + refund.getAmount();
-			CustomerMenuController.currentAcc.setBalance(newBalance);
-			
-			packet.addCommand(Command.updateAccountsBycId);
+		if(refund != null  &&  isCharged())
+		{			
+			packet.addCommand(Command.updateAccountBalance);
 			packet.addCommand(Command.addOrderRefund);
-			ArrayList<Object> paramListAccount = new ArrayList<>();
+			ArrayList<Object> paramListUpdateAccount = new ArrayList<>();
+			Account ac = CustomerMenuController.currentAcc;
+			paramListUpdateAccount.add(ac.getBranchId());
+			paramListUpdateAccount.add(ac.getCustomerId());
+			paramListUpdateAccount.add(refund.getAmount());
+			packet.setParametersForCommand(Command.updateAccountBalance, paramListUpdateAccount);
 			ArrayList<Object> paramListRefund = new ArrayList<>();
-			paramListAccount.add(CustomerMenuController.currentAcc);
-			packet.setParametersForCommand(Command.updateAccountsBycId, paramListAccount);
 			paramListRefund.add(refund);
 			packet.setParametersForCommand(Command.addOrderRefund, paramListRefund);
 		}
