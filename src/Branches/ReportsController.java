@@ -223,7 +223,7 @@ public class ReportsController implements Initializable{
 		productName.setCellValueFactory(new PropertyValueFactory<OrderReport, String>("productName"));
 		productName.setSortable(false);
 		productName.impl_setReorderable(false);
-		TableColumn<OrderReport, String> price=new TableColumn<>("Price");
+		TableColumn<OrderReport, String> price=new TableColumn<>("Total Price");
 		price.setCellValueFactory(new PropertyValueFactory<OrderReport, String>("price"));
 		price.setSortable(false);
 		price.impl_setReorderable(false);
