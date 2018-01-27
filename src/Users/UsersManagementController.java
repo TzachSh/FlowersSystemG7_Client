@@ -421,7 +421,7 @@ public class UsersManagementController implements Initializable{
 									displayUsers();
 								}
 								else {
-									Alert alert = new Alert(AlertType.ERROR, p.getExceptionMessage());
+									Alert alert = new Alert(AlertType.ERROR,"The user has active data in the system, You better block him");
 									alert.show();
 								}
 							}
