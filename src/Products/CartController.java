@@ -2,6 +2,7 @@ package Products;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -340,6 +341,7 @@ public class CartController implements Initializable
 		 */
 		private double getFinalPrice(Product pro)
 		{
+			DecimalFormat ceil = new DecimalFormat("#.##"); 
 			CatalogProductDetails productDetails = SelectProductController.catalogProductWithAdditionalDetails.get(pro);
 			if (productDetails.catalogSale == null)
 				return pro.getPrice();
@@ -348,7 +350,8 @@ public class CartController implements Initializable
 			double percantage = (double)discount / 100.0;
 			
 			double priceAfterDiscount = pro.getPrice() * (1 - percantage);
-			return priceAfterDiscount;
+			
+			return Double.valueOf(ceil.format(priceAfterDiscount));
 		}
 		
 		/**
