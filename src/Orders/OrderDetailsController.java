@@ -186,6 +186,7 @@ public class OrderDetailsController implements Initializable {
 		getOrderDetails();
 		setOrderListCellHandler();
 		setOrderPaymentsList();
+		setRefundsDatails();
 		setButtonDisabledState(btnCacenlOrder,true);
 	}
 	/**
@@ -461,9 +462,17 @@ public class OrderDetailsController implements Initializable {
 				if(p.getResultState())
 				{
 					ArrayList<Refund> refundList = p.<Refund>convertedResultListForCommand(Command.getRefunds);
+					for(Refund refund : refundList)
+						if(refund.getRefundAbleId() == order.getoId())
+						{
+							lblRefundInfo.setVisible(true);
+							lblRefundAmount.setText(String.format("%.2f$",refund.getAmount()));
+							lblRefundAmount.setVisible(true);
+						}
 				}
 			}
 		});
+		sender.start();
 	}
 	
 	/***

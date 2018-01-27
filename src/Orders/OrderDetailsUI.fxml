@@ -29,7 +29,7 @@
                      <children>
                         <ListView fx:id="listViewOrderPayments" layoutX="7.0" layoutY="30.0" prefHeight="179.0" prefWidth="457.0" />
                         <Label fx:id="lblRefundInfo" layoutX="14.0" layoutY="226.0" text="Refound Amount:" visible="false" />
-                        <Label fx:id="lblRefundAmount" layoutX="165.0" layoutY="226.0" text="Label" visible="false" />
+                        <Label fx:id="lblRefundAmount" layoutX="156.0" layoutY="226.0" text="Label" />
                      </children>
                   </AnchorPane>
                </content>
