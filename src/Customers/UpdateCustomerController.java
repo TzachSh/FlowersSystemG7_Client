@@ -360,7 +360,7 @@ public class UpdateCustomerController implements Initializable {
 						 	searchForCustomerByID();
 						}
 						else
-							ConstantData.displayAlert(AlertType.ERROR, "Error", "Error Loading Information , Please Try Again Later", null);
+							ConstantData.displayAlert(AlertType.ERROR, "Error", "Error Loading Information , Please Try Again Later", p.getExceptionMessage());
 
 					}
 				});
@@ -454,6 +454,11 @@ public class UpdateCustomerController implements Initializable {
 			}
 			@Override
 			public void onReceivingResult(Packet p) {
+				
+				if(p.getResultState())
+				{
+				
+				
 				//getting the result from the Query
 				cList=p.<Customer>convertedResultListForCommand(Command.getCustomersKeyByuId);
 				
@@ -492,6 +497,10 @@ public class UpdateCustomerController implements Initializable {
 					}
 					@Override
 					public void onReceivingResult(Packet p) {
+						
+						
+						if(p.getResultState())
+						{						
 						//getting the result from the Query
 						accList=p.<Account>convertedResultListForCommand(Command.getAccountbycIDandBranch);
 						uList=p.<User>convertedResultListForCommand(Command.getUserByuId);
@@ -578,18 +587,24 @@ public class UpdateCustomerController implements Initializable {
 										
 									}
 									else
-										ConstantData.displayAlert(AlertType.ERROR, "Error", "Error Loading Information , Please Try Again Later", null);
+										ConstantData.displayAlert(AlertType.ERROR, "Error", "Error Loading Information , Please Try Again Later", p.getExceptionMessage());
 		
 								}
 							});
 							//sending the package
 							send.start();	
 						}
-				}
+					}
+					else
+						ConstantData.displayAlert(AlertType.ERROR, "Error", "Error Loading Information , Please Try Again Later", p.getExceptionMessage());
+					}
 				});		
 				//sending the package
 				send.start();
 				}
+				else
+					ConstantData.displayAlert(AlertType.ERROR, "Error", "Error Loading Information , Please Try Again Later", p.getExceptionMessage());
+		}
 		});
 		//sending the package
 		send.start();

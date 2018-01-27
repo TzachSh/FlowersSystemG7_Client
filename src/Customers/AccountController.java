@@ -313,7 +313,8 @@ public class AccountController implements Initializable{
 									}
 								}
 								else
-									System.out.println("Fail: " + p.getExceptionMessage());
+									ConstantData.displayAlert(AlertType.ERROR, "Error", "Error Loading Information , Please Try Again Later", p.getExceptionMessage());
+
 							}
 						});	
 						//sending the packet
@@ -420,14 +421,14 @@ public class AccountController implements Initializable{
 							apAddAccount.setVisible(true);					
 						}
 						else
-							System.out.println("Fail: " + p.getExceptionMessage());			
+							ConstantData.displayAlert(AlertType.ERROR, "Error", "Loading Error", p.getExceptionMessage());
 					}
 				});
 				//sending the packet
 				send.start();			
 			}
 			else
-				System.out.println("Fail: " + p.getExceptionMessage());	
+				ConstantData.displayAlert(AlertType.ERROR, "Error", "Loading Error", p.getExceptionMessage());
 		}
 		});
 		//sending the packet

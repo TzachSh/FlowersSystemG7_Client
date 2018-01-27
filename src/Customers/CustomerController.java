@@ -225,7 +225,9 @@ public class CustomerController implements Initializable {
 				}
 			}
 			else
-				System.out.println("Fail: " + p.getExceptionMessage());
+
+				ConstantData.displayAlert(AlertType.ERROR, "Error", "Error Loading Information , Please Try Again Later", p.getExceptionMessage());
+
 		}
 		});
 		//sending the package
@@ -341,7 +343,8 @@ public class CustomerController implements Initializable {
 					uList = p.<User>convertedResultListForCommand(Command.getUsers);
 				}
 				else
-					System.out.println("Fail: " + p.getExceptionMessage());
+					ConstantData.displayAlert(AlertType.ERROR, "Error", "Error Loading Information , Please Try Again Later", null);
+
 				
 			}
 		});
