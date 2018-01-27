@@ -130,7 +130,6 @@ public class UpdateCustomerController implements Initializable {
 			 	//handling fields and buttons for the manager
 				txtCustomerID.setEditable(true);
 			 	btnSearch.setVisible(true);
-				txtUser.setEditable(true);
 				cbStatus.setEditable(true);
 				cbMemberShip.setEditable(true);
 				txtCreditCard1.setEditable(true);
@@ -140,6 +139,8 @@ public class UpdateCustomerController implements Initializable {
 				txtCreditCard5.setEditable(true);
 				btnSave.setVisible(true);
 				btnchangePassword.setVisible(true); 
+				cbMemberShip.setEditable(false);
+				cbStatus.setEditable(false);
 				lbHeader.setText("Update Client Information");
 		 }
 		 else
@@ -149,7 +150,6 @@ public class UpdateCustomerController implements Initializable {
 				txtCustomerID.setEditable(false);
 				txtBalance.setEditable(false);
 				txtBalance.setDisable(false);
-				txtUser.setEditable(false);
 				cbStatus.setEditable(false);
 				cbStatus.setDisable(true);
 				cbMemberShip.setDisable(true);
@@ -163,7 +163,6 @@ public class UpdateCustomerController implements Initializable {
 				rbdeleteMemberShip.setVisible(false);
 				btnchangePassword.setVisible(false);
 			 	btnSearch.setVisible(false);
-			    lblCustomerId.setDisable(true);
 				lbHeader.setText("Client Information");
 				btnSave.setVisible(false);
 			  
@@ -230,16 +229,7 @@ public class UpdateCustomerController implements Initializable {
 					txtCustomerID.setText(oldValue);
 			}
 		});
-		//validate customer user field input
-		txtUser.textProperty().addListener(new ChangeListener<String>() {
-
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				// TODO Auto-generated method stub
-				if(newValue.length()>50)
-					txtUser.setText(oldValue);
-			}
-		});
+		
 		//validate text for credit card
 		txtCreditCard1.textProperty().addListener(new ChangeListener<String>() {
 			/*
@@ -509,8 +499,8 @@ public class UpdateCustomerController implements Initializable {
 						
 						//handle fields after the result
 						btnSearch.setDisable(true);
-						txtCustomerID.setDisable(true);
-						txtUser.setDisable(true);
+						txtCustomerID.setEditable(false);
+						txtUser.setEditable(false);
 						apnextinfo.setVisible(true);
 						initComboBox();
 						txtUser.setText(uList.get(0).getUser());
@@ -609,12 +599,7 @@ public class UpdateCustomerController implements Initializable {
 	 */
 	public void saveNewCustomerInformation()
 	{
-		//validate user
-		if(txtUser.getText().isEmpty())//check if the user field is empty
-		{
-			ConstantData.displayAlert(AlertType.ERROR, "Error", "Please Enter New User", null);
-			return;
-		}
+		
 		//validate credit card fields that they are not empty
 		if(txtCreditCard1.getText().isEmpty()||txtCreditCard2.getText().isEmpty()||txtCreditCard3.getText().isEmpty()||txtCreditCard4.getText().isEmpty()||txtCreditCard5.getText().isEmpty())
 		{
