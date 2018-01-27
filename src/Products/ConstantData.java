@@ -60,7 +60,7 @@ public class ConstantData {
 					isInit=true;
 				}
 				else//if it was error in connection
-					JOptionPane.showMessageDialog(null,"Connection error","Error",JOptionPane.ERROR_MESSAGE);
+					displayAlert(AlertType.ERROR, "Error", "Failed", "failed to fetch information from the server");
 			}
 		});
 		send.start();

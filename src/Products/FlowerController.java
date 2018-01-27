@@ -5,8 +5,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-import javax.swing.JOptionPane;
-
 import Login.ManagersMenuController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
@@ -204,7 +202,7 @@ public class FlowerController extends Application implements Initializable {
 					fillFlowers();
 				}
 				else//if it was error in connection
-					JOptionPane.showMessageDialog(null,"Connection error","Error",JOptionPane.ERROR_MESSAGE);
+					ConstantData.displayAlert(AlertType.ERROR,"Error","Failed",p.getExceptionMessage());
 			}
 		});
 		send.start();
@@ -369,6 +367,7 @@ public class FlowerController extends Application implements Initializable {
 			Parent root = loader.load();
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(getClass().getResource(srcCSS).toExternalForm());
+			arg0.setResizable(false);
 			arg0.setTitle(title);
 			arg0.setScene(scene);
 			arg0.show();

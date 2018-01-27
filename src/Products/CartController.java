@@ -7,7 +7,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import javax.swing.JOptionPane;
 
 import Login.CustomerMenuController;
 import Orders.OrderController;
@@ -541,7 +540,7 @@ public class CartController implements Initializable
 					fillCatalogItems();
 				}
 				else//if it was error in connection
-					JOptionPane.showMessageDialog(null,"Connection error","Error",JOptionPane.ERROR_MESSAGE);
+					ConstantData.displayAlert(AlertType.ERROR, "Error", "Failed!", "Get flower"+p.getExceptionMessage());
 			}
 		});
 		send.start();

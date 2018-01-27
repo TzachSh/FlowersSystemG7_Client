@@ -357,7 +357,8 @@ public class CustomProductController implements Initializable {
 		stage = primaryStage;
 		scene.getStylesheets().add(getClass().getResource(srcCSS).toExternalForm());
 		primaryStage.setTitle("Custom product");
-		primaryStage.setScene(scene);		
+		primaryStage.setScene(scene);
+		primaryStage.setResizable(false);
 		primaryStage.show();
 		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 	          public void handle(WindowEvent we) {

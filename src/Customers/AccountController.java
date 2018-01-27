@@ -4,7 +4,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-import javax.swing.JOptionPane;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 
 import Branches.Branch;
 import Branches.Employee;
@@ -321,11 +321,7 @@ public class AccountController implements Initializable{
 					}
 					else
 					{
-						
-						JOptionPane.showMessageDialog(null, 
-								"The Account Has Been Added Without MemberShip", 
-				                "Success", 
-				                JOptionPane.CLOSED_OPTION);
+						ConstantData.displayAlert(AlertType.ERROR,"Success","Success","The Account Has Been Added Without MemberShip");
 						//closing the window and returning to menu
 						myStage.close();
 						 ManagersMenuController menu = new ManagersMenuController();
@@ -476,7 +472,7 @@ public class AccountController implements Initializable{
 			scene.getStylesheets().add(getClass().getResource(srcCSS).toExternalForm());
 			primaryStage.setTitle(title);
 			primaryStage.setScene(scene);
-			
+			primaryStage.setResizable(false);
 			primaryStage.show();
 		} catch (Exception e) {
 			// TODO: handle exception
