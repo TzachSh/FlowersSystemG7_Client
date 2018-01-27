@@ -21,9 +21,9 @@
       <TextField id="txtUser" fx:id="txtUser" layoutX="134.0" layoutY="117.0" prefHeight="26.0" prefWidth="479.0" promptText="User" />
       <Button id="btnRegister" fx:id="btnRegister" layoutX="270.0" layoutY="237.0" mnemonicParsing="false" onAction="#registerNow" prefHeight="32.0" prefWidth="133.0" text="Register" />
       <Button id="btnCancel" fx:id="btnCancel" layoutX="410.0" layoutY="237.0" mnemonicParsing="false" onAction="#onClosingForm" prefHeight="32.0" prefWidth="133.0" text="Cancel" />
-      <Label layoutX="241.0" layoutY="28.0" prefHeight="35.0" prefWidth="133.0" text="Add Client ">
+      <Label layoutX="241.0" layoutY="28.0" prefHeight="35.0" prefWidth="133.0" text="Add Client" underline="true">
          <font>
-            <Font name="System Bold" size="24.0" />
+            <Font size="18.0" />
          </font>
       </Label>
       <PasswordField fx:id="txtPassword" layoutX="132.0" layoutY="157.0" prefHeight="25.0" prefWidth="479.0" promptText="Password" />

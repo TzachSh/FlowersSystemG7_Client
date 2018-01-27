@@ -20,7 +20,7 @@
                            <children>
                               <Button fx:id="btnCancel1" cancelButton="true" layoutX="94.0" layoutY="395.0" mnemonicParsing="false" onAction="#pressedCancelButton" prefHeight="39.0" prefWidth="88.0" text="Cancel" />
                               <Button fx:id="btnNext1" disable="true" layoutX="310.0" layoutY="395.0" mnemonicParsing="false" onAction="#pressedNextOnProductDetails" prefHeight="39.0" prefWidth="88.0" text="Next &gt;&gt;" />
-                              <Label alignment="CENTER" layoutX="85.0" layoutY="14.0" text="Step 1 - Fill Information about the Product" textAlignment="JUSTIFY" underline="true">
+                              <Label alignment="CENTER" layoutX="70.0" layoutY="14.0" text="Step 1 - Fill Information about the Product" textAlignment="JUSTIFY" underline="true">
                                  <font>
                                     <Font size="18.0" />
                                  </font>

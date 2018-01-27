@@ -10,7 +10,7 @@
    <children>
       <Label layoutX="191.0" layoutY="14.0" text="My Complains" underline="true">
          <font>
-            <Font size="24.0" />
+            <Font size="18.0" />
          </font>
       </Label>
       <TitledPane animated="false" collapsible="false" layoutX="10.0" layoutY="55.0" prefHeight="384.0" prefWidth="514.0" text="Follow Complains">

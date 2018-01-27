@@ -7,9 +7,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="346.0" prefWidth="408.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Orders.OrderController">
+<AnchorPane prefHeight="411.0" prefWidth="422.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Orders.OrderController">
    <children>
-      <TabPane fx:id="tabPane" prefHeight="280.0" prefWidth="408.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane fx:id="tabPane" layoutX="8.0" layoutY="66.0" prefHeight="280.0" prefWidth="408.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab fx:id="date" text="Order details">
             <content>
@@ -71,8 +71,13 @@
             </Tab>
         </tabs>
       </TabPane>
-      <Button fx:id="btnNext" layoutX="220.0" layoutY="308.0" mnemonicParsing="false" onAction="#onClickNextBtn" text="Next" />
-      <Button fx:id="btnPrev" layoutX="128.0" layoutY="308.0" mnemonicParsing="false" onAction="#onClickBackBtn" text="Prev" />
-      <Label fx:id="lblDeliveryCost" layoutX="93.0" layoutY="280.0" text="Delivery cost will be included in you order" />
+      <Button fx:id="btnNext" layoutX="235.0" layoutY="384.0" mnemonicParsing="false" onAction="#onClickNextBtn" text="Next" />
+      <Button fx:id="btnPrev" layoutX="143.0" layoutY="384.0" mnemonicParsing="false" onAction="#onClickBackBtn" text="Prev" />
+      <Label fx:id="lblDeliveryCost" layoutX="108.0" layoutY="356.0" text="Delivery cost will be included in you order" />
+      <Label layoutX="137.0" layoutY="27.0" text="Order Creation" underline="true">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

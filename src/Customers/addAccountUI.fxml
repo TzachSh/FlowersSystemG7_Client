@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
@@ -9,14 +14,14 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="277.0" prefWidth="319.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Customers.AccountController">
+<AnchorPane prefHeight="277.0" prefWidth="319.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Customers.AccountController">
    <opaqueInsets>
       <Insets />
    </opaqueInsets>
    <children>
-      <Label layoutX="132.0" layoutY="14.0" text="Add Account To User">
+      <Label layoutX="164.0" layoutY="14.0" text="Add Account To User" underline="true">
          <font>
-            <Font name="System Bold" size="24.0" />
+            <Font size="18.0" />
          </font>
       </Label>
       <TextField id="txtID" fx:id="txtID" layoutX="197.0" layoutY="62.0" promptText="Enter Customer's ID" />

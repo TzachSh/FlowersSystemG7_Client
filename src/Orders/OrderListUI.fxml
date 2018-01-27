@@ -11,7 +11,7 @@
       <Button fx:id="btnBack" layoutX="260.0" layoutY="377.0" mnemonicParsing="false" onAction="#onClickBack" text="Back" />
       <Label layoutX="235.0" layoutY="14.0" text="My Orders" underline="true">
          <font>
-            <Font size="24.0" />
+            <Font size="18.0" />
          </font></Label>
       <ListView fx:id="listOrder" layoutX="26.0" layoutY="130.0" prefHeight="240.0" prefWidth="494.0" />
       <Label layoutX="46.0" layoutY="116.0" text="Id" />
@@ -19,8 +19,8 @@
       <Label layoutX="166.0" layoutY="116.0" text="Requested" />
       <Label layoutX="260.0" layoutY="116.0" text="Price" />
       <Label layoutX="329.0" layoutY="116.0" text="Payed" />
-      <Label layoutX="22.0" layoutY="63.0" text="Filter By Status:" />
-      <ComboBox fx:id="cmbStatus" layoutX="144.0" layoutY="57.0" prefWidth="150.0" />
+      <Label layoutX="85.0" layoutY="63.0" text="Filter By Status:" />
+      <ComboBox fx:id="cmbStatus" layoutX="196.0" layoutY="59.0" prefWidth="150.0" />
       <Label layoutX="420.0" layoutY="116.0" text="Action" />
    </children>
 </AnchorPane>

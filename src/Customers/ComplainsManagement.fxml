@@ -8,9 +8,9 @@
 
 <AnchorPane prefHeight="504.0" prefWidth="571.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label layoutX="147.0" layoutY="14.0" text="Complains Management" underline="true">
+      <Label layoutX="188.0" layoutY="14.0" text="Complains Management" underline="true">
          <font>
-            <Font size="21.0" />
+            <Font size="18.0" />
          </font>
       </Label>
       <TabPane fx:id="complainsTabedPane" layoutY="60.0" prefHeight="438.0" prefWidth="571.0" tabClosingPolicy="UNAVAILABLE">
