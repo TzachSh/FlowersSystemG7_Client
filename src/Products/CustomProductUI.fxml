@@ -21,8 +21,8 @@
                   <ComboBox fx:id="cmbProductType" layoutX="158.0" layoutY="76.0" prefWidth="150.0" />
                   <Label layoutX="30.0" layoutY="47.0" text="Max Price:" />
                   <TextField fx:id="txtMinCost" layoutX="158.0" layoutY="11.0" prefHeight="25.0" prefWidth="55.0" />
-                  <Label layoutX="221.0" layoutY="15.0" text="₪" />
-                  <Label layoutX="221.0" layoutY="47.0" text="₪" />
+                  <Label layoutX="221.0" layoutY="15.0" text="$" />
+                  <Label layoutX="221.0" layoutY="47.0" text="$" />
                   <CheckBox fx:id="chkColor" layoutX="31.0" layoutY="113.0" mnemonicParsing="false" onAction="#onChangedChecked" text="Dominant Color:" />
                </children>
             </AnchorPane>
@@ -62,7 +62,7 @@
             <Font size="14.0" />
          </font>
       </Label>
-      <Label fx:id="lblTotalPrice" layoutX="126.0" layoutY="531.0" text="0.0₪" textFill="RED">
+      <Label fx:id="lblTotalPrice" layoutX="126.0" layoutY="531.0" text="0.0$" textFill="RED">
          <font>
             <Font size="14.0" />
          </font>

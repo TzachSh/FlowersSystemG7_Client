@@ -21,7 +21,7 @@
                         <CheckBox fx:id="chkExpressDelivery" layoutX="139.0" layoutY="144.0" mnemonicParsing="false" text="express delivery" />
                         <ComboBox fx:id="cmbHour" layoutX="125.0" layoutY="102.0" onAction="#onClickCmbCorrect" prefHeight="25.0" prefWidth="77.0" promptText="Hour" />
                         <ComboBox fx:id="cmbMin" layoutX="212.0" layoutY="102.0" onAction="#onClickCmbCorrect" prefHeight="25.0" prefWidth="90.0" promptText="Min" />
-                        <Label layoutX="138.0" layoutY="174.0" text="*Delivery cost is 10₪" />
+                        <Label layoutX="138.0" layoutY="174.0" text="*Delivery cost is 10$" />
                         <Label fx:id="lblErrTime" layoutX="101.0" layoutY="201.0" prefHeight="36.0" prefWidth="203.0" text="Possible requested date only 3 hours after creating an order" wrapText="true" />
                      </children>
                   </AnchorPane>
@@ -41,7 +41,7 @@
                         <Label fx:id="lblErrAdd" layoutX="295.0" layoutY="40.0" text="Label" />
                         <Label fx:id="lblErrName" layoutX="295.0" layoutY="71.0" text="Label" />
                         <Label fx:id="lblErrPhone" layoutX="295.0" layoutY="108.0" text="Label" />
-                        <Label layoutX="151.0" layoutY="146.0" text="*Delivery cost is 10₪" />
+                        <Label layoutX="151.0" layoutY="146.0" text="*Delivery cost is 10$" />
                      </children></AnchorPane>
             </content>
           </Tab>

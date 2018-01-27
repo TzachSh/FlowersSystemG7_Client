@@ -52,7 +52,7 @@
                                           </Label>
                                           <Label fx:id="errPriceNum" layoutX="80.0" layoutY="153.0" text="Illegal number" textFill="RED" visible="false" />
                                           <Label fx:id="errNameTooMuchLong" layoutX="80.0" layoutY="39.0" text="Too much long (max: 50 characters)" textFill="RED" visible="false" />
-                                          <Label layoutX="152.0" layoutY="125.0" text="₪">
+                                          <Label layoutX="152.0" layoutY="125.0" text="$">
                                              <font>
                                                 <Font size="18.0" />
                                              </font>

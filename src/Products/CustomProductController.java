@@ -312,7 +312,7 @@ public class CustomProductController implements Initializable {
 		btnFind.setDisable(false);
 		lblCashLeft.setText("");
 		flowerInProduct.clear();
-		lblTotalPrice.setText("0.0¤");
+		lblTotalPrice.setText("0.0$");
 		total = 0;
 		minPrice = 0;
 		maxPrice = 0;
@@ -335,7 +335,7 @@ public class CustomProductController implements Initializable {
 			cmbColor.setDisable(true);
 			initList();
 			
-			lblTotalPrice.setText("0.0¤");
+			lblTotalPrice.setText("0.0$");
 		}
 		catch(Exception e)
 		{
@@ -443,7 +443,7 @@ public class CustomProductController implements Initializable {
 		{
 			total += entry.getValue() * entry.getKey().getPrice();
 		}
-		lblTotalPrice.setText(String.format("%.2f¤",total));
+		lblTotalPrice.setText(String.format("%.2f$",total));
 		this.total = total;
 	}
 	/**
@@ -516,7 +516,7 @@ public class CustomProductController implements Initializable {
 								qty.setFill(Color.RED);
 								qty.setTextAlignment(TextAlignment.CENTER);
 								
-								Text price = new Text(flo.getPrice() + "¤");
+								Text price = new Text(flo.getPrice() + "$");
 								price.setFont(new Font(12));
 							
 								HBox flowerColorPrice = new HBox(color, price);

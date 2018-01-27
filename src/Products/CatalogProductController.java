@@ -342,7 +342,7 @@ public class CatalogProductController implements Initializable {
 				errPriceNum.setVisible(false);
 			} catch (NumberFormatException e) {
 				if (e.getMessage().equals("max"))
-					errPriceNum.setText("Max: 5000.0¤");
+					errPriceNum.setText("Max: 5000.0$");
 				
 				errPriceNum.setVisible(true);
 				valid = false;

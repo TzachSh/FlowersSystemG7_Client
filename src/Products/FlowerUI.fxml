@@ -20,7 +20,7 @@
       <Label layoutX="92.0" layoutY="124.0" text="Price:" />
       <TextField fx:id="txtName" layoutX="138.0" layoutY="49.0" prefHeight="25.0" prefWidth="168.0" promptText="enter flower name here" />
       <TextField fx:id="txtprice" layoutX="137.0" layoutY="120.0" prefHeight="25.0" prefWidth="51.0" />
-      <Label layoutX="194.0" layoutY="125.0" text="₪" />
+      <Label layoutX="194.0" layoutY="125.0" text="$" />
       <ComboBox fx:id="cmbColor" layoutX="139.0" layoutY="84.0" prefHeight="25.0" prefWidth="119.0" promptText="Choose color" />
       <Label fx:id="lblColor" layoutX="270.0" layoutY="84.0" prefHeight="25.0" prefWidth="35.0" />
       <ListView fx:id="lstFlowers" layoutX="35.0" layoutY="184.0" prefHeight="263.0" prefWidth="363.0" />

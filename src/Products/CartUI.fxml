@@ -23,7 +23,7 @@
         </content>
       </TitledPane>
       <Button fx:id="btnPurchase" layoutX="338.0" layoutY="674.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="90.0" text="Purchase" AnchorPane.bottomAnchor="10.0" />
-      <Label fx:id="lblPrice" contentDisplay="CENTER" layoutX="34.0" layoutY="464.0" prefHeight="17.0" prefWidth="515.0" text="Total Price: 0₪ , Total Items: 0" textFill="RED" AnchorPane.bottomAnchor="56.0">
+      <Label fx:id="lblPrice" contentDisplay="CENTER" layoutX="34.0" layoutY="464.0" prefHeight="17.0" prefWidth="515.0" text="Total Price: 0$ , Total Items: 0" textFill="RED" AnchorPane.bottomAnchor="56.0">
          <font>
             <Font size="14.0" />
          </font>
