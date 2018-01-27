@@ -693,7 +693,6 @@ public class OrderController implements Initializable{
 	 * @param order to save
 	 * @param productInOrder with all of his product in order list
 	 * @param payments with all of the payments
-	 * @param acList list of all the account
 	 * @param delivery to save
 	 */
 	private void saveOrder(ArrayList<Object> order,ArrayList<Object> productInOrder,ArrayList<Object> payments,ArrayList<Object> delivery)
