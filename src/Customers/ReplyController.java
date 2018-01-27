@@ -124,6 +124,12 @@ public class ReplyController {
 		
 		try {
 			amount = Double.parseDouble(txtRefund.getText());
+			if(!txtRefund.getText().matches("[0-9]*\\.?[0-9]?[0-9]?"))
+			{
+				Alert alert = new Alert(AlertType.ERROR,"Invalid number format");
+				alert.show();
+				return;
+			}
 			isRefund = true;
 		}
 		catch (Exception e) {

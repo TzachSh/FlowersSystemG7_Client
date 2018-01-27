@@ -238,16 +238,11 @@ public class UpdateCustomerController implements Initializable {
 				// TODO Auto-generated method stub
 				if(newValue.length()>50)
 					txtUser.setText(oldValue);
-				/*if(!newValue.equals("") &&newValue.matches("^[a-zA-Z0-9._-]{0,50}$"))
-					txtUser.setText(newValue);
-				else
-					txtUser.setText(oldValue);*/
-
 			}
 		});
 		//validate text for credit card
 		txtCreditCard1.textProperty().addListener(new ChangeListener<String>() {
-			/**
+			/*
 			 * if the text changed
 			 */
 			@Override
@@ -294,7 +289,7 @@ public class UpdateCustomerController implements Initializable {
 			
 		});
 		txtCreditCard5.textProperty().addListener(new ChangeListener<String>() {
-			/**
+			/*
 			 * if the text changed
 			 */
 			@Override

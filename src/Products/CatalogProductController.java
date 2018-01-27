@@ -320,19 +320,16 @@ public class CatalogProductController implements Initializable {
 			errName.setVisible(false);
 		}
 
-		if (price.isEmpty()) {
+		if (price.isEmpty() || !price.matches("[0-9]*\\.?[0-9]?[0-9]?")) {
 			errPrice.setVisible(true);
 			valid = false;
-			errPriceNum.setVisible(false);
+			errPriceNum.setVisible(true);
 		} else {
 			errPrice.setVisible(false);
 
 			// check if number is valid
 			try {
-				double priceConverted = Double.valueOf(price);
-				if (priceConverted <= 0)
-					throw new NumberFormatException();
-				
+				double priceConverted = Double.valueOf(price);				
 				if (priceConverted > 5000)
 					throw new NumberFormatException("max");
 				
