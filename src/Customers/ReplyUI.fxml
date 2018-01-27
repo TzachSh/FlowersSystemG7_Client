@@ -22,7 +22,7 @@
       </TitledPane>
       <Button fx:id="btnSend" layoutX="116.0" layoutY="531.0" mnemonicParsing="false" onAction="#handleSendPressed" prefHeight="39.0" prefWidth="174.0" text="Send" />
       <Button fx:id="btnCancel" layoutX="296.0" layoutY="531.0" mnemonicParsing="false" onAction="#handleCancelPressed" prefHeight="39.0" prefWidth="173.0" text="Back" />
-      <TitledPane layoutX="14.0" layoutY="360.0" prefHeight="151.0" prefWidth="527.0" text="Refund">
+      <TitledPane layoutX="14.0" layoutY="360.0" prefHeight="151.0" prefWidth="538.0" text="Refund">
         <content>
           <AnchorPane prefHeight="136.0" prefWidth="494.0">
                <children>
@@ -40,7 +40,7 @@
             </AnchorPane>
         </content>
       </TitledPane>
-      <TitledPane animated="false" collapsible="false" layoutX="14.0" layoutY="206.0" prefHeight="151.0" prefWidth="527.0" text="Your Replyment">
+      <TitledPane animated="false" collapsible="false" layoutX="14.0" layoutY="210.0" prefHeight="151.0" prefWidth="538.0" text="Your Replyment">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
