@@ -153,18 +153,18 @@ public class ReplyController {
 			
 			int bId = (cmbBranch.getSelectionModel().getSelectedItem()).getbId();
 			Account accountToUpdate = getCustomerAccountInBranch(bId);
-			accountToUpdate.setBalance(accountToUpdate.getBalance() + amount);
 
 			ArrayList<Object> paramListRefund = new ArrayList<>();
 			packet.addCommand(Command.addComplainRefund);
 			paramListRefund.add(refund);
 			packet.setParametersForCommand(Command.addComplainRefund, paramListRefund);
-			packet.addCommand(Command.updateAccountsBycId);
+			packet.addCommand(Command.updateAccountBalance);
 			ArrayList<Object> paramListUpdateAccount = new ArrayList<>();
-			paramListUpdateAccount.add(accountToUpdate);
-			packet.setParametersForCommand(Command.updateAccountsBycId, paramListUpdateAccount);
+			paramListUpdateAccount.add(accountToUpdate.getBranchId());
+			paramListUpdateAccount.add(accountToUpdate.getCustomerId());
+			paramListUpdateAccount.add(amount);
+			packet.setParametersForCommand(Command.updateAccountBalance, paramListUpdateAccount);
 		}
-
 		ArrayList<Object> paramListComplain = new ArrayList<>();
 		complain.setActive(false);
 		paramListComplain.add(complain);
