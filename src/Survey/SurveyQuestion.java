@@ -1,7 +1,6 @@
 package Survey;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 /***
  * 
  * Entity class to define Question in Survey

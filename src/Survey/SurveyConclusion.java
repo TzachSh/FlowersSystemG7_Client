@@ -2,8 +2,6 @@ package Survey;
 
 import java.io.Serializable;
 
-import Branches.ServiceExpert;
-
 /***
  * 
  * Entity to define the Conclusion of a Survey

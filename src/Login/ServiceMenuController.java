@@ -2,23 +2,17 @@ package Login;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.ResourceBundle;
 
-import Branches.CustomerService;
 import Branches.Employee;
 import Branches.Role;
-import Branches.ServiceExpert;
 import Customers.Complain;
 import Customers.ComplainsController;
-import Customers.Reply;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
 import Survey.SurveyManagementController;
-import Users.Permission;
-import javafx.collections.FXCollections;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,10 +21,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
