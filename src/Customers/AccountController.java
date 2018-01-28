@@ -411,7 +411,7 @@ public class AccountController implements Initializable{
 							accList=p.<Account>convertedResultListForCommand(Command.getAccountbycIDandBranch);
 							if(!accList.isEmpty())
 							{
-								ConstantData.displayAlert(AlertType.ERROR, "Customer Account", "Customer Not Exists", "Customer Already Have Account");
+								ConstantData.displayAlert(AlertType.ERROR, "Customer Account", "Account Exists", "Customer Already Have Account");
 								btnCheckCustomersID.setDisable(false);
 								txtID.setDisable(false);
 								txtID.setText("");
