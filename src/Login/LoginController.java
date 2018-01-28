@@ -17,6 +17,8 @@ import Users.Permission;
 import Users.User;
 import Users.UsersManagementController;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -409,6 +411,24 @@ public class LoginController implements Initializable {
 		imgView.setFitWidth(25);
 		imgView.setFitHeight(25);
 		btnConfig.setGraphic(imgView);
+		
+		txtUser.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+			//checking the length
+				if(newValue.length()>50)
+					txtUser.setText(oldValue);
+			}
+		});
+		
+		txtPassword.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+			//checking the length
+				if(newValue.length()>50)
+					txtPassword.setText(oldValue);
+			}
+		});
 	}
 
 }
