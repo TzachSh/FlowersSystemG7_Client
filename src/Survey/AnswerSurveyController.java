@@ -4,14 +4,18 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import Branches.Branch;
 import Branches.Employee;
+import Branches.Role;
 import Login.LoginController;
 import Login.ManagersMenuController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
+import Products.ConstantData;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -24,6 +28,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /***
  * 
@@ -112,6 +117,19 @@ public class AnswerSurveyController implements Initializable{
 			primaryStage.setTitle(title);
 			primaryStage.setScene(scene);
 			primaryStage.show();
+			
+			primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+		          public void handle(WindowEvent we) {
+		        	  primaryStage.close();
+					  //on close we must return the main menu
+					  try {
+						  ManagersMenuController menumanager=new ManagersMenuController();
+						  menumanager.start(new Stage());
+						} catch (Exception e) {
+							ConstantData.displayAlert(AlertType.ERROR, "Error", "Exception when trying to open Menu Window", e.getMessage());
+						}		
+		          }
+		      });        
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println(e);
@@ -228,9 +246,14 @@ public class AnswerSurveyController implements Initializable{
 		int curAnswerIndex = 0;
 		
 		ArrayList<Object> paramListAnswerSurvey = new ArrayList<>();
-		
+		int branchId;
+		if (branchEmployee.getRole() == Role.BranchesManager)
+			branchId = ManagersMenuController.currentBranch.getbId();
+		else
+			branchId = branchEmployee.getBranchId();
+			
 		for(SurveyQuestion surveyQuestion : activeSurvey.getSurveyQuestionList())
-			paramListAnswerSurvey.add(new AnswerSurvey(surveyQuestion.getId(), branchEmployee.getBranchId(), answersList.get(curAnswerIndex++)));
+			paramListAnswerSurvey.add(new AnswerSurvey(surveyQuestion.getId(), branchId, answersList.get(curAnswerIndex++)));
 		
 		Packet packet = new Packet();
 		packet.addCommand(Command.addAnswerSurvey);
