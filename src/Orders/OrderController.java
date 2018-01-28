@@ -731,7 +731,10 @@ public class OrderController implements Initializable{
 			public void onReceivingResult(Packet p) {
 				if (p.getResultState())
 				{
-					CustomerMenuController.currentAcc=p.<Account>convertedResultListForCommand(Command.updateAccountBalance).get(0);
+					if(blncePay>0)
+					{
+						CustomerMenuController.currentAcc=p.<Account>convertedResultListForCommand(Command.updateAccountBalance).get(0);
+					}
 					ConstantData.displayAlert(AlertType.INFORMATION, "Order created", "Order confirmation", "Order has been created thanks for buying in our shop");
 					CartController.cartProducts.clear();
 					SelectProductController.productsSelected.clear();
