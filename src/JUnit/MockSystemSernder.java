@@ -4,7 +4,7 @@ import PacketSender.IResultHandler;
 import PacketSender.ISystemSender;
 import PacketSender.Packet;
 
-public class MockClient implements ISystemSender {
+public class MockSystemSernder implements ISystemSender {
 	private Packet packet;
 	@Override
 	public void start() {
@@ -14,11 +14,15 @@ public class MockClient implements ISystemSender {
 	@Override
 	public void registerHandler(IResultHandler iResultHandler) {
 		
-		
 	}
 
 	@Override
 	public void setPacket(Packet packet) {
 		this.packet = packet;		
+	}
+	
+	public Packet getPacket()
+	{
+		return packet;
 	}
 }

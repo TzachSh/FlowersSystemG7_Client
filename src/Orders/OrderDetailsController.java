@@ -340,6 +340,7 @@ public class OrderDetailsController implements Initializable {
 				refund = null;
 			}
 		}
+		
 		else if(diffTime.get(TimeUnit.DAYS)>0)
 		{
 			java.sql.Date currentDate = new java.sql.Date(new java.util.Date().getTime()); // get current date
@@ -430,6 +431,7 @@ public class OrderDetailsController implements Initializable {
 				{
 					String refundInfo;
 					
+					
 					if(!isCharged()) 
 						refundInfo = "\nThere is no refund, Because of no payment Yet"; 	
 					else if(refund != null)
@@ -455,7 +457,6 @@ public class OrderDetailsController implements Initializable {
 				}
 			}
 		});
-
 		sender.start();
 	} 
 	
