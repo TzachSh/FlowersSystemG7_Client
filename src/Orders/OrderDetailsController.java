@@ -17,10 +17,10 @@ import Commons.ProductInOrder;
 import Commons.Refund;
 import Commons.Status;
 import Customers.Account;
-import Customers.Customer;
 import Login.CustomerMenuController;
 import PacketSender.Command;
 import PacketSender.IResultHandler;
+import PacketSender.ISystemSender;
 import PacketSender.Packet;
 import PacketSender.SystemSender;
 import Products.CatalogProduct;
@@ -369,12 +369,7 @@ public class OrderDetailsController implements Initializable {
 		return isCharged;
 	}
 	
-	
-	/**
-	 * Handle cancel button pressed
-	 */
-	@FXML
-	private void onCancelPressedHandler()
+	public Packet initPacket()
 	{
 		changeOrderStatus(order,Status.Canceled);
 		
@@ -404,8 +399,22 @@ public class OrderDetailsController implements Initializable {
 			paramListRefund.add(refund);
 			packet.setParametersForCommand(Command.addOrderRefund, paramListRefund);
 		}
+		return packet;
+	}
+	/**
+	 * Handle cancel button pressed
+	 */
+	@FXML
+	private void onCancelPressedHandler()
+	{	
+		Packet packet = initPacket(); 
+		ISystemSender sender = new SystemSender();
+		saveToServer(sender,packet);
+	}
+	public void saveToServer(ISystemSender sender,Packet packet)
+	{
+		sender.setPacket(packet);
 		
-		SystemSender sender = new SystemSender(packet);
 		sender.registerHandler(new IResultHandler() {
 			
 			@Override

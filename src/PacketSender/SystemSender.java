@@ -11,7 +11,7 @@ import javafx.scene.control.Alert.AlertType;
  * and also wait for arrived data from the server if needed
  *
  */
-public class SystemSender extends Thread
+public class SystemSender extends Thread implements ISystemSender
 {
 	private SystemClient client;
 	/**
@@ -44,6 +44,10 @@ public class SystemSender extends Thread
 		this(packet, null);
 	}
 	
+	public SystemSender() {
+		this(null,null);
+	}
+
 	/**
 	 * Register an handler for client
 	 * 
@@ -86,6 +90,11 @@ public class SystemSender extends Thread
 				}
 			});
 		}
+	}
+
+	@Override
+	public void setPacket(Packet packet) {
+		this.packet = packet;		
 	}
 	
 }
