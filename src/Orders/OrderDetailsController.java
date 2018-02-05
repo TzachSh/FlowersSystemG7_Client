@@ -412,7 +412,7 @@ public class OrderDetailsController implements Initializable {
 		ISystemSender sender = new SystemSender();
 		saveToServer(sender,packet);
 	}
-	public void saveToServer(ISystemSender sender,Packet packet)
+	public void saveToServer(ISystemSender sender, Packet packet)
 	{
 		sender.setPacket(packet);
 		
