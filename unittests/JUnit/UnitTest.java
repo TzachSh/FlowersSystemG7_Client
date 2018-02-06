@@ -154,7 +154,9 @@ public class UnitTest extends TestCase
 	        method.invoke(orderDetailsController, cancelledOrder,Status.Canceled);
 	        
 	        Status expectedOrderStatus = Status.Canceled;
-	        assertEquals("Status is different", true,cancelledOrder.getStatus() == expectedOrderStatus && orderStatusBefore == Status.Canceled);
+	        
+	        assertEquals("Status is different before", orderStatusBefore, Status.Canceled);
+	        assertEquals("Status is different from expected status", expectedOrderStatus, cancelledOrder.getStatus());
 		}
 		catch(Exception e)
 		{
@@ -180,7 +182,10 @@ public class UnitTest extends TestCase
 	        
 	        Status expectedOrderStatus = Status.Canceled;
 	        
-	        assertEquals("Status change is wrong", true, pendingOrder.getStatus() == expectedOrderStatus && orderStatusBefore == Status.Pending);
+	        assertEquals("Status before change is wrong", orderStatusBefore, Status.Pending);
+	        
+	        assertEquals("Status after change is wrong", pendingOrder.getStatus(), expectedOrderStatus);
+	        
 		}
 		catch(Exception e)
 		{
@@ -221,7 +226,7 @@ public class UnitTest extends TestCase
 	        //get amount in refund
 	        double amount = (double)method.invoke(orderDetailsController, pendingOrder);
 	
-	        assertEquals("Amount is not the same", true, refund.getAmount() == amount);
+	        assertEquals("Amount is not the same", refund.getAmount(), amount);
 		}
 		catch(Exception e)
 		{
@@ -261,7 +266,7 @@ public class UnitTest extends TestCase
 	        //get amount
 	        double amount = (double)method.invoke(orderDetailsController, pendingOrder);
 	
-	        assertEquals("Amount is not the same", true, refund.getAmount() == amount);
+	        assertEquals("Amount is not the same", refund.getAmount(), amount);
 		}
 		catch(Exception e)
 		{
@@ -303,7 +308,7 @@ public class UnitTest extends TestCase
 	        double amount = (double)method.invoke(orderDetailsController, pendingOrder);
 	        amount *= 0.5;
 	        
-	        assertEquals("Amount is not the same", true, refund.getAmount() == amount);
+	        assertEquals("Amount is not the same", refund.getAmount(), amount);
 		}
 		catch(Exception e)
 		{
@@ -340,7 +345,7 @@ public class UnitTest extends TestCase
 	        method.setAccessible(true);
 	        
 	        //check if no refund
-	        assertEquals("Refund is not null", true, refund == null);
+	        assertEquals("Refund is not null", refund, null);
 		}
 		catch(Exception e)
 		{
@@ -373,7 +378,7 @@ public class UnitTest extends TestCase
 	        // check if not charged
 	        boolean isCharged = (boolean)method.invoke(orderDetailsController);
 	        
-	        assertEquals("Charge order is wrond", true, isCharged == false);
+	        assertEquals("Charge order is wrond", isCharged, false);
 		}
 		catch(Exception e)
 		{
@@ -400,7 +405,7 @@ public class UnitTest extends TestCase
 	        
 	        boolean isCharged = (boolean) method.invoke(orderDetailsController);
 	        
-	        assertEquals("Charge order is wrond", true, isCharged == true);
+	        assertEquals("Charge order is wrond", isCharged, true);
 		}
 		catch(Exception e)
 		{
@@ -448,6 +453,26 @@ public class UnitTest extends TestCase
 			Packet serverPacket = mockSystemSender.getPacket();
 			
 	        packetValidation(serverPacket);
+		}
+		catch(Exception e)
+		{
+			fail(e.getMessage());
+		}
+	}
+	public void testGetOrderPaymentsSuccess()
+	{
+		try 
+		{
+			double expectedAmount=120;
+			setPaymentForPendingOrder();
+			// get access to  private method
+			Method method = OrderDetailsController.class.getDeclaredMethod("getOrderPayments",Order.class);
+	        method.setAccessible(true);
+	        
+	        
+	        double amount = (double) method.invoke(orderDetailsController,pendingOrder);
+	        
+	        assertEquals("Order payment amount is wrong", expectedAmount, amount);
 		}
 		catch(Exception e)
 		{
