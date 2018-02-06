@@ -1,6 +1,7 @@
 package JUnit;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -15,6 +16,7 @@ import Commons.Status;
 import Customers.Account;
 import Customers.AccountStatus;
 import Login.CustomerMenuController;
+import Orders.BadDateRangeException;
 import Orders.Order;
 import Orders.OrderDetailsController;
 import Orders.OrderPayment;
@@ -459,16 +461,19 @@ public class UnitTest extends TestCase
 			fail(e.getMessage());
 		}
 	}
+	
+	@Test
 	public void testGetOrderPaymentsCorrect()
 	{
 		try 
 		{
 			double expectedAmount=120;
+			
 			setPaymentForPendingOrder();
+			
 			// get access to  private method
 			Method method = OrderDetailsController.class.getDeclaredMethod("getOrderPayments",Order.class);
 	        method.setAccessible(true);
-	        
 	        
 	        double amount = (double) method.invoke(orderDetailsController,pendingOrder);
 	        
@@ -478,5 +483,42 @@ public class UnitTest extends TestCase
 		{
 			fail(e.getMessage());
 		}
+	}
+	
+	@Test
+	public void testCancelingOrder_EarlierThanOrderCreation()
+	{
+		//get timestamp before 5 hours
+ 		Calendar calendar = Calendar.getInstance();
+ 	    calendar.setTimeInMillis(currentTimeStamp.getTime());
+ 	    calendar.add(Calendar.HOUR, -5);
+ 	    
+ 	    anotherTimeStamp = new Timestamp(calendar.getTime().getTime());
+ 	    
+ 	    setPaymentForPendingOrder();
+ 		
+		try
+		{
+			//get access to  private method
+			Method method = OrderDetailsController.class.getDeclaredMethod("getCancelRefund", Timestamp.class,Timestamp.class);
+	        method.setAccessible(true);
+
+	        method.invoke(orderDetailsController, anotherTimeStamp, currentTimeStamp);
+		}
+		catch (InvocationTargetException e)
+		{
+			if (e.getTargetException() instanceof BadDateRangeException)
+			{
+				assertTrue(true);
+				return;
+			}
+		}
+		catch (Exception e)
+		{
+			fail(e.getMessage());
+			return;
+		}
+		
+		fail("Canceling Order performs with Requested Time < Current Time");
 	}
 }

@@ -21,6 +21,7 @@ public class CancelOrderTestSuite
 					  testChangeOrderStatusPendingToCancel();
 					  testIfOrderIsNotCharged();
 					  testIfOrderIsCharged();
+					  testCancelingOrder_EarlierThanOrderCreation();
 			  	}  
 			  }    
 		  ); 
@@ -33,6 +34,7 @@ public class CancelOrderTestSuite
 					 testGetFullRefundByCancellingOrder_3HoursLater();
 					 testGetHalfRefundByCancellingOrder_2HoursLater();
 					 testGetZeroRefundByCancellingOrder_1HourLeft();
+					 testGetOrderPaymentsCorrect();
 			  	}  
 			  }    
 		  );  
