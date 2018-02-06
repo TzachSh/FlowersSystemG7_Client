@@ -165,6 +165,8 @@ public class UnitTest extends TestCase
 	{
 		try
 		{
+			 assertFalse(pendingOrder.getStatus() == Status.Canceled);
+			
 			//get access to private function
 			Method method = OrderDetailsController.class.getDeclaredMethod("changeOrderStatus", Order.class,Status.class);
 	      
