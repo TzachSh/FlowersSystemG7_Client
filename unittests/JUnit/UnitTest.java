@@ -459,7 +459,7 @@ public class UnitTest extends TestCase
 			fail(e.getMessage());
 		}
 	}
-	public void testGetOrderPaymentsSuccess()
+	public void testGetOrderPaymentsCorrect()
 	{
 		try 
 		{
