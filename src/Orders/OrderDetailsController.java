@@ -306,9 +306,13 @@ public class OrderDetailsController implements Initializable {
 	 * @param requestedTime requested time of the order to be ready
 	 * @param currentTime current time now
 	 * @return new refund 
+	 * @throws BadDateRangeException Exception when inserted bad range of dates
 	 */
-	private Refund getCancelRefund(Timestamp requestedTime , Timestamp currentTime)
+	private Refund getCancelRefund(Timestamp requestedTime , Timestamp currentTime) throws BadDateRangeException
 	{
+		if (requestedTime.getTime() < currentTime.getTime())
+			throw new BadDateRangeException("Invalid Range Of Dates");
+		
 		Map<TimeUnit,Long> diffTime = computeDiff(requestedTime,currentTime);
 		Refund refund = null;
 		
@@ -370,7 +374,7 @@ public class OrderDetailsController implements Initializable {
 		return isCharged;
 	}
 	
-	public Packet initPacket()
+	public Packet initPacket() throws BadDateRangeException
 	{
 		changeOrderStatus(order,Status.Canceled);
 		
@@ -408,9 +412,16 @@ public class OrderDetailsController implements Initializable {
 	@FXML
 	private void onCancelPressedHandler()
 	{	
-		Packet packet = initPacket(); 
-		ISystemSender sender = new SystemSender();
-		saveToServer(sender,packet);
+		try
+		{
+			Packet packet = initPacket(); 
+			ISystemSender sender = new SystemSender();
+			saveToServer(sender,packet);
+		}
+		catch (Exception e)
+		{
+			ConstantData.displayAlert(AlertType.ERROR, "Cancel Order", "Error", e.getMessage());
+		}
 	}
 	public void saveToServer(ISystemSender sender, Packet packet)
 	{
