@@ -8,36 +8,45 @@ import junit.framework.TestSuite;
 
 @RunWith(Suite.class)
 @SuiteClasses({ UnitTest.class })
-public class CancelOrderTestSuite {
-	public static Test suite() {  
+public class CancelOrderTestSuite 
+{
+	public static Test suite()
+	{  
 		TestSuite suite = new TestSuite("Cancel order Tests");   
-		  suite.addTest(new UnitTest("Cancel order Methods") { 
-			  protected void runTest() { 
-				  testChangeOrderStatusTestCancelToCancel();
-				  testchangeOrderStatusTestPendingToCancel();
-				  testIfOrderChargerFalse();
-				  testIfOrderChargerTrue();
+		  suite.addTest(new UnitTest("Cancel order Methods")
+		  { 
+			  protected void runTest() 
+			  { 
+					  testChangeOrderStatusCancelToCancel();
+					  testChangeOrderStatusPendingToCancel();
+					  testIfOrderIsNotCharged();
+					  testIfOrderIsCharged();
 			  	}  
 			  }    
 		  ); 
-		  suite.addTest(new UnitTest("Refund Methods") { 
-			  protected void runTest() { 
-				  testGetCancelRefundFull();
-				  testGetCancelRefundFullMoreThanDay();
-				  testGetCancelRefundHalf();
-				  testGetCancelRefundZero();
+		  
+		  suite.addTest(new UnitTest("Refund Methods") 
+		  { 
+			  protected void runTest() 
+			  { 
+					 testGetFullRefundByCancellingOrder_24HoursLater();
+					 testGetFullRefundByCancellingOrder_3HoursLater();
+					 testGetHalfRefundByCancellingOrder_2HoursLater();
+					 testGetZeroRefundByCancellingOrder_1HourLeft();
 			  	}  
 			  }    
 		  );  
-		suite.addTest(new UnitTest("Packet validation") { 
-			  protected void runTest() { 
-				  testIfPacketCorrect();
-				  testSentPacketSuccessfully();
+		  
+		suite.addTest(new UnitTest("Packet validation")
+		{ 
+			  protected void runTest()
+			  { 
+					 testValidationOfPacketBeforeSendingToServer();
+					 testValidationOfSendingPacketToTheServer();
 			  	}  
 			  }    
 		  ); 
+		
 		return suite; 
-		} 
-	 
-
+	}
 }
