@@ -4,7 +4,7 @@ import PacketSender.IResultHandler;
 import PacketSender.ISystemSender;
 import PacketSender.Packet;
 
-public class MockSystemSernder implements ISystemSender {
+public class MockSystemSender implements ISystemSender {
 	private Packet packet;
 	@Override
 	public void start() {

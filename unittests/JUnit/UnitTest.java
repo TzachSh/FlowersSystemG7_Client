@@ -339,7 +339,7 @@ public class UnitTest extends TestCase {
 			//checking this function before on correctness
 			Packet packet = orderDetails.initPacket();
 			//create mock SystemSender
-			MockSystemSernder mockSystemSender = new MockSystemSernder();
+			MockSystemSender mockSystemSender = new MockSystemSender();
 			orderDetails.saveToServer(mockSystemSender, packet);
 			
 			// validate packet from system sender
