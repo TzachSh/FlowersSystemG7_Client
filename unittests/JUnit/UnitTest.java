@@ -148,10 +148,14 @@ public class UnitTest extends TestCase
 		{
 			Method method = OrderDetailsController.class.getDeclaredMethod("changeOrderStatus", Order.class,Status.class);
 	       
+			Status orderStatusBefore = cancelledOrder.getStatus();
+			
 			method.setAccessible(true);
 	        method.invoke(orderDetailsController, cancelledOrder,Status.Canceled);
+	        
+	        Status expectedOrderStatus = Status.Canceled;
 	       
-	        assertTrue(cancelledOrder.getStatus() == Status.Canceled);
+	        assertTrue(cancelledOrder.getStatus() == expectedOrderStatus && orderStatusBefore == Status.Canceled);
 		}
 		catch(Exception e)
 		{
@@ -165,15 +169,19 @@ public class UnitTest extends TestCase
 	{
 		try
 		{
-			 assertFalse(pendingOrder.getStatus() == Status.Canceled);
 			
 			//get access to private function
 			Method method = OrderDetailsController.class.getDeclaredMethod("changeOrderStatus", Order.class,Status.class);
 	      
 			method.setAccessible(true);
+			
+			Status orderStatusBefore = pendingOrder.getStatus();
+			
 	        method.invoke(orderDetailsController, pendingOrder,Status.Canceled);
 	        
-	        assertTrue(pendingOrder.getStatus() == Status.Canceled);
+	        Status expectedOrderStatus = Status.Canceled;
+	        
+	        assertTrue(pendingOrder.getStatus() == expectedOrderStatus && orderStatusBefore == Status.Pending);
 		}
 		catch(Exception e)
 		{
