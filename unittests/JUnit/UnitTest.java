@@ -154,8 +154,7 @@ public class UnitTest extends TestCase
 	        method.invoke(orderDetailsController, cancelledOrder,Status.Canceled);
 	        
 	        Status expectedOrderStatus = Status.Canceled;
-	       
-	        assertTrue(cancelledOrder.getStatus() == expectedOrderStatus && orderStatusBefore == Status.Canceled);
+	        assertEquals("Status is different", true,cancelledOrder.getStatus() == expectedOrderStatus && orderStatusBefore == Status.Canceled);
 		}
 		catch(Exception e)
 		{
@@ -181,7 +180,7 @@ public class UnitTest extends TestCase
 	        
 	        Status expectedOrderStatus = Status.Canceled;
 	        
-	        assertTrue(pendingOrder.getStatus() == expectedOrderStatus && orderStatusBefore == Status.Pending);
+	        assertEquals("Status change is wrong", true, pendingOrder.getStatus() == expectedOrderStatus && orderStatusBefore == Status.Pending);
 		}
 		catch(Exception e)
 		{
@@ -222,7 +221,7 @@ public class UnitTest extends TestCase
 	        //get amount in refund
 	        double amount = (double)method.invoke(orderDetailsController, pendingOrder);
 	
-	        assertTrue(refund.getAmount() == amount);
+	        assertEquals("Amount is not the same", true, refund.getAmount() == amount);
 		}
 		catch(Exception e)
 		{
@@ -262,7 +261,7 @@ public class UnitTest extends TestCase
 	        //get amount
 	        double amount = (double)method.invoke(orderDetailsController, pendingOrder);
 	
-	        assertTrue(refund.getAmount() == amount);
+	        assertEquals("Amount is not the same", true, refund.getAmount() == amount);
 		}
 		catch(Exception e)
 		{
@@ -304,7 +303,7 @@ public class UnitTest extends TestCase
 	        double amount = (double)method.invoke(orderDetailsController, pendingOrder);
 	        amount *= 0.5;
 	        
-	        assertTrue(refund.getAmount() == amount);
+	        assertEquals("Amount is not the same", true, refund.getAmount() == amount);
 		}
 		catch(Exception e)
 		{
@@ -341,7 +340,7 @@ public class UnitTest extends TestCase
 	        method.setAccessible(true);
 	        
 	        //check if no refund
-	        assertTrue(refund == null);
+	        assertEquals("Refund is not null", true, refund == null);
 		}
 		catch(Exception e)
 		{
@@ -374,7 +373,7 @@ public class UnitTest extends TestCase
 	        // check if not charged
 	        boolean isCharged = (boolean)method.invoke(orderDetailsController);
 	        
-	        assertTrue(isCharged == false);
+	        assertEquals("Charge order is wrond", true, isCharged == false);
 		}
 		catch(Exception e)
 		{
@@ -401,7 +400,7 @@ public class UnitTest extends TestCase
 	        
 	        boolean isCharged = (boolean) method.invoke(orderDetailsController);
 	        
-	        assertTrue(isCharged == true);
+	        assertEquals("Charge order is wrond", true, isCharged == true);
 		}
 		catch(Exception e)
 		{
