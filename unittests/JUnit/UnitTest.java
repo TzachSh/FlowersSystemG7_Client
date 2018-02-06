@@ -56,18 +56,28 @@ public class UnitTest extends TestCase
 	   orderDetailsController = new OrderDetailsController();
 	   
        //initialize pending order
-       pendingOrder = new Order(0, currentDate ,new Timestamp(System.currentTimeMillis()), 1, Status.Pending, 1, 100);
+	   int orderId = 0;
+	   Date creationDate = currentDate;
+	   Timestamp reqestedDate = new Timestamp(System.currentTimeMillis());
+	   Status pendingStatus = Status.Pending;
+	   double total = 100;
+	   
+       pendingOrder = new Order(orderId, creationDate ,reqestedDate, customerId, pendingStatus, branchId, total);
       
        //initialize cancel order
-       cancelledOrder = new Order(0, currentDate ,new Timestamp(System.currentTimeMillis()), 1, Status.Canceled, 1, 100); 
+       Status cancelledStatus = Status.Canceled;
+       
+       cancelledOrder = new Order(orderId, creationDate ,reqestedDate, customerId, cancelledStatus, branchId, total); 
 	}
 	
 	/** help function to set payments */
 	private void setPaymentForPendingOrder()
 	{
 	   ArrayList<OrderPayment> payment = new ArrayList<>();
-       payment.add(new OrderPayment(PaymentMethod.Cash, 40, currentDate));
-       payment.add(new OrderPayment(PaymentMethod.BalancePayment, 80, currentDate));
+	   double paymentAmount = 40;
+       payment.add(new OrderPayment(PaymentMethod.Cash, paymentAmount, currentDate));
+       paymentAmount = 80;
+       payment.add(new OrderPayment(PaymentMethod.BalancePayment, paymentAmount, currentDate));
        pendingOrder.setOrderPaymentList(payment);
 	}
 	
@@ -75,13 +85,19 @@ public class UnitTest extends TestCase
 	private void preparePacketByOrderDetails() throws Exception
 	{
 		//set account
-		Account account = new Account(1, customerId, membership, 20, branchId, AccountStatus.Active, null);
-		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(currentTimeStamp.getTime());
-		cal.add(Calendar.HOUR, 3);
+		int accountNumber = 1;
+		double accountBalance = 20;
+		AccountStatus activeStatus = AccountStatus.Active;
+		String creditCard = null;
+		
+		Account account = new Account(accountNumber, customerId, membership, accountBalance, branchId, activeStatus, creditCard);
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(currentTimeStamp.getTime());
+		int hoursToAdd = 3;
+		calendar.add(Calendar.HOUR, hoursToAdd);
 		
 		// set new requested date
-		pendingOrder.setRequestedDate(new Timestamp(cal.getTime().getTime()));
+		pendingOrder.setRequestedDate(new Timestamp(calendar.getTime().getTime()));
 		
 		// define the account that ordering
 		CustomerMenuController.currentAcc = account;
@@ -168,11 +184,12 @@ public class UnitTest extends TestCase
 	public void testGetFullRefundByCancellingOrder_3HoursLater()
 	{
 		//get timestamp 3 hours later
- 		Calendar cal = Calendar.getInstance();
- 	    cal.setTimeInMillis(currentTimeStamp.getTime());
- 	    cal.add(Calendar.HOUR, 3);
+ 		Calendar calendar = Calendar.getInstance();
+ 	    calendar.setTimeInMillis(currentTimeStamp.getTime());
+ 	    int hoursToAdd = 3;
+ 	    calendar.add(Calendar.HOUR, hoursToAdd);
  	    
- 	    anotherTimeStamp = new Timestamp(cal.getTime().getTime());
+ 	    anotherTimeStamp = new Timestamp(calendar.getTime().getTime());
  	    
  	   setPaymentForPendingOrder();
  		
@@ -208,11 +225,11 @@ public class UnitTest extends TestCase
 	public void testGetFullRefundByCancellingOrder_24HoursLater()
 	{
 		//get timestamp 1 day later
- 		Calendar cal = Calendar.getInstance();
- 	    cal.setTimeInMillis(currentTimeStamp.getTime());
- 	    cal.add(Calendar.HOUR, 24);
+ 		Calendar calendar = Calendar.getInstance();
+ 	    calendar.setTimeInMillis(currentTimeStamp.getTime());
+ 	    calendar.add(Calendar.HOUR, 24);
  	    
- 	    anotherTimeStamp = new Timestamp(cal.getTime().getTime());
+ 	    anotherTimeStamp = new Timestamp(calendar.getTime().getTime());
  	    
  	    setPaymentForPendingOrder();
  		
@@ -248,11 +265,12 @@ public class UnitTest extends TestCase
 	public void testGetHalfRefundByCancellingOrder_2HoursLater()
 	{
 		//get timestamp 2 hours later
- 		Calendar cal = Calendar.getInstance();
- 	    cal.setTimeInMillis(currentTimeStamp.getTime());
- 	    cal.add(Calendar.HOUR, 2);
+ 		Calendar calendar = Calendar.getInstance();
+ 	    calendar.setTimeInMillis(currentTimeStamp.getTime());
+ 	    int hoursToAdd = 2;
+ 	    calendar.add(Calendar.HOUR, hoursToAdd);
  	    
- 	    anotherTimeStamp = new Timestamp(cal.getTime().getTime());
+ 	    anotherTimeStamp = new Timestamp(calendar.getTime().getTime());
  	    
  	   setPaymentForPendingOrder();
  		
@@ -288,11 +306,11 @@ public class UnitTest extends TestCase
 	public void testGetZeroRefundByCancellingOrder_1HourLeft()
 	{
 		//get timestamp less than 1 hour
- 		Calendar cal = Calendar.getInstance();
- 	    cal.setTimeInMillis(currentTimeStamp.getTime());
- 	    cal.add(Calendar.MINUTE, 30);
+ 		Calendar calendar = Calendar.getInstance();
+ 	    calendar.setTimeInMillis(currentTimeStamp.getTime());
+ 	    calendar.add(Calendar.MINUTE, 30);
  	    
- 	    anotherTimeStamp = new Timestamp(cal.getTime().getTime());
+ 	    anotherTimeStamp = new Timestamp(calendar.getTime().getTime());
  	    
  	    setPaymentForPendingOrder();
  		
@@ -326,7 +344,9 @@ public class UnitTest extends TestCase
 	public void testIfOrderIsNotCharged()
 	{
 		ArrayList<OrderPayment> payment = new ArrayList<>();
-        payment.add(new OrderPayment(PaymentMethod.Cash, 40, null));
+		double paymentAmount = 40;
+		Date paymentDate = null;
+        payment.add(new OrderPayment(PaymentMethod.Cash, paymentAmount, paymentDate));
         
         pendingOrder.setOrderPaymentList(payment);
         
